@@ -1,0 +1,7 @@
+categories: [Metabolomics]
+description: '[W4M][LC-MS] CAMERA R Package - Preprocessing - RData datatype'
+homepage_url: http://workflow4metabolomics.org
+long_description: 'Part of the W4M project: http://workflow4metabolomics.org Datatypes
+  to ease the usability of W4M CAMEARA tools'
+name: rdata_camera_datatypes
+owner: lecorguille

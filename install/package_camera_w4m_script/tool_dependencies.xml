@@ -1,0 +1,22 @@
+
+<tool_dependency >
+	<package name="camera_w4m_script" version="2.2.1">
+		<install version="1.0">
+			<actions>
+		        	<action type="download_by_url">http://application.sb-roscoff.fr/download/w4m/camera_script-2.2.1.tgz</action>
+				<action type="move_file">
+					<source>CAMERA.r</source>
+					<destination>$INSTALL_DIR</destination>
+				</action>
+               			<action type="move_file">
+					<source>lib.r</source>
+					<destination>$INSTALL_DIR</destination>
+				</action>
+		
+				<action type="set_environment"><environment_variable name="PATH" action="prepend_to">$INSTALL_DIR</environment_variable></action>
+			</actions>
+			
+		</install>
+		<readme/>
+		</package>
+</tool_dependency>
