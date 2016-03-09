@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<tool_dependency>
+    <package name="R" version="3.1.2">
+        <repository name="package_r_3_1_2" owner="iuc" prior_installation_required="True" />
+    </package>
+    <package name="netcdf" version="4.3.3.1">
+        <repository name="package_netcdf_4_3_3_1" owner="lecorguille" prior_installation_required="True" />
+    </package>
+
+    <package name="xcms" version="1.44.0">
+        <install version="1.0">
+            <actions>
+                <action type="setup_r_environment">
+                    <repository name="package_r_3_1_2" owner="iuc">
+                        <package name="R" version="3.1.2" />
+                    </repository>
+                    <repository name="package_netcdf_4_3_3_1" owner="lecorguille">
+                        <package name="netcdf" version="4.3.3.1" />
+                    </repository>
+                   
+                    
+                    <package>http://bioconductor.org/packages/3.1/bioc/src/contrib/BiocGenerics_0.14.0.tar.gz</package>
+                    <package>http://bioconductor.org/packages/3.1/bioc/src/contrib/Biobase_2.28.0.tar.gz</package>
+                    <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/Rcpp_0.12.0.tar.gz</package>
+                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/ProtGenerics_1.0.0.tar.gz</package>
+
+                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/zlibbioc_1.14.0.tar.gz</package>
+                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/mzR_2.2.1.tar.gz</package>
+
+                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/xcms_1.44.0.tar.gz</package>
+
+                    <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/snow_0.3-13.tar.gz</package>
+                    <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/batch_1.1-4.tar.gz</package>
+                </action>
+            </actions>
+        </install>
+        <readme>
+XCMS: http://www.bioconductor.org/packages/release/bioc/html/xcms.html
+
+Framework for processing and visualization of chromatographically separated and single-spectra mass spectral data. Imports from AIA/ANDI NetCDF, mzXML, mzData and mzML files. Preprocesses data for high-throughput, untargeted analyte profiling.
+
+Author: Colin A. Smith, Ralf Tautenhahn, Steffen Neumann, Paul Benton, Christopher Conley
+
+Galaxy integration: ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff - part of Workflow4Metabolomics.org [W4M]
+Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+        </readme>
+    </package>
+</tool_dependency>

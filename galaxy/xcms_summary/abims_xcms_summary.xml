@@ -1,0 +1,80 @@
+<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.0">
+    
+    <description>Create a summary of XCMS analysis</description>
+    
+    <requirements>
+        <requirement type="package" version="3.1.2">R</requirement>
+        <requirement type="binary">Rscript</requirement>
+        <requirement type="package" version="1.44.0">xcms</requirement>
+        <requirement type="package" version="1.22.0">camera</requirement>
+    </requirements>
+    
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
+    
+    <command interpreter="Rscript"><![CDATA[
+        xcms_summary.r
+
+        image $image 
+        htmlOutput $htmlOutput
+        user_email $__user_email__
+       
+    ]]></command>
+    
+    <inputs>
+
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
+
+    </inputs>
+    
+    <outputs>
+        <data name="htmlOutput" format="html" label="xcms summary html" />
+    </outputs>
+    
+    <tests>
+        <test>
+            <param name="image" value="fillpeaks.RData" />
+            <output name="htmlOutput" file="summary.html" />
+        </test>
+    </tests>
+    
+    <help><![CDATA[
+
+.. class:: infomark
+
+**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff part of Workflow4Metabolomics.org [W4M]
+
+ | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+---------------------------------------------------
+
+============
+Xcms.summary
+============
+
+-----------
+Description
+-----------
+
+This tool provide a HTML summary which summarizes your analysis using the [W4M] XCMS and CAMERA tools 
+
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+**Version 1.0.0 - 10/02/2016**
+
+- NEW: Create a summary of XCMS analysis
+
+
+    ]]></help>
+
+
+    <citations>
+        <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </citations>
+
+</tool>

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<repositories>
+	<!--xcms tools -->
+	<repository name="xcms_xcmsset" owner="lecorguille"/>
+	<repository name="xcms_group" owner="lecorguille"/>
+	<repository name="xcms_retcor" owner="lecorguille"/>
+	<repository name="xcms_fillpeaks" owner="lecorguille"/>
+	<repository name="xcms_summary" owner="lecorguille"/>
+</repositories>

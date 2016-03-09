@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<repositories>
+	<repository name="rdata_xcms_datatypes" owner="lecorguille" />
+	<repository name="rdata_camera_datatypes" owner="lecorguille" />
+</repositories>

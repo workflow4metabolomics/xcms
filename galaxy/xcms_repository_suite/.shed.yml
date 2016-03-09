@@ -1,0 +1,11 @@
+categories: [Metabolomics]
+description: '[W4M][LC-MS] XCMS R Package - Preprocessing - Framework for processing
+  data for high-throughput, untargeted analyte profiling'
+homepage_url: http://workflow4metabolomics.org
+long_description: 'Part of the W4M project: http://workflow4metabolomics.org XCMS:
+  http://www.bioconductor.org/packages/release/bioc/html/xcms.html XCMS: processing
+  mass spectrometry data for metabolite profiling using nonlinear peak alignment,
+  matching, and identification BEWARE: this tool don''t come with its script. You
+  will need to install the dedicated package_xcms_w4m_script too'
+name: suite_xcms
+owner: lecorguille

@@ -1,0 +1,305 @@
+<tool id="abims_xcms_group" name="xcms.group" version="2.0.4">
+
+    <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
+
+    <requirements>
+        <requirement type="package" version="3.1.2">R</requirement>
+        <requirement type="binary">Rscript</requirement>
+        <requirement type="package" version="1.44.0">xcms</requirement>
+        <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
+    </requirements>
+
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
+
+    <command><![CDATA[
+        xcms.r 
+        xfunction group 
+        image $image 
+
+        xsetRdataOutput $xsetRData
+        rplotspdf $rplotsPdf
+
+        method $methods.method sleep 0.001 
+        #if $methods.method == "density":
+            ## minsamp $methods.minsamp 
+            minfrac $methods.minfrac 
+            bw $methods.bw 
+            mzwid $methods.mzwid
+        #if $methods.density_options.option == "show":
+            max $methods.density_options.max
+        #end if 
+        #elif $methods.method == "mzClust":
+            mzppm $methods.mzppm
+            mzabs $methods.mzabs
+            minfrac $methods.minfrac
+            ## minsamp $methods.minsamp
+        #else:
+            mzVsRTbalance $methods.mzVsRTbalance
+            mzCheck $methods.mzCheck
+            rtCheck $methods.rtCheck
+            kNN $methods.kNN
+        #end if
+        ;
+        return=\$?;
+        mv log.txt $log;
+        cat $log;
+        sh -c "exit \$return"
+        
+   ]]></command> 
+
+    <inputs>
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
+        <conditional name="methods">
+            <param name="method" type="select" label="Method to use for grouping" help="[method] See the help section below">
+                <option value="density" selected="true">density</option>
+                <option value="mzClust" >mzClust</option>
+                <option value="nearest" >nearest</option>
+            </param>
+            <when value="density">
+                <param name="bw" type="integer" value="30" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
+                <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
+                <param name="mzwid" type="float" value="0.25" label="Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples " />
+<!--
+                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " /> 
+-->
+            <conditional name="density_options">
+            <param name="option" type="select" label="Advanced options">
+                <option value="show">show</option>
+                <option value="hide" selected="true">hide</option>
+            </param>
+            <when value="show">
+                <param name="max" type="integer" value="5" label="Maximum number of groups to identify in a single m/z slice" help="[max]" />
+            </when>
+            <when value="hide">
+            </when>
+        </conditional>
+
+            </when>
+            <when value="mzClust">
+                <param name="mzppm" type="integer" value="20 " label="Relative error used for clustering/grouping in ppm" help="[mzppm]" />
+                <param name="mzabs" type="float" value="0" label="Absolute error used for clustering/grouping" help="[mzabs]" />
+                <param name="minfrac" type="float" value="0" label="Minimum fraction of each class in one bin" help="[minfrac] minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group" />
+<!--
+                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />   
+-->
+            </when>
+            <when value="nearest">
+                <param name="mzVsRTbalance" type="integer" value="10 " label="Multiplicator for mz value before calculating the (euclidean) distance between two peaks." help="[mzVsRTbalance]" />
+                <param name="mzCheck" type="float" value="0.2" label="Maximum tolerated distance for mz" help="[mzCheck]" />
+                <param name="rtCheck" type="integer" value="15" label="Maximum tolerated distance for RT" help="[rtCheck]" />
+                <param name="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" help="[kNN]" />    
+            </when>
+        </conditional>
+<!--
+        <param name="sleepy" type="float" value="0.001" label="sleep" help="seconds to pause between plotting successive steps of the peak grouping algorithm. peaks are plotted as points showing relative intensity. identified groups are flanked by dotted vertical lines"> 
+            <validator type="in_range" message="Must be more than 0" min="0.001" max="inf"/>
+        </param>
+-->
+
+    </inputs>
+
+    <outputs>
+        <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData"/>
+        <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf"/>
+        <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="image" value="xset.RData"/>
+            <param name="methods.method" value="density"/>
+            <param name="methods.bw" value="5"/>
+            <param name="methods.minfrac" value="0.3"/>
+            <param name="methods.mzwid" value="0.01"/>
+            <param name="methods.density_options.option" value="show"/>
+            <param name="methods.density_options.max" value="50"/>
+            <!--<output name="xsetRData" file="xset.group.RData" />-->
+            <!--<output name="rplotsPdf" file="xset.group.Rplots.pdf" />-->
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 9 samples" />
+                    <has_text text="Time range: 0.7-1140 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0019-999.9863 m/z" />
+                    <has_text text="Peaks: 135846 (about 15094 per sample)" />
+                    <has_text text="Peak Groups: 6642" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+         
+        </test>
+    </tests>
+
+    <help><![CDATA[
+        
+.. class:: infomark
+
+**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
+
+**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@univ-nantes.fr - part of Workflow4Metabolomics.org [W4M]
+
+ | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+
+
+---------------------------------------------------
+
+==========
+Xcms.Group
+==========
+
+-----------
+Description
+-----------
+
+After peak identification with xcmsSet, this tool groups the peaks which represent the same analyte across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time. Allows rejection of features, which are only partially detected within the replicates of a sample class.
+
+
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= =================== ==========
+Name                      output file       format              parameter
+========================= ================= =================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
+========================= ================= =================== ==========
+
+
+**Downstream tools**
+
++---------------------------+--------------------------------------+
+| Name                      | Output file     | Format             |
++===========================+=================+====================+
+|xcms.retcor                | xset.RData      | rdata.xcms.group   |
++---------------------------+--------------------------------------+
+|xcms.fillPeaks             | xset.RData      | rdata.xcms.group   |
++---------------------------+--------------------------------------+
+
+The output file is an xcmsSet.RData file. You can continue your analysis using it in **xcms.retcor** tool as an next step and then **xcms.fillPeaks**.
+
+**General schema of the metabolomic workflow**
+
+.. image:: xcms_group_workflow.png
+
+
+-----------
+Input files
+-----------
+
++---------------------------+-----------------------+
+| Parameter : num + label   |   Format              |
++===========================+=======================+
+| 1 : RData file            |   rdata.xcms.group    |
++---------------------------+-----------------------+
+
+
+----------
+Parameters
+----------
+
+Method to use for grouping
+--------------------------
+
+**mzClust**
+
+    | Runs high resolution alignment on single spectra samples stored in the RData file generated by the **xcmsSet tool**.
+
+**density**
+
+    | Groups peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.
+
+**nearest**
+
+    | Groups peaks together across samples by creating a master peak list and assigning corresponding peaks from all samples. It is inspired by the alignment algorithm of mzMine.
+
+
+------------
+Output files
+------------
+
+xset.group.Rplots.pdf
+
+xset.group.RData: rdata.xcms.group format
+
+    | Rdata file that will be necessary in the third and fourth step of the workflow (xcms.retcor and xcms.fillpeaks).
+    
+
+------
+
+.. class:: infomark 
+
+The output file is an xset.group.RData file. You can continue your analysis using it in **xcms.retcor** tool.
+
+    
+---------------------------------------------------
+
+
+---------------
+Working example
+---------------
+
+Input files
+-----------
+
+    | RData file -> **xset.RData**
+
+Parameters
+----------
+
+    | Method -> **density**
+    | bw     -> **5**
+    | minfrac -> **0.3**
+    | mzwid    -> **0.01**
+    | Advanced options: **show**
+    | max -> **50**
+
+
+Output files
+------------
+
+    | **1) xset.RData: RData file**
+
+    | **2) Example of an xset.group.Rplots pdf file**
+
+.. image:: xcms_group.png
+        :width: 700
+
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+**Version 2.0.4 - 10/02/2016**
+
+- BUGFIX: better management of errors. Datasets remained green although the process failed
+
+- UPDATE: refactoring of internal management of inputs/outputs
+
+- UPDATE: refactoring to feed the new report tool
+
+
+**Version 2.0.2 - 02/06/2015**
+
+- IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
+
+- IMPROVEMENT: parameter labels have changed to facilitate their reading.
+
+
+    ]]></help>
+
+
+    <citations>
+        <citation type="doi">10.1021/ac051437y</citation>
+        <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </citations>
+
+
+</tool>

@@ -1,0 +1,325 @@
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.5">
+
+    <description>Retention Time Correction using retcor function from xcms R package </description>
+
+    <requirements>
+        <requirement type="package" version="3.1.2">R</requirement>
+        <requirement type="binary">Rscript</requirement>
+        <requirement type="package" version="1.44.0">xcms</requirement>
+        <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
+    </requirements>
+
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
+
+    <command><![CDATA[
+        xcms.r 
+        image $image 
+        xfunction retcor 
+
+        xsetRdataOutput $xsetRData
+        ticspdf $ticsCorPdf
+        bicspdf $bpcsCorPdf
+        rplotspdf $rplotsPdf
+
+        method $methods.method
+        #if $methods.method == "obiwarp":
+            profStep $methods.profStep
+        #else
+            smooth $methods.smooth
+            extra $methods.extra
+            missing $methods.missing
+            #if $methods.options.option == "show":
+                span $methods.options.span
+                family $methods.options.family
+                plottype $methods.options.plottype
+            #end if
+        #end if
+        ###if $zip_file:
+        ##    zipfile $zip_file
+        ###end if
+        ;
+        return=\$?;
+        mv log.txt $log;
+        cat $log;
+        sh -c "exit \$return"
+        
+    ]]></command>
+
+    <inputs>
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
+        <conditional name="methods">
+            <param name="method" type="select" label="Method to use for retention time correction" help="[method] See the help section below" >
+                <option value="obiwarp" >obiwarp</option>
+                <option value="peakgroups" selected="peakgroups">peakgroups</option>
+            </param>
+            <when value="obiwarp">
+                <param name="profStep" type="float" value="1" label="Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files" />
+            </when> 
+            <when value="peakgroups">   
+                <param name="smooth" type="select" label="Smooth method" help="[smooth] either 'loess’ for non-linear alignment or ‘linear’ for linear alignment" >
+                    <option value="loess">loess</option>
+                    <option value="linear">linear</option>
+                </param>
+                <param name="extra" type="integer" value="1" label="Number of extra peaks to allow in retention time correction correction groups" help="[extra]" />
+                <param name="missing" type="integer" value="1" label="Number of missing samples to allow in retention time correction groups" help="[missing]" />
+                <conditional name="options">
+                    <param name="option" type="select" label="Advanced options">
+                        <option value="show">show</option>
+                        <option value="hide" selected="true">hide</option>
+                    </param>
+                    <when value="show">
+                        <param name="span" type="float" value="0.2" label="Degree of smoothing for local polynomial regression fitting" help="[span]"/>
+                        
+                        <param name="family" type="select" label="Family" help="[family] if gaussian fitting is by least-squares with no outlier removal, and if symmetric a re descending M estimator is used with Tukey's biweight function, allowing outlier removal">
+                            <option value="gaussian" selected="true">gaussian</option>
+                            <option value="symmetric">symmetric</option>
+                        </param>
+
+                        <param name="plottype" type="select" help="[plottype] if deviation plot retention time deviation points and regression fit, and if mdevden also plot peak overall peak density and retention time correction peak density">
+                            <option value="none" selected="true">none</option>
+                            <option value="deviation">deviation</option>
+                            <option value="mdevden">mdevden</option>
+                        </param>
+                    </when>
+                    <when value="hide">
+                    </when>
+                </conditional>
+            </when>
+        </conditional>
+        <!-- To pass planemo test -->
+        <!--<param name="zip_file" type="hidden_data" format="no_unzip.zip" label="Zip file" />-->
+    </inputs>
+
+    <outputs>
+        <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" />
+        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf">
+            <filter>(methods['method'] == 'peakgroups')</filter>
+            <filter>(options['option'] == 'show')</filter>
+            <filter>(family == 'symmetric')</filter>
+            <filter>(plottype != 'none')</filter>
+        </data>
+        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" />
+        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
+        <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
+    </outputs>
+    
+    <tests>
+        <test>
+            <param name="image" value="xset.group.RData"/>
+            <param name="methods.method" value="peakgroups"/>
+            <param name="methods.smooth" value="loess"/>
+            <param name="methods.extra" value="1"/>
+            <param name="methods.missing" value="1"/>
+            <param name="methods.options.option" value="show"/>
+            <param name="methods.options.span" value="0.2"/>
+            <param name="methods.options.family" value="gaussian"/>
+            <param name="methods.options.plottype" value="deviation"/>
+            <param name="zip_file" value="sacuri.zip"/>
+            <!--<output name="xsetRData" file="xset.group.retcor.RData" />-->
+            <!--<output name="rplotsPdf" file="xset.group.retcor.Rplots.pdf" />-->
+            <!--<output name="ticsCorPdf" file="xset.group.retcor.TICs_corrected.pdf" />-->
+            <!--<output name="bpcsCorPdf" file="xset.group.retcor.BPCs_corrected.pdf" />-->
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 9 samples" />
+                    <has_text text="Time range: 0.7-1139.9 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0019-999.9863 m/z" />
+                    <has_text text="Peaks: 135846 (about 15094 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+        </test>
+    </tests>
+
+    <help><![CDATA[
+
+        
+.. class:: infomark
+
+**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
+
+.. class:: infomark
+
+**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@univ-nantes.fr - part of Workflow4Metabolomics.org [W4M]
+
+ | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+
+
+---------------------------------------------------
+
+===========
+Xcms.retcor
+===========
+
+-----------
+Description
+-----------
+
+After matching peaks into groups, xcms can use those groups to identify and correct 
+correlated drifts in retention time from run to run. The aligned peaks can then be 
+used for a second pass of peak grouping which will be more accurate than the first. 
+The whole process can be repeated in an iterative fashion. Not all peak groups will be helpful 
+for identifying retention time drifts. Some groups may be missing peaks from a large 
+fraction of samples and thus provide an incomplete picture of the drift at that time point. 
+Still others may contain multiple peaks from the same sample, which is a sign of impropper grouping.
+
+.. class:: warningmark
+
+**After an retcor step, it is mandatory to do a group step, otherwise the rest of the workflow will not work with the RData file. (the initial peak grouping becomes invalid and is
+discarded)**
+
+
+
+-----------------
+Workflow position
+-----------------
+
+
+**Upstream tools**
+
+========================= ================= ======= ==========
+Name                      output file       format  parameter
+========================= ================= ======= ==========
+xcms.group                xset.group.RData  RData   RData file
+========================= ================= ======= ==========
+
+
+**Downstream tools**
+
++---------------------------+------------------+--------+
+| Name                      | Output file      | Format |
++===========================+==================+========+
+|xcms.group                 | xset.retcor.RData| RData  |
++---------------------------+------------------+--------+
+
+The output file **xset.retcor.RData** is an RData file. You can continue your analysis using it in **xcms.group** tool as an next step.
+
+
+**General schema of the metabolomic workflow**
+
+.. image:: xcms_retcor_workflow.png
+
+
+-----------
+Input files
+-----------
+
++---------------------------+----------------------+
+| Parameter : num + label   |   Format             |
++===========================+======================+
+| 1 : RData file            |   rdata.xcms.group   |
++---------------------------+----------------------+
+
+
+----------
+Parameters
+----------
+
+Method
+------
+
+**peakgroups**
+
+    | xcms ignores those groups by only considering well-behaved peak groups which are missing at most one sample and have at most one extra peak. (Those values can be changed with the **missing** and **extra** arguments.)
+    | For each of those well-behaved groups, the algorithm calculates a median retention time and, for every sample, a deviation from that median. Within a sample, the observed deviation generally changes over time in a nonlinear fashion. Those changes are approximated using a local polynomial regression technique implemented in the **loess** function. By default, the curve fitting is done using least-squares on all data points.
+    | However, it is possible to enable outlier detection and removal by setting the **family** argument to **symmetric**.
+
+**obiwarp**
+
+    | Calculate retention time deviations for each sample using the obiwarp code at "http://obi-warp.sourceforge.net/". This function is able to align multiple samples by a center-star strategy. Ordered Bijective Interpolated Warping (OBI-Warp) aligns matrices along a single axis using Dynamic Time Warping (DTW) and a one-to-one (bijective) interpolated warp function. OBI-Warp harnesses the non-linear, comprehensive alignment power of DTW and builds on the discrete, non-bijective output of DTW to give natural interpolants that can be used across multiple datasets.
+    | For the original publication see :**Chromatographic Alignment of ESI-LC-MS Proteomics Data Sets by Ordered Bijective Interpo-lated Warping John T. Prince and, Edward M. Marcotte Analytical Chemistry 2006 78 (17), 6140-6152.**
+
+
+------------
+Output files
+------------
+
+xset.group.retcor.TICs_corrected.pdf
+
+    | "Total Ion Chromatograms" graph in pdf format,corrected after a retcor step.
+
+xset.group.retcor.BPCs_corrected.pdf
+
+    | "Total Io"Base Peak Chromatograms" graph in pdf format,corrected after a retcor step
+
+xset.group.retcor.RData: rdata.xcms.retcor format
+
+    | Rdata file that will be necessary in the **xcms.group** step of the workflow.
+    
+    
+------
+
+.. class:: infomark 
+
+The output file is an xset.retcor.RData file. You can continue your analysis using it in **xcms.fillPeaks** tool.
+
+    
+---------------------------------------------------
+
+---------------
+Working example
+---------------
+
+Input files
+-----------
+
+    | RData file -> **xset.group.RData**
+
+Parameters
+----------
+
+    | Method: -> **peakgroups**
+    | smooth: -> **loess**
+    | extra: -> **1**
+    | missing -> **1**
+    | Advanced options: -> **show**
+    | span -> **0.2**
+    | family -> **gaussian**
+    | plottype -> **deviation**
+    
+
+Output files
+------------
+
+    | **1) xset.group.retcor.RData: RData file**
+
+    | **2) Example of an xset.group.retcor.TICs_corrected pdf file**
+
+.. image:: xcms_retcor.png
+
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+**Version 2.0.5 - 10/02/2016**
+
+- BUGFIX: better management of errors. Datasets remained green although the process failed
+
+- BUGFIX: some pdf remained empty even when the process succeed
+
+- UPDATE: refactoring of internal management of inputs/outputs
+
+- UPDATE: refactoring to feed the new report tool
+
+
+**Version 2.0.2 - 02/06/2015**
+
+- IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
+
+- IMPROVEMENT: parameter labels have changed to facilitate their reading.
+
+
+    ]]></help>
+
+    <citations>
+        <citation type="doi">10.1021/ac051437y</citation>
+        <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </citations>
+
+</tool>
