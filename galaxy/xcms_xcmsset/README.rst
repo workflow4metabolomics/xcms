@@ -16,7 +16,7 @@ Changelog/News
 - UPDATE: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
@@ -44,4 +44,5 @@ planemo test --install_galaxy --conda_dependency_resolution --galaxy_branch "dev
 
 #All 1 test(s) executed passed.
 #abims_xcms_xcmsSet[0]: passed
+
 ```
