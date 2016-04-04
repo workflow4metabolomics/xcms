@@ -192,7 +192,7 @@
     
     <tests>
         <test>
-            <param name="inputs.input" value="zip_file" />
+            <param name="inputs.input" value="zip_file" ftype="zip" />
             <param name="inputs.zip_file" value="sacuri.zip" />
             <param name="methods.method" value="matchedFilter" />
             <param name="methods.step" value="0.01" />

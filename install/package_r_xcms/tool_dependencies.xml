@@ -19,18 +19,21 @@
                     </repository>
                    
                     
-                    <package>http://bioconductor.org/packages/3.1/bioc/src/contrib/BiocGenerics_0.14.0.tar.gz</package>
-                    <package>http://bioconductor.org/packages/3.1/bioc/src/contrib/Biobase_2.28.0.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/BiocGenerics_0.14.0.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/Biobase_2.28.0.tar.gz</package>
                     <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/Rcpp_0.12.0.tar.gz</package>
-                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/ProtGenerics_1.0.0.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/ProtGenerics_1.0.0.tar.gz</package>
 
-                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/zlibbioc_1.14.0.tar.gz</package>
-                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/mzR_2.2.1.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/zlibbioc_1.14.0.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/mzR_2.2.0.tar.gz</package>
 
-                    <package>http://www.bioconductor.org/packages/3.1/bioc/src/contrib/xcms_1.44.0.tar.gz</package>
+                    <package>https://bioarchive.galaxyproject.org/xcms_1.44.0.tar.gz</package>
 
                     <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/snow_0.3-13.tar.gz</package>
                     <package>http://application.sb-roscoff.fr/download/w4m/cran-archive/package_r_xcms_1_44_0/batch_1.1-4.tar.gz</package>
+                </action>
+                <action type="set_environment">
+                    <environment_variable action="set_to" name="LC_ALL">C</environment_variable>
                 </action>
             </actions>
         </install>
