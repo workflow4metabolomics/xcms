@@ -4,9 +4,7 @@
     
     <requirements>
         <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="binary">Rscript</requirement>
-        <requirement type="package" version="1.44.0">xcms</requirement>
-        <requirement type="package" version="1.22.0">camera</requirement>
+        <requirement type="package" version="1.22.0">r-camera</requirement>
     </requirements>
     
     <stdio>

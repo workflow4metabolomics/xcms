@@ -4,8 +4,7 @@
     
     <requirements>
         <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="binary">Rscript</requirement>
-        <requirement type="package" version="1.44.0">xcms</requirement>
+        <requirement type="package" version="1.44.0">r-xcms</requirement>
         <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
     </requirements>
     
