@@ -4,8 +4,9 @@
     
     <requirements>
         <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="package" version="1.44.0">r-xcms</requirement>
-        <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
+	<requirement type="package" version="0.4_1">r-snow</requirement>
+        <requirement type="package" version="1.44.0">bioconductor-xcms</requirement>
+	<requirement type="package" version="1.1_4">r-batch</requirement>
     </requirements>
     
     <stdio>
@@ -13,7 +14,7 @@
     </stdio>
     
     <command><![CDATA[
-        xcms.r
+        $__tool_directory__/xcms.r
         #if $inputs.input == "lib":
             library $__app__.config.user_library_import_dir/$__user_email__/$inputs.library
         #elif $inputs.input == "zip_file":
@@ -191,15 +192,15 @@
     
     <tests>
         <test>
-            <param name="inputs.input" value="zip_file" ftype="zip" />
-            <param name="inputs.zip_file" value="sacuri.zip" />
-            <param name="methods.method" value="matchedFilter" />
-            <param name="methods.step" value="0.01" />
-            <param name="methods.fwhm" value="4" />
-            <param name="methods.options_m.option" value="show" />
-            <param name="methods.options_m.max" value="50" />
-            <param name="methods.options_m.snthresh" value="1" />
-            <param name="methods.options_m.steps" value="2" />
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="sacuri.zip"  ftype="zip" />
+            <param name="methods|method" value="matchedFilter" />
+            <param name="methods|step" value="0.01" />
+            <param name="methods|fwhm" value="4" />
+            <param name="methods|options_m|option" value="show" />
+            <param name="methods|options_m|max" value="50" />
+            <param name="methods|options_m|snthresh" value="1" />
+            <param name="methods|options_m|steps" value="2" />
             <!--<output name="xsetRData" file="xset.RData" />-->
             <!--<output name="sampleMetadata" file="sampleMetadata.tsv" />-->
             <!--<output name="ticsRawPdf" file="xset.TICs_raw.pdf" />-->

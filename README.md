@@ -37,6 +37,11 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
+Conda
+-----
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
+
+
 Historic contributors
 ---------------------
  - Gildas Le Corguillé @lecorguille - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [UPMC](www.upmc.fr)/[CNRS](www.cnrs.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France

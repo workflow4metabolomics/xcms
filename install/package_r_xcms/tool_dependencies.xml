@@ -7,7 +7,7 @@
         <repository name="package_netcdf_4_3_3_1" owner="lecorguille" prior_installation_required="True" />
     </package>
 
-    <package name="xcms" version="1.44.0">
+    <package name="bioconductor-xcms" version="1.44.0">
         <install version="1.0">
             <actions>
                 <action type="setup_r_environment">

@@ -317,7 +317,7 @@ checkFilesCompatibilityWithXcms <- function(directory) {
   files[exists] <- sub("//","/",files[exists])
 
   # WHAT IS ON THE FILESYSTEM
-  filesystem_filepaths=system(paste("find $PWD/",directory," -not -name '\\.*' -type f -name \"*\"", sep=""), intern=T)
+  filesystem_filepaths=system(paste("find $PWD/",directory," -not -name '\\.*' -not -path '*conda-env*' -type f -name \"*\"", sep=""), intern=T)
   filesystem_filepaths=filesystem_filepaths[grep(filepattern, filesystem_filepaths, perl=T)]
 
   # COMPARISON
@@ -338,7 +338,7 @@ checkFilesCompatibilityWithXcms <- function(directory) {
 checkXmlStructure <- function (directory) {
   cat("Checking XML structure...\n")
 
-  cmd=paste("IFS=$'\n'; for xml in $(find",directory,"-not -name '\\.*' -iname '*.*ml*'); do if [ $(xmllint --nonet --noout \"$xml\" 2> /dev/null; echo $?) -gt 0 ]; then echo $xml;fi; done;")
+  cmd=paste("IFS=$'\n'; for xml in $(find",directory,"-not -name '\\.*' -not -path '*conda-env*' -type f -iname '*.*ml*'); do if [ $(xmllint --nonet --noout \"$xml\" 2> /dev/null; echo $?) -gt 0 ]; then echo $xml;fi; done;")
   capture=system(cmd,intern=TRUE)
 
   if (length(capture)>0){
@@ -359,7 +359,7 @@ deleteXmlBadCharacters<- function (directory) {
   cat("Checking Non ASCII characters in the XML...\n")
 
   processed=F
-  l=system( paste("find",directory, "-not -name '\\.*' -iname '*.*ml*'"),intern=TRUE) 
+  l=system( paste("find",directory, "-not -name '\\.*' -not -path '*conda-env*' -type f -iname '*.*ml*'"),intern=TRUE) 
   for (i in l){
     cmd=paste("LC_ALL=C grep '[^ -~]' \"",i,"\"",sep="")
     capture=suppressWarnings(system(cmd,intern=TRUE))

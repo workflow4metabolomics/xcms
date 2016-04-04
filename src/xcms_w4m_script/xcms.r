@@ -110,14 +110,13 @@ if (thefunction == "xcmsSet" || thefunction == "retcor" || thefunction == "fillP
 
     #list all file in the zip file
     #zip_files=unzip(zipfile,list=T)[,"Name"]
-    
-    #get the directory name
-    #directory=unlist(strsplit(zip_files, split="/"))[1]; 
-    #if (directory == ".") { 
-        #directory=unlist(strsplit(zip_files, split="/"))[2]
-    #}
 
-    directory = "."
+    #get the directory name
+    filesInZIp=unzip(zipfile, list=T); 
+    directories=unique(unlist(lapply(strsplit(filesInZIp$Name,"/"), function(x) x[1])));
+    directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
+    if (length(directories) == 1) directory=directories else directory=".";
+
     #unzip
     suppressWarnings(unzip(zipfile, unzip="unzip"))
 
@@ -125,9 +124,11 @@ if (thefunction == "xcmsSet" || thefunction == "retcor" || thefunction == "fillP
     md5sumList=list("origin"=getMd5sum(directory))
 
     # Check and fix if there are non ASCII characters. If so, they will be removed from the *mzXML mzML files.
-    if (deleteXmlBadCharacters(directory)) {
-      md5sumList=list("removalBadCharacters"=getMd5sum(directory))
-    }
+    # Remove because can create issue with some clean files
+    #@TODO: fix me
+    #if (deleteXmlBadCharacters(directory)) {
+    #  md5sumList=list("removalBadCharacters"=getMd5sum(directory))
+    #}
 
   }
 }
