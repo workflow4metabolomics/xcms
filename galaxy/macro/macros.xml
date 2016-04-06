@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<macros>
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="3.1.2">R</requirement>
+	    <requirement type="package" version="0.4_1">r-snow</requirement>
+            <requirement type="package" version="1.44.0">bioconductor-xcms</requirement>
+	    <requirement type="package" version="1.1_4">r-batch</requirement>
+        </requirements>
+    </xml>
+    <xml name="stdio">
+        <stdio>
+            <exit_code range="1" level="fatal" />
+        </stdio>
+    </xml>
+
+    <token name="@COMMAND_XCMS_SCRIPT@">
+        $__tool_directory__/xcms.r
+    </token>
+
+    <token name="@COMMAND_LOG_EXIT@">
+        ;
+        return=\$?;
+        mv log.txt $log;
+        cat $log;
+        sh -c "exit \$return"
+    </token>
+
+    <token name="@HELP_AUTHORS@">
+.. class:: infomark
+
+**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
+
+.. class:: infomark
+
+**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@oniris-nantes.fr - part of Workflow4Metabolomics.org [W4M]
+
+ | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+---------------------------------------------------
+
+    </token>
+
+
+    <xml name="citation">
+        <citations>
+            <citation type="doi">10.1021/ac051437y</citation>
+            <citation type="doi">10.1093/bioinformatics/btu813</citation>
+        </citations>
+    </xml>
+</macros>

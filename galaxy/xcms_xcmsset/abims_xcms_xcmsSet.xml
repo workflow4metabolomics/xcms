@@ -2,19 +2,15 @@
     
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
     
-    <requirements>
-        <requirement type="package" version="3.1.2">R</requirement>
-	<requirement type="package" version="0.4_1">r-snow</requirement>
-        <requirement type="package" version="1.44.0">bioconductor-xcms</requirement>
-	<requirement type="package" version="1.1_4">r-batch</requirement>
-    </requirements>
-    
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
     
     <command><![CDATA[
-        $__tool_directory__/xcms.r
+        @COMMAND_XCMS_SCRIPT@
         #if $inputs.input == "lib":
             library $__app__.config.user_library_import_dir/$__user_email__/$inputs.library
         #elif $inputs.input == "zip_file":
@@ -33,16 +29,16 @@
         #if $methods.method == "centWave":
             ppm $methods.ppm
             peakwidth "c($methods.peakwidth)"
-        #if $methods.options_scanrange.option == "show":
+            #if $methods.options_scanrange.option == "show":
                 scanrange "c($methods.options_scanrange.scanrange)"
-        #end if 
-        #if $methods.options_c.option == "show":
-            mzdiff $methods.options_c.mzdiff
-            snthresh $methods.options_c.snthresh
-            integrate $methods.options_c.integrate
-            noise $methods.options_c.noise
-            prefilter "c($methods.options_c.prefilter)"
-        #end if
+            #end if 
+            #if $methods.options_c.option == "show":
+                mzdiff $methods.options_c.mzdiff
+                snthresh $methods.options_c.snthresh
+                integrate $methods.options_c.integrate
+                noise $methods.options_c.noise
+                prefilter "c($methods.options_c.prefilter)"
+            #end if
         #elif $methods.method == "matchedFilter":
             step $methods.step
             fwhm $methods.fwhm
@@ -62,11 +58,7 @@
             scales "c($methods.scales)"
             SNR.method "$methods.SNR_method"
         #end if
-        ;
-        return=\$?;
-        mv log.txt $log;
-        cat $log;
-        sh -c "exit \$return"
+        @COMMAND_LOG_EXIT@
     ]]></command>
     
     <inputs>
@@ -193,7 +185,7 @@
     <tests>
         <test>
             <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="sacuri.zip"  ftype="zip" />
+            <param name="inputs|zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <param name="methods|method" value="matchedFilter" />
             <param name="methods|step" value="0.01" />
             <param name="methods|fwhm" value="4" />
@@ -201,16 +193,29 @@
             <param name="methods|options_m|max" value="50" />
             <param name="methods|options_m|snthresh" value="1" />
             <param name="methods|options_m|steps" value="2" />
-            <!--<output name="xsetRData" file="xset.RData" />-->
-            <!--<output name="sampleMetadata" file="sampleMetadata.tsv" />-->
-            <!--<output name="ticsRawPdf" file="xset.TICs_raw.pdf" />-->
-            <!--<output name="bpcsRawPdf" file="xset.BPCs_raw.pdf" />-->
             <output name="log">
                 <assert_contents>
-                    <has_text text="object with 9 samples" />
-                    <has_text text="Time range: 0.7-1140 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0019-999.9863 m/z" />
-                    <has_text text="Peaks: 135846 (about 15094 per sample)" />
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+        </test> 
+        <test>
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="sacuri_current_root.zip"  ftype="zip" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 3.5-1139.2 seconds (0.1-19 minutes)" />
+                    <has_text text="Mass range: 57.9756-593.4086 m/z" />
+                    <has_text text="Peaks: 1535 (about 384 per sample)" />
                     <has_text text="Peak Groups: 0" />
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
@@ -220,17 +225,7 @@
     
     <help><![CDATA[
 
-.. class:: infomark
-
-**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
-
-.. class:: infomark
-
-**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@univ-nantes.fr - part of Workflow4Metabolomics.org [W4M]
-
- | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
-
----------------------------------------------------
+@HELP_AUTHORS@
 
 ============
 Xcms.xcmsSet
@@ -497,10 +492,5 @@ Changelog/News
 
     ]]></help>
 
-
-    <citations>
-        <citation type="doi">10.1021/ac051437y</citation>
-        <citation type="doi">10.1093/bioinformatics/btu813</citation>
-    </citations>
-
+    <expand macro="citation" />
 </tool>
