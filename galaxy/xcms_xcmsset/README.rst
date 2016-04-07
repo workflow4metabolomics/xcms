@@ -38,14 +38,4 @@ Changelog/News
 Test Status
 -----------
 
-planemo test
-
-``` {.bash}
-planemo conda_install .
-planemo test --install_galaxy --conda_dependency_resolution --galaxy_branch "dev"
-
-All 2 test(s) executed passed.
-abims_xcms_xcmsSet[0]: passed
-abims_xcms_xcmsSet[1]: passed
-
-```
+planemo test: passed
