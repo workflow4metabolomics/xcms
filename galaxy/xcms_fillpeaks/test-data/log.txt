@@ -1,55 +1,54 @@
 	PACKAGE INFO
-parallel	3.1.2
-BiocGenerics	0.14.0
-Biobase	2.28.0
-Rcpp	0.12.0
-mzR	2.2.2
+parallel	3.2.2
+BiocGenerics	0.16.1
+Biobase	2.30.0
+Rcpp	0.12.2
+mzR	2.4.1
 xcms	1.44.0
-snow	0.3.13
+snow	0.4.1
 batch	1.1.4
 
 
 	ARGUMENTS INFO
 xfunction	fillPeaks
-image	test-data/xset.group.retcor.group.RData
-xsetRdataOutput	test-data/xset.group.retcor.group.fillPeaks.RData
+image	/tmp/tmpk97EMC/files/000/dataset_1.dat
+xsetRdataOutput	/tmp/tmpk97EMC/files/000/dataset_3.dat
 method	chrom
-zipfile	test-data/sacuri.zip
+zipfile	/tmp/tmpk97EMC/files/000/dataset_2.dat
 
 
 	INFILE PROCESSING INFO
 
 
 	ARGUMENTS PROCESSING INFO
+files_root_directory	 sacuri 
+Compute md5 checksum...
 
 
 	MAIN PROCESSING INFO
-./sacuri/bio/HU_neg_028.mzXML 
-./sacuri/bio/HU_neg_060.mzXML 
-./sacuri/bio/HU_neg_051.mzXML 
-./sacuri/bio/HU_neg_017.mzXML 
-./sacuri/bio/HU_neg_034.mzXML 
-./sacuri/blank/Blanc09.mzXML 
-./sacuri/blank/Blanc06.mzXML 
-./sacuri/blank/Blanc12.mzXML 
-./sacuri/blank/Blanc04.mzXML 
+/tmp/tmpAmhDSv/job_working_directory/000/2/working/sacuri/bio/HU_neg_017.mzXML 
+/tmp/tmpAmhDSv/job_working_directory/000/2/working/sacuri/bio/HU_neg_028.mzXML 
+/tmp/tmpAmhDSv/job_working_directory/000/2/working/sacuri/blank/Blanc04.mzXML 
+/tmp/tmpAmhDSv/job_working_directory/000/2/working/sacuri/blank/Blanc06.mzXML 
+
+
 null device 
           1 
 
 
 	XSET OBJECT INFO
-An "xcmsSet" object with 9 samples
+An "xcmsSet" object with 4 samples
 
-Time range: 0.7-1139.9 seconds (0-19 minutes)
-Mass range: 50.0019-999.9863 m/z
-Peaks: 157780 (about 17531 per sample)
-Peak Groups: 6761 
+Time range: 0.2-1140.1 seconds (0-19 minutes)
+Mass range: 50.0021-999.9863 m/z
+Peaks: 199718 (about 49930 per sample)
+Peak Groups: 48958 
 Sample classes: bio, blank 
 
 Profile settings: method = bin
                   step = 0.01
 
-Memory usage: 17.4 MB
+Memory usage: 27.3 MB
 
 
 	DONE
