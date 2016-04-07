@@ -106,8 +106,6 @@
             <param name="methods|mzwid" value="0.01"/>
             <param name="methods|density_options|option" value="show"/>
             <param name="methods|density_options|max" value="50"/>
-            <!--<output name="xsetRData" file="xset.group.RData" />-->
-            <!--<output name="rplotsPdf" file="xset.group.Rplots.pdf" />-->
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -118,7 +116,25 @@
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
             </output>
-         
+        </test>
+        <test>
+            <param name="image" value="xset.group.retcor.RData"/>
+            <param name="methods|method" value="density"/>
+            <param name="methods|bw" value="5"/>
+            <param name="methods|minfrac" value="0.3"/>
+            <param name="methods|mzwid" value="0.01"/>
+            <param name="methods|density_options|option" value="show"/>
+            <param name="methods|density_options|max" value="50"/>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
+                    <has_text text="Peak Groups: 48958" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
         </test>
     </tests>
 
