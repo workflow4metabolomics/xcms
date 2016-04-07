@@ -11,3 +11,10 @@ Changelog/News
 
 - NEW: Create a summary of XCMS analysis
 
+
+Test Status
+-----------
+
+Planemo test using conda: failed
+
+

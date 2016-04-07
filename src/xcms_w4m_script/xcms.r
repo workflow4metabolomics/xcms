@@ -197,7 +197,7 @@ dev.off() #dev.new(file="Rplots.pdf", width=16, height=12)
 if (thefunction  == "xcmsSet") {
 
   #transform the files absolute pathways into relative pathways
-  xset@filepaths<-sub(getwd() ,"", xset@filepaths)
+  xset@filepaths<-sub(paste(getwd(),"/",sep="") ,"", xset@filepaths)
 
   if(exists("zipfile") && (zipfile!="")) {
     

@@ -42,4 +42,5 @@ Changelog/News
 Test Status
 -----------
 
-planemo test: passed
+Planemo test using conda: passed
+

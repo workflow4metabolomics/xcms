@@ -24,3 +24,10 @@ Changelog/News
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
 
+
+Test Status
+-----------
+
+Planemo test using conda: passed
+
+
