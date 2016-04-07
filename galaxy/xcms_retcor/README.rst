@@ -2,6 +2,11 @@
 Changelog/News
 --------------
 
+**Version 2.0.6 - 04/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+
 **Version 2.0.5 - 10/02/2016**
 
 - BUGFIX: better management of errors. Datasets remained green although the process failed
