@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.8 - 06/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
 
 **Version 2.0.7 - 10/02/2016**
 
