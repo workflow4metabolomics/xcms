@@ -15,7 +15,7 @@
     </xml>
 
     <token name="@COMMAND_XCMS_SCRIPT@">
-        $__tool_directory__/xcms.r
+        LANG=C Rscript $__tool_directory__/xcms.r
     </token>
 
     <token name="@COMMAND_LOG_EXIT@">

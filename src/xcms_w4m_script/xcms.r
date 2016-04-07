@@ -77,7 +77,7 @@ if (!is.null(listArguments[["sampleMetadataOutput"]])){
 
 
 
-if (thefunction == "xcmsSet" || thefunction == "retcor") {
+if (thefunction %in% c("xcmsSet","retcor")) {
   ticspdf = listArguments[["ticspdf"]]; listArguments[["ticspdf"]]=NULL
   bicspdf = listArguments[["bicspdf"]]; listArguments[["bicspdf"]]=NULL
 }
@@ -100,7 +100,7 @@ if (!is.null(listArguments[["library"]])){
 }
 
 # We unzip automatically the chromatograms from the zip files.
-if (thefunction == "xcmsSet" || thefunction == "retcor" || thefunction == "fillPeaks")  {
+if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
   if(exists("zipfile") && (zipfile!="")) {
     if(!file.exists(zipfile)){
       error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
@@ -194,11 +194,11 @@ cat("\n\n")
 
 dev.off() #dev.new(file="Rplots.pdf", width=16, height=12)
 
-if (thefunction == "xcmsSet") {
+if (thefunction  == "xcmsSet") {
 
   #transform the files absolute pathways into relative pathways
-  xset@filepaths<-sub("^.*/database/job_working_directory/[0123456789]+/[0123456789]+/" ,"", xset@filepaths)
-  xset@filepaths<-sub("^.*/database/jobs/[0123456789]+/[0123456789]+/" ,"", xset@filepaths)
+  xset@filepaths<-sub(getwd() ,"", xset@filepaths)
+
   if(exists("zipfile") && (zipfile!="")) {
     
     #Modify the samples names (erase the path)
