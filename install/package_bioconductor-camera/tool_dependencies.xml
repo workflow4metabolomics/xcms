@@ -7,7 +7,7 @@
         <repository name="package_netcdf_4_3_3_1" owner="lecorguille" prior_installation_required="True"  />
     </package>
 
-    <package name="camera" version="1.22.0">
+    <package name="bioconductor-camera" version="1.22.0">
         <install version="1.0">
             <actions>
                 <action type="setup_r_environment">
