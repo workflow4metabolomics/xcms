@@ -6,3 +6,4 @@ long_description: 'Part of the W4M project: http://workflow4metabolomics.org\n\n
   a HTML summary of XCMS and CAMERA analysis'
 name: xcms_summary
 owner: lecorguille
+remote_repository_url: https://github.com/workflow4metabolomics/xcms
