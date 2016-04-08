@@ -49,6 +49,8 @@ Planemo test using conda: passed except for xcms_summary
 
 Planemo test using source env.sh: passed
 
+Planemo shed_test: passed
+
 
 Historic contributors
 ---------------------

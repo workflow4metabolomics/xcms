@@ -1,1 +1,0 @@
-planemo shed_init -f --name=package_r_xcms_1_44_0 --owner=lecorguille --description="Contains a tool dependency definition that downloads and compiles the R package xcms version 1.44.0" --homepage_url="http://workflow4metabolomics.org" --category="Metagenomics" --category="Tool Dependency Packages"
