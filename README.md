@@ -42,6 +42,13 @@ Conda
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
 
 
+Test Status
+-----------
+
+Planemo test using conda: passed except for xcms_summary
+Planemo test using source env.sh: passed
+
+
 Historic contributors
 ---------------------
  - Gildas Le Corguillé @lecorguille - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [UPMC](www.upmc.fr)/[CNRS](www.cnrs.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France

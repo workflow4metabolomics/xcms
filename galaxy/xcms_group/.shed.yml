@@ -5,7 +5,7 @@ homepage_url: http://workflow4metabolomics.org
 long_description: 'Part of the W4M project: http://workflow4metabolomics.org XCMS:
   http://www.bioconductor.org/packages/release/bioc/html/xcms.html Group peaks
   together across samples using overlapping m/z bins and calculation of smoothed peak
-  distributions in chromatographic time. BEWARE: this tool don''t come with its
-  script. You will need to install the dedicated package_xcms_w4m_script too'
+  distributions in chromatographic time.'
 name: xcms_group
 owner: lecorguille
+remote_repository_url: https://github.com/workflow4metabolomics/xcms
