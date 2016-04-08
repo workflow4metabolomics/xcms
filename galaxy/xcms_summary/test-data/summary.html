@@ -4,23 +4,26 @@
 <meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
 <title>[W4M] XCMS analysis summary</title>
 <style>
-table { min-width: 500px; border:1px solid #D6B161; border-collapse:collapse;}
-th { background: #898989; text-align:left;}
-tr { border: 1px solid #000000 }
+table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }
+td,th { padding: 5px; padding-right: 12px; }
+th { background: #898989; text-align:left;color: white;}
 h2 { color: #FFA212; }
 ul li { margin-bottom:10px; }
 </style>
 </HEAD>
 <BODY>
-<h1>___ XCMS analysis summary using Workflow4Metabolomics ___</h1>
+<div><h1>___ XCMS analysis summary using Workflow4Metabolomics ___</h1>
+</div>
 <h2>Samples used:</h2>
-<table
+<div><table>
 <tr><th>sample</th><th>filename</th></tr>
-<tr><td> HU_neg_051 </td><td> sacuri//bio2/HU_neg_051.mzXML </td></tr><tr><td> HU_neg_060 </td><td> sacuri//bio2/HU_neg_060.mzXML </td></tr><tr><td> HU_neg_017 </td><td> sacuri//bio/HU_neg_017.mzXML </td></tr><tr><td> HU_neg_028 </td><td> sacuri//bio/HU_neg_028.mzXML </td></tr><tr><td> Blanc04 </td><td> sacuri//blank/Blanc04.mzXML </td></tr><tr><td> Blanc06 </td><td> sacuri//blank/Blanc06.mzXML </td></tr>
+<tr> <td> HU_neg_051 </td> <td> sacuri//bio2/HU_neg_051.mzXML </td>  </tr><tr> <td> HU_neg_060 </td> <td> sacuri//bio2/HU_neg_060.mzXML </td>  </tr><tr> <td> HU_neg_017 </td> <td> sacuri//bio/HU_neg_017.mzXML </td>  </tr><tr> <td> HU_neg_028 </td> <td> sacuri//bio/HU_neg_028.mzXML </td>  </tr><tr> <td> Blanc04 </td> <td> sacuri//blank/Blanc04.mzXML </td>  </tr><tr> <td> Blanc06 </td> <td> sacuri//blank/Blanc06.mzXML </td>  </tr>
 </table>
+
+</div>
 <h2>Function launched:</h2>
-<table>
-<tr><th>timestamp<br />(ymd-h:m:s)</th><th>function</th><th>argument</th><th>value</th></tr>
+<div><table>
+<tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
 <tr><td rowspan='4'>151221-16:20:54</td><td rowspan='4'>xcmsSet</td>
 <td>nSlaves</td><td>1</td></tr>
 <tr><td>method</td><td>matchedFilter</td></tr>
@@ -35,8 +38,10 @@ ul li { margin-bottom:10px; }
 <tr><td rowspan='1'>151221-16:37:20</td><td rowspan='1'>fillPeaks</td>
 <td>method</td><td>chrom</td></tr>
 </table>
-<h2>Information about the xcmsSet object:</h2>
-<pre>
+<br/><sup>***</sup>timestamp format: yymmdd-hh:mm:ss
+</div>
+<h2>Informations about the xcmsSet object:</h2>
+<div><pre>
 An "xcmsSet" object with 6 samples
 
 Time range: 16.3-1138.9 seconds (0.3-19 minutes)
@@ -49,9 +54,9 @@ Profile settings: method = bin
                   step = 0.01
 
 Memory usage: 0.421 MB
-</pre>
+</pre></div>
 <h2>Citations:</h2>
-<ul>
+<div><ul>
 <li>To cite the <b>XCMS</b> package in publications use:
 <ul>
 <li>Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)</li>
@@ -69,6 +74,6 @@ Memory usage: 0.421 MB
 <li>Franck Giacomoni, Gildas Le Corguillé, Misharl Monsoor, Marion Landi, Pierre Pericard, Mélanie Pétéra, Christophe Duperier, Marie Tremblay-Franco, Jean-François Martin, Daniel Jacob, Sophie Goulitquer, Etienne A. Thévenot and Christophe Caron (2014). Workflow4Metabolomics: A collaborative research infrastructure for computational metabolomics. Bioinformatics  doi:10.1093/bioinformatics/btu813</li>
 </ul>
 </li>
-</ul>
+</ul></div>
 </BODY>
 </HTML>
