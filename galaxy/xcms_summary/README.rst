@@ -17,4 +17,5 @@ Test Status
 
 Planemo test using conda: failed
 Planemo test using source env.sh: passed
+Planemo shed_test : passed
 

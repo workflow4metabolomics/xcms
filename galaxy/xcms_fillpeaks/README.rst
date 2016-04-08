@@ -28,5 +28,6 @@ Test Status
 
 Planemo test using conda: passed
 Planemo test using source env.sh: passed
+Planemo shed_test : passed
 
 

@@ -14,3 +14,10 @@ planemo test --install_galaxy
 #All 2 test(s) executed passed.
 #abims_xcms_group[0]: passed
 #abims_xcms_group[1]: passed
+
+
+planemo shed_test --install_galaxy  -t testtoolshed
+
+#All 2 test(s) executed passed.
+#testtoolshed.g2.bx.psu.edu/repos/lecorguille/xcms_group/abims_xcms_group/2.0.5[0]: passed
+#testtoolshed.g2.bx.psu.edu/repos/lecorguille/xcms_group/abims_xcms_group/2.0.5[1]: passed

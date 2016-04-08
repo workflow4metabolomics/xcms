@@ -11,3 +11,11 @@ planemo test --install_galaxy
 
 #All 1 test(s) executed passed.
 #abims_xcms_summary[0]: passed
+
+
+planemo shed_test --install_galaxy --galaxy_branch "dev" 
+
+#All 2 test(s) executed passed.
+#testtoolshed.g2.bx.psu.edu/repos/lecorguille/xcms_xcmsset/abims_xcms_xcmsSet/2.0.8[0]: passed
+#testtoolshed.g2.bx.psu.edu/repos/lecorguille/xcms_xcmsset/abims_xcms_xcmsSet/2.0.8[1]: passed
+

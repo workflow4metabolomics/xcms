@@ -12,3 +12,10 @@ planemo test --install_galaxy --galaxy_branch "dev"
 
 #All 1 test(s) executed passed.
 #abims_xcms_fillPeaks[0]: passed
+
+
+
+
+planemo shed_test --install_galaxy --galaxy_branch "dev" -t testtoolshed
+#All 1 test(s) executed passed.
+#testtoolshed.g2.bx.psu.edu/repos/lecorguille/xcms_fillpeaks/abims_xcms_fillPeaks/2.0.6[0]: passed
