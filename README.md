@@ -46,6 +46,7 @@ Test Status
 -----------
 
 Planemo test using conda: passed except for xcms_summary
+
 Planemo test using source env.sh: passed
 
 
