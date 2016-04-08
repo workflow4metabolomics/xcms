@@ -1,20 +1,21 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.0">
+<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.1">
     
     <description>Create a summary of XCMS analysis</description>
-    
+
+    <macros>
+        <import>macros.xml</import>
+    </macros>    
+
     <requirements>
         <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="binary">Rscript</requirement>
-        <requirement type="package" version="1.44.0">xcms</requirement>
-        <requirement type="package" version="1.22.0">camera</requirement>
+        <requirement type="package" version="1.22.0">bioconductor-camera</requirement>
+        <requirement type="package" version="1.1_4">r-batch</requirement>
     </requirements>
     
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <expand macro="stdio"/>
     
-    <command interpreter="Rscript"><![CDATA[
-        xcms_summary.r
+    <command><![CDATA[
+        $__tool_directory__/xcms_summary.r
 
         image $image 
         htmlOutput $htmlOutput
@@ -40,14 +41,8 @@
     </tests>
     
     <help><![CDATA[
-
-.. class:: infomark
-
-**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff part of Workflow4Metabolomics.org [W4M]
-
- | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
-
----------------------------------------------------
+        
+@HELP_AUTHORS@
 
 ============
 Xcms.summary
@@ -65,6 +60,11 @@ This tool provide a HTML summary which summarizes your analysis using the [W4M] 
 Changelog/News
 --------------
 
+**Version 1.0.1 - 04/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+
 **Version 1.0.0 - 10/02/2016**
 
 - NEW: Create a summary of XCMS analysis
@@ -73,8 +73,6 @@ Changelog/News
     ]]></help>
 
 
-    <citations>
-        <citation type="doi">10.1093/bioinformatics/btu813</citation>
-    </citations>
+    <expand macro="citation" />
 
 </tool>

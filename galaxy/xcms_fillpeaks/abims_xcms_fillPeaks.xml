@@ -1,20 +1,16 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.0.5">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.0.6">
 
     <description>Integrate the signal in the region of that peak group not represented and create a new peak</description>
 
-    <requirements>
-        <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="binary">Rscript</requirement>
-        <requirement type="package" version="1.44.0">xcms</requirement>
-        <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
-    </requirements>
-    
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
 
     <command><![CDATA[
-        xcms.r 
+        @COMMAND_XCMS_SCRIPT@ 
         xfunction fillPeaks 
         image $image 
 
@@ -22,14 +18,10 @@
 
         method $method
 
-        ###if $zip_file:
-        ##    zipfile $zip_file
-        ###end if
-        ;
-        return=\$?;
-        mv log.txt $log;
-        cat $log;
-        sh -c "exit \$return"
+        #if $zip_file:
+            zipfile $zip_file
+        #end if
+        @COMMAND_LOG_EXIT@ 
         
     ]]></command>
 
@@ -40,7 +32,7 @@
             <option value="MSW" >MSW</option>
         </param>
         <!-- To pass planemo test -->
-        <!--<param name="zip_file" type="hidden_data" format="no_unzip.zip" label="Zip file" />-->
+        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." />
     </inputs>
 
     <outputs>
@@ -52,15 +44,14 @@
         <test>
             <param name="image" value="xset.group.retcor.group.RData"/>
             <param name="method" value="chrom"/>
-            <param name="zip_file" value="sacuri.zip"/>
-            <!--<output name="xsetRData" file="xset.group.retcor.group.fillPeaks.RData" />-->
+            <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <output name="log">
                 <assert_contents>
-                    <has_text text="object with 9 samples" />
-                    <has_text text="Time range: 0.7-1139.9 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0019-999.9863 m/z" />
-                    <has_text text="Peaks: 157780 (about 17531 per sample)" />
-                    <has_text text="Peak Groups: 6761" />
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                    <has_text text="Peaks: 199718 (about 49930 per sample)" />
+                    <has_text text="Peak Groups: 48958" />
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
             </output>
@@ -68,20 +59,8 @@
     </tests>
 
     <help><![CDATA[
-
         
-.. class:: infomark
-
-**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
-
-.. class:: infomark
-
-**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@univ-nantes.fr - part of Workflow4Metabolomics.org [W4M]
-
- | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
-
-
----------------------------------------------------
+@HELP_AUTHORS@
 
 ==============
 Xcms.fillPeaks
@@ -207,6 +186,11 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.0.6 - 04/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+
 **Version 2.0.5 - 10/02/2016**
 
 - BUGFIX: better management of errors. Datasets remained green although the process failed
@@ -225,10 +209,8 @@ Changelog/News
 
     ]]></help>
 
-    <citations>
-        <citation type="doi">10.1021/ac051437y</citation>
-        <citation type="doi">10.1093/bioinformatics/btu813</citation>
-    </citations>
+
+    <expand macro="citation" />
 
 
 </tool>

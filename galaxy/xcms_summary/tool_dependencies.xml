@@ -3,7 +3,7 @@
     <package name="R" version="3.1.2">
         <repository name="package_r_3_1_2" owner="iuc" />
     </package>
-    <package name="camera" version="1.22.0">
+    <package name="bioconductor-camera" version="1.22.0">
         <repository name="package_r_camera_1_22_0" owner="lecorguille" />
     </package>
 </tool_dependency>

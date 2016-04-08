@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.8 - 06/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
 
 **Version 2.0.7 - 10/02/2016**
 
@@ -16,7 +20,7 @@ Changelog/News
 - UPDATE: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
@@ -33,3 +37,13 @@ Changelog/News
 - IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
+
+
+Test Status
+-----------
+
+Planemo test using conda: passed
+
+Planemo test using source env.sh: passed
+
+Planemo shed_test : passed

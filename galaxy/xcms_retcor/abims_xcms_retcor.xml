@@ -1,20 +1,16 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.5">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.6">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
-    <requirements>
-        <requirement type="package" version="3.1.2">R</requirement>
-        <requirement type="binary">Rscript</requirement>
-        <requirement type="package" version="1.44.0">xcms</requirement>
-        <requirement type="package" version="2.2.0">xcms_w4m_script</requirement>
-    </requirements>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
 
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
 
     <command><![CDATA[
-        xcms.r 
+        @COMMAND_XCMS_SCRIPT@ 
         image $image 
         xfunction retcor 
 
@@ -36,15 +32,10 @@
                 plottype $methods.options.plottype
             #end if
         #end if
-        ###if $zip_file:
-        ##    zipfile $zip_file
-        ###end if
-        ;
-        return=\$?;
-        mv log.txt $log;
-        cat $log;
-        sh -c "exit \$return"
-        
+        #if $zip_file:
+            zipfile $zip_file
+        #end if
+        @COMMAND_LOG_EXIT@        
     ]]></command>
 
     <inputs>
@@ -64,6 +55,7 @@
                 </param>
                 <param name="extra" type="integer" value="1" label="Number of extra peaks to allow in retention time correction correction groups" help="[extra]" />
                 <param name="missing" type="integer" value="1" label="Number of missing samples to allow in retention time correction groups" help="[missing]" />
+
                 <conditional name="options">
                     <param name="option" type="select" label="Advanced options">
                         <option value="show">show</option>
@@ -82,14 +74,15 @@
                             <option value="deviation">deviation</option>
                             <option value="mdevden">mdevden</option>
                         </param>
+
                     </when>
                     <when value="hide">
                     </when>
                 </conditional>
             </when>
         </conditional>
-        <!-- To pass planemo test -->
-        <!--<param name="zip_file" type="hidden_data" format="no_unzip.zip" label="Zip file" />-->
+	<!-- To pass planemo test -->
+        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." />
     </inputs>
 
     <outputs>
@@ -108,25 +101,21 @@
     <tests>
         <test>
             <param name="image" value="xset.group.RData"/>
-            <param name="methods.method" value="peakgroups"/>
-            <param name="methods.smooth" value="loess"/>
-            <param name="methods.extra" value="1"/>
-            <param name="methods.missing" value="1"/>
-            <param name="methods.options.option" value="show"/>
-            <param name="methods.options.span" value="0.2"/>
-            <param name="methods.options.family" value="gaussian"/>
-            <param name="methods.options.plottype" value="deviation"/>
-            <param name="zip_file" value="sacuri.zip"/>
-            <!--<output name="xsetRData" file="xset.group.retcor.RData" />-->
-            <!--<output name="rplotsPdf" file="xset.group.retcor.Rplots.pdf" />-->
-            <!--<output name="ticsCorPdf" file="xset.group.retcor.TICs_corrected.pdf" />-->
-            <!--<output name="bpcsCorPdf" file="xset.group.retcor.BPCs_corrected.pdf" />-->
+            <param name="methods|method" value="peakgroups"/>
+            <param name="methods|smooth" value="loess"/>
+            <param name="methods|extra" value="1"/>
+            <param name="methods|missing" value="1"/>
+            <param name="methods|options|option" value="show"/>
+            <param name="methods|options|span" value="0.2"/>
+            <param name="methods|options|family" value="gaussian"/>
+            <param name="methods|options|plottype" value="deviation"/>
+            <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <output name="log">
                 <assert_contents>
-                    <has_text text="object with 9 samples" />
-                    <has_text text="Time range: 0.7-1139.9 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0019-999.9863 m/z" />
-                    <has_text text="Peaks: 135846 (about 15094 per sample)" />
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
                     <has_text text="Peak Groups: 0" />
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
@@ -135,21 +124,8 @@
     </tests>
 
     <help><![CDATA[
-
         
-.. class:: infomark
-
-**Authors**  Colin A. Smith csmith@scripps.edu, Ralf Tautenhahn rtautenh@gmail.com, Steffen Neumann sneumann@ipb-halle.de, Paul Benton hpaul.benton08@imperial.ac.uk and Christopher Conley cjconley@ucdavis.edu 
-
-.. class:: infomark
-
-**Galaxy integration** ABiMS TEAM - UPMC/CNRS - Station biologique de Roscoff and Yann Guitton yann.guitton@univ-nantes.fr - part of Workflow4Metabolomics.org [W4M]
-
- | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
-
-
-
----------------------------------------------------
+@HELP_AUTHORS@
 
 ===========
 Xcms.retcor
@@ -297,6 +273,11 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.0.6 - 04/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+
 **Version 2.0.5 - 10/02/2016**
 
 - BUGFIX: better management of errors. Datasets remained green although the process failed
@@ -317,9 +298,7 @@ Changelog/News
 
     ]]></help>
 
-    <citations>
-        <citation type="doi">10.1021/ac051437y</citation>
-        <citation type="doi">10.1093/bioinformatics/btu813</citation>
-    </citations>
+
+    <expand macro="citation" />
 
 </tool>

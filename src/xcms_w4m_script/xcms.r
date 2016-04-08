@@ -77,7 +77,7 @@ if (!is.null(listArguments[["sampleMetadataOutput"]])){
 
 
 
-if (thefunction == "xcmsSet" || thefunction == "retcor") {
+if (thefunction %in% c("xcmsSet","retcor")) {
   ticspdf = listArguments[["ticspdf"]]; listArguments[["ticspdf"]]=NULL
   bicspdf = listArguments[["bicspdf"]]; listArguments[["bicspdf"]]=NULL
 }
@@ -100,7 +100,7 @@ if (!is.null(listArguments[["library"]])){
 }
 
 # We unzip automatically the chromatograms from the zip files.
-if (thefunction == "xcmsSet" || thefunction == "retcor" || thefunction == "fillPeaks")  {
+if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
   if(exists("zipfile") && (zipfile!="")) {
     if(!file.exists(zipfile)){
       error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
@@ -110,24 +110,29 @@ if (thefunction == "xcmsSet" || thefunction == "retcor" || thefunction == "fillP
 
     #list all file in the zip file
     #zip_files=unzip(zipfile,list=T)[,"Name"]
-    
-    #get the directory name
-    #directory=unlist(strsplit(zip_files, split="/"))[1]; 
-    #if (directory == ".") { 
-        #directory=unlist(strsplit(zip_files, split="/"))[2]
-    #}
 
-    directory = "."
+
     #unzip
     suppressWarnings(unzip(zipfile, unzip="unzip"))
+
+    #get the directory name
+    filesInZip=unzip(zipfile, list=T); 
+    directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
+    directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
+    directory = "."
+    if (length(directories) == 1) directory = directories
+    
+    cat("files_root_directory\t",directory,"\n")
 
     # 
     md5sumList=list("origin"=getMd5sum(directory))
 
     # Check and fix if there are non ASCII characters. If so, they will be removed from the *mzXML mzML files.
-    if (deleteXmlBadCharacters(directory)) {
-      md5sumList=list("removalBadCharacters"=getMd5sum(directory))
-    }
+    # Remove because can create issue with some clean files
+    #@TODO: fix me
+    #if (deleteXmlBadCharacters(directory)) {
+    #  md5sumList=list("removalBadCharacters"=getMd5sum(directory))
+    #}
 
   }
 }
@@ -189,11 +194,11 @@ cat("\n\n")
 
 dev.off() #dev.new(file="Rplots.pdf", width=16, height=12)
 
-if (thefunction == "xcmsSet") {
+if (thefunction  == "xcmsSet") {
 
   #transform the files absolute pathways into relative pathways
-  xset@filepaths<-sub("^.*/database/job_working_directory/[0123456789]+/[0123456789]+/" ,"", xset@filepaths)
-  xset@filepaths<-sub("^.*/database/jobs/[0123456789]+/[0123456789]+/" ,"", xset@filepaths)
+  xset@filepaths<-sub(paste(getwd(),"/",sep="") ,"", xset@filepaths)
+
   if(exists("zipfile") && (zipfile!="")) {
     
     #Modify the samples names (erase the path)

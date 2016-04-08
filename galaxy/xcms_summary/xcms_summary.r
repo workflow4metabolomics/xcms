@@ -1,5 +1,5 @@
-#!/usr/local/public/bin/Rscript --vanilla --slave --no-site-file
-# version="0.1.0"
+#!/usr/bin/env Rscript
+# version="1.0.0"
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABIMS TEAM
 
 

@@ -4,8 +4,7 @@ description: '[W4M][LC-MS] XCMS R Package - Preprocessing - Correct retention ti
 homepage_url: http://workflow4metabolomics.org
 long_description: 'Part of the W4M project: http://workflow4metabolomics.org XCMS:
   http://www.bioconductor.org/packages/release/bioc/html/xcms.html Retention Time
-  Correction using retcor function from xcms R package BEWARE: this tool don''t
-  come with its script. You will need to install the dedicated package_xcms_w4m_script
-  too'
+  Correction using retcor function from xcms R package'
 name: xcms_retcor
 owner: lecorguille
+remote_repository_url: https://github.com/workflow4metabolomics/xcms
