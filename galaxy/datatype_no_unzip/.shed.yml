@@ -1,0 +1,6 @@
+categories: [Data Managers]
+description: Keep zip unzip for multi-files zip
+homepage_url: http://workflow4metabolomics.org
+long_description: Very usefull when you need to keep a tree structure of directories
+name: no_unzip_datatype
+owner: lecorguille

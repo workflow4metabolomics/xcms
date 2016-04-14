@@ -1,0 +1,6 @@
+categories: [Data Managers]
+description: "zip archive which won't be extrcated"
+homepage_url: http://workflow4metabolomics.org
+long_description: Very usefull when you need to keep a tree structure of directories
+name: zip_datatype
+owner: lecorguille

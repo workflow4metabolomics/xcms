@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<datatypes>
+    <registration>
+		<datatype extension="no_unzip.zip" type="galaxy.datatypes.no_unzip_datatypes:NoUnzip" display_in_upload="true" />
+    </registration>
+</datatypes>
