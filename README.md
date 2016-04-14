@@ -1,5 +1,5 @@
-NMR Bucketing for Galaxy
-========================
+NMR Normalization for Galaxy
+============================
 
 
 Our project
