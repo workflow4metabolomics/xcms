@@ -1,0 +1,251 @@
+<tool id="NmrNormalization" name="NMR_Normalization" version="2015-01-28">
+    
+	<requirements>
+		<requirement type="binary"> R </requirement>
+	</requirements>
+    
+	<description> Normalization of NMR bucketed and integrated spectra 
+	</description>
+    
+	<command interpreter="Rscript">
+		NmrNormalization_wrapper.R
+
+		## Data matrix of bucketed and integrated spectra
+		dataMatrix $dataMatrix
+
+		## Normalization method
+		scalingMethod $scalingMethod.method
+		#if $scalingMethod.method == "PQN":
+			## Sample metadata matrix
+			sampleMetadata $scalingMethod.sampleMetadata
+
+			## Biological factor of interest (column number in samplemetadata)
+			factor $scalingMethod.factor
+
+			## Reference class
+			controlGroup $scalingMethod.controlGroup
+		#end if
+		#if $scalingMethod.method == "QuantitativeVariable":
+			## Sample metadata matrix
+			sampleMetadata $scalingMethod.sampleMetadata
+
+			## Biological factor of interest (column number in samplemetadata)
+			factor $scalingMethod.factor 
+		#end if
+		
+		## Spectra representation
+		graphType $graphType
+
+		## Outputs
+		logOut $logOut
+		dataMatrixOut $dataMatrixOut
+		sampleMetadataOut $sampleMetadataOut
+		variableMetadataOut $variableMetadataOut
+		graphOut $graphOut
+
+
+	</command>
+    
+	<inputs>
+		<param name="dataMatrix" type="data" label="Data matrix of bucketed and integrated spectra" help="" format="tabular" />
+
+
+		<conditional name="scalingMethod" >
+			<param name="method" label="Normalization method" type="select" help="Default method is total intensity" >
+				<option value="None" lable="None normalization"/>
+				<option value="Total" label="Total intensity"/>
+				<option value="PQN" label="Probabilistic Quotient Normalization "/>
+				<option value="QuantitativeVariable" label="Quantitative variable" />
+			</param>
+			<when value="PQN">
+				<param name="sampleMetadata" type="data" label="Sample metadata matrix" help="" format="tabular" />
+				<param name="factor" label="Name of the column of the biological factor of interest (for PQN method)" type="text" />
+				<param name="controlGroup" label="Name of reference level for PQN normalization" type="text" help=""/>
+			</when>
+			<when value="QuantitativeVariable">
+				<param name="sampleMetadata" type="data" label="Sample metadata matrix" help="" format="tabular" />
+				<param name="factor" label="Name of the column of the numerical variable for normalization (weight, osmolality, ...)" type="text" />
+			</when>
+		</conditional>
+
+		<param name="graphType" label="Spectra representation" type="select" help="Select 'None' for no representation,'Overlay' to overlay all spectra on a unique chart and 'One per individual' to generate an individual chart for each observation">
+			<option value="None"> none </option>
+			<option value="Overlay"> Overlay </option>
+			<option value="One_per_individual"> One_per_individual </option>
+		</param>
+	</inputs>
+    
+    
+	<outputs>
+		<data format="txt" name="logOut" label="${tool.name}_log" />
+
+		<data format="tabular" name="dataMatrixOut" label="${tool.name}_bucketedData" />
+
+		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_samplemetadata" />
+
+		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadataOut" />
+
+		<data format="pdf" name="graphOut" label="${tool.name}_spectra" >
+			<filter> graphType != "None" </filter>
+		</data>
+	</outputs>
+    
+	<stdio>
+	     <exit_code range="1:" level="fatal" />
+	</stdio>
+    
+	<help>
+	
+.. class:: infomark
+
+**Authors** Marie Tremblay-Franco (marie.tremblay-franco@toulouse.inra.fr) and Marion Landi (marion.landi@clermont.inra.fr)
+  MetaboHUB: The French National Infrastructure for Metabolomics and Fluxomics (http://www.metabohub.fr/en)
+
+---------------------------------------------------
+
+.. class:: infomark
+
+**Please cite**
+
+F. Dieterle, A. Ross, G. Schlotterbeck, and H. Senn (2006). Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics. 
+Analytical Chemistry 78(13): 4281-4290.
+
+---------------------------------------------------
+
+=================
+NMR Normalization
+=================
+
+-----------
+Description
+-----------
+
+Normalization (operation applied on each individual spectrum) of bucketed and integrated NMR data
+ 
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
++----------------------+------------------------------------+---------+-------------+
+| Name                 | output file                        | format  | parameter   |
++======================+====================================+=========+=============+
+| NMR_Bucketing        | NMR_Normalization_bucketedData.tsv | tabular | Ions Matrix |
++----------------------+------------------------------------+---------+-------------+
+
+
+
+
+**Downstream tools**
+
++---------------------------+----------------------+--------+
+| Name                      | Output file          | Format |
++===========================+======================+========+
+|Univariate                 | variableMetadata.tsv | Tabular|
++---------------------------+----------------------+--------+
+|Multivariate               | sampleMetadata.tsv   | Tabular|
++---------------------------+----------------------+--------+
+|                           | variableMetadata.tsv | Tabular|
++---------------------------+----------------------+--------+
+
+
+-----------
+Input files
+-----------
+
++---------------------------+------------+
+| Parameter : num + label   |   Format   |
++===========================+============+
+| DataMatrix                |   Tabular  |
++---------------------------+------------+
+
+**DataMAtrix**
+
+	| variable x sample dataMatrix tabular separated file containing bucketed and integrated NMR spectra, with . as decimal, and NA for missing values
+
+
+----------
+Parameters
+----------
+
+DataMatrix
+	| see "Input files" section above
+	| 
+
+Normalization method
+	| normalization to apply on each spectrum: 
+
++---------------------------+--------------------------------------+
+| Name                      | Normalization                        |
++===========================+======================================+
+|None                       | No                                   |
++---------------------------+--------------------------------------+
+|Total                      | Total intensity                      |
++---------------------------+--------------------------------------+
+|PQN                        | Probabilistic Quotient Normalization |
++---------------------------+--------------------------------------+
+|QuantitativeVariable       | Weight, osmolality, ...              |
++---------------------------+--------------------------------------+
+
+
+sampleMetadata
+	| sample x metadata **sample** tabular separated file of the numeric and/or character sample metadata, with . as decimal and NA for missing values
+	| Mandatory for "PQN" or "Quantitative" normalization method
+	| The row names must be identical to the column names of the dataMatrix file
+	|
+
+
+Spectra representation:
+	| Graphical chart of bucketed and integrated raw files
+	| If "Overlay": the n (sample number) spectra are overlaid on the same figure
+	| If "One_per_individual": pdf file includes n pages (1 per sample)
+	|
+
+
+------------
+Output files
+------------
+
+
+bucketedData.tsv
+	| tabular output
+	| Data matrix with p rows (buckets) and n columns (samples) containing the intensities
+	|
+
+sampleMetadata.tsv
+	| tabular output
+	| sampleMetadata file identical to the file given as argument if "PQN" or "Quantitative" normalization method; file with n rows (samples) and 2 columns containing sample identifier (rownames) and sample order if "None" or "Total" normalization methof
+	| Mandatory file in the statistical analysis step of the workflow
+	|
+
+variableMetadata.tsv
+	| tabular output
+	| file with p rows (buckets) and 2 columns containing variable identifier (rownames) and bucket order. Can add columns with numeric and/or character variable metadata. 
+	| Mandatory file in the statistical analysis step of the workflow
+	|
+
+spectra.pdf
+	| pdf output
+	| Graphical chart of bucketed and integrated data
+	| 
+
+
+---------------------------------------------------
+
+---------------
+Working example
+---------------
+
+
+.. class:: warningmark
+
+Under construction
+
+.. image:: ./static/images/Mth_Travaux.png
+        :width: 100
+
+
+   </help>
+</tool>
+
