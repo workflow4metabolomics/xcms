@@ -1,0 +1,27 @@
+
+# This is a special configuration file to run tests on Travis-CI via
+# GitHub notifications when changes are committed.
+#
+# See http://travis-ci.org/ for details
+language: python
+
+before_install:
+ - sudo apt-get install -y python-virtualenv
+ - virtualenv planemo-venv
+ - . planemo-venv/bin/activate
+ - pip install planemo
+ - planemo conda_init
+
+install:
+ - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_xcmsset
+ - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_group
+ - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_retcor
+ - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_fillpeaks
+# - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_summary
+
+script:
+ - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_xcmsset/ --galaxy_branch "dev"
+ - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_group/ --galaxy_branch "dev"
+ - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_retcor/ --galaxy_branch "dev"
+ - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_fillpeaks/ --galaxy_branch "dev"
+# - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_summary/ --galaxy_branch "dev"
