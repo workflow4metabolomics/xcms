@@ -31,6 +31,16 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
+Test Status
+-----------
+
+Planemo test using conda: failed
+
+Planemo test using source env.sh: passed for camera_annotate
+
+Planemo shed_test: passed for camera_annotate
+
+
 Historic contributors
 ---------------------
  - Gildas Le Corguillé @lecorguille - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [UPMC](www.upmc.fr)/[CNRS](www.cnrs.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
