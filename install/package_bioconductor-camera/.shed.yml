@@ -1,0 +1,6 @@
+categories: [Tool Dependency Packages,Metabolomics]
+description: Contains a tool dependency definition that downloads and compiles the
+  R bioconductor package CAMERA version 1.22.0
+homepage_url: http://workflow4metabolomics.org
+name: package_bioconductor_camera_1_22_0
+owner: lecorguille

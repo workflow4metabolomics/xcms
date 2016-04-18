@@ -94,12 +94,37 @@ if (!is.null(listArguments[["new_file_path"]])){
 #Import the different functions
 source_local("lib.r")
 
+#necessary to unzip .zip file uploaded to Galaxy
+#thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
+
+
+if (!is.null(listArguments[["zipfile"]])){
+  zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
+}
+
 # We unzip automatically the chromatograms from the zip files.
-if (thefunction == "annotatediff")  {
+if (thefunction %in% c("annotatediff"))  {
   if(exists("zipfile") && (zipfile!="")) {
+    if(!file.exists(zipfile)){
+      error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
+      print(error_message)
+      stop(error_message)
+    }
+
+    #unzip
     suppressWarnings(unzip(zipfile, unzip="unzip"))
+
+    #get the directory name
+    filesInZip=unzip(zipfile, list=T); 
+    directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
+    directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
+    directory = "."
+    if (length(directories) == 1) directory = directories
+    
+    cat("files_root_directory\t",directory,"\n")
   }
 }
+
 
 
 #addition of xset object to the list of arguments in the first position
