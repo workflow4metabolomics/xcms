@@ -1,47 +1,51 @@
 <tool id="NmrNormalization" name="NMR_Normalization" version="1.0.1">
     
-	<requirements>
-		<requirement type="binary"> R </requirement>
-	</requirements>
+    <description>Normalization of NMR bucketed and integrated spectra</description>
+
+    <requirements>
+        <requirement type="package" version="3.1.2">R</requirement>
+	      <requirement type="package" version="1.1_4">r-batch</requirement>
+    </requirements>
     
-	<description> Normalization of NMR bucketed and integrated spectra 
-	</description>
-    
-	<command interpreter="Rscript">
-		NmrNormalization_wrapper.R
+	  <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
 
-		## Data matrix of bucketed and integrated spectra
-		dataMatrix $dataMatrix
+    <command>
+        Rscript $__tool_directory__/NmrNormalization_wrapper.R
 
-		## Normalization method
-		scalingMethod $scalingMethod.method
-		#if $scalingMethod.method == "PQN":
-			## Sample metadata matrix
-			sampleMetadata $scalingMethod.sampleMetadata
+		    ## Data matrix of bucketed and integrated spectra
+		    dataMatrix $dataMatrix
 
-			## Biological factor of interest (column number in samplemetadata)
-			factor $scalingMethod.factor
+		    ## Normalization method
+		    scalingMethod $scalingMethod.method
+		    #if $scalingMethod.method == "PQN":
+			    ## Sample metadata matrix
+			    sampleMetadata $scalingMethod.sampleMetadata
 
-			## Reference class
-			controlGroup $scalingMethod.controlGroup
-		#end if
-		#if $scalingMethod.method == "QuantitativeVariable":
-			## Sample metadata matrix
-			sampleMetadata $scalingMethod.sampleMetadata
+			    ## Biological factor of interest (column number in samplemetadata)
+			    factor $scalingMethod.factor
 
-			## Biological factor of interest (column number in samplemetadata)
-			factor $scalingMethod.factor 
-		#end if
+			    ## Reference class
+			    controlGroup $scalingMethod.controlGroup
+		    #end if
+		    #if $scalingMethod.method == "QuantitativeVariable":
+			    ## Sample metadata matrix
+			    sampleMetadata $scalingMethod.sampleMetadata
+
+			    ## Biological factor of interest (column number in samplemetadata)
+			    factor $scalingMethod.factor 
+		    #end if
 		
-		## Spectra representation
-		graphType $graphType
+		    ## Spectra representation
+		    graphType $graphType
 
-		## Outputs
-		logOut $logOut
-		dataMatrixOut $dataMatrixOut
-		sampleMetadataOut $sampleMetadataOut
-		variableMetadataOut $variableMetadataOut
-		graphOut $graphOut
+		    ## Outputs
+		    logOut $logOut
+		    dataMatrixOut $dataMatrixOut
+		    sampleMetadataOut $sampleMetadataOut
+		    variableMetadataOut $variableMetadataOut
+		    graphOut $graphOut
 
 
 	</command>
@@ -57,6 +61,8 @@
 				<option value="PQN" label="Probabilistic Quotient Normalization "/>
 				<option value="QuantitativeVariable" label="Quantitative variable" />
 			</param>
+      <when value="None" />
+      <when value="Total" />
 			<when value="PQN">
 				<param name="sampleMetadata" type="data" label="Sample metadata matrix" help="" format="tabular" />
 				<param name="factor" label="Name of the column of the biological factor of interest (for PQN method)" type="text" />
@@ -78,22 +84,25 @@
     
 	<outputs>
 		<data format="txt" name="logOut" label="${tool.name}_log" />
-
 		<data format="tabular" name="dataMatrixOut" label="${tool.name}_bucketedData" />
-
 		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_samplemetadata" />
-
 		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadataOut" />
-
 		<data format="pdf" name="graphOut" label="${tool.name}_spectra" >
 			<filter> graphType != "None" </filter>
 		</data>
 	</outputs>
-    
-	<stdio>
-	     <exit_code range="1:" level="fatal" />
-	</stdio>
-    
+  
+  <tests>
+        <test>
+            <param name="dataMatrix" value="MTBLS1_bucketedData.tabular" ftype="tabular" />
+            <param name="scalingMethod|method" value="Total" />
+            <param name="graphType" value="Overlay" />
+            <output name="dataMatrixOut" file="MTBLS1_bucketedData_normalized.tabular" />
+            <output name="sampleMetadataOut" file="MTBLS1_sampleMetadata_normalized.tabular" />
+            <output name="variableMetadataOut" file="MTBLS1_variableMetadata_normalized.tabular" />
+        </test>
+    </tests>
+
 	<help>
 	
 .. class:: infomark
@@ -247,5 +256,8 @@ Under construction
 
 
    </help>
+    <citations>
+        <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </citations>
 </tool>
 
