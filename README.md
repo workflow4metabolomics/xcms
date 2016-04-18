@@ -56,5 +56,6 @@ Historic contributors
 ---------------------
  - Gildas Le Corguillé @lecorguille - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [UPMC](www.upmc.fr)/[CNRS](www.cnrs.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
  - Misharl Monsoor @mmonsoor - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[UPMC](www.upmc.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
+ - Yann Guitton @yguitton - [LABERCA - Laboratory of Food Contaminants and Residue Analysis](http://www.laberca.org/) - Ecole Nationale Vétérinaire, Agroalimentaire et de l'Alimentation Nantes-Atlantique - France
  - Urszula Czerwinska [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[UPMC](www.upmc.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
  - Pierre Pericard - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[UPMC](www.upmc.fr) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
