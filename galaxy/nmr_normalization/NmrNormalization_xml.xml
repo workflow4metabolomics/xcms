@@ -1,4 +1,4 @@
-<tool id="NmrNormalization" name="NMR_Normalization" version="2015-01-28">
+<tool id="NmrNormalization" name="NMR_Normalization" version="1.0.1">
     
 	<requirements>
 		<requirement type="binary"> R </requirement>
