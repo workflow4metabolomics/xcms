@@ -14,7 +14,7 @@ Changelog/News
 Test Status
 -----------
 
-Planemo test using conda: under-construction
+Planemo test using conda: passed
 
-Planemo shed_test: under-construction
+Planemo shed_test: passed
 
