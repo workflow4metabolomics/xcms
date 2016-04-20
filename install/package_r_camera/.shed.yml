@@ -1,6 +1,0 @@
-categories: [Tool Dependency Packages,Metabolomics]
-description: Contains a tool dependency definition that downloads and compiles the
-  R package CAMERA version 1.22.0
-homepage_url: http://workflow4metabolomics.org
-name: package_r_camera_1_22_0
-owner: lecorguille

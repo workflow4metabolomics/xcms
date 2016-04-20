@@ -2,7 +2,11 @@
 Changelog/News
 --------------
 
-**Version  2.1.3 - 10/02/2016**
+**Version 2.1.4 - 18/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+**Version 2.1.3 - 10/02/2016**
 
 - BUGFIX: better management of errors. Datasets remained green although the process failed
 
@@ -27,3 +31,12 @@ VERSION 2.1.0 - 07/06/2015**
 - UPDATE: merged with annotateDiffreport. Some parameters are dedicated to experiences with several conditions
 
 
+
+Test Status
+-----------
+
+Planemo test using conda: failed
+
+Planemo test using source env.sh: passed
+
+Planemo shed_test : passed
