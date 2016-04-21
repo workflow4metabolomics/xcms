@@ -9,7 +9,7 @@ cat("\tPACKAGE INFO\n")
 setRepositories(graphics=F, ind=31)
 
 #pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "igraph", "xcms","snow","CAMERA","multtest","batch")
+pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","igraph","CAMERA","multtest","batch")
 for(p in pkgs) {
   suppressPackageStartupMessages(suppressWarnings(library(p, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
   cat(p,"\t",as.character(packageVersion(p)),"\n",sep="")
