@@ -1,6 +1,7 @@
 CAMERA for Galaxy
 =================
 
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/camera.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/camera)
 
 Our project
 -----------
@@ -31,10 +32,24 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
+Conda
+-----
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
+
+[Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
+
+Travis
+------
+[![Build Status](https://travis-ci.org/workflow4metabolomics/camera.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/camera)
+
+Test and Deploy with Confidence. Easily sync your GitHub projects with Travis CI and you'll be testing your code in minutes!
+
+
+
 Test Status
 -----------
 
-Planemo test using conda: failed
+Planemo test using conda: passed for camera_annotate
 
 Planemo test using source env.sh: passed for camera_annotate
 
