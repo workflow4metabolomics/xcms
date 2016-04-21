@@ -12,7 +12,7 @@ argBlacklist=c(argBlacklist,"dataMatrixOutput","variableMetadataOutput","new_fil
 
 # ----- PACKAGE -----
 
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "igraph", "xcms","snow","CAMERA","batch")
+pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "igraph", "xcms","CAMERA","batch")
 for(pkg in pkgs) {
     cat(pkg,"\n")
     suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
