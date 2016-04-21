@@ -35,7 +35,7 @@
     
     <tests>
         <test>
-            <param name="image" value="fillpeaks.RData" />
+            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" />
             <output name="htmlOutput" file="summary.html" />
         </test>
     </tests>

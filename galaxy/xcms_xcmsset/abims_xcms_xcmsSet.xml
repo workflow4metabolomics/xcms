@@ -183,7 +183,7 @@
     </outputs>
     
     <tests>
-        <test>
+        <!--<test>
             <param name="inputs|input" value="zip_file" />
             <param name="inputs|zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <param name="methods|method" value="matchedFilter" />
@@ -203,7 +203,7 @@
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
             </output>
-        </test> 
+        </test>
         <test>
             <param name="inputs|input" value="zip_file" />
             <param name="inputs|zip_file" value="sacuri_current_root.zip"  ftype="zip" />
@@ -218,6 +218,23 @@
                     <has_text text="Peaks: 1535 (about 384 per sample)" />
                     <has_text text="Peak Groups: 0" />
                     <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+        </test>-->
+        <test>
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
         </test>
