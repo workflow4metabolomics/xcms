@@ -146,7 +146,7 @@
     </outputs>
     
     <tests>
-        <test>
+        <!--<test>
             <param name="image" value="xset.group.retcor.group.fillPeaks.RData"/>
             <param name="convert_param" value="False"/>
             <param name="num_digits" value="0"/>
@@ -179,6 +179,40 @@
             <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <output name="variableMetadata" file="xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+        </test>-->
+        <test>
+            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
+            <param name="convert_param" value="False"/>
+            <param name="num_digits" value="0"/>
+            <param name="sigma" value="6"/>
+            <param name="perfwhm" value="0.6"/>
+            <param name="maxcharge" value="3"/>
+            <param name="maxiso" value="4"/>
+            <param name="minfrac" value="0.5"/>
+            <param name="ppm" value="5"/>
+            <param name="mzabs" value="0.015"/>
+            <param name="intval" value="into"/>
+            <param name="max_peaks" value="100"/>
+            <param name="quick_block|quick" value="FALSE"/>
+            <param name="quick_block|polarity" value="negative"/>
+            <param name="quick_block|cor_eic_th" value="0.75"/>
+            <param name="quick_block|graphMethod" value="hcs"/>
+            <param name="quick_block|pval" value="0.05"/>
+            <param name="quick_block|calcCiS" value="True"/>
+            <param name="quick_block|calcIso" value="False"/>
+            <param name="quick_block|calcCaS" value="False"/>
+            <param name="quick_block|multiplier" value="3"/>
+            <param name="options|option" value="show"/>
+            <param name="options|eicmax" value="200"/>
+            <param name="options|eicwidth" value="200"/>
+            <param name="options|value" value="into"/>
+            <param name="options|h" value="480"/>
+            <param name="options|w" value="640"/>
+            <param name="options|mzdec" value="2"/>
+            <param name="options|sortpval" value="False"/>
+            <param name="zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
     </tests>
     

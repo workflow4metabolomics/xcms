@@ -6,8 +6,8 @@ diffreport_png2pdf <- function(filebase, new_file_path) {
   pdfEicOutput = paste(new_file_path,filebase,"-eic_visible_pdf",sep="")
   pdfBoxOutput = paste(new_file_path,filebase,"-box_visible_pdf",sep="")
 
-  system(paste("convert ",filebase,"_eic/*.png ",filebase,"_eic.pdf",sep=""))
-  system(paste("convert ",filebase,"_box/*.png ",filebase,"_box.pdf",sep=""))
+  system(paste("gm convert ",filebase,"_eic/*.png ",filebase,"_eic.pdf",sep=""))
+  system(paste("gm convert ",filebase,"_box/*.png ",filebase,"_box.pdf",sep=""))
 
   file.copy(paste(filebase,"_eic.pdf",sep=""), pdfEicOutput)
   file.copy(paste(filebase,"_box.pdf",sep=""), pdfBoxOutput)
