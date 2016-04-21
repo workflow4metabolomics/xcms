@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.1.4">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.1.5">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
     
@@ -397,6 +397,11 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.5 - 21/04/2016**
+
+- UPGRADE: upgrate the CAMERA version from 1.22.0 to 1.26.0
+
 
 **Version 2.1.4 - 18/04/2016**
 
