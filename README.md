@@ -54,7 +54,7 @@ Test and Deploy with Confidence. Easily sync your GitHub projects with Travis CI
 Test Status
 -----------
 
-Planemo test using conda: passed except for xcms_summary
+Planemo test using conda: passed
 
 Planemo test using source env.sh: passed
 

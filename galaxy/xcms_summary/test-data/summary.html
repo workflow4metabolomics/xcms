@@ -16,44 +16,60 @@ ul li { margin-bottom:10px; }
 </div>
 <h2>Samples used:</h2>
 <div><table>
-<tr><th>sample</th><th>filename</th></tr>
-<tr> <td> HU_neg_051 </td> <td> sacuri//bio2/HU_neg_051.mzXML </td>  </tr><tr> <td> HU_neg_060 </td> <td> sacuri//bio2/HU_neg_060.mzXML </td>  </tr><tr> <td> HU_neg_017 </td> <td> sacuri//bio/HU_neg_017.mzXML </td>  </tr><tr> <td> HU_neg_028 </td> <td> sacuri//bio/HU_neg_028.mzXML </td>  </tr><tr> <td> Blanc04 </td> <td> sacuri//blank/Blanc04.mzXML </td>  </tr><tr> <td> Blanc06 </td> <td> sacuri//blank/Blanc06.mzXML </td>  </tr>
+<tr><th>sample</th><th>filename</th><th>md5sum<sup>*</sup></th></tr>
+<tr> <td> ko15 </td> <td> faahKO_reduce/KO/ko15.CDF </td> <td> 4698c36c0b3af007faf70975c04ccf2a </td> </tr><tr> <td> ko16 </td> <td> faahKO_reduce/KO/ko16.CDF </td> <td> afaeed94ced3140bc042d5ab6aeb16c1 </td> </tr><tr> <td> wt15 </td> <td> faahKO_reduce/WT/wt15.CDF </td> <td> d58a27fad7c04ddddb0359ddc2b7ba68 </td> </tr><tr> <td> wt16 </td> <td> faahKO_reduce/WT/wt16.CDF </td> <td> 29654e9f8ad48c1fbe2a41b9ba578f6e </td> </tr>
 </table>
-
+<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were chancged during the process.
 </div>
 <h2>Function launched:</h2>
 <div><table>
 <tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
-<tr><td rowspan='4'>151221-16:20:54</td><td rowspan='4'>xcmsSet</td>
+<tr><td rowspan='4'>160420-14:09:46</td><td rowspan='4'>xcmsSet</td>
 <td>nSlaves</td><td>1</td></tr>
-<tr><td>method</td><td>matchedFilter</td></tr>
-<tr><td>step</td><td>0.01</td></tr>
-<tr><td>fwhm</td><td>30</td></tr>
-<tr><td rowspan='5'>151221-16:37:00</td><td rowspan='5'>group</td>
+<tr><td>method</td><td>centWave</td></tr>
+<tr><td>ppm</td><td>25</td></tr>
+<tr><td>peakwidth</td><td>2050</td></tr>
+<tr><td rowspan='6'>160420-15:07:14</td><td rowspan='6'>group</td>
 <td>method</td><td>density</td></tr>
 <tr><td>sleep</td><td>0.001</td></tr>
-<tr><td>minfrac</td><td>0.5</td></tr>
-<tr><td>bw</td><td>30</td></tr>
-<tr><td>mzwid</td><td>0.25</td></tr>
-<tr><td rowspan='1'>151221-16:37:20</td><td rowspan='1'>fillPeaks</td>
+<tr><td>minfrac</td><td>0.3</td></tr>
+<tr><td>bw</td><td>5</td></tr>
+<tr><td>mzwid</td><td>0.01</td></tr>
+<tr><td>max</td><td>50</td></tr>
+<tr><td rowspan='7'>160421-11:10:32</td><td rowspan='7'>retcor</td>
+<td>method</td><td>peakgroups</td></tr>
+<tr><td>smooth</td><td>loess</td></tr>
+<tr><td>extra</td><td>1</td></tr>
+<tr><td>missing</td><td>1</td></tr>
+<tr><td>span</td><td>0.2</td></tr>
+<tr><td>family</td><td>gaussian</td></tr>
+<tr><td>plottype</td><td>deviation</td></tr>
+<tr><td rowspan='6'>160421-11:19:31</td><td rowspan='6'>group</td>
+<td>method</td><td>density</td></tr>
+<tr><td>sleep</td><td>0.001</td></tr>
+<tr><td>minfrac</td><td>0.3</td></tr>
+<tr><td>bw</td><td>5</td></tr>
+<tr><td>mzwid</td><td>0.01</td></tr>
+<tr><td>max</td><td>50</td></tr>
+<tr><td rowspan='1'>160421-11:50:48</td><td rowspan='1'>fillPeaks</td>
 <td>method</td><td>chrom</td></tr>
 </table>
 <br/><sup>***</sup>timestamp format: yymmdd-hh:mm:ss
 </div>
 <h2>Informations about the xcmsSet object:</h2>
 <div><pre>
-An "xcmsSet" object with 6 samples
+An "xcmsSet" object with 4 samples
 
-Time range: 16.3-1138.9 seconds (0.3-19 minutes)
-Mass range: 61.9883-481.2446 m/z
-Peaks: 1799 (about 300 per sample)
-Peak Groups: 289 
-Sample classes: bio, bio2, blank 
+Time range: 2506-4484 seconds (41.8-74.7 minutes)
+Mass range: 200.1-600 m/z
+Peaks: 32720 (about 8180 per sample)
+Peak Groups: 8157 
+Sample classes: KO, WT 
 
 Profile settings: method = bin
-                  step = 0.01
+                  step = 0.1
 
-Memory usage: 0.421 MB
+Memory usage: 4.25 MB
 </pre></div>
 <h2>Citations:</h2>
 <div><ul>
