@@ -107,6 +107,11 @@ if (!is.null(listArguments[["zipfile"]])){
   zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
 }
 
+if (!is.null(listArguments[["singlefile_galaxyPath"]])){
+  singlefile_galaxyPath = listArguments[["singlefile_galaxyPath"]]; listArguments[["singlefile_galaxyPath"]]=NULL
+  singlefile_sampleName = listArguments[["singlefile_sampleName"]]; listArguments[["singlefile_sampleName"]]=NULL
+}
+
 if (!is.null(listArguments[["library"]])){
   directory=listArguments[["library"]]; listArguments[["library"]]=NULL
   if(!file.exists(directory)){
@@ -118,6 +123,19 @@ if (!is.null(listArguments[["library"]])){
 
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
+  if(exists("singlefile_galaxyPath") && (singlefile_galaxyPath!="")) {
+    if(!file.exists(singlefile_galaxyPath)){
+      error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
+      print(error_message); stop(error_message)
+    }
+
+    file.symlink(singlefile_galaxyPath,singlefile_sampleName)
+
+    directory = "."
+    
+    md5sumList=list("origin"=getMd5sum(directory))
+
+  }
   if(exists("zipfile") && (zipfile!="")) {
     if(!file.exists(zipfile)){
       error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
@@ -127,7 +145,6 @@ if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
 
     #list all file in the zip file
     #zip_files=unzip(zipfile,list=T)[,"Name"]
-
 
     #unzip
     suppressWarnings(unzip(zipfile, unzip="unzip"))
@@ -141,16 +158,7 @@ if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
 
     cat("files_root_directory\t",directory,"\n")
 
-    #
     md5sumList=list("origin"=getMd5sum(directory))
-
-    # Check and fix if there are non ASCII characters. If so, they will be removed from the *mzXML mzML files.
-    # Remove because can create issue with some clean files
-    #@TODO: fix me
-    #if (deleteXmlBadCharacters(directory)) {
-    #  md5sumList=list("removalBadCharacters"=getMd5sum(directory))
-    #}
-
   }
 }
 
@@ -262,7 +270,7 @@ print(xset)
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xset","zipfile","listOFlistArguments","md5sumList","sampleNamesList")
+objects2save = c("xset","zipfile","singlefile_galaxyPath","singlefile_sampleName","listOFlistArguments","md5sumList","sampleNamesList")
 save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
 
 cat("\n\n")
