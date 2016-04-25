@@ -47,12 +47,12 @@
     <tests>
         <test>
             <!-- TODO: generer des vrais dataset pos et neg-->
-            <param name="image_pos" value="xset.group.retcor.group.fillPeaks.annotate.positive.Rdata"/>
-            <param name="image_neg" value="xset.group.retcor.group.fillPeaks.annotate.negative.Rdata"/>
+            <param name="image_pos" value="faahOK.xset.group.retcor.group.fillPeaks.annotate.positive.Rdata"/>
+            <param name="image_neg" value="faahOK.xset.group.retcor.group.fillPeaks.annotate.negative.Rdata"/>
             <param name="pos" value="TRUE"/>
             <param name="tol" value="2"/>
             <param name="ruleset" value="1,1"/>
-            <output name="variableMetadata" file="xset.group.retcor.group.fillPeaks.annotate.positive.combinexsAnnos.variableMetadata.tsv" />
+            <output name="variableMetadata" file="faahOK.xset.group.retcor.group.fillPeaks.annotate.positive.combinexsAnnos.variableMetadata.tsv" />
         </test>
     </tests>
     
