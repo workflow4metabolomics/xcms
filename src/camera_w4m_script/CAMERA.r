@@ -39,7 +39,8 @@ if (!is.null(listArguments[["image"]])){
 
 if (listArguments[["xfunction"]] %in% c("combinexsAnnos")) {
   load(listArguments[["image_pos"]])
-  xaP=xa  
+  xaP=xa
+  listOFlistArgumentsP=listOFlistArguments
   if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
   
   diffrepP=NULL
@@ -47,6 +48,7 @@ if (listArguments[["xfunction"]] %in% c("combinexsAnnos")) {
 
   load(listArguments[["image_neg"]])
   xaN=xa
+  listOFlistArgumentsN=listOFlistArguments
   if (exists("xsAnnotate_object")) xaN=xsAnnotate_object
 
   diffrepN=NULL
@@ -158,7 +160,7 @@ if (thefunction %in% c("annotatediff")) {
 }
 
 if (thefunction %in% c("combinexsAnnos")) {
-  cAnnot=combinexsAnnos_function(xaP=xaP,xaN=xaN,diffrepP=diffrepP,diffrepN=diffrepN,convert_param=listArguments[["convert_param"]],pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],variableMetadataOutput=variableMetadataOutput)
+  cAnnot=combinexsAnnos_function(xaP=xaP,xaN=xaN,listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,diffrepP=diffrepP,diffrepN=diffrepN,convert_param=listArguments[["convert_param"]],pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],variableMetadataOutput=variableMetadataOutput)
 }
 
 dev.off()
