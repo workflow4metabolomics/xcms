@@ -25,3 +25,12 @@ Changelog/News
 
 - NEW: combinexsAnnos Check CAMERA ion species annotation due to matching with opposite ion mode 
 
+
+Test Status
+-----------
+
+Planemo test using conda: passed
+
+Planemo test using source env.sh: passed
+
+Planemo shed_test : passed

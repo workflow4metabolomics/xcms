@@ -40,7 +40,7 @@ VERSION 2.1.0 - 07/06/2015**
 Test Status
 -----------
 
-Planemo test using conda: failed
+Planemo test using conda: passed
 
 Planemo test using source env.sh: passed
 
