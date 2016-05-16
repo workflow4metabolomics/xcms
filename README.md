@@ -20,9 +20,22 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
-Conda
------
+Dependencies using Conda
+------------------------
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
+
+The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-pracma](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-pracma)
+
+```
+#To install miniconda2
+#http://conda.pydata.org/miniconda.html
+#To install the IPO R library using conda:
+conda install r-batch r-pracma
+#To set an environment:
+conda create -n nmr_bucketing r-batch r-pracma`
+#To activate the environment:
+. activate nmr_bucketing
+```
 
 
 Historic contributors
