@@ -44,6 +44,19 @@ Conda
 
 [Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
 
+The recipes: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms)
+
+```
+#To install miniconda2
+#http://conda.pydata.org/miniconda.html
+#To install the xcms R library using conda:
+conda install bioconductor-xcms
+#To set an environment:
+conda create -n bioconductor-xcms bioconductor-xcms`
+#To activate the environment:
+. activate bioconductor-xcms
+```
+
 Travis
 ------
 [![Build Status](https://travis-ci.org/workflow4metabolomics/xcms.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/xcms)
