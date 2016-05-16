@@ -20,6 +20,31 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
+Dependencies using Conda
+------------------------
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
+
+[Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
+
+```
+#To install miniconda2
+#http://conda.pydata.org/miniconda.html
+#To install the IPO R library using conda:
+conda install r-batch
+#To set an environment:
+conda create -n r-batch r-batch`
+#To activate the environment:
+. activate r-batch
+```
+
+Test Status
+-----------
+
+Planemo test using conda: passed
+
+Planemo shed_test: passed
+
+
 Historic contributors
 ---------------------
  - Marie Tremblay-Franco @mtremblayfr - [French Metabolomics and Fluxomics Infrastructure (MetaboHUB)](http://www.metabohub.fr/en) - [MetaToul](http://www.metatoul.fr/)
