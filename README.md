@@ -38,21 +38,21 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
-Conda
------
+Dependencies using Conda
+------------------------
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
 
 [Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
 
-The recipes: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms)
+The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms)
 
 ```
 #To install miniconda2
 #http://conda.pydata.org/miniconda.html
 #To install the xcms R library using conda:
-conda install bioconductor-xcms
+conda install r-snow bioconductor-xcms r-batch
 #To set an environment:
-conda create -n bioconductor-xcms bioconductor-xcms`
+conda create -n bioconductor-xcms r-snow bioconductor-xcms r-batch`
 #To activate the environment:
 . activate bioconductor-xcms
 ```
