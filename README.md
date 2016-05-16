@@ -32,11 +32,24 @@ Galaxy is an open, web-based platform for data intensive biomedical research. Wh
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 
-Conda
------
+Dependencies using Conda
+------------------------
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
 
 [Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
+
+The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-camera](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-camera)
+
+```
+#To install miniconda2
+#http://conda.pydata.org/miniconda.html
+#To install the CAMERA R library using conda:
+conda install r-snow bioconductor-camera bioconductor-multtest r-batch libpng graphicsmagick
+#To set an environment:
+conda create -n bioconductor-camera r-snow bioconductor-camera bioconductor-multtest r-batch libpng graphicsmagick`
+#To activate the environment:
+. activate bioconductor-camera
+```
 
 Travis
 ------
