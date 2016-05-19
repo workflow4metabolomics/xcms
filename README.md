@@ -1,7 +1,7 @@
 xcms for Galaxy
 ===============
 
-[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/xcms.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/xcms)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/bioconductor-xcms/README.html) [![Build Status](https://travis-ci.org/workflow4metabolomics/xcms.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/xcms)
 
 Our project
 -----------
@@ -40,11 +40,10 @@ Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
 Dependencies using Conda
 ------------------------
-[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io/recipes/bioconductor-xcms/README.html)
 
 [Conda](http://conda.pydata.org/) is package manager that among many other things can be used to manage Python packages.
 
-The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/bioconductor-xcms)
 
 ```
 #To install miniconda2
