@@ -50,14 +50,31 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   listArguments[["calcIso"]]=as.logical(listArguments[["calcIso"]])
   listArguments[["calcCaS"]]=as.logical(listArguments[["calcCaS"]])
 
-  #graphMethod parameter bugs where this parameter is not defined in quick=true
+  # parameters
+  listArguments4annotate = c(
+      object=xset,
+      nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
+      maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]]
+    )
+  
   if(listArguments[["quick"]]==TRUE) {
-    xa= annotate(object=xset,nSlaves=1,sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
+    listArguments4annotate = c(listArguments4annotate,
+        graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]
+      )
+    if (!is.null(listArguments[["multiplier"]]))
+      listArguments4annotate = c(listArguments4annotate,
+          multiplier=listArguments[["multiplier"]]
+        )
+    else
+      listArguments4annotate = c(listArguments4annotate,
+          rules=listArguments[["rules"]]
+        )
   }
-  else {
-    xa= annotate(object=xset,nSlaves=1,sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]],multiplier=listArguments[["multiplier"]],maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
 
-  }
+
+  
+  # launch annotate
+  xa = do.call("annotate", listArguments4annotate)
   peakList=getPeaklist(xa,intval=listArguments[["intval"]])
   peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
 

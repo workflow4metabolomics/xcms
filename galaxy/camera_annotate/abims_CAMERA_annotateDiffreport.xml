@@ -35,7 +35,11 @@
             calcCiS $quick_block.calcCiS
             calcIso $quick_block.calcIso
             calcCaS $quick_block.calcCaS
-            multiplier $quick_block.multiplier
+            #if $quick_block.rules_block.rules_select == "FALSE"
+                multiplier $quick_block.rules_block.multiplier
+            #else
+                multiplier $quick_block.rules_block.rules
+            #end if
         #end if
 
         #if $options.option == "show":
@@ -97,13 +101,23 @@
                 <param name="calcCiS" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation inside samples for peak grouping" help="[calcCiS]"/>
                 <param name="calcIso" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use isotopic relationship for peak grouping" help="[calcIso]"/>
                 <param name="calcCaS" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation across samples for peak grouping" help="[calcCaS]"/>
-                <param name="multiplier" type="integer" value="3" label="findAdducts: If no ruleset is provided, calculate ruleset with max. number n of [nM+x] clusterions" help="[multiplier]" />
+                <conditional name="rules_block">
+                    <param name="rules_select" type="select" label="Use a personal ruleset file">
+                        <option value="TRUE">TRUE</option>
+                        <option value="FALSE" selected="true">FALSE</option>
+                    </param>
+                    <when value="FALSE">
+                        <param name="multiplier" type="integer" value="3" label="findAdducts: If no ruleset is provided, calculate ruleset with max. number n of [nM+x] clusterions" help="[multiplier]" />
+                    </when>
+                    <when value="TRUE">
+                        <param name="rules" type="data" format="csv" label="findAdducts: User defined ruleset" help="[rules]" />
+                    </when>
+                </conditional>
             </when>
-                <when value="TRUE">
+            <when value="TRUE">
                 <param name="polarity" type="hidden" value="quick" label="for the output label" help="for the output label" />
             </when>
         </conditional>
-
 
         <!-- Annotatediffreport specific parameters -->
         <conditional name="options">
