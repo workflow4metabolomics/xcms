@@ -16,5 +16,5 @@ install:
  - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/camera_suite/
 
 script:
- - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/camera_suite/ --galaxy_branch "dev"
+ - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/camera_suite/
 

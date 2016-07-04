@@ -47,10 +47,8 @@
             mzdec $options.mzdec
             new_file_path ${__new_file_path__}/primary_${output_diffreport.id}_
         #end if
-        
-        #if $zip_file:
-            zipfile $zip_file
-        #end if
+            
+        @COMMAND_ZIPFILE_LOAD@
 
     ]]></command>
 
@@ -126,9 +124,8 @@
             <when value="hide">
             </when>
         </conditional>
-
-        <!-- To pass planemo test -->
-        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." />
+        
+        <expand macro="zipfile_load"/>
     </inputs>
 
     <outputs>
@@ -210,7 +207,8 @@
             <param name="options|w" value="640"/>
             <param name="options|mzdec" value="2"/>
             <param name="options|sortpval" value="False"/>
-            <param name="zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
+            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
