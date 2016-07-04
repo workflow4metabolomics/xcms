@@ -29,8 +29,10 @@
     <!-- zipfile load for planemo test -->
 
     <token name="@COMMAND_ZIPFILE_LOAD@">
-        #if $zipfile_load_conditional.zip_file:
-            zipfile $zipfile_load_conditional.zip_file
+        #if $zipfile_load_conditional.zipfile_load_select == "yes":
+            #if $zipfile_load_conditional.zip_file:
+                zipfile $zipfile_load_conditional.zip_file
+            #end if
         #end if
     </token>
 
