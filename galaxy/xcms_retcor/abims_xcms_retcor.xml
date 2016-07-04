@@ -32,9 +32,9 @@
                 plottype $methods.options.plottype
             #end if
         #end if
-        #if $zip_file:
-            zipfile $zip_file
-        #end if
+
+        @COMMAND_ZIPFILE_LOAD@
+
         @COMMAND_LOG_EXIT@        
     ]]></command>
 
@@ -81,8 +81,9 @@
                 </conditional>
             </when>
         </conditional>
-	<!-- To pass planemo test -->
-        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." />
+
+        <expand macro="zipfile_load"/>
+
     </inputs>
 
     <outputs>
@@ -109,7 +110,8 @@
             <param name="methods|options|span" value="0.2"/>
             <param name="methods|options|family" value="gaussian"/>
             <param name="methods|options|plottype" value="deviation"/>
-            <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
+            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
+            <param name="zipfile_load_conditional|zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -131,7 +133,8 @@
             <param name="methods|options|span" value="0.2"/>
             <param name="methods|options|family" value="gaussian"/>
             <param name="methods|options|plottype" value="deviation"/>
-            <param name="zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
+            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />

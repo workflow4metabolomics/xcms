@@ -18,9 +18,12 @@
 
         method $method
 
-        #if $zip_file:
-            zipfile $zip_file
+        #if $load_zip_conditional.zip_file:
+            zipfile $load_zip_conditional.zip_file
         #end if
+
+        @COMMAND_ZIPFILE_LOAD@
+        
         @COMMAND_LOG_EXIT@ 
         
     ]]></command>
@@ -31,8 +34,9 @@
             <option value="chrom" selected="true">chrom</option>
             <option value="MSW" >MSW</option>
         </param>
-        <!-- To pass planemo test -->
-        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." />
+        
+        <expand macro="zipfile_load"/>
+
     </inputs>
 
     <outputs>
@@ -59,7 +63,8 @@
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.RData"/>
             <param name="method" value="chrom"/>
-            <param name="zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
+            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />

@@ -3,9 +3,9 @@
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="3.1.2">R</requirement>
-	    <requirement type="package" version="0.4_1">r-snow</requirement>
+            <requirement type="package" version="0.4_1">r-snow</requirement>
             <requirement type="package" version="1.46.0">bioconductor-xcms</requirement>
-	    <requirement type="package" version="1.1_4">r-batch</requirement>
+            <requirement type="package" version="1.1_4">r-batch</requirement>
         </requirements>
     </xml>
     <xml name="stdio">
@@ -25,6 +25,30 @@
         cat $log;
         sh -c "exit \$return"
     </token>
+
+    <!-- zipfile load for planemo test -->
+
+    <token name="@COMMAND_ZIPFILE_LOAD@">
+        #if $zipfile_load_conditional.zip_file:
+            zipfile $zipfile_load_conditional.zip_file
+        #end if
+    </token>
+
+    <xml name="zipfile_load">
+        <conditional name="zipfile_load_conditional">
+            <param name="zipfile_load_select" type="select" label="Resubmit your zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." >
+                <option value="no" >no need</option>
+                <option value="yes" selected="peakgroups">yes</option>
+            </param>
+            <when value="no">
+            </when>
+            <when value="yes">
+                <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
+            </when>
+        </conditional>
+    </xml>
+
+
 
     <token name="@HELP_AUTHORS@">
 .. class:: infomark
