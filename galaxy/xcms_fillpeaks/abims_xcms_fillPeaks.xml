@@ -18,12 +18,8 @@
 
         method $method
 
-        #if $load_zip_conditional.zip_file:
-            zipfile $load_zip_conditional.zip_file
-        #end if
-
         @COMMAND_ZIPFILE_LOAD@
-        
+
         @COMMAND_LOG_EXIT@ 
         
     ]]></command>
