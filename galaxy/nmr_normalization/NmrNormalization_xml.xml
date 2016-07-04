@@ -84,9 +84,9 @@
     
 	<outputs>
 		<data format="txt" name="logOut" label="${tool.name}_log" />
-		<data format="tabular" name="dataMatrixOut" label="${tool.name}_bucketedData" />
 		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_samplemetadata" />
 		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadataOut" />
+        <data format="tabular" name="dataMatrixOut" label="${tool.name}_bucketedData" />
 		<data format="pdf" name="graphOut" label="${tool.name}_spectra" >
 			<filter> graphType != "None" </filter>
 		</data>
