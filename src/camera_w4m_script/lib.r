@@ -57,7 +57,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
       maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]]
     )
   
-  if(listArguments[["quick"]]==TRUE) {
+  if(listArguments[["quick"]]==FALSE) {
     listArguments4annotate = c(listArguments4annotate,
         graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]
       )
