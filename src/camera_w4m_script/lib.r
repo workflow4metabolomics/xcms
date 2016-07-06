@@ -49,28 +49,30 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   listArguments[["calcCiS"]]=as.logical(listArguments[["calcCiS"]])
   listArguments[["calcIso"]]=as.logical(listArguments[["calcIso"]])
   listArguments[["calcCaS"]]=as.logical(listArguments[["calcCaS"]])
-
-  # parameters
-  listArguments4annotate = c(
-      object=xset,
-      nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
-      maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]]
-    )
   
+  # common parameters
+  listArguments4annotate = list(object=xset,
+    nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
+    maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],
+    ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],
+    polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
+ 
+  # quick == FALSE
   if(listArguments[["quick"]]==FALSE) {
-    listArguments4annotate = c(listArguments4annotate,
-        graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]
-      )
-    if (!is.null(listArguments[["multiplier"]]))
-      listArguments4annotate = c(listArguments4annotate,
-          multiplier=listArguments[["multiplier"]]
-        )
-    else
-      listArguments4annotate = c(listArguments4annotate,
-          rules=listArguments[["rules"]]
-        )
+    listArguments4annotate = append(listArguments4annotate,
+        list(graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],
+        calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]))
+    # no ruleset
+    if (!is.null(listArguments[["multiplier"]])) {
+        listArguments4annotate = append(listArguments4annotate,
+            list(multiplier=listArguments[["multiplier"]]))
+    }
+    # ruleset
+    else {
+        listArguments4annotate = append(listArguments4annotate,
+            list(rules=listArguments[["rules"]]))
+    }
   }
-
 
   
   # launch annotate
