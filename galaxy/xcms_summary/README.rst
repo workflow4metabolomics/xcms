@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 1.0.2 - 06/07/2016**
+
+- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+
 **Version 1.0.1 - 04/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies

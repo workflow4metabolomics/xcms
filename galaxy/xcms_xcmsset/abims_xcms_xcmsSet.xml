@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.8">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.9">
     
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
     
@@ -474,6 +474,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.9 - 06/07/2016**
+
+- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
 
 **Version 2.0.8 - 06/04/2016**
 

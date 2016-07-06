@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.1">
+<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.2">
     
     <description>Create a summary of XCMS analysis</description>
 
@@ -59,6 +59,10 @@ This tool provide a HTML summary which summarizes your analysis using the [W4M] 
 
 Changelog/News
 --------------
+
+**Version 1.0.2 - 06/07/2016**
+
+- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
 
 **Version 1.0.1 - 04/04/2016**
 

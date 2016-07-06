@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.6">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.7">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
@@ -297,6 +297,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.7 - 06/07/2016**
+
+- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
 
 **Version 2.0.6 - 04/04/2016**
 
