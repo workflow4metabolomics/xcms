@@ -69,8 +69,9 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     }
     # ruleset
     else {
+	rulset=read.table(listargument[["rules"]], h=T, sep=",")
         listArguments4annotate = append(listArguments4annotate,
-            list(rules=listArguments[["rules"]]))
+            list(rules=rulset))
     }
   }
 
