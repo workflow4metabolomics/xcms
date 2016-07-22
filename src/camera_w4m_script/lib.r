@@ -69,7 +69,15 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     }
     # ruleset
     else {
-	rulset=read.table(listargument[["rules"]], h=T, sep=",")
+        rulset=read.table(listArguments[["rules"]], h=T, sep=";")
+        if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep="\t")
+        if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep=",")
+        if (ncol(rulset) < 4) {
+            error_message="Your ruleset file seems not well formatted. The column separators accepted are ; , and tabulation"
+            print(error_message)
+            stop(error_message)
+        }	
+
         listArguments4annotate = append(listArguments4annotate,
             list(rules=rulset))
     }
