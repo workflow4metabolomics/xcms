@@ -38,7 +38,7 @@
             #if $quick_block.rules_block.rules_select == "FALSE"
                 multiplier $quick_block.rules_block.multiplier
             #else
-                multiplier $quick_block.rules_block.rules
+                rules $quick_block.rules_block.rules
             #end if
         #end if
 
