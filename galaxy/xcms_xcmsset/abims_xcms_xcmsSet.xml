@@ -1,5 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.11">
-
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.0">
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
     <macros>
@@ -498,6 +497,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.0 - XX/XX/2017**
+
+- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them using "xcms.xcmsSet Merger" before "xcms.group".
 
 **Version 2.0.11 - 22/12/2016**
 
