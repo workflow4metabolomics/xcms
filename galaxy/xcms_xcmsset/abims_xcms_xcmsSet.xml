@@ -70,14 +70,14 @@
       <conditional name="inputs">
         <param name="input" type="select" label="Choose your inputs method" >
           <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
-          <option value="single_file">mzXML file from your history</option>
+          <option value="single_file">A mzXML or netCDF file from your history</option>
           <option value="lib" >Library directory name</option>
         </param>
         <when value="zip_file">
           <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
         </when>
         <when value="single_file">
-          <param name="single_file" type="data" format="mzxml" label="Single file" />
+          <param name="single_file" type="data" format="mzxml,netcdf" label="Single file" />
         </when>
         <when value="lib">
           <param name="library" type="text" size="40" label="Library directory name" help="The name of your directory containing all your data" >
@@ -108,7 +108,6 @@
             <option value="binlinbase">binlinbase</option>
             <option value="intlin">intlin</option>
         </param>
-        <param name="nSlaves" type="integer" value="9" label="MPI-slaves CPU" help="number of MPI-slaves to use for parallel peak detection" />
 -->
         <conditional name="methods">
             <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
@@ -248,7 +247,7 @@
         </test>
         <test>
             <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="mzxml" />
+            <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="netcdf" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
