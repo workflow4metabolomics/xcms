@@ -108,8 +108,7 @@ if (!is.null(listArguments[["zipfile"]])){
 }
 
 if (!is.null(listArguments[["singlefile_galaxyPath"]])){
-  singlefile_galaxyPath = listArguments[["singlefile_galaxyPath"]]; listArguments[["singlefile_galaxyPath"]]=NULL
-  singlefile_sampleName = listArguments[["singlefile_sampleName"]]; listArguments[["singlefile_sampleName"]]=NULL
+  singlefile = list(listArguments[["singlefile_sampleName"]] = listArguments[["singlefile_galaxyPath"]]); listArguments[["singlefile_galaxyPath"]]=NULL; listArguments[["singlefile_sampleName"]]=NULL
 }
 
 if (!is.null(listArguments[["library"]])){
