@@ -1,0 +1,130 @@
+<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="0.1.0">
+    <description>Merge xcms.xcmsSet xset in one to be used by group</description>
+    
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+    
+    <expand macro="requirements_light"/>
+    <expand macro="stdio"/>
+    
+    <command><![CDATA[
+        Rscript $script_file
+    ]]></command>
+
+    <configfiles>
+        <configfile name="script_file"><![CDATA[
+suppressPackageStartupMessages(library(xcms, quietly=TRUE))
+
+images=c(
+"${"\",\"".join(map(str, $images))}"
+)
+
+
+cat("\tXSET MERGING...\n")
+
+for(image in images) { 
+    load(image)
+    cat(sampleNamesList\$sampleNamesOrigin,"\n")
+    if (!exists("xset_merged")) 
+        xset_merged=xset
+    else 
+        xset_merged=c(xset_merged,xset)
+}
+xset=xset_merged; rm(xset_merged)
+
+#if str($sampleMetadata) != 'None':
+    cat("\tXSET PHENODATA SETTING...\n")
+    sampleMetadata=read.table("$sampleMetadata", h=F, sep=";")
+    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep="\t")
+    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep=",")
+    if (ncol(sampleMetadata) < 2) {
+        error_message="Your sampleMetadata file seems not well formatted. The column separators accepted are ; , and tabulation"
+        print(error_message)
+        stop(error_message)
+    }
+
+    sampclass(xset)=sampleMetadata\$V2[match(rownames(xset@phenoData),sampleMetadata\$V1)]
+#end if
+
+
+
+cat("\tXSET OBJECT INFO\n")
+
+print(xset@phenoData)
+print(xset)
+
+save.image("$xsetRData")
+
+        ]]></configfile>
+    </configfiles>
+
+    <inputs>
+        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="xset RData / xcms.xcmsSet file" help="output file from another xcms.xcmsSet" multiple="true" />
+        <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
+    </inputs>
+    
+    <outputs>
+        <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2506.1-4146.1 seconds (41.8-69.1 minutes)" />
+                <has_text text="Mass range: 200.1-599.3 m/z" />
+                <has_text text="Peaks: 1495 (about 374 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="sampleMetadata" value="sampleMetadata.tab" />
+            <assert_stdout>
+                <has_text text="ko15    KO" />
+                <has_text text="ko16    KO" />
+                <has_text text="wt15    WT" />
+                <has_text text="wt16    WT" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2506.1-4146.1 seconds (41.8-69.1 minutes)" />
+                <has_text text="Mass range: 200.1-599.3 m/z" />
+                <has_text text="Peaks: 1495 (about 374 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
+        </test>
+    </tests>
+
+    <help><![CDATA[
+
+@HELP_AUTHORS@
+
+===================
+Xcms.xcmsSet Merger
+===================
+
+-----------
+Description
+-----------
+
+This tool will allow you to run one xcms.xcmsSet process per sample in parallel and then to merge all RData images in one.
+The result is then suitable for group.
+
+You can provide a sampleMetadata table to attribute phenotypic value to your samples.
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+**Version 0.1.0 - 06/07/2016**
+
+- NEW: a new tool to merge xcmsSet outputs to be used by group
+
+    ]]></help>
+
+    <expand macro="citation" />
+</tool>
