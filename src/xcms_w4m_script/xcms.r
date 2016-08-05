@@ -123,14 +123,16 @@ if (!is.null(listArguments[["library"]])){
 
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
-  if(exists("singlefile_galaxyPath") && (singlefile_galaxyPath!="")) {
-    if(!file.exists(singlefile_galaxyPath)){
-      error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
-      print(error_message); stop(error_message)
+  if(exists("singlefile") && (length("singlefile")>0)) {
+    for (singlefile_sampleName in names(singlefile)) {
+      singlefile_galaxyPath = singlefile[[singlefile_sampleName]]
+      if(!file.exists(singlefile_galaxyPath)){
+        error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
+        print(error_message); stop(error_message)
+      }
+
+      file.symlink(singlefile_galaxyPath,singlefile_sampleName)
     }
-
-    file.symlink(singlefile_galaxyPath,singlefile_sampleName)
-
     directory = "."
     
     md5sumList=list("origin"=getMd5sum(directory))
