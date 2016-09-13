@@ -41,3 +41,4 @@ Some tools implement a [Job Dynamic Destination Mapping](https://docs.galaxyproj
 - Marion Landi [PFEM](https://www6.ara.inra.fr/plateforme_exploration_metabolisme) / [MetaboHUB](https://www.metabohub.fr/home.html) - [INRA](http://www.inra.fr/) - France
 - Misharl Monsoor [@mmonsoor](https://github.com/mmonsoor) - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[Sorbonne Université](http://www.sorbonne-universite.fr/) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
 - Pierre Pericard [@ppericard](https://github.com/ppericard)- [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[Sorbonne Université](http://www.sorbonne-universite.fr/) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
+
