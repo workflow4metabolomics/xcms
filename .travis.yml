@@ -140,3 +140,4 @@ script:
     fi
   # Killing background sleep loop
   #- kill %1
+

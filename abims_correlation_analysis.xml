@@ -1,18 +1,54 @@
-<tool id="abims_corr_analysis" name="Metabolites Correlation Analysis" version="20141118" force_history_refresh="true">
+<tool id="abims_corr_analysis" name="Metabolites Correlation Analysis" version="1.0.1" force_history_refresh="true">
 
     <description></description>
 
-    <command interpreter="Rscript">
-        ##correlation_analysis.r input $input sample_info $sample_info sorting 1 corrdel $corrdel param_correlation $param_correlation param_cytoscape $param_cytoscape
-        #if $corr_choice.choice == "choice1" and $corr_choice.function_choice.choice == "choice1" :
-          correlation_analysis.r sorting 1 variableMetadata $corr_choice.variableMetadata dataMatrix $corr_choice.dataMatrix SampleMetadata $corr_choice.SampleMetadata corrdel 0  param_correlation ""  param_cytoscape "" matrix_corr 0 user_matrix_corr "" corr_method ""
+    <requirements>
+        <requirement type="package" version="1.1_4">r-batch</requirement>
+        <requirement type="package" version="0.8.5">r-reshape</requirement>
+        <requirement type="package" version="7.3_45">r-mass</requirement>
+    </requirements>
+
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
+
+    <command>
+        Rscript $__tool_directory__/correlation_analysis.r 
+
+        #if $cond_input_type.select_input_type == "select_input_from_w4m" and $cond_input_type.cond_function.select_funtion == "sort_only" :
+            sorting 1 variableMetadata $cond_input_type.variableMetadata 
+            dataMatrix $cond_input_type.dataMatrix 
+            sampleMetadata $cond_input_type.sampleMetadata 
+            corrdel 0  
+            param_correlation ""  
+            param_cytoscape "" 
+            matrix_corr 0 
+            user_matrix_corr "" 
+            corr_method ""
         #end if
-        #if $corr_choice.choice == "choice1" and $corr_choice.function_choice.choice == "choice2" :
-          correlation_analysis.r sorting 1 variableMetadata $corr_choice.variableMetadata dataMatrix $corr_choice.dataMatrix SampleMetadata $corr_choice.SampleMetadata corrdel 1 param_correlation $corr_choice.function_choice.param_correlation  param_cytoscape $corr_choice.function_choice.param_cytoscape matrix_corr 0 user_matrix_corr "" corr_method $corr_choice.function_choice.corr_method
+        #if $cond_input_type.select_input_type == "select_input_from_w4m" and $cond_input_type.cond_function.select_funtion == "sort_and_corr" :
+            sorting 1 
+            variableMetadata $cond_input_type.variableMetadata 
+            dataMatrix $cond_input_type.dataMatrix 
+            sampleMetadata $cond_input_type.sampleMetadata 
+            corrdel 1 
+            param_correlation $cond_input_type.cond_function.param_correlation  
+            param_cytoscape $cond_input_type.cond_function.param_cytoscape 
+            matrix_corr 0 
+            user_matrix_corr "" 
+            corr_method $cond_input_type.cond_function.corr_method
         #end if
         ##Create correlation matrix from a user table file.##
-        #if $corr_choice.choice == "other_choice" :
-          correlation_analysis.r sorting 0 variableMetadata "" dataMatrix "" SampleMetadata "" corrdel 0 param_correlation "" param_cytoscape $corr_choice.param_cytoscape matrix_corr 1 user_matrix_corr $corr_choice.user_matrix_corr corr_method $corr_choice.corr_method
+        #if $cond_input_type.select_input_type == "select_input_other" :
+            sorting 0 
+            variableMetadata "" 
+            dataMatrix "" 
+            sampleMetadata "" 
+            corrdel 0 
+            param_correlation "" 
+            param_cytoscape $cond_input_type.param_cytoscape 
+            matrix_corr 1 user_matrix_corr $cond_input_type.user_matrix_corr 
+            corr_method $cond_input_type.corr_method
         #end if
     
     </command> 
@@ -20,99 +56,101 @@
     <inputs>
 
 
-		 <conditional name="corr_choice" >
-			<param name="choice" type="select" label="Choice of your input files" help="" >
-				<option value="choice1" selected="true">Files from the metabolomic workflow</option>
-				 <option value="other_choice" >Your table file</option>
-			</param>
-				<when value="choice1">
-					<param name="dataMatrix" type="data" label="Data Matrix" format="tabular" help="dataMatrix file from the diffreport or annotateDiffreport step" />
-					<param name="SampleMetadata" type="data" label="Sample metadata" format="tabular" help="SampleMetadata file from the xcms.xcmsSet" />
-					<param name="variableMetadata" type="data" label="Variable metadata" format="tabular" help="variableMetadata file from the diffreport or annotateDiffreport step" />
-					
-					
-					
-					<conditional name="function_choice" >
-					<param name="choice" type="select" label="Choice of the function" help="" >
-						<option value="choice1" selected="true">Sorting your table</option>
-						<option value="choice2" >Sorting your table and Correlation analysis</option>
-					</param>
-                                             
-
-						<when value="choice2">
-							 <param name="corrdel" type="hidden" value="1"/>
-							 <param name="param_correlation" type="float" label="Correlation threshold" value="0.60" help="Choose a threshold value that will determine if two metabolites are correlated " />
-							 <param name="corr_method" type="select" label="Choice of the correlation method" help="" >
-								<option value="pearson" selected="true">pearson</option>
-								<option value="kendall">kendall</option>
-								<option value="spearman">spearman</option>
-							 </param>
-							 <param name="param_cytoscape" type="float" label="Correlation Cytoscape threshold " value="0.75" help="Choose a threshold value for selecting metabolites that will be exported to a cytoscape sif format" />		
-						</when>
-		            </conditional>
-							
-				</when>
-				
-				
-				<when value="other_choice">
-					<param name="user_matrix_corr" type="data" label="Your table file (tabular format)" format="tabular" help="Your metabolites(variable) correlation table file (tabular format)" />
-					 <param name="corr_method" type="select" label="Choice of the correlation method" help="" >
-								<option value="pearson" selected="true">pearson</option>
-								<option value="kendall">kendall</option>
-								<option value="spearman">spearman</option>
-					</param>
-					<param name="param_cytoscape" type="float" label="Correlation Cytoscape threshold " value="0.75" help="Choose a threshold value for selecting metabolites that will be exported to a cytoscape sif format" />		
-				</when>
-		</conditional>
+         <conditional name="cond_input_type" >
+            <param name="select_input_type" type="select" label="Choice of your input files" help="" >
+                <option value="select_input_from_w4m" selected="true">Files from the metabolomic workflow</option>
+                <option value="select_input_other" >Your table file</option>
+            </param>
+            <when value="select_input_from_w4m">
+                <param name="dataMatrix" type="data" label="Data Matrix" format="tabular" help="dataMatrix file from the diffreport or annotateDiffreport step" />
+                <param name="sampleMetadata" type="data" label="Sample metadata" format="tabular" help="SampleMetadata file from the xcms.xcmsSet" />
+                <param name="variableMetadata" type="data" label="Variable metadata" format="tabular" help="variableMetadata file from the diffreport or annotateDiffreport step" />
+                
+                
+                
+                <conditional name="cond_function" >
+                    <param name="select_funtion" type="select" label="Choice of the function" help="" >
+                        <option value="sort_only" selected="true">Sorting your table</option>
+                        <option value="sort_and_corr" >Sorting your table and Correlation analysis</option>
+                    </param>
+                    
+                    <when value="sort_only" />
+                    <when value="sort_and_corr">
+                         <param name="corrdel" type="hidden" value="1"/>
+                         <param name="param_correlation" type="float" label="Correlation threshold" value="0.60" help="Choose a threshold value that will determine if two metabolites are correlated " />
+                         <param name="corr_method" type="select" label="Choice of the correlation method" help="" >
+                            <option value="pearson" selected="true">pearson</option>
+                            <option value="kendall">kendall</option>
+                            <option value="spearman">spearman</option>
+                         </param>
+                         <param name="param_cytoscape" type="float" label="Correlation Cytoscape threshold " value="0.75" help="Choose a threshold value for selecting metabolites that will be exported to a cytoscape sif format" />        
+                    </when>
+                </conditional>
+                        
+            </when>
+                
+                
+            <when value="select_input_other">
+                <param name="user_matrix_corr" type="data" label="Your table file (tabular format)" format="tabular" help="Your metabolites(variable) correlation table file (tabular format)" />
+                <param name="corr_method" type="select" label="Choice of the correlation method" help="" >
+                    <option value="pearson" selected="true">pearson</option>
+                    <option value="kendall">kendall</option>
+                    <option value="spearman">spearman</option>
+                </param>
+                <param name="param_cytoscape" type="float" label="Correlation Cytoscape threshold " value="0.75" help="Choose a threshold value for selecting metabolites that will be exported to a cytoscape sif format" />        
+            </when>
+        </conditional>
 
     </inputs>
 
     <outputs>
         <data name="sorted_table" format="tabular" from_work_dir="sorted_table.tsv" label="sorted_variableMetadata.tsv">
-			 <filter>(corr_choice['choice'] == 'choice1')</filter>
-		</data>
+             <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m')</filter>
+        </data>
      
         <data name="correlation_matrix" format="tabular" from_work_dir="correlation_matrix.tsv" label="correlation_matrix.tsv">
-			<filter>(corr_choice['choice'] != 'other_choice' and corr_choice['function_choice']['choice']== 'choice2' and corr_choice['function_choice']['corrdel']== '1' )</filter>
-		</data>
-	
+            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
+        </data>
+    
         <data name="selected_metabolites_transpo" format="tabular" from_work_dir="selected_metabolites_transpo.tsv" label="selected_metabolites_dataMatrix.tsv">
-			<filter>(corr_choice['choice'] != 'other_choice' and corr_choice['function_choice']['choice']== 'choice2' and corr_choice['function_choice']['corrdel']== '1' )</filter>
-		</data>
+            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
+        </data>
      
         <data name="correlation_matrix_selected" format="tabular" from_work_dir="correlation_matrix_selected.tsv" label="correlation_matrix_selected.tsv">
-			<filter>(corr_choice['choice'] != 'other_choice' and corr_choice['function_choice']['choice']== 'choice2' and corr_choice['function_choice']['corrdel']== '1' )</filter>
-		</data>
+            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
+        </data>
 
         <data name="siff_table" format="tabular" from_work_dir="siff_table.tsv" label="sif_table.tsv">
-			<filter>(corr_choice['choice'] != 'other_choice' and corr_choice['function_choice']['choice']== 'choice2' and corr_choice['function_choice']['corrdel']== '1' )</filter>
-		</data>
-		
-		
-		  <data name="correlation_matrix_user" format="tabular" from_work_dir="correlation_matrix.tsv" label="correlation_matrix.tsv">
-			  <filter>(corr_choice['choice'] == 'other_choice')</filter>
-		  </data>
-		
-		 <data name="siff_table_user_user" format="tabular" from_work_dir="siff_table.tsv" label="sif_table.tsv">
-			<filter>(corr_choice['choice'] == 'other_choice')</filter>
-		</data>
-		
-     
-     
-	
-	
+            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
+        </data>
+        
+        
+        <data name="correlation_matrix_user" format="tabular" from_work_dir="correlation_matrix.tsv" label="correlation_matrix.tsv">
+            <filter>(cond_input_type['select_input_type'] == 'other_choice')</filter>
+        </data>
+        
+        <data name="siff_table_user_user" format="tabular" from_work_dir="siff_table.tsv" label="sif_table.tsv">
+            <filter>(cond_input_type['select_input_type'] == 'other_choice')</filter>
+        </data>
 
     </outputs>
 
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <tests>
+        <test>
+            <param name="cond_input_type|select_input_type" value="select_input_from_w4m" />
+            <param name="cond_input_type|dataMatrix" value="faahKO.xset.group.retcor.group.fillpeaks.annotate.dataMatrix.tsv" ftype="tabular" />
+            <param name="cond_input_type|sampleMetadata" value="faahKO.xset.group.retcor.group.fillpeaks.annotate.sampleMetadata.tsv" ftype="tabular" />
+            <param name="cond_input_type|variableMetadata" value="faahKO.xset.group.retcor.group.fillpeaks.annotate.variableMetadata.tsv" ftype="tabular" />
+            <param name="cond_input_type|cond_function|select_funtion" value="sort_and_corr" />
+            <output name="sorted_table" file="sorted_table.tsv" />
+            <output name="correlation_matrix" file="correlation_matrix.tsv" />
+            <output name="correlation_matrix_selected" file="correlation_matrix_selected.tsv" />
+            <output name="siff_table" file="siff_table.tsv" />
+        </test>
+    </tests>
 
     <help>
-
-
-
-		
+        
 .. class:: infomark
 
 **Authors** Antoine Gravot antoine.gravot@univ-rennes1.fr (Protocole conception) and Misharl Monsoor  misharl.monsoor@sb-roscoff.fr (for galaxy wrapper and R script).
@@ -133,16 +171,16 @@ The second option takes as input a table of your own and execute the "corr_matri
 
 The first function "sorting":
 
-	| 1)First of all, it sorts the dataframe by rtmed column.
-	| 2)It computes the mean operation of all the signal values of the metabolites by sample, and put the results in a new column "signal_moy".
-	| 3)It finally creates a tabular output "sorted_table.tsv".
-	
+    | 1)First of all, it sorts the dataframe by rtmed column.
+    | 2)It computes the mean operation of all the signal values of the metabolites by sample, and put the results in a new column "signal_moy".
+    | 3)It finally creates a tabular output "sorted_table.tsv".
+    
 The second function "corrdel" for each pcgroup of the previous sorted tabular file "sorted_table.tsv", does the following things:
 
-	| The first metabolite which has the highest value of mean signal intensity is selected.
-	| Computes a global correlation matrix. 
-	| Select the metabolites which are not correlated to others from the same pcgroup based on a threshold value "Correlation threshold".
-	| It creates two tabular files: "correlation_matrix.tsv" (correlation matrix of all the metabolites) and "selected_metabolites_transpo.tsv" (metabolites tagged as deleted are removed and the dataframe is transposed)
+    | The first metabolite which has the highest value of mean signal intensity is selected.
+    | Computes a global correlation matrix. 
+    | Select the metabolites which are not correlated to others from the same pcgroup based on a threshold value "Correlation threshold".
+    | It creates two tabular files: "correlation_matrix.tsv" (correlation matrix of all the metabolites) and "selected_metabolites_transpo.tsv" (metabolites tagged as deleted are removed and the dataframe is transposed)
 
 
 The "corr_matrix" function computes a correlation matrix named "correlation_matrix.tsv" and creates a sif file named "sif_table.tsv" (for visualization in CytoScape).
@@ -250,21 +288,21 @@ Output files
 
 **sorted_table.tsv**
 
-	| A tabular file which is :
-	| 1) sorted by by rtmed column.
-	| 2) It contains a new column "signal_moy" (mean operation of all the signal values of the metabolites by sample).
+    | A tabular file which is :
+    | 1) sorted by by rtmed column.
+    | 2) It contains a new column "signal_moy" (mean operation of all the signal values of the metabolites by sample).
 
 **correlation_matrix.tsv**
 
-	| A tabular file where for each pcgroup:
-	| 1) The first metabolite which has the highest value of mean signal intensity is selected
-	| 2) Computes a global correlation matrix. 
-	| 3) Select the metabolites which are not correlated to others from the same pcgroup based on a threshold value "Correlation threshold". The metabolites are sorted by the signal intensity, and each metabolite is tested to the previous metabolites of the pcgroup to if the current metabolite is at least correlated to one previous metabolites (if yes, it is tagged as DEL).
-	| 4) (correlation matrix of all the metabolites) and "selected_metabolites_transpo.tsv" 
+    | A tabular file where for each pcgroup:
+    | 1) The first metabolite which has the highest value of mean signal intensity is selected
+    | 2) Computes a global correlation matrix. 
+    | 3) Select the metabolites which are not correlated to others from the same pcgroup based on a threshold value "Correlation threshold". The metabolites are sorted by the signal intensity, and each metabolite is tested to the previous metabolites of the pcgroup to if the current metabolite is at least correlated to one previous metabolites (if yes, it is tagged as DEL).
+    | 4) (correlation matrix of all the metabolites) and "selected_metabolites_transpo.tsv" 
 
 **correlation_matrix_selected.tsv**
 
-	| A correlation matrix containing only the metabolites selected (metabolites tagged as "DEL" are removed).
+    | A correlation matrix containing only the metabolites selected (metabolites tagged as "DEL" are removed).
 
 **selected_metabolites_transpo.tsv**
 
@@ -272,30 +310,39 @@ Output files
         
 **sif_table.tsv**
 
-		| A tabular file (three columns: Metabolite1, Correlation Number, Metabolite 2) that can be used in Cytoscape.
-	
+        | A tabular file (three columns: Metabolite1, Correlation Number, Metabolite 2) that can be used in Cytoscape.
+    
 ------
 
 .. class:: infomark 
 
 The output **selected_metabolites_transpo.tsv** is a tabular file. You can continue your analysis using it in the following statistical tools:
-	| PCA
-	| Hierarchical Clustering
-	| ACP ellipsoid by factors
-	| ANOVA
-	| Filters
-	| Determine_batch_correction
-	| Batch_correction
+    | PCA
+    | Hierarchical Clustering
+    | ACP ellipsoid by factors
+    | ANOVA
+    | Filters
+    | Determine_batch_correction
+    | Batch_correction
 
 
----------------
-Working example
----------------
 
-.. class:: warningmark
+---------------------------------------------------
 
-Soon see the corresponding "Page"
+Changelog/News
+--------------
+
+
+**Version 1.0.1 - 20/09/2016**
+
+- TEST: refactoring to pass functional test using conda dependencies
+
+
+**Version 20141118 - 18/11/2014**
 
     </help>
+    <citations>
+        <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </citations>
 
 </tool>
