@@ -4,22 +4,10 @@
 
 ## Purpose
 This repository aims to gather tools and contributors from the metabolomics world.
-=======
-Metabolites Correlation Analysis Tool for Galaxy
-================================================
-
-[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io)  [![Build Status](https://travis-ci.org/workflow4metabolomics/correlation_analysis.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/correlation_analysis)
-
-Our project
------------
-The [Workflow4Metabolomics](http://workflow4metabolomics.org), W4M in short, is a French infrastructure offering software tool processing, analyzing and annotating metabolomics data. It is based on the Galaxy platform.
->>>>>>> refactoring ; conda ; test ; but fail
 
 It is maintained by the Workflow4Metabolomics project but open to any contributors.
 
-<<<<<<< HEAD
 Tools themselves should stick with the [IUC](https://github.com/galaxyproject/tools-iuc) (Galaxy Intergalactic Utilities Commission) [standards and best practices](https://galaxy-iuc-standards.readthedocs.io/en/latest/)
-
 
 ### Workflow4Metabolomics
 The [Workflow4Metabolomics](http://workflow4metabolomics.org), W4M in short, is a French infrastructure offering software tool processing, analyzing and annotating metabolomics data.
