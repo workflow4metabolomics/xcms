@@ -85,7 +85,7 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
     #Create a matrix which contains only the data of the samples without the other columns
     statmatrix <- output_tsv[(names(output_tsv) %in% c(samples_name))]
     #Add the rownames previously
-    rownames(statmatrix) = output_tsv[,first_column]
+    rownames(statmatrix) = make.unique(as.vector(output_tsv[,first_column]))
     #Do the cor step, with the transposed statmatrix (metabolites as columns)
     corr_transpo <-cor(t(as.matrix(statmatrix)),method=corr_method)
     #Add the columns "signal_moy", "pcgroup" and "name" to the final correlation matrix output
