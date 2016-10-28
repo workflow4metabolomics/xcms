@@ -1,9 +1,12 @@
-# lib.r version="2.0.1"
+# lib.r version="2.3"
 #Authors ABiMS TEAM
 #Lib.r for Galaxy Workflow4Metabo
-#version 2.2
+#version 2.3
 #Based on lib.r 2.1
 #Modifications made by Guitton Yann 
+#2.3 Note
+#correction for empty PDF when only 1 class
+#2.2 Note
 #correct bug in Base Peak Chromatogram (BPC) option, not only TIC when scanrange used in xcmsSet
 #Note if scanrange is used a warning is prompted in R console but do not stop PDF generation
 
@@ -114,7 +117,25 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
     legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col = colvect, lty = lty, pch = pch)
 
   }#end length ==2
+  
+  #case where only one class
+  if (length(class)==1){
+    k=1
+		ylim = range(sapply(TIC, function(x) range(x[,2])))
+    colvect<-NULL
+    plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",class[k], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
 
+    for (j in 1:length(classnames[[k]])) {
+      tic <- TIC[[classnames[[k]][j]]]
+      # points(tic[,1]/60, tic[,2], col = cols[i], pch = pch[i], type="l")
+      points(tic[,1]/60, tic[,2], col = cols[classnames[[k]][j]], pch = pch[classnames[[k]][j]], type="l")
+      colvect<-append(colvect,cols[classnames[[k]][j]])
+    }
+      
+    legend("topright",paste(basename(files[c(classnames[[k]])])), col = colvect, lty = lty, pch = pch)
+
+  }#end length ==1
+                        
   dev.off() #pdf(pdfname,w=16,h=10)
 
   invisible(TIC)
@@ -219,6 +240,25 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
     legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col = colvect, lty = lty, pch = pch)
 
   }#end length ==2
+    
+  #case where only one class
+  if (length(class)==1){
+	  k=1
+	  ylim = range(sapply(TIC, function(x) range(x[,2])))
+				
+	  plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
+    colvect<-NULL
+		for (j in 1:length(classnames[[k]])) {
+      tic <- TIC[[classnames[[k]][j]]]
+			# points(tic[,1]/60, tic[,2], col = cols[i], pch = pch[i], type="l")
+			points(tic[,1]/60, tic[,2], col = cols[classnames[[k]][j]], pch = pch[classnames[[k]][j]], type="l")
+      colvect<-append(colvect,cols[classnames[[k]][j]])
+	  }
+		
+		legend("topright",paste(basename(files[c(classnames[[k]])])), col = colvect, lty = lty, pch = pch)
+	  
+	}#end length ==1
+                        
   dev.off() #pdf(pdfname,w=16,h=10)
 
   invisible(TIC)
