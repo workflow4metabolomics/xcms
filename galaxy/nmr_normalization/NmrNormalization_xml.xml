@@ -1,6 +1,6 @@
-<tool id="NmrNormalization" name="NMR_Normalization" version="1.0.1">
+<tool id="Normalization" name="Normalization" version="1.0.1">
     
-    <description>Normalization of NMR bucketed and integrated spectra</description>
+    <description> Normalization of (preprocessed) spectra </description>
 
     <requirements>
         <requirement type="package" version="3.1.2">R</requirement>
@@ -52,7 +52,6 @@
     
 	<inputs>
 		<param name="dataMatrix" type="data" label="Data matrix of bucketed and integrated spectra" help="" format="tabular" />
-
 
 		<conditional name="scalingMethod" >
 			<param name="method" label="Normalization method" type="select" help="Default method is total intensity" >
@@ -121,15 +120,15 @@ Analytical Chemistry 78(13): 4281-4290.
 
 ---------------------------------------------------
 
-=================
-NMR Normalization
-=================
+=============
+Normalization
+=============
 
 -----------
 Description
 -----------
 
-Normalization (operation applied on each individual spectrum) of bucketed and integrated NMR data
+Normalization (operation applied on each (preprocessed) individual spectrum) of spectral data
  
 -----------------
 Workflow position
@@ -140,7 +139,7 @@ Workflow position
 +----------------------+------------------------------------+---------+-------------+
 | Name                 | output file                        | format  | parameter   |
 +======================+====================================+=========+=============+
-| NMR_Bucketing        | NMR_Normalization_bucketedData.tsv | tabular | Ions Matrix |
+| NMR_Bucketing        | Normalization_bucketedData.tsv     | tabular | Ions Matrix |
 +----------------------+------------------------------------+---------+-------------+
 
 
@@ -171,7 +170,7 @@ Input files
 
 **DataMAtrix**
 
-	| variable x sample dataMatrix tabular separated file containing bucketed and integrated NMR spectra, with . as decimal, and NA for missing values
+	| variable x sample dataMatrix tabular separated file containing (preprocessed) spectra, with . as decimal, and NA for missing values
 
 
 ----------

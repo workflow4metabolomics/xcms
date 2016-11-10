@@ -119,7 +119,7 @@ write.table(data_variable,file=argLs$variableMetadataOut,quote=FALSE,row.names=F
 ## Ending
 ##---------------------
 
-cat("\nEnd of 'NMR Normalization' Galaxy module call: ", as.character(Sys.time()), sep = "")
+cat("\nEnd of 'Normalization' Galaxy module call: ", as.character(Sys.time()), sep = "")
 
 ## sink(NULL)
 
