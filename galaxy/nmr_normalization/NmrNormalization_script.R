@@ -1,5 +1,5 @@
 #################################################################################################################
-# SPECTRA NORMALIZATION FROM BUCKETED AND INTEGRATED SPECTRA                                                    #
+# SPECTRA NORMALIZATION FROM SPECTRAL DATA                                                    #
 # User : Galaxy                                                                                                 #
 # Original data : --                                                                                            #
 # Starting date : 20-10-2014                                                                                    #
@@ -23,38 +23,38 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
   strAsFacL <- options()$stringsAsFactors
   options(stingsAsFactors = FALSE)
   options(warn = -1)
-  
-  
+
+
   ## Constants
   ##---------------
   topEnvC <- environment()
   flgC <- "\n"
-  
+
   ## Log file (in case of integration into Galaxy)
   ##----------------------------------------------
   if(!is.null(savLog.txtC))
     sink(savLog.txtC, append = TRUE)
-  
+
   ## Functions definition
-  ##---------------------  
+  ##---------------------
   #################################################################################################################
   # Total intensity normalization
   # Input parameters
   #   - data : bucketed spectra (rows=buckets; columns=samples)
-  #################################################################################################################  
+  #################################################################################################################
   NmrBrucker_total <- function(data)
   {
     # Total intensity normalization
     data.total <- apply(data,2,sum)
     data.normalized <- data[,1]/data.total[1]
     for (i in 2:ncol(data))
-      data.normalized <- cbind(data.normalized,data[,i]/data.total[i]) 
+      data.normalized <- cbind(data.normalized,data[,i]/data.total[i])
     colnames(data.normalized) <- colnames(data)
     rownames(data.normalized) <- rownames(data)
     return(data.normalized)
   }
 
-  
+
   #################################################################################################################
   # Biological factor normalization
   # Input parameters
@@ -67,13 +67,13 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     # Total intensity normalization
     data.normalized <- data[,1]/bioFactor[1]
     for (i in 2:ncol(data))
-      data.normalized <- cbind(data.normalized,data[,i]/bioFactor[i]) 
+      data.normalized <- cbind(data.normalized,data[,i]/bioFactor[i])
     colnames(data.normalized) <- colnames(data)
     rownames(data.normalized) <- rownames(data)
     return(data.normalized)
   }
-  
-  
+
+
   #################################################################################################################
   # Probabilistic quotient normalization (PQN)
   # Input parameters
@@ -88,32 +88,32 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     data.total <- apply(data,2,sum)
     data.normalized <- data[,1]/data.total[1]
     for (i in 2:ncol(data))
-      data.normalized <- cbind(data.normalized,data[,i]/data.total[i]) 
+      data.normalized <- cbind(data.normalized,data[,i]/data.total[i])
     colnames(data.normalized) <- colnames(data)
     rownames(data.normalized) <- rownames(data)
-    
+
     # Reference spectrum
     # Recuperation spectres individus controle
     control.spectra <- data.normalized[,sampleMetadata[,pqnFactor]==nomControl]
     spectrum.ref <- apply(control.spectra,1,median)
-    
+
     # Ratio between normalized and reference spectra
     data.normalized.ref <- data.normalized/spectrum.ref
-    
+
     # Median ratio
     data.normalized.ref.median <- apply(data.normalized.ref,1,median)
-    
+
     # Normalization
     data.normalizedPQN <- data.normalized[,1]/data.normalized.ref.median
     for (i in 2:ncol(data))
       data.normalizedPQN <- cbind(data.normalizedPQN,data.normalized[,i]/data.normalized.ref.median)
     colnames(data.normalizedPQN) <- colnames(data)
     rownames(data.normalizedPQN) <- rownames(data)
-    
+
     return(data.normalizedPQN)
   }
-  
-  
+
+
   ## Tests
   if (scalingMethod=="QuantitativeVariable")
   {
@@ -122,7 +122,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     else
        bioFact <- sampleMetadata[,bioFactor]
   }
-  
+
   ## Spectra scaling depending on the user choice
   if (scalingMethod == "None")
   {
@@ -130,7 +130,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
   }
   else if (scalingMethod == "Total")
   {
-    NormalizedBucketedSpectra <- NmrBrucker_total(dataMatrix)    
+    NormalizedBucketedSpectra <- NmrBrucker_total(dataMatrix)
   }
   else if (scalingMethod == "PQN")
   {
@@ -140,7 +140,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
   {
     NormalizedBucketedSpectra <- NmrBrucker_bioFact(dataMatrix,sampleMetadata,bioFact)
   }
-  
+
   # Graphic
   if (graph != "None")
   {
@@ -167,7 +167,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     }
     dev.off()
   }
-  
+
   # Output datasets creation
   if (scalingMethod == "None" || scalingMethod == "Total")
   {
@@ -175,7 +175,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
       rownames(sampleMetadata) <- colnames(NormalizedBucketedSpectra)
       colnames(sampleMetadata) <- "SampleOrder"
   }
-   
+
   variableMetadata <- data.frame(1:nrow(NormalizedBucketedSpectra))
   rownames(variableMetadata) <- rownames(NormalizedBucketedSpectra)
   colnames(variableMetadata) <- "VariableOrder"
