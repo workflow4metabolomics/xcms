@@ -20,7 +20,7 @@ library(batch)
 
 
 ## --- Config : --- ##
- - Edit the file "/galaxy/dist/galaxy-dist/tool_conf.xml" and add 
+ - Edit the file "/galaxy/dist/galaxy-dist/tool_conf.xml" and add
 <section id="id_name" name="Name">
   <tool file="path/NmrNormalization_xml.xml" />
 </section>
@@ -35,7 +35,7 @@ For example, path=/galaxy/dist/galaxy-dist/tools/stats
  - Edit the NmrBucketing_xml.xml file and change the path in the following lines
     # R script
     R --vanilla --slave --no-site-file --file=path/NmrNormalization_wrapper.R --args
-    
+
     ## Library name for raw files storage
     library path/$library
 

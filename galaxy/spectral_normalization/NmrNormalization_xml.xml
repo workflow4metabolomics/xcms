@@ -1,12 +1,11 @@
-<tool id="NmrNormalization" name="NMR_Normalization" version="1.0.1">
-    
-    <description>Normalization of NMR bucketed and integrated spectra</description>
+<tool id="spectral_normalization" name="Spectral Normalization" version="1.0.2">
+
+    <description> Normalization of (preprocessed) spectra </description>
 
     <requirements>
-        <requirement type="package" version="3.1.2">R</requirement>
 	      <requirement type="package" version="1.1_4">r-batch</requirement>
     </requirements>
-    
+
 	  <stdio>
         <exit_code range="1:" level="fatal" />
     </stdio>
@@ -34,9 +33,9 @@
 			    sampleMetadata $scalingMethod.sampleMetadata
 
 			    ## Biological factor of interest (column number in samplemetadata)
-			    factor $scalingMethod.factor 
+			    factor $scalingMethod.factor
 		    #end if
-		
+
 		    ## Spectra representation
 		    graphType $graphType
 
@@ -49,17 +48,16 @@
 
 
 	</command>
-    
-	<inputs>
-		<param name="dataMatrix" type="data" label="Data matrix of bucketed and integrated spectra" help="" format="tabular" />
 
+	<inputs>
+		<param name="dataMatrix" type="data" label="Data matrix of spectral data" help="" format="tabular" />
 
 		<conditional name="scalingMethod" >
 			<param name="method" label="Normalization method" type="select" help="Default method is total intensity" >
-				<option value="None" lable="None normalization"/>
-				<option value="Total" label="Total intensity"/>
-				<option value="PQN" label="Probabilistic Quotient Normalization "/>
-				<option value="QuantitativeVariable" label="Quantitative variable" />
+				<option value="None">None normalization</option>
+				<option value="Total">Total intensity</option>
+				<option value="PQN">Probabilistic Quotient Normalization</option>
+				<option value="QuantitativeVariable">Quantitative variable</option>
 			</param>
       <when value="None" />
       <when value="Total" />
@@ -80,18 +78,18 @@
 			<option value="One_per_individual"> One_per_individual </option>
 		</param>
 	</inputs>
-    
-    
+
+
 	<outputs>
 		<data format="txt" name="logOut" label="${tool.name}_log" />
-		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_samplemetadata" />
-		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadataOut" />
-        <data format="tabular" name="dataMatrixOut" label="${tool.name}_bucketedData" />
+		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_sampleMetadata" />
+		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadata" />
+    <data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrix" />
 		<data format="pdf" name="graphOut" label="${tool.name}_spectra" >
 			<filter> graphType != "None" </filter>
 		</data>
 	</outputs>
-  
+
   <tests>
         <test>
             <param name="dataMatrix" value="MTBLS1_bucketedData.tabular" ftype="tabular" />
@@ -104,7 +102,7 @@
     </tests>
 
 	<help>
-	
+
 .. class:: infomark
 
 **Authors** Marie Tremblay-Franco (marie.tremblay-franco@toulouse.inra.fr) and Marion Landi (marion.landi@clermont.inra.fr)
@@ -116,21 +114,21 @@
 
 **Please cite**
 
-F. Dieterle, A. Ross, G. Schlotterbeck, and H. Senn (2006). Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics. 
+F. Dieterle, A. Ross, G. Schlotterbeck, and H. Senn (2006). Probabilistic Quotient Normalization as Robust Method to Account for Dilution of Complex Biological Mixtures. Application in 1H NMR Metabonomics.
 Analytical Chemistry 78(13): 4281-4290.
 
 ---------------------------------------------------
 
-=================
-NMR Normalization
-=================
+======================
+Spectral Normalization
+======================
 
 -----------
 Description
 -----------
 
-Normalization (operation applied on each individual spectrum) of bucketed and integrated NMR data
- 
+Normalization (operation applied on each (preprocessed) individual spectrum) of spectral data
+
 -----------------
 Workflow position
 -----------------
@@ -140,7 +138,7 @@ Workflow position
 +----------------------+------------------------------------+---------+-------------+
 | Name                 | output file                        | format  | parameter   |
 +======================+====================================+=========+=============+
-| NMR_Bucketing        | NMR_Normalization_bucketedData.tsv | tabular | Ions Matrix |
+| NMR_Bucketing        | Normalization_bucketedData.tsv     | tabular | Ions Matrix |
 +----------------------+------------------------------------+---------+-------------+
 
 
@@ -171,7 +169,7 @@ Input files
 
 **DataMAtrix**
 
-	| variable x sample dataMatrix tabular separated file containing bucketed and integrated NMR spectra, with . as decimal, and NA for missing values
+	| variable x sample dataMatrix tabular separated file containing (preprocessed) spectra, with . as decimal, and NA for missing values
 
 
 ----------
@@ -180,10 +178,10 @@ Parameters
 
 DataMatrix
 	| see "Input files" section above
-	| 
+	|
 
 Normalization method
-	| normalization to apply on each spectrum: 
+	| normalization to apply on each spectrum:
 
 +---------------------------+--------------------------------------+
 | Name                      | Normalization                        |
@@ -217,7 +215,7 @@ Output files
 ------------
 
 
-bucketedData.tsv
+dataMatrix.tsv
 	| tabular output
 	| Data matrix with p rows (buckets) and n columns (samples) containing the intensities
 	|
@@ -230,14 +228,14 @@ sampleMetadata.tsv
 
 variableMetadata.tsv
 	| tabular output
-	| file with p rows (buckets) and 2 columns containing variable identifier (rownames) and bucket order. Can add columns with numeric and/or character variable metadata. 
+	| file with p rows (buckets) and 2 columns containing variable identifier (rownames) and bucket order. Can add columns with numeric and/or character variable metadata.
 	| Mandatory file in the statistical analysis step of the workflow
 	|
 
 spectra.pdf
 	| pdf output
 	| Graphical chart of bucketed and integrated data
-	| 
+	|
 
 
 ---------------------------------------------------
@@ -255,9 +253,25 @@ Under construction
         :width: 100
 
 
+---------------------------------------------------
+
+--------------
+Changelog/News
+--------------
+
+**Version 1.0.2 - 22/10/2016**
+
+- NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of spectral data
+
+**Version 1.0.1 - 14/04/2016**
+
+- TEST: refactoring to pass planemo test using conda dependencies
+
+
+**Version 2015-01-28 - 28/01/2015**
+
    </help>
     <citations>
         <citation type="doi">10.1093/bioinformatics/btu813</citation>
     </citations>
 </tool>
-

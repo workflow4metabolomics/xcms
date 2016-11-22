@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 1.0.2 - 22/10/2016**
+
+- NEW: this tool was previously named NMR Normalization. It had been generalized to deal with all kind of spectral data
+
 **Version 1.0.1 - 14/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
@@ -17,4 +21,3 @@ Test Status
 Planemo test using conda: passed
 
 Planemo shed_test: passed
-
