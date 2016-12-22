@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.0.7">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.0.8">
 
     <description>Integrate the signal in the region of that peak group not represented and create a new peak</description>
 
@@ -17,6 +17,14 @@
         xsetRdataOutput $xsetRData
 
         method $method
+       
+        #if $peaklist.peaklistBool
+            variableMetadataOutput $variableMetadata
+            dataMatrixOutput $dataMatrix
+            numDigitsMZ $peaklist.numDigitsMZ
+            numDigitsRT $peaklist.numDigitsRT
+            intval $peaklist.intval
+        #end if
 
         @COMMAND_ZIPFILE_LOAD@
 
@@ -30,13 +38,31 @@
             <option value="chrom" selected="true">chrom</option>
             <option value="MSW" >MSW</option>
         </param>
-        
+        <conditional name="peaklist">
+            <param name="peaklistBool" type="boolean" label="Get a Peak List" />
+            <when value="true">
+              <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions identifiers." help="A minimum of 4 decimal places should be set. Useful to avoid doublon within the identifiers" />
+              <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention tome values reported in ions identifiers." help="Useful to avoid doublon within the identifiers" />
+              <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
+                  <option value="into" selected="true">into</option>
+                  <option value="maxo">maxo</option>
+                  <option value="intb">intb</option>
+              </param>
+            </when>
+            <when value="false" />
+        </conditional>
         <expand macro="zipfile_load"/>
 
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.fillpeaks" label="${image.name[:-6]}.fillPeaks.RData" />
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv">
+            <filter>(peaklist['peaklistBool'])</filter>
+        </data>
+        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" >
+            <filter>(peaklist['peaklistBool'])</filter>
+        </data>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
     
@@ -59,6 +85,11 @@
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.RData"/>
             <param name="method" value="chrom"/>
+            <conditional name="peaklist">
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
             <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
             <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="log">
@@ -71,6 +102,8 @@
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>
     </tests>
 
@@ -201,6 +234,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.8 - 22/12/2016**
+
+- IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
 
 **Version 2.0.7 - 06/07/2016**
 

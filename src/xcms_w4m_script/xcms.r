@@ -64,18 +64,32 @@ if (!is.null(listArguments[["xsetRdataOutput"]])){
   xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
 }
 
+#saving the specific parameters
 rplotspdf = "Rplots.pdf"
 if (!is.null(listArguments[["rplotspdf"]])){
   rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
 }
-
 sampleMetadataOutput = "sampleMetadata.tsv"
 if (!is.null(listArguments[["sampleMetadataOutput"]])){
   sampleMetadataOutput = listArguments[["sampleMetadataOutput"]]; listArguments[["sampleMetadataOutput"]]=NULL
 }
-
-
-
+variableMetadataOutput = "variableMetadata.tsv"
+if (!is.null(listArguments[["variableMetadataOutput"]])){
+  variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
+}
+dataMatrixOutput = "dataMatrix.tsv"
+if (!is.null(listArguments[["dataMatrixOutput"]])){
+  dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
+}
+if (!is.null(listArguments[["numDigitsMZ"]])){
+  numDigitsMZ = listArguments[["numDigitsMZ"]]; listArguments[["numDigitsMZ"]]=NULL
+}
+if (!is.null(listArguments[["numDigitsRT"]])){
+  numDigitsRT = listArguments[["numDigitsRT"]]; listArguments[["numDigitsRT"]]=NULL
+}
+if (!is.null(listArguments[["intval"]])){
+  intval = listArguments[["intval"]]; listArguments[["intval"]]=NULL
+}
 
 if (thefunction %in% c("xcmsSet","retcor")) {
   ticspdf = listArguments[["ticspdf"]]; listArguments[["ticspdf"]]=NULL
@@ -187,6 +201,8 @@ if (thefunction == "group") {
 
 
 #execution of the function "thefunction" with the parameters given in "listArguments"
+
+cat("\t\tCOMPUTE\n")
 xset = do.call(thefunction, listArguments)
 
 
@@ -217,16 +233,23 @@ if (thefunction  == "xcmsSet") {
 
 # -- TIC --
 if (thefunction == "xcmsSet") {
+  cat("\t\tGET TIC GRAPH\n")
   sampleNamesList = getSampleMetadata(xcmsSet=xset, sampleMetadataOutput=sampleMetadataOutput)
   getTICs(xcmsSet=xset, pdfname=ticspdf,rt="raw")
   getBPCs(xcmsSet=xset,rt="raw",pdfname=bicspdf)
 } else if (thefunction == "retcor") {
+  cat("\t\tGET TIC GRAPH\n")
   getTICs(xcmsSet=xset, pdfname=ticspdf,rt="corrected")
   getBPCs(xcmsSet=xset,rt="corrected",pdfname=bicspdf)
 }
 
-cat("\n\n")
+if (thefunction == "fillPeaks") {
+  cat("\t\tGET THE PEAK LIST\n")
+  getPeaklistW4M(xset,intval,numDigitsMZ,numDigitsRT,variableMetadataOutput,dataMatrixOutput)
+}
 
+
+cat("\n\n")
 
 # ----- EXPORT -----
 
