@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.10">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.11">
 
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
@@ -24,14 +24,16 @@
         ticspdf $ticsRawPdf
         bicspdf $bpcsRawPdf
 
+
+        #if $options_scanrange.option == "show":
+            scanrange "c($options_scanrange.scanrange)"
+        #end if
+
         ## profmethod $profmethod
         nSlaves \${GALAXY_SLOTS:-1} method $methods.method
         #if $methods.method == "centWave":
             ppm $methods.ppm
             peakwidth "c($methods.peakwidth)"
-            #if $methods.options_scanrange.option == "show":
-                scanrange "c($methods.options_scanrange.scanrange)"
-            #end if
             #if $methods.options_c.option == "show":
                 mzdiff $methods.options_c.mzdiff
                 snthresh $methods.options_c.snthresh
@@ -79,6 +81,20 @@
 
         </conditional>
 
+        <conditional name="options_scanrange">
+            <param name="option" type="select" label="Scan range option " >
+                <option value="show">show</option>
+                <option value="hide" selected="true">hide</option>
+            </param>
+            <when value="show">
+                <param name="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
+                    <validator type="empty_field"/>
+                </param>
+            </when>
+            <when value="hide">
+            </when>
+        </conditional>
+
 
 <!--
         <param name="profmethod" type="select" label="Method to use for profile generation (profmethod)" >
@@ -100,20 +116,7 @@
             <when value="centWave">
                 <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
                 <param name="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="[peakwidth]" />
-                <conditional name="options_scanrange">
-                    <param name="option" type="select" label="Scan range option " >
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
-                    </param>
-                    <when value="show">
-                        <param name="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-                            <validator type="empty_field"/>
-                        </param>
-                    </when>
-                    <when value="hide">
-                    </when>
-                </conditional>
-
+                
                 <conditional name="options_c">
                     <param name="option" type="select" label="Advanced options" >
                         <option value="show">show</option>
@@ -134,7 +137,7 @@
                 </conditional>
             </when>
 
-        <!-- matched Filter options -->
+            <!-- matched Filter options -->
             <when value="matchedFilter">
                 <param name="step" type="float" value="0.01" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
                 <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
@@ -159,7 +162,7 @@
                 </conditional>
             </when>
 
-        <!-- MSW Filter options -->
+            <!-- MSW Filter options -->
             <when value="MSW">
                 <param name="nearbyPeak" type="select" label="Determine whether to include the nearby small peaks of major peaks" help="[nearbyPeak]" >
                     <option value="TRUE">TRUE</option>
@@ -474,6 +477,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.11 - 22/12/2016**
+
+- BUGFIX: propose scanrange for all methods
 
 **Version 2.0.10 - 22/12/2016**
 
