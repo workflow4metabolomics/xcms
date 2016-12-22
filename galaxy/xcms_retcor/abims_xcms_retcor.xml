@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.7">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.8">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
@@ -10,9 +10,9 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_XCMS_SCRIPT@ 
-        image $image 
-        xfunction retcor 
+        @COMMAND_XCMS_SCRIPT@
+        image $image
+        xfunction retcor
 
         xsetRdataOutput $xsetRData
         ticspdf $ticsCorPdf
@@ -35,7 +35,7 @@
 
         @COMMAND_ZIPFILE_LOAD@
 
-        @COMMAND_LOG_EXIT@        
+        @COMMAND_LOG_EXIT@
     ]]></command>
 
     <inputs>
@@ -47,8 +47,8 @@
             </param>
             <when value="obiwarp">
                 <param name="profStep" type="float" value="1" label="Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files" />
-            </when> 
-            <when value="peakgroups">   
+            </when>
+            <when value="peakgroups">
                 <param name="smooth" type="select" label="Smooth method" help="[smooth] either 'loess’ for non-linear alignment or ‘linear’ for linear alignment" >
                     <option value="loess">loess</option>
                     <option value="linear">linear</option>
@@ -63,7 +63,7 @@
                     </param>
                     <when value="show">
                         <param name="span" type="float" value="0.2" label="Degree of smoothing for local polynomial regression fitting" help="[span]"/>
-                        
+
                         <param name="family" type="select" label="Family" help="[family] if gaussian fitting is by least-squares with no outlier removal, and if symmetric a re descending M estimator is used with Tukey's biweight function, allowing outlier removal">
                             <option value="gaussian" selected="true">gaussian</option>
                             <option value="symmetric">symmetric</option>
@@ -98,7 +98,7 @@
         <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
-    
+
     <tests>
         <!--<test>
             <param name="image" value="xset.group.RData"/>
@@ -149,7 +149,7 @@
     </tests>
 
     <help><![CDATA[
-        
+
 @HELP_AUTHORS@
 
 ===========
@@ -160,12 +160,12 @@ Xcms.retcor
 Description
 -----------
 
-After matching peaks into groups, xcms can use those groups to identify and correct 
-correlated drifts in retention time from run to run. The aligned peaks can then be 
-used for a second pass of peak grouping which will be more accurate than the first. 
-The whole process can be repeated in an iterative fashion. Not all peak groups will be helpful 
-for identifying retention time drifts. Some groups may be missing peaks from a large 
-fraction of samples and thus provide an incomplete picture of the drift at that time point. 
+After matching peaks into groups, xcms can use those groups to identify and correct
+correlated drifts in retention time from run to run. The aligned peaks can then be
+used for a second pass of peak grouping which will be more accurate than the first.
+The whole process can be repeated in an iterative fashion. Not all peak groups will be helpful
+for identifying retention time drifts. Some groups may be missing peaks from a large
+fraction of samples and thus provide an incomplete picture of the drift at that time point.
 Still others may contain multiple peaks from the same sample, which is a sign of impropper grouping.
 
 .. class:: warningmark
@@ -250,15 +250,15 @@ xset.group.retcor.BPCs_corrected.pdf
 xset.group.retcor.RData: rdata.xcms.retcor format
 
     | Rdata file that will be necessary in the **xcms.group** step of the workflow.
-    
-    
+
+
 ------
 
-.. class:: infomark 
+.. class:: infomark
 
 The output file is an xset.retcor.RData file. You can continue your analysis using it in **xcms.fillPeaks** tool.
 
-    
+
 ---------------------------------------------------
 
 ---------------
@@ -281,7 +281,7 @@ Parameters
     | span -> **0.2**
     | family -> **gaussian**
     | plottype -> **deviation**
-    
+
 
 Output files
 ------------
@@ -297,6 +297,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.8 - 22/12/2016**
+
+- BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
 
 **Version 2.0.7 - 06/07/2016**
 

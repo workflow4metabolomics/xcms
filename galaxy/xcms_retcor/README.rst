@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.8 - 22/12/2016**
+
+- BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
+
 **Version 2.0.7 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
@@ -9,7 +13,6 @@ Changelog/News
 **Version 2.0.6 - 04/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
-
 
 **Version 2.0.5 - 10/02/2016**
 
@@ -37,5 +40,3 @@ Planemo test using conda: passed
 Planemo test using source env.sh: passed
 
 Planemo shed_test : passed
-
-

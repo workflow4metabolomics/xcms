@@ -1,14 +1,14 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.9">
-    
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.0.10">
+
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
-    
+
     <macros>
         <import>macros.xml</import>
     </macros>
 
     <expand macro="requirements"/>
     <expand macro="stdio"/>
-    
+
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
         #if $inputs.input == "lib":
@@ -24,14 +24,14 @@
         ticspdf $ticsRawPdf
         bicspdf $bpcsRawPdf
 
-        ## profmethod $profmethod 
-        nSlaves \${GALAXY_SLOTS:-1} method $methods.method 
+        ## profmethod $profmethod
+        nSlaves \${GALAXY_SLOTS:-1} method $methods.method
         #if $methods.method == "centWave":
             ppm $methods.ppm
             peakwidth "c($methods.peakwidth)"
             #if $methods.options_scanrange.option == "show":
                 scanrange "c($methods.options_scanrange.scanrange)"
-            #end if 
+            #end if
             #if $methods.options_c.option == "show":
                 mzdiff $methods.options_c.mzdiff
                 snthresh $methods.options_c.snthresh
@@ -60,7 +60,7 @@
         #end if
         @COMMAND_LOG_EXIT@
     ]]></command>
-    
+
     <inputs>
 
         <conditional name="inputs">
@@ -73,13 +73,13 @@
              </when>
             <when value="lib">
                 <param name="library" type="text" size="40" label="Library directory name" help="The name of your directory containing all your data" >
-                <validator type="empty_field"/> 
+                <validator type="empty_field"/>
             </param>
                 </when>
 
         </conditional>
 
-       
+
 <!--
         <param name="profmethod" type="select" label="Method to use for profile generation (profmethod)" >
             <option value="bin" selected="true">bin</option>
@@ -107,13 +107,13 @@
                     </param>
                     <when value="show">
                         <param name="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-                            <validator type="empty_field"/> 
+                            <validator type="empty_field"/>
                         </param>
                     </when>
                     <when value="hide">
                     </when>
                 </conditional>
-                        
+
                 <conditional name="options_c">
                     <param name="option" type="select" label="Advanced options" >
                         <option value="show">show</option>
@@ -173,7 +173,7 @@
             </when>
         </conditional>
     </inputs>
-    
+
     <outputs>
         <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
         <data name="sampleMetadata" format="tabular" label="sampleMetadata.tsv" />
@@ -181,7 +181,7 @@
         <data name="bpcsRawPdf"   format="pdf" label="xset.BPCs_raw.pdf" />
         <data name="log" format="txt" label="xset.log.txt" />
     </outputs>
-    
+
     <tests>
         <!--<test>
             <param name="inputs|input" value="zip_file" />
@@ -239,7 +239,7 @@
             </output>
         </test>
     </tests>
-    
+
     <help><![CDATA[
 
 @HELP_AUTHORS@
@@ -267,7 +267,7 @@ Workflow position
 ========================= ================= ======= =========
 Name                      output file       format  parameter
 ========================= ================= ======= =========
-NA                        NA                zip     NA       
+NA                        NA                zip     NA
 ========================= ================= ======= =========
 
 
@@ -291,7 +291,7 @@ NA                        NA                zip     NA
 
 ------
 
-.. class:: infomark 
+.. class:: infomark
 
 The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
 
@@ -371,7 +371,7 @@ Extraction method for peaks detection
 
 **Matched Filter**
 
-    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm. 
+    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
     | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
 
 
@@ -409,10 +409,10 @@ sampleMetadata.tsv
 xset.RData: rdata.xcms.raw format
 
     | Rdata file that is necessary in the second step of the workflow "xcms.group".
-    
+
 ------
 
-.. class:: infomark 
+.. class:: infomark
 
 The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
 
@@ -432,7 +432,7 @@ Parameters
 
     | Method -> **matchedFilter**
     | step   -> **0.01**
-    | fwhm   -> **4** 
+    | fwhm   -> **4**
     | Advanced option -> **show**
     | max: -> **50**
     | snthresh -> **1**
@@ -475,9 +475,13 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.0.10 - 22/12/2016**
+
+- BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
+
 **Version 2.0.9 - 06/07/2016**
 
-- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+- UPGRADE: upgrade the xcms version from 1.44.0 to 1.46.0
 
 **Version 2.0.8 - 06/04/2016**
 

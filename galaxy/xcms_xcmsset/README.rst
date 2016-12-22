@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.10 - 22/12/2016**
+
+- BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
+
 **Version 2.0.9 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
