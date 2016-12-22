@@ -14,7 +14,7 @@ before_install:
  - planemo conda_init
 
 install:
- - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite --conda_channels bioconda,r,defaults,conda-forge
+ - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite
 
 script:
  - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite
