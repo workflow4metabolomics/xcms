@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.11 - 22/12/2016**
+
+- BUGFIX: propose scanrange for all methods
+
 **Version 2.0.10 - 22/12/2016**
 
 - BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
