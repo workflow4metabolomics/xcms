@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.0.4">
+<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.0.5">
 
     <description>Wrapper function for the combinexsAnnos CAMERA function. Returns a dataframe with recalculated annotations.</description>
     
@@ -191,6 +191,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.5 - 22/12/2016**
+
+- IMPROVEMENT: add the possibility to add a personal Matrix of matching rules (ruleset)
 
 **Version 2.0.4 - 21/04/2016**
 
