@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.0.8 - 22/12/2016**
+
+- IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
+
 **Version 2.0.7 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0

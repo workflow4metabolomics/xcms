@@ -1,17 +1,30 @@
-# lib.r version="2.3"
 #Authors ABiMS TEAM
-#Lib.r for Galaxy Workflow4Metabo
-#version 2.3
-#Based on lib.r 2.1
-#Modifications made by Guitton Yann 
-#2.3 Note
-#correction for empty PDF when only 1 class
-#2.2 Note
-#correct bug in Base Peak Chromatogram (BPC) option, not only TIC when scanrange used in xcmsSet
-#Note if scanrange is used a warning is prompted in R console but do not stop PDF generation
+#Lib.r for Galaxy Workflow4Metabolomics xcms tools
+#
+#version 2.4: lecorguille
+#   add getPeaklistW4M
+#version 2.3: yguitton
+#   correction for empty PDF when only 1 class
+#version 2.2
+#   correct bug in Base Peak Chromatogram (BPC) option, not only TIC when scanrange used in xcmsSet
+#   Note if scanrange is used a warning is prompted in R console but do not stop PDF generation
+#version 2.1: yguitton
+#   Modifications made by Guitton Yann 
 
 
+#@author G. Le Corguille
+# value: intensity values to be used into, maxo or intb
+getPeaklistW4M <- function(xset, intval="into",numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
+  groups <- xset@groups
+  values <- groupval(xset, "medret", value=intval)
+  ids <- paste0("M",round(groups[,1],numDigitsMZ),"T",round(groups[,4],numDigitsRT))
 
+  rownames(groups) = ids
+  rownames(values) = ids
+
+  write.table(groups, file=variableMetadataOutput,sep="\t",quote=F,row.names = T,col.names = NA)
+  write.table(values, file=dataMatrixOutput,sep="\t",quote=F,row.names = T,col.names = NA)
+}  
 
 #@author Y. Guitton
 getBPC <- function(file,rtcor=NULL, ...) {
