@@ -57,10 +57,10 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.fillpeaks" label="${image.name[:-6]}.fillPeaks.RData" />
-        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv">
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.fillPeaks.variableMetadata.tsv">
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
-        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" >
+        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.fillPeaks.dataMatrix.tsv" >
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
