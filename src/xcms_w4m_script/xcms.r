@@ -19,7 +19,7 @@ for(pkg in pkgs) {
   cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
 }
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
-cat("\n\n"); 
+cat("\n\n");
 
 
 
@@ -81,6 +81,9 @@ dataMatrixOutput = "dataMatrix.tsv"
 if (!is.null(listArguments[["dataMatrixOutput"]])){
   dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
 }
+if (!is.null(listArguments[["convertRTMinute"]])){
+  convertRTMinute = listArguments[["convertRTMinute"]]; listArguments[["convertRTMinute"]]=NULL
+}
 if (!is.null(listArguments[["numDigitsMZ"]])){
   numDigitsMZ = listArguments[["numDigitsMZ"]]; listArguments[["numDigitsMZ"]]=NULL
 }
@@ -130,15 +133,15 @@ if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
     suppressWarnings(unzip(zipfile, unzip="unzip"))
 
     #get the directory name
-    filesInZip=unzip(zipfile, list=T); 
+    filesInZip=unzip(zipfile, list=T);
     directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
     directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
     directory = "."
     if (length(directories) == 1) directory = directories
-    
+
     cat("files_root_directory\t",directory,"\n")
 
-    # 
+    #
     md5sumList=list("origin"=getMd5sum(directory))
 
     # Check and fix if there are non ASCII characters. If so, they will be removed from the *mzXML mzML files.
@@ -216,7 +219,7 @@ if (thefunction  == "xcmsSet") {
   xset@filepaths<-sub(paste(getwd(),"/",sep="") ,"", xset@filepaths)
 
   if(exists("zipfile") && (zipfile!="")) {
-    
+
     #Modify the samples names (erase the path)
     for(i in 1:length(sampnames(xset))){
 
@@ -245,7 +248,7 @@ if (thefunction == "xcmsSet") {
 
 if (thefunction == "fillPeaks") {
   cat("\t\tGET THE PEAK LIST\n")
-  getPeaklistW4M(xset,intval,numDigitsMZ,numDigitsRT,variableMetadataOutput,dataMatrixOutput)
+  getPeaklistW4M(xset,intval,convertRTMinute,numDigitsMZ,numDigitsRT,variableMetadataOutput,dataMatrixOutput)
 }
 
 
@@ -266,4 +269,3 @@ cat("\n\n")
 
 
 cat("\tDONE\n")
-

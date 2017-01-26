@@ -9,22 +9,36 @@
 #   correct bug in Base Peak Chromatogram (BPC) option, not only TIC when scanrange used in xcmsSet
 #   Note if scanrange is used a warning is prompted in R console but do not stop PDF generation
 #version 2.1: yguitton
-#   Modifications made by Guitton Yann 
+#   Modifications made by Guitton Yann
 
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
-getPeaklistW4M <- function(xset, intval="into",numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
+getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
   groups <- xset@groups
   values <- groupval(xset, "medret", value=intval)
-  ids <- paste0("M",round(groups[,1],numDigitsMZ),"T",round(groups[,4],numDigitsRT))
+  ids <- make.unique(paste0("M",round(groups[,1],numDigitsMZ),"T",round(groups[,4],numDigitsRT)))
+
+  # renamming of the column rtmed to rt to fit with camera peaklist function output
+  colnames(groups)[colnames(groups)=="rtmed"] <- "rt"
+  colnames(groups)[colnames(groups)=="mzmed"] <- "mz"
+
+  if (convertRTMinute){
+    #converting the retention times (seconds) into minutes
+    print("converting the retention times into minutes in the variableMetadata")
+    groups[,"rt"]=groups[,"rt"]/60; groups[,"rtmin"]=groups[,"rtmin"]/60; groups[,"rtmax"]=groups[,"rtmax"]/60;
+  }
 
   rownames(groups) = ids
   rownames(values) = ids
 
+  #@TODO: add "name" as the first column name
+  #colnames(groups)[1] = "name"
+  #colnames(values)[1] = "name"
+
   write.table(groups, file=variableMetadataOutput,sep="\t",quote=F,row.names = T,col.names = NA)
   write.table(values, file=dataMatrixOutput,sep="\t",quote=F,row.names = T,col.names = NA)
-}  
+}
 
 #@author Y. Guitton
 getBPC <- function(file,rtcor=NULL, ...) {
@@ -60,13 +74,13 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
   for (j in 1:N) {
 
     TIC[[j]] <- getBPC(files[j])
-    #good for raw 
+    #good for raw
     # seems strange for corrected
     #errors if scanrange used in xcmsSetgeneration
     if (!is.null(xcmsSet) && rt == "corrected")
     rtcor <- xcmsSet@rt$corrected[[j]] else
     rtcor <- NULL
-    
+
     TIC[[j]] <- getBPC(files[j],rtcor=rtcor)
     # TIC[[j]][,1]<-rtcor
   }
@@ -84,11 +98,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
 
 
   ##plot start
-  
+
   if (length(class)>2){
     for (k in 1:(length(class)-1)){
       for (l in (k+1):length(class)){
-        #print(paste(class[k],"vs",class[l],sep=" ")) 
+        #print(paste(class[k],"vs",class[l],sep=" "))
         plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",class[k]," vs ",class[l], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
         colvect<-NULL
         for (j in 1:length(classnames[[k]])) {
@@ -130,7 +144,7 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
     legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col = colvect, lty = lty, pch = pch)
 
   }#end length ==2
-  
+
   #case where only one class
   if (length(class)==1){
     k=1
@@ -144,11 +158,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
       points(tic[,1]/60, tic[,2], col = cols[classnames[[k]][j]], pch = pch[classnames[[k]][j]], type="l")
       colvect<-append(colvect,cols[classnames[[k]][j]])
     }
-      
+
     legend("topright",paste(basename(files[c(classnames[[k]])])), col = colvect, lty = lty, pch = pch)
 
   }#end length ==1
-                        
+
   dev.off() #pdf(pdfname,w=16,h=10)
 
   invisible(TIC)
@@ -187,7 +201,7 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
   for (i in 1:length(class)){
     classnames[[i]]<-which( xcmsSet@phenoData[,1]==class[i])
   }
-  
+
   N <- length(files)
   TIC <- vector("list",N)
 
@@ -212,7 +226,7 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
   if (length(class)>2){
     for (k in 1:(length(class)-1)){
       for (l in (k+1):length(class)){
-        #print(paste(class[k],"vs",class[l],sep=" ")) 
+        #print(paste(class[k],"vs",class[l],sep=" "))
         plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k]," vs ",class[l], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
         colvect<-NULL
         for (j in 1:length(classnames[[k]])) {
@@ -253,12 +267,12 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
     legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col = colvect, lty = lty, pch = pch)
 
   }#end length ==2
-    
+
   #case where only one class
   if (length(class)==1){
 	  k=1
 	  ylim = range(sapply(TIC, function(x) range(x[,2])))
-				
+
 	  plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
     colvect<-NULL
 		for (j in 1:length(classnames[[k]])) {
@@ -267,11 +281,11 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
 			points(tic[,1]/60, tic[,2], col = cols[classnames[[k]][j]], pch = pch[classnames[[k]][j]], type="l")
       colvect<-append(colvect,cols[classnames[[k]][j]])
 	  }
-		
+
 		legend("topright",paste(basename(files[c(classnames[[k]])])), col = colvect, lty = lty, pch = pch)
-	  
+
 	}#end length ==1
-                        
+
   dev.off() #pdf(pdfname,w=16,h=10)
 
   invisible(TIC)
@@ -290,7 +304,7 @@ getSampleMetadata <- function(xcmsSet=NULL, sampleMetadataOutput="sampleMetadata
   sampleMetadata=xset@phenoData
   sampleNamesOrigin=rownames(sampleMetadata)
   sampleNamesMakeNames=make.names(sampleNamesOrigin)
-    
+
   if (any(duplicated(sampleNamesMakeNames))) {
     write("\n\nERROR: Usually, R has trouble to deal with special characters in its column names, so it rename them using make.names().\nIn your case, at least two columns after the renaming obtain the same name, thus XCMS will collapse those columns per name.", stderr())
     for (sampleName in sampleNamesOrigin) {
@@ -338,7 +352,7 @@ getSampleMetadata <- function(xcmsSet=NULL, sampleMetadataOutput="sampleMetadata
 
       #Set the polarity attribute
       sampleMetadata$polarity[sampleMetadata$sampleMetadata==samplename]=polarity
-      
+
       #Delete xcmsRaw object because it creates a bug for the fillpeaks step
       rm(xcmsRaw)
     }
@@ -374,7 +388,7 @@ checkFilesCompatibilityWithXcms <- function(directory) {
   filesystem_filepaths=filesystem_filepaths[grep(filepattern, filesystem_filepaths, perl=T)]
 
   # COMPARISON
-  if (!is.na(table(filesystem_filepaths %in% files)["FALSE"])) { 
+  if (!is.na(table(filesystem_filepaths %in% files)["FALSE"])) {
     write("\n\nERROR: List of the files which will not be imported by xcmsSet",stderr())
     write(filesystem_filepaths[!(filesystem_filepaths %in% files)],stderr())
     stop("\n\nERROR: One or more of your files will not be import by xcmsSet. It may due to bad characters in their filenames.")
@@ -400,7 +414,7 @@ checkXmlStructure <- function (directory) {
     write(capture, stderr())
     stop("ERROR: xcmsSet cannot continue with incorrect mzXML or mzML files")
   }
-   
+
 }
 
 
@@ -412,7 +426,7 @@ deleteXmlBadCharacters<- function (directory) {
   cat("Checking Non ASCII characters in the XML...\n")
 
   processed=F
-  l=system( paste("find",directory, "-not -name '\\.*' -not -path '*conda-env*' -type f -iname '*.*ml*'"),intern=TRUE) 
+  l=system( paste("find",directory, "-not -name '\\.*' -not -path '*conda-env*' -type f -iname '*.*ml*'"),intern=TRUE)
   for (i in l){
     cmd=paste("LC_ALL=C grep '[^ -~]' \"",i,"\"",sep="")
     capture=suppressWarnings(system(cmd,intern=TRUE))
@@ -421,7 +435,7 @@ deleteXmlBadCharacters<- function (directory) {
       print( paste("WARNING: Non ASCII characters have been removed from the ",i,"file") )
       c=system(cmd,intern=TRUE)
       capture=""
-      processed=T 
+      processed=T
     }
   }
   if (processed) cat("\n\n")
@@ -429,7 +443,7 @@ deleteXmlBadCharacters<- function (directory) {
 }
 
 
-## 
+##
 ## This function will compute MD5 checksum to check the data integrity
 ##
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
@@ -450,4 +464,3 @@ getMd5sum <- function (directory) {
 
   return(as.matrix(md5sum(files)))
 }
-
