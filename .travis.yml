@@ -10,11 +10,11 @@ before_install:
  - virtualenv planemo-venv
  - . planemo-venv/bin/activate
  - pip install --upgrade pip setuptools
- - pip install planemo
+ - pip install planemo==0.37.0
  #- planemo conda_init
 
 #install:
  #- planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite
 
 script:
- - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite --galaxy_branch release_17.01
+ - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.01 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite
