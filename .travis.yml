@@ -17,4 +17,4 @@ before_install:
  #- planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite
 
 script:
- - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite --galaxy_branch release_16.10
+ - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/xcms_suite --galaxy_branch release_17.01
