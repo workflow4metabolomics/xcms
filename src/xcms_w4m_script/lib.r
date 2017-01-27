@@ -13,31 +13,46 @@
 
 
 #@author G. Le Corguille
+#This function convert if it is required the Retention Time in minutes
+RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
+    if (convertRTMinute){
+        #converting the retention times (seconds) into minutes
+        print("converting the retention times into minutes in the variableMetadata")
+        variableMetadata[,"rt"]=variableMetadata[,"rt"]/60
+        variableMetadata[,"rtmin"]=variableMetadata[,"rtmin"]/60
+        variableMetadata[,"rtmax"]=variableMetadata[,"rtmax"]/60
+    }
+    return (variableMetadata)
+}
+
+#@author G. Le Corguille
+#This function format ions identifiers
+formatIonIdentifiers <- function(dataData, numDigitsRT=0, numDigitsMZ=0) {
+    return(make.unique(paste0("M",round(dataData[,"mz"],numDigitsMZ),"T",round(dataData[,"rt"],numDigitsRT))))
+}
+
+#@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
 getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
-  groups <- xset@groups
-  values <- groupval(xset, "medret", value=intval)
-  ids <- make.unique(paste0("M",round(groups[,1],numDigitsMZ),"T",round(groups[,4],numDigitsRT)))
+    groups <- xset@groups
+    values <- groupval(xset, "medret", value=intval)
+    
+    # renamming of the column rtmed to rt to fit with camera peaklist function output
+    colnames(groups)[colnames(groups)=="rtmed"] <- "rt"
+    colnames(groups)[colnames(groups)=="mzmed"] <- "mz"
+    
+    ids <- formatIonIdentifiers(groups, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
+    groups = RTSecondToMinute(groups, convertRTMinute)
 
-  # renamming of the column rtmed to rt to fit with camera peaklist function output
-  colnames(groups)[colnames(groups)=="rtmed"] <- "rt"
-  colnames(groups)[colnames(groups)=="mzmed"] <- "mz"
+    rownames(groups) = ids
+    rownames(values) = ids
 
-  if (convertRTMinute){
-    #converting the retention times (seconds) into minutes
-    print("converting the retention times into minutes in the variableMetadata")
-    groups[,"rt"]=groups[,"rt"]/60; groups[,"rtmin"]=groups[,"rtmin"]/60; groups[,"rtmax"]=groups[,"rtmax"]/60;
-  }
+    #@TODO: add "name" as the first column name
+    #colnames(groups)[1] = "name"
+    #colnames(values)[1] = "name"
 
-  rownames(groups) = ids
-  rownames(values) = ids
-
-  #@TODO: add "name" as the first column name
-  #colnames(groups)[1] = "name"
-  #colnames(values)[1] = "name"
-
-  write.table(groups, file=variableMetadataOutput,sep="\t",quote=F,row.names = T,col.names = NA)
-  write.table(values, file=dataMatrixOutput,sep="\t",quote=F,row.names = T,col.names = NA)
+    write.table(groups, file=variableMetadataOutput,sep="\t",quote=F,row.names = T,col.names = NA)
+    write.table(values, file=dataMatrixOutput,sep="\t",quote=F,row.names = T,col.names = NA)
 }
 
 #@author Y. Guitton
