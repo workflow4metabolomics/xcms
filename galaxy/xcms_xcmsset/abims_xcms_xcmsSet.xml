@@ -10,9 +10,8 @@
 
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
-        #if $inputs.input == "lib":
-            library $__app__.config.user_library_import_dir/$__user_email__/$inputs.library
-        #elif $inputs.input == "zip_file":
+
+        #if $inputs.input == "zip_file":
             zipfile $inputs.zip_file
         #elif $inputs.input == "single_file":
             singlefile_galaxyPath $inputs.single_file singlefile_sampleName $inputs.single_file.name
@@ -67,23 +66,17 @@
     <inputs>
 
       <conditional name="inputs">
-        <param name="input" type="select" label="Choose your inputs method" >
-          <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
-          <option value="single_file">A mzXML or netCDF file from your history</option>
-          <option value="lib" >Library directory name</option>
-        </param>
-        <when value="zip_file">
-          <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
-        </when>
-        <when value="single_file">
-          <param name="single_file" type="data" format="mzxml,netcdf" label="Single file" />
-        </when>
-        <when value="lib">
-          <param name="library" type="text" size="40" label="Library directory name" help="The name of your directory containing all your data" >
-            <validator type="empty_field"/> 
-          </param>
-        </when>
-      </conditional>
+            <param name="input" type="select" label="Choose your inputs method" >
+                <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
+                <option value="single_file">mzXML file from your history</option>
+            </param>
+            <when value="zip_file">
+                <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
+            </when>
+            <when value="single_file">
+                <param name="single_file" type="data" format="mzxml" label="Single file" />
+            </when>
+        </conditional>
 
         <conditional name="options_scanrange">
             <param name="option" type="select" label="Scan range option " >
@@ -119,7 +112,7 @@
             <when value="centWave">
                 <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
                 <param name="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="[peakwidth]" />
-                
+
                 <conditional name="options_c">
                     <param name="option" type="select" label="Advanced options" >
                         <option value="show">show</option>
@@ -246,7 +239,7 @@
         </test>
         <test>
             <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="netcdf" />
+            <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="mzxml" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -256,6 +249,23 @@
                     <has_text text="Time range: 3.5-1139.1 seconds (0.1-19 minutes)" />
                     <has_text text="Mass range: 57.9756-556.8128 m/z" />
                     <has_text text="Peaks: 380 (about 380 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="inputs|input" value="single_file" />
+            <param name="inputs|single_file" value="MM14.mzML"  ftype="mzxml" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="56" />
+            <param name="methods|peakwidth" value="5.275,13.5" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 271-307.3 seconds (4.5-5.1 minutes)" />
+                    <has_text text="Mass range: 117.0357-936.7059 m/z" />
+                    <has_text text="Peaks: 222 (about 222 per sample)" />
                     <has_text text="Peak Groups: 0" />
                     <has_text text="Sample classes: ." />
                 </assert_contents>
