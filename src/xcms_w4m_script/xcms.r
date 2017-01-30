@@ -19,7 +19,7 @@ for(pkg in pkgs) {
   cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
 }
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
-cat("\n\n"); 
+cat("\n\n");
 
 
 
@@ -64,18 +64,35 @@ if (!is.null(listArguments[["xsetRdataOutput"]])){
   xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
 }
 
+#saving the specific parameters
 rplotspdf = "Rplots.pdf"
 if (!is.null(listArguments[["rplotspdf"]])){
   rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
 }
-
 sampleMetadataOutput = "sampleMetadata.tsv"
 if (!is.null(listArguments[["sampleMetadataOutput"]])){
   sampleMetadataOutput = listArguments[["sampleMetadataOutput"]]; listArguments[["sampleMetadataOutput"]]=NULL
 }
-
-
-
+variableMetadataOutput = "variableMetadata.tsv"
+if (!is.null(listArguments[["variableMetadataOutput"]])){
+  variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
+}
+dataMatrixOutput = "dataMatrix.tsv"
+if (!is.null(listArguments[["dataMatrixOutput"]])){
+  dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
+}
+if (!is.null(listArguments[["convertRTMinute"]])){
+  convertRTMinute = listArguments[["convertRTMinute"]]; listArguments[["convertRTMinute"]]=NULL
+}
+if (!is.null(listArguments[["numDigitsMZ"]])){
+  numDigitsMZ = listArguments[["numDigitsMZ"]]; listArguments[["numDigitsMZ"]]=NULL
+}
+if (!is.null(listArguments[["numDigitsRT"]])){
+  numDigitsRT = listArguments[["numDigitsRT"]]; listArguments[["numDigitsRT"]]=NULL
+}
+if (!is.null(listArguments[["intval"]])){
+  intval = listArguments[["intval"]]; listArguments[["intval"]]=NULL
+}
 
 if (thefunction %in% c("xcmsSet","retcor")) {
   ticspdf = listArguments[["ticspdf"]]; listArguments[["ticspdf"]]=NULL
@@ -116,15 +133,15 @@ if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
     suppressWarnings(unzip(zipfile, unzip="unzip"))
 
     #get the directory name
-    filesInZip=unzip(zipfile, list=T); 
+    filesInZip=unzip(zipfile, list=T);
     directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
     directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
     directory = "."
     if (length(directories) == 1) directory = directories
-    
+
     cat("files_root_directory\t",directory,"\n")
 
-    # 
+    #
     md5sumList=list("origin"=getMd5sum(directory))
 
     # Check and fix if there are non ASCII characters. If so, they will be removed from the *mzXML mzML files.
@@ -187,6 +204,8 @@ if (thefunction == "group") {
 
 
 #execution of the function "thefunction" with the parameters given in "listArguments"
+
+cat("\t\tCOMPUTE\n")
 xset = do.call(thefunction, listArguments)
 
 
@@ -200,7 +219,7 @@ if (thefunction  == "xcmsSet") {
   xset@filepaths<-sub(paste(getwd(),"/",sep="") ,"", xset@filepaths)
 
   if(exists("zipfile") && (zipfile!="")) {
-    
+
     #Modify the samples names (erase the path)
     for(i in 1:length(sampnames(xset))){
 
@@ -217,16 +236,23 @@ if (thefunction  == "xcmsSet") {
 
 # -- TIC --
 if (thefunction == "xcmsSet") {
+  cat("\t\tGET TIC GRAPH\n")
   sampleNamesList = getSampleMetadata(xcmsSet=xset, sampleMetadataOutput=sampleMetadataOutput)
   getTICs(xcmsSet=xset, pdfname=ticspdf,rt="raw")
   getBPCs(xcmsSet=xset,rt="raw",pdfname=bicspdf)
 } else if (thefunction == "retcor") {
+  cat("\t\tGET TIC GRAPH\n")
   getTICs(xcmsSet=xset, pdfname=ticspdf,rt="corrected")
   getBPCs(xcmsSet=xset,rt="corrected",pdfname=bicspdf)
 }
 
-cat("\n\n")
+if (thefunction == "fillPeaks") {
+  cat("\t\tGET THE PEAK LIST\n")
+  getPeaklistW4M(xset,intval,convertRTMinute,numDigitsMZ,numDigitsRT,variableMetadataOutput,dataMatrixOutput)
+}
 
+
+cat("\n\n")
 
 # ----- EXPORT -----
 
@@ -243,4 +269,3 @@ cat("\n\n")
 
 
 cat("\tDONE\n")
-

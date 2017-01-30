@@ -39,7 +39,7 @@
         <conditional name="zipfile_load_conditional">
             <param name="zipfile_load_select" type="select" label="Resubmit your zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." >
                 <option value="no" >no need</option>
-                <option value="yes" selected="peakgroups">yes</option>
+                <option value="yes">yes</option>
             </param>
             <when value="no">
             </when>
