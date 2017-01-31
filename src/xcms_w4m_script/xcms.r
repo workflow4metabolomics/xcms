@@ -108,17 +108,15 @@ if (!is.null(listArguments[["zipfile"]])){
 }
 
 if (!is.null(listArguments[["singlefile_galaxyPath"]])){
-  singlefile = list()
-  singlefile[[listArguments[["singlefile_sampleName"]]]] = listArguments[["singlefile_galaxyPath"]]; listArguments[["singlefile_galaxyPath"]]=NULL; listArguments[["singlefile_sampleName"]]=NULL
-}
+    singlefile_galaxyPaths = unlist(strsplit(listArguments[["singlefile_galaxyPath"]],",")); listArguments[["singlefile_galaxyPath"]]=NULL
+    singlefile_sampleNames = unlist(strsplit(listArguments[["singlefile_sampleName"]],",")); listArguments[["singlefile_sampleName"]]=NULL
 
-if (!is.null(listArguments[["library"]])){
-  directory=listArguments[["library"]]; listArguments[["library"]]=NULL
-  if(!file.exists(directory)){
-    error_message=paste("Cannot access the directory:",directory,". Please verify if the directory exists or not.")
-    print(error_message)
-    stop(error_message)
-  }
+    singlefile=NULL
+    for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
+        singlefile_galaxyPath=singlefile_galaxyPaths[singlefile_galaxyPath_i]
+        singlefile_sampleName=singlefile_sampleNames[singlefile_galaxyPath_i]
+        singlefile[[singlefile_sampleName]] = singlefile_galaxyPath
+    }
 }
 
 # We unzip automatically the chromatograms from the zip files.
@@ -134,7 +132,7 @@ if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
       file.symlink(singlefile_galaxyPath,singlefile_sampleName)
     }
     directory = "."
-    
+
     md5sumList=list("origin"=getMd5sum(directory))
 
   }
@@ -272,7 +270,7 @@ print(xset)
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xset","zipfile","singlefile_galaxyPath","singlefile_sampleName","listOFlistArguments","md5sumList","sampleNamesList")
+objects2save = c("xset","zipfile","singlefile","listOFlistArguments","md5sumList","sampleNamesList")
 save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
 
 cat("\n\n")
