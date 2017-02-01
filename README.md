@@ -1,7 +1,7 @@
 Spectral Normalization for Galaxy
 =================================
 
-[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/nmr_normalization.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/spectral_normalization)
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/spectral_normalization.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/spectral_normalization)
 
 Our project
 -----------
