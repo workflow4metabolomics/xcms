@@ -1,13 +1,13 @@
 <tool id="xcms_merge" name="xcms.xcmsSet Merger" version="0.1.0">
     <description>Merge xcms.xcmsSet xset in one to be used by group</description>
-    
+
     <macros>
         <import>macros.xml</import>
     </macros>
-    
+
     <expand macro="requirements_light"/>
     <expand macro="stdio"/>
-    
+
     <command><![CDATA[
         Rscript $script_file
     ]]></command>
@@ -23,15 +23,30 @@ images=c(
 
 cat("\tXSET MERGING...\n")
 
-for(image in images) { 
+for(image in images) {
     load(image)
     cat(sampleNamesList\$sampleNamesOrigin,"\n")
-    if (!exists("xset_merged")) 
+    if (!exists("xset_merged")) {
         xset_merged=xset
-    else 
+        singlefile_merged=singlefile
+        listOFlistArguments_merged=listOFlistArguments
+        md5sumList_merged=md5sumList
+        sampleNamesList_merged=sampleNamesList
+    } else {
         xset_merged=c(xset_merged,xset)
+        singlefile_merged=c(singlefile_merged,singlefile)
+        listOFlistArguments_merged=c(listOFlistArguments_merged,listOFlistArguments)
+        md5sumList_merged\$origin=rbind(md5sumList_merged\$origin,md5sumList\$origin)
+        sampleNamesList_merged\$sampleNamesOrigin=c(sampleNamesList_merged\$sampleNamesOrigin,sampleNamesList\$sampleNamesOrigin)
+        sampleNamesList_merged\$sampleNamesMakeNames=c(sampleNamesList_merged\$sampleNamesMakeNames,sampleNamesList\$sampleNamesMakeNames)
+    }
 }
+rm(image)
 xset=xset_merged; rm(xset_merged)
+singlefile=singlefile_merged; rm(singlefile_merged)
+listOFlistArguments=listOFlistArguments_merged; rm(listOFlistArguments_merged)
+md5sumList=md5sumList_merged; rm(md5sumList_merged)
+sampleNamesList=sampleNamesList_merged; rm(sampleNamesList_merged)
 
 #if str($sampleMetadata) != 'None':
     cat("\tXSET PHENODATA SETTING...\n")
@@ -54,6 +69,7 @@ cat("\tXSET OBJECT INFO\n")
 print(xset@phenoData)
 print(xset)
 
+cat("\tSAVE RData\n")
 save.image("$xsetRData")
 
         ]]></configfile>
@@ -63,9 +79,9 @@ save.image("$xsetRData")
         <param name="images" type="data" format="rdata.xcms.raw,rdata" label="xset RData / xcms.xcmsSet file" help="output file from another xcms.xcmsSet" multiple="true" />
         <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
     </inputs>
-    
+
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
+        <data name="xsetRData" format="rdata.xcms.raw" label="xset.merged.RData" />
     </outputs>
 
     <tests>
@@ -94,6 +110,17 @@ save.image("$xsetRData")
                 <has_text text="Peaks: 1495 (about 374 per sample)" />
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="images" value="MM8-xset.RData,MM14-xset.RData" />
+            <assert_stdout>
+                <has_text text="object with 2 samples" />
+                <has_text text="Time range: 19.7-307.3 seconds (0.3-5.1 minutes)" />
+                <has_text text="Mass range: 117.0357-936.7059 m/z" />
+                <has_text text="Peaks: 236 (about 118 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
             </assert_stdout>
         </test>
     </tests>
