@@ -405,21 +405,23 @@ The output file is an xset.RData file. You can continue your analysis using it i
 Input files
 -----------
 
-+---------------------------+------------+
-| Parameter : num + label   |   Format   |
-+===========================+============+
-| 1 : Choose your inputs    |   zip      |
-+---------------------------+------------+
++---------------------------+--------------------+
+| Parameter : num + label   |   Format           |
++===========================+====================+
+| OR : Zip file             |   zip              |
++---------------------------+--------------------+
+| OR : Single file          |   mzXML, netCDF    |
++---------------------------+--------------------+
 
 **Choose your inputs**
 
 You have two methods for your inputs:
 
     | Zip file (recommended): You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-    | library folder: You must specify the name of your "library" (folder) created within your space project (for example: /projet/externe/institut/login/galaxylibrary/yourlibrary). Your library must contain all your conditions as sub-directories.
+    | Single file: You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
 
-Steps for creating the zip file
--------------------------------
+Zip file: Steps for creating the zip file
+-----------------------------------------
 
 **Step1: Creating your directory and hierarchize the subdirectories**
 
@@ -577,9 +579,9 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.0 - XX/XX/2017**
+**Version 2.1.0 - 03/02/2017**
 
-- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them using "xcms.xcmsSet Merger" before "xcms.group".
+- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
 
 **Version 2.0.11 - 22/12/2016**
 

@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.1.0 - 03/02/2017**
+
+- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
+
 **Version 2.0.11 - 22/12/2016**
 
 - BUGFIX: propose scanrange for all methods
@@ -50,12 +54,3 @@ Changelog/News
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
 
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed
