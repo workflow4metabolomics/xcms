@@ -279,6 +279,8 @@ Name                      output file       format              parameter
 ========================= ================= =================== ==========
 xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
 ------------------------- ----------------- ------------------- ----------
+xcms.xcmsSet Merger       xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
 xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
 ========================= ================= =================== ==========
 
@@ -307,7 +309,9 @@ Input files
 +---------------------------+-----------------------+
 | Parameter : num + label   |   Format              |
 +===========================+=======================+
-| 1 : RData file            |   rdata.xcms.group    |
+| Or : RData file            |   rdata.xcms.raw     |
++---------------------------+-----------------------+
+| Or : RData file            |   rdata.xcms.retcor  |
 +---------------------------+-----------------------+
 
 
@@ -388,9 +392,9 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.0 - XX/XX/2017
+**Version 2.1.0 - 03/02/2017**
 
-- IMPROVEMENT: group can deal with merged individual data from xcms_merge
+- IMPROVEMENT: xcms.group can deal with merged individual data from "xcms.xcmsSet Merger"
 
 **Version 2.0.6 - 06/07/2016**
 

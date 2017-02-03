@@ -1,4 +1,4 @@
-<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="0.1.0">
+<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="1.0.0">
     <description>Merge xcms.xcmsSet xset in one to be used by group</description>
 
     <macros>
@@ -138,18 +138,85 @@ Description
 -----------
 
 This tool will allow you to run one xcms.xcmsSet process per sample in parallel and then to merge all RData images in one.
-The result is then suitable for group.
+The result is then suitable for xcms.group.
 
 You can provide a sampleMetadata table to attribute phenotypic value to your samples.
+
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= =================== ==========
+Name                      output file       format              parameter
+========================= ================= =================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+...                       ...               ...                 ...
+========================= ================= =================== ==========
+
+
+**Downstream tools**
+
++---------------------------+--------------------+-----------------+
+| Name                      | Output file        | Format          |
++===========================+====================+=================+
+|xcms.group                 | xset.RData         | rdata.xcms.raw  |
++---------------------------+--------------------+-----------------+
+
+
+-----------
+Input files
+-----------
+
++---------------------------+-----------------------+
+| Parameter : num + label   |   Format              |
++===========================+=======================+
+| 1 : RData file            |   rdata.xcms.raw      |
++---------------------------+-----------------------+
+| 2 : RData file            |   rdata.xcms.raw      |
++---------------------------+-----------------------+
+| N : RData file            |   rdata.xcms.raw      |
++---------------------------+-----------------------+
+| Optional : sampleMetadata |   tsv or csv          |
++---------------------------+-----------------------+
+
+Example of a sampleMetadata:
+
++---------------------------+------------+
+|HU_neg_028                 |   bio      |
++---------------------------+------------+
+|HU_neg_034                 |   bio      |
++---------------------------+------------+
+|Blanc04                    |   blank    |
++---------------------------+------------+
+|Blanc06                    |   blank    |
++---------------------------+------------+
+|Blanc09                    |   blank    |
++---------------------------+------------+
+
+------------
+Output files
+------------
+
+xset.merged.RData: rdata.xcms.raw format
+
+    | Rdata file that is necessary in the next step of the workflow "xcms.group".
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
 
-**Version 0.1.0 - 06/07/2016**
+**Version 1.0.0 - 03/02/2017**
 
-- NEW: a new tool to merge xcmsSet outputs to be used by group
+- NEW: a new tool to merge individual xcmsSet outputs to be used by xcms.group
 
     ]]></help>
 

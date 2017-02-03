@@ -63,9 +63,9 @@ This tool provide a HTML summary which summarizes your analysis using the [W4M] 
 Changelog/News
 --------------
 
-**Version 1.0.3 - XX/XX/2017**
+**Version 1.0.3 - 03/02/2017**
 
-- IMPROVEMENT: summary can deal with merged individual data
+- IMPROVEMENT: xcms.summary can deal with merged individual data
 
 **Version 1.0.2 - 06/07/2016**
 

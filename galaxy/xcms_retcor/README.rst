@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.1.0 - 03/02/2017**
+
+- IMPROVEMENT: xcms.retcor can deal with merged individual data
+
 **Version 2.0.8 - 22/12/2016**
 
 - BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
@@ -31,12 +35,3 @@ Changelog/News
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
 
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed
