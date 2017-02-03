@@ -6,7 +6,7 @@
 
 # ----- ARGUMENTS BLACKLIST -----
 #xcms.r
-argBlacklist=c("zipfile","xfunction","xsetRdataOutput","sampleMetadataOutput","ticspdf","bicspdf","rplotspdf")
+argBlacklist=c("zipfile","singlefile_galaxyPath","singlefile_sampleName","xfunction","xsetRdataOutput","sampleMetadataOutput","ticspdf","bicspdf","rplotspdf")
 #CAMERA.r
 argBlacklist=c(argBlacklist,"dataMatrixOutput","variableMetadataOutput","new_file_path")
 
@@ -57,7 +57,7 @@ writehtml("<HEAD>")
     writehtml("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />")
 
     writehtml("<title>[W4M] XCMS analysis summary</title>")
-    
+
     writehtml("<style>")
         writehtml("table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }")
         writehtml("td,th { padding: 5px; padding-right: 12px; }")
@@ -84,8 +84,8 @@ writehtml("<BODY>")
         } else {
             sampleNameHeaderHtml = paste("<th>sample</th><th>sample renamed</th>")
             sampleNameHtml = paste("<td>",sampnames(xset),"</td><td>",sampleNamesList$sampleNamesMakeNames,"</td>")
-        } 
-        
+        }
+
         if (!exists("md5sumList")) {
             md5sumHeaderHtml = ""
             md5sumHtml = ""
@@ -102,7 +102,7 @@ writehtml("<BODY>")
         
         writehtml("<tr>",sampleNameHeaderHtml,"<th>filename</th>",md5sumHeaderHtml,"</tr>")
         writehtml(paste("<tr>",sampleNameHtml,"<td>",xset@filepaths,"</td>",md5sumHtml,"</tr>"))
-        
+
     writehtml("</table>")
     writehtml(md5sumLegend)
     writehtml("</div>")
@@ -170,4 +170,3 @@ writehtml("<BODY>")
 writehtml("</BODY>")
 
 writehtml("</HTML>")
-
