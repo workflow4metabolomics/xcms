@@ -50,9 +50,9 @@ sampleNamesList=sampleNamesList_merged; rm(sampleNamesList_merged)
 
 #if str($sampleMetadata) != 'None':
     cat("\tXSET PHENODATA SETTING...\n")
-    sampleMetadata=read.table("$sampleMetadata", h=F, sep=";")
-    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep="\t")
-    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep=",")
+    sampleMetadata=read.table("$sampleMetadata", h=F, sep=";", stringsAsFactors=F)
+    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep="\t", stringsAsFactors=F)
+    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep=",", stringsAsFactors=F)
     if (ncol(sampleMetadata) < 2) {
         error_message="Your sampleMetadata file seems not well formatted. The column separators accepted are ; , and tabulation"
         print(error_message)
