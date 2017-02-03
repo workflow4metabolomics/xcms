@@ -74,7 +74,7 @@
                 <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
             </when>
             <when value="single_file">
-                <param name="single_file" type="data" format="mzxml" label="Single file" />
+                <param name="single_file" type="data" format="mzxml,netcdf" label="Single file" />
             </when>
         </conditional>
 
@@ -237,6 +237,75 @@
                 </assert_contents>
             </output>
         </test>
+        <!-- Passed by disable to save time for Travis"
+        <!--<test>
+            <param name="inputs|input" value="single_file" />
+            <param name="inputs|single_file" value="ko15.CDF"  ftype="netcdf" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
+                    <has_text text="Mass range: 200.2-600 m/z" />
+                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="inputs|input" value="single_file" />
+            <param name="inputs|single_file" value="ko16.CDF"  ftype="netcdf" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="inputs|input" value="single_file" />
+            <param name="inputs|single_file" value="wt15.CDF"  ftype="netcdf" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
+                    <has_text text="Mass range: 200.2-599.8 m/z" />
+                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="inputs|input" value="single_file" />
+            <param name="inputs|single_file" value="wt16.CDF"  ftype="netcdf" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|peakwidth" value="20,50" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
+                    <has_text text="Mass range: 200.3-600 m/z" />
+                    <has_text text="Peaks: 2303 (about 2303 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>-->
         <test>
             <param name="inputs|input" value="single_file" />
             <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="mzxml" />
