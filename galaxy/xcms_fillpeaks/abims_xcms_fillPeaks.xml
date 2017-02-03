@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.0.8">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.0">
 
     <description>Integrate a sample's signal in regions where peak groups are not represented to create new peaks in missing areas</description>
 
@@ -27,7 +27,7 @@
             intval $peaklist.intval
         #end if
 
-        @COMMAND_ZIPFILE_LOAD@
+        @COMMAND_FILE_LOAD@
 
         @COMMAND_LOG_EXIT@
 
@@ -53,7 +53,7 @@
             </when>
             <when value="false" />
         </conditional>
-        <expand macro="zipfile_load"/>
+        <expand macro="file_load"/>
 
     </inputs>
 
@@ -93,8 +93,34 @@
                 <param name="numDigitsMZ" value="4" />
                 <param name="numDigitsRT" value="1" />
             </conditional>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="file_load_conditional|file_load_select" value="yes" />
+            <param name="file_load_conditional|inputs|input" value="zip_file" />
+            <param name="file_load_conditional|inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2506-4484 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 32720 (about 8180 per sample)" />
+                    <has_text text="Peak Groups: 8157" />
+                    <has_text text="Sample classes: KO, WT" />
+                </assert_contents>
+            </output>
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.RData"/>
+            <param name="method" value="chrom"/>
+            <conditional name="peaklist">
+                <param name="convertRTMinute" value="false" />
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
+            <param name="file_load_conditional|file_load_select" value="yes" />
+            <param name="file_load_conditional|inputs|input" value="single_file" />
+            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -268,6 +294,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.0 - XX/XX/2017
+
+- IMPROVEMENT: retcor can deal with merged individual data
 
 **Version 2.0.8 - 22/12/2016**
 
