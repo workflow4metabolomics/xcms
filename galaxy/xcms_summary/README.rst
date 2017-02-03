@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 1.0.3 - 03/02/2017**
+
+- IMPROVEMENT: xcms.summary can deal with merged individual data
+
 **Version 1.0.2 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
@@ -15,13 +19,4 @@ Changelog/News
 
 - NEW: Create a summary of XCMS analysis
 
-
-Test Status
------------
-
-Planemo test using conda: failed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed
 

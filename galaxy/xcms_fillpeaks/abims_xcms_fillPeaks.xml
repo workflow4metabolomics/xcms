@@ -295,9 +295,9 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.0 - XX/XX/2017
+**Version 2.1.0 - 03/02/2017**
 
-- IMPROVEMENT: retcor can deal with merged individual data
+- IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
 
 **Version 2.0.8 - 22/12/2016**
 
