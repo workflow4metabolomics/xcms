@@ -1,46 +1,50 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.2">
-    
+<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.3">
+
     <description>Create a summary of XCMS analysis</description>
 
     <macros>
         <import>macros.xml</import>
-    </macros>    
+    </macros>
 
     <requirements>
         <requirement type="package" version="1.26.0">bioconductor-camera</requirement>
         <requirement type="package" version="1.1_4">r-batch</requirement>
     </requirements>
-    
+
     <expand macro="stdio"/>
-    
+
     <command><![CDATA[
         $__tool_directory__/xcms_summary.r
 
-        image $image 
+        image $image
         htmlOutput $htmlOutput
         user_email $__user_email__
-       
+
     ]]></command>
-    
+
     <inputs>
 
         <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
 
     </inputs>
-    
+
     <outputs>
         <data name="htmlOutput" format="html" label="xcms summary html" />
     </outputs>
-    
+
     <tests>
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" />
-            <output name="htmlOutput" file="summary.html" />
+            <output name="htmlOutput" file="faahKO.xset.group.retcor.group.fillpeaks.summary.html" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" />
+            <output name="htmlOutput" file="faahKO-single.xset.merged.group.retcor.group.fillpeaks.summary.html" />
         </test>
     </tests>
-    
+
     <help><![CDATA[
-        
+
 @HELP_AUTHORS@
 
 ============
@@ -51,13 +55,17 @@ Xcms.summary
 Description
 -----------
 
-This tool provide a HTML summary which summarizes your analysis using the [W4M] XCMS and CAMERA tools 
+This tool provide a HTML summary which summarizes your analysis using the [W4M] XCMS and CAMERA tools
 
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
+
+**Version 1.0.3 - XX/XX/2017**
+
+- IMPROVEMENT: summary can deal with merged individual data
 
 **Version 1.0.2 - 06/07/2016**
 
