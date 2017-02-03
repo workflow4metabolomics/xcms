@@ -74,11 +74,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
         files <- filepaths(xcmsSet)
     }
 
-    class<-as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
+    phenoDataClass<-as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
 
-    classnames<-vector("list",length(class))
-    for (i in 1:length(class)){
-        classnames[[i]]<-which( xcmsSet@phenoData[,1]==class[i])
+    classnames<-vector("list",length(phenoDataClass))
+    for (i in 1:length(phenoDataClass)){
+        classnames[[i]]<-which( xcmsSet@phenoData[,1]==phenoDataClass[i])
     }
 
     N <- dim(phenoData(xcmsSet))[1]
@@ -115,11 +115,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
 
     ##plot start
 
-    if (length(class)>2){
-        for (k in 1:(length(class)-1)){
-            for (l in (k+1):length(class)){
-                #print(paste(class[k],"vs",class[l],sep=" "))
-                plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",class[k]," vs ",class[l], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
+    if (length(phenoDataClass)>2){
+        for (k in 1:(length(phenoDataClass)-1)){
+            for (l in (k+1):length(phenoDataClass)){
+                #print(paste(phenoDataClass[k],"vs",phenoDataClass[l],sep=" "))
+                plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k]," vs ",phenoDataClass[l], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
                 colvect<-NULL
                 for (j in 1:length(classnames[[k]])) {
                     tic <- TIC[[classnames[[k]][j]]]
@@ -138,11 +138,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
         }
     }#end if length >2
 
-    if (length(class)==2){
+    if (length(phenoDataClass)==2){
         k=1
         l=2
         colvect<-NULL
-        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",class[k],"vs",class[l], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
+        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k],"vs",phenoDataClass[l], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
 
         for (j in 1:length(classnames[[k]])) {
 
@@ -162,11 +162,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
     }#end length ==2
 
     #case where only one class
-    if (length(class)==1){
+    if (length(phenoDataClass)==1){
         k=1
         ylim = range(sapply(TIC, function(x) range(x[,2])))
         colvect<-NULL
-        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",class[k], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
+        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k], sep=""), xlab = "Retention Time (min)", ylab = "BPC")
 
         for (j in 1:length(classnames[[k]])) {
             tic <- TIC[[classnames[[k]][j]]]
@@ -211,11 +211,10 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
         files <- filepaths(xcmsSet)
     }
 
-    class<-as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
-
-    classnames<-vector("list",length(class))
-    for (i in 1:length(class)){
-        classnames[[i]]<-which( xcmsSet@phenoData[,1]==class[i])
+    phenoDataClass<-as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
+    classnames<-vector("list",length(phenoDataClass))
+    for (i in 1:length(phenoDataClass)){
+        classnames[[i]]<-which( xcmsSet@phenoData[,1]==phenoDataClass[i])
     }
 
     N <- length(files)
@@ -239,11 +238,11 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
 
 
     ##plot start
-    if (length(class)>2){
-        for (k in 1:(length(class)-1)){
-            for (l in (k+1):length(class)){
-                #print(paste(class[k],"vs",class[l],sep=" "))
-                plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k]," vs ",class[l], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
+    if (length(phenoDataClass)>2){
+        for (k in 1:(length(phenoDataClass)-1)){
+            for (l in (k+1):length(phenoDataClass)){
+                #print(paste(phenoDataClass[k],"vs",phenoDataClass[l],sep=" "))
+                plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k]," vs ",phenoDataClass[l], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
                 colvect<-NULL
                 for (j in 1:length(classnames[[k]])) {
                     tic <- TIC[[classnames[[k]][j]]]
@@ -261,11 +260,11 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
             }
         }
     }#end if length >2
-    if (length(class)==2){
+    if (length(phenoDataClass)==2){
         k=1
         l=2
 
-        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k],"vs",class[l], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
+        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k],"vs",phenoDataClass[l], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
         colvect<-NULL
         for (j in 1:length(classnames[[k]])) {
             tic <- TIC[[classnames[[k]][j]]]
@@ -284,12 +283,11 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
     }#end length ==2
 
     #case where only one class
-    if (length(class)==1){
-        print(classnames)
+    if (length(phenoDataClass)==1){
         k=1
         ylim = range(sapply(TIC, function(x) range(x[,2])))
 
-        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",class[k], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
+        plot(0, 0, type="n", xlim = xlim/60, ylim = ylim, main = paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k], sep=""), xlab = "Retention Time (min)", ylab = "TIC")
         colvect<-NULL
         for (j in 1:length(classnames[[k]])) {
             tic <- TIC[[classnames[[k]][j]]]
