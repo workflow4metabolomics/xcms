@@ -89,9 +89,9 @@ save.image("$xsetRData")
             <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
             <assert_stdout>
                 <has_text text="object with 4 samples" />
-                <has_text text="Time range: 2506.1-4146.1 seconds (41.8-69.1 minutes)" />
-                <has_text text="Mass range: 200.1-599.3 m/z" />
-                <has_text text="Peaks: 1495 (about 374 per sample)" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
@@ -105,9 +105,9 @@ save.image("$xsetRData")
                 <has_text text="wt15    WT" />
                 <has_text text="wt16    WT" />
                 <has_text text="object with 4 samples" />
-                <has_text text="Time range: 2506.1-4146.1 seconds (41.8-69.1 minutes)" />
-                <has_text text="Mass range: 200.1-599.3 m/z" />
-                <has_text text="Peaks: 1495 (about 374 per sample)" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
