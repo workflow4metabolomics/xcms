@@ -27,32 +27,28 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
 
 #@author G. Le Corguille
 #This function format ions identifiers
-formatIonIdentifiers <- function(dataData, numDigitsRT=0, numDigitsMZ=0) {
-    return(make.unique(paste0("M",round(dataData[,"mz"],numDigitsMZ),"T",round(dataData[,"rt"],numDigitsRT))))
+formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
+    splitDeco = strsplit(as.character(variableMetadata$name),"_")
+    idsDeco = sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_",deco)) })
+    namecustom = make.unique(paste0("M",round(variableMetadata[,"mz"],numDigitsMZ),"T",round(variableMetadata[,"rt"],numDigitsRT),idsDeco))
+    variableMetadata=cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[,!(colnames(variableMetadata) %in% c("name"))])
+    return(variableMetadata)
 }
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
 getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
-    groups <- xset@groups
-    values <- groupval(xset, "medret", value=intval)
+    variableMetadata_dataMatrix = peakTable(xset, method="medret", value=intval)
+    variableMetadata_dataMatrix = cbind(name=groupnames(xset),variableMetadata_dataMatrix)
 
-    # renamming of the column rtmed to rt to fit with camera peaklist function output
-    colnames(groups)[colnames(groups)=="rtmed"] <- "rt"
-    colnames(groups)[colnames(groups)=="mzmed"] <- "mz"
+    dataMatrix = variableMetadata_dataMatrix[,(make.names(colnames(variableMetadata_dataMatrix)) %in% c("name", make.names(sampnames(xset))))]
 
-    ids <- formatIonIdentifiers(groups, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
-    groups = RTSecondToMinute(groups, convertRTMinute)
+    variableMetadata = variableMetadata_dataMatrix[,!(make.names(colnames(variableMetadata_dataMatrix)) %in% c(make.names(sampnames(xset))))]
+    variableMetadata = RTSecondToMinute(variableMetadata, convertRTMinute)
+    variableMetadata = formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
 
-    rownames(groups) = ids
-    rownames(values) = ids
-
-    #@TODO: add "name" as the first column name
-    #colnames(groups)[1] = "name"
-    #colnames(values)[1] = "name"
-
-    write.table(groups, file=variableMetadataOutput,sep="\t",quote=F,row.names = T,col.names = NA)
-    write.table(values, file=dataMatrixOutput,sep="\t",quote=F,row.names = T,col.names = NA)
+    write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
+    write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
 }
 
 #@author Y. Guitton
