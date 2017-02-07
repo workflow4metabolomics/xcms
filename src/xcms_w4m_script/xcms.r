@@ -246,7 +246,7 @@ if (thefunction == "xcmsSet") {
   getBPCs(xcmsSet=xset,rt="corrected",pdfname=bicspdf)
 }
 
-if (thefunction == "fillPeaks") {
+if (thefunction == "fillPeaks" && exists("intval")) {
   cat("\t\tGET THE PEAK LIST\n")
   getPeaklistW4M(xset,intval,convertRTMinute,numDigitsMZ,numDigitsRT,variableMetadataOutput,dataMatrixOutput)
 }
