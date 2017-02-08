@@ -237,7 +237,7 @@
                 </assert_contents>
             </output>
         </test>
-        <!-- Passed by disable to save time for Travis"
+        <!-- Passed but disable to save time for Travis" -->
         <!--<test>
             <param name="inputs|input" value="single_file" />
             <param name="inputs|single_file" value="ko15.CDF"  ftype="netcdf" />
