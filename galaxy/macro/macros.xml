@@ -70,7 +70,42 @@
         </conditional>
     </xml>
 
+    <token name="@COMMAND_PEAKLIST@">
+        #if $peaklist.peaklistBool
+            variableMetadataOutput $variableMetadata
+            dataMatrixOutput $dataMatrix
+            convertRTMinute $peaklist.convertRTMinute
+            numDigitsMZ $peaklist.numDigitsMZ
+            numDigitsRT $peaklist.numDigitsRT
+            intval $peaklist.intval
+        #end if
+    </token>
 
+    <xml name="input_peaklist">
+        <conditional name="peaklist">
+            <param name="peaklistBool" type="boolean" label="Get a Peak List" />
+            <when value="true">
+              <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
+              <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
+              <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
+              <param name="intval" type="select" label="Reported intensity values" help="[intval] See the help section below">
+                  <option value="into" selected="true">into</option>
+                  <option value="maxo">maxo</option>
+                  <option value="intb">intb</option>
+              </param>
+            </when>
+            <when value="false" />
+        </conditional>
+    </xml>
+
+    <xml name="output_peaklist">
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.fillPeaks.variableMetadata.tsv">
+            <filter>(peaklist['peaklistBool'])</filter>
+        </data>
+        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.fillPeaks.dataMatrix.tsv" >
+            <filter>(peaklist['peaklistBool'])</filter>
+        </data>
+    </xml>
 
     <token name="@HELP_AUTHORS@">
 .. class:: infomark
