@@ -43,7 +43,7 @@
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for retention time correction" help="[method] See the help section below" >
                 <option value="obiwarp" >obiwarp</option>
-                <option value="peakgroups" selected="peakgroups">peakgroups</option>
+                <option value="peakgroups" selected="true">peakgroups</option>
             </param>
             <when value="obiwarp">
                 <param name="profStep" type="float" value="1" label="Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files" />
