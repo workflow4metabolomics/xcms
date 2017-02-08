@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.0">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.1">
 
     <description>Integrate a sample's signal in regions where peak groups are not represented to create new peaks in missing areas</description>
 
@@ -18,14 +18,7 @@
 
         method $method
 
-        #if $peaklist.peaklistBool
-            variableMetadataOutput $variableMetadata
-            dataMatrixOutput $dataMatrix
-            convertRTMinute $peaklist.convertRTMinute
-            numDigitsMZ $peaklist.numDigitsMZ
-            numDigitsRT $peaklist.numDigitsRT
-            intval $peaklist.intval
-        #end if
+        @COMMAND_PEAKLIST@
 
         @COMMAND_FILE_LOAD@
 
@@ -39,32 +32,16 @@
             <option value="chrom" selected="true">chrom</option>
             <option value="MSW" >MSW</option>
         </param>
-        <conditional name="peaklist">
-            <param name="peaklistBool" type="boolean" label="Get a Peak List" />
-            <when value="true">
-              <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
-              <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
-              <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
-              <param name="intval" type="select" label="Reported intensity values" help="[intval] See the help section below">
-                  <option value="into" selected="true">into</option>
-                  <option value="maxo">maxo</option>
-                  <option value="intb">intb</option>
-              </param>
-            </when>
-            <when value="false" />
-        </conditional>
+
+        <expand macro="input_peaklist"/>
+
         <expand macro="file_load"/>
 
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.fillpeaks" label="${image.name[:-6]}.fillPeaks.RData" />
-        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.fillPeaks.variableMetadata.tsv">
-            <filter>(peaklist['peaklistBool'])</filter>
-        </data>
-        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.fillPeaks.dataMatrix.tsv" >
-            <filter>(peaklist['peaklistBool'])</filter>
-        </data>
+        <expand macro="output_peaklist"/>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
@@ -295,6 +272,10 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.1.1 - 07/02/2017**
+
+- IMPROVEMENT: change the management of the peaklist ids. The main ids remain the same as xcms generated. The export setiings now only add custom names in the variableMetadata tab (namecustom)
+
 **Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
@@ -310,7 +291,6 @@ Changelog/News
 **Version 2.0.6 - 04/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
-
 
 **Version 2.0.5 - 10/02/2016**
 

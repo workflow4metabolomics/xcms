@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms.group" version="2.1.0">
+<tool id="abims_xcms_group" name="xcms.group" version="2.1.1">
 
     <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
 
@@ -37,6 +37,9 @@
             rtCheck $methods.rtCheck
             kNN $methods.kNN
         #end if
+
+        @COMMAND_PEAKLIST@
+
         @COMMAND_LOG_EXIT@
    ]]></command>
 
@@ -89,11 +92,13 @@
         </param>
 -->
 
+        <expand macro="input_peaklist"/>
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData"/>
         <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf"/>
+        <expand macro="output_peaklist"/>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
@@ -125,6 +130,12 @@
             <param name="methods|mzwid" value="0.01"/>
             <param name="methods|density_options|option" value="show"/>
             <param name="methods|density_options|max" value="50"/>
+            <conditional name="peaklist">
+                <param name="convertRTMinute" value="false" />
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -135,6 +146,8 @@
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
+            <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData"/>
@@ -144,6 +157,12 @@
             <param name="methods|mzwid" value="0.01"/>
             <param name="methods|density_options|option" value="show"/>
             <param name="methods|density_options|max" value="50"/>
+            <conditional name="peaklist">
+                <param name="convertRTMinute" value="false" />
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -154,6 +173,8 @@
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
+            <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData"/>
@@ -391,6 +412,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.1 - 07/02/2017**
+
+- IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
 
 **Version 2.1.0 - 03/02/2017**
 
