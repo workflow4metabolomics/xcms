@@ -140,7 +140,7 @@
                 <when input="quick_block.polarity" value="negative" format="rdata.camera.negative" />
             </change_format>
         </data>
-        <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="True">
+        <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="true">
             <filter>(options['option'] == 'show')</filter>
         </data>
     </outputs>
