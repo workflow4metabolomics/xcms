@@ -2,6 +2,15 @@
 Changelog/News
 --------------
 
+**Version 2.1.6 - 09/02/2017**
+
+- BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
+
+- UPDATE: the settings (digits, convertion in minutes) of the identifiants will no longer modify the native one. Because we want to be conservative and because it can be dangerous for the data integrity during a futur merge of the table, we decide to put those customization in a new column namecustom within the variableMetadata.
+
+- IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
+
+
 **Version 2.1.5 - 21/04/2016**
 
 - UPGRADE: upgrate the CAMERA version from 1.22.0 to 1.26.0

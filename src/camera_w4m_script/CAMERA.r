@@ -16,7 +16,7 @@ for(p in pkgs) {
 }
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 
-cat("\n\n"); 
+cat("\n\n");
 
 
 
@@ -42,7 +42,7 @@ if (listArguments[["xfunction"]] %in% c("combinexsAnnos")) {
   xaP=xa
   listOFlistArgumentsP=listOFlistArguments
   if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
-  
+
   diffrepP=NULL
   if (exists("diffrep")) diffrepP=diffrep
 
@@ -119,12 +119,12 @@ if (thefunction %in% c("annotatediff"))  {
     suppressWarnings(unzip(zipfile, unzip="unzip"))
 
     #get the directory name
-    filesInZip=unzip(zipfile, list=T); 
+    filesInZip=unzip(zipfile, list=T);
     directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
     directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
     directory = "."
     if (length(directories) == 1) directory = directories
-    
+
     cat("files_root_directory\t",directory,"\n")
   }
 }
