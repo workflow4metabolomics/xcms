@@ -20,18 +20,21 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
     if (convertRTMinute){
         #converting the retention times (seconds) into minutes
         print("converting the retention times into minutes in the variableMetadata")
-        variableMetadata[,"rt"]=variableMetadata[,"rt"]/60;
-        variableMetadata[,"rtmin"]=variableMetadata[,"rtmin"]/60;
-        variableMetadata[,"rtmax"]=variableMetadata[,"rtmax"]/60;
+        variableMetadata[,"rt"]=variableMetadata[,"rt"]/60
+        variableMetadata[,"rtmin"]=variableMetadata[,"rtmin"]/60
+        variableMetadata[,"rtmax"]=variableMetadata[,"rtmax"]/60
     }
-    return(variableMetadata)
+    return (variableMetadata)
 }
 
 #@author G. Le Corguille
 #This function format ions identifiers
-formatIonIdentifiers <- function(dataData, numDigitsRT=0, numDigitsMZ=0) {
-    print(head(dataData))
-    return(make.unique(paste0("M",round(dataData[,"mz"],numDigitsMZ),"T",round(dataData[,"rt"],numDigitsRT))))
+formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
+    splitDeco = strsplit(as.character(variableMetadata$name),"_")
+    idsDeco = sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_",deco)) })
+    namecustom = make.unique(paste0("M",round(variableMetadata[,"mz"],numDigitsMZ),"T",round(variableMetadata[,"rt"],numDigitsRT),idsDeco))
+    variableMetadata=cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[,!(colnames(variableMetadata) %in% c("name"))])
+    return(variableMetadata)
 }
 
 #The function annotateDiffreport without the corr function which bugs
@@ -58,13 +61,9 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   peakList=getPeaklist(xa,intval=listArguments[["intval"]])
   peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
 
-  peakList = RTSecondToMinute(peakList, listArguments[["convert_param"]])
-  peakList$name = formatIonIdentifiers(peakList, numDigitsRT=listArguments[["num_digits"]], numDigitsMZ=0)
-
   # --- dataMatrix ---
   dataMatrix = peakList[,(make.names(colnames(peakList)) %in% c("name", make.names(sampnames(xa@xcmsSet))))]
   write.table(dataMatrix, sep="\t", quote=FALSE, row.names=FALSE, file=dataMatrixOutput)
-
 
 
   # --- Multi condition : diffreport ---
@@ -81,22 +80,25 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
           filebase=paste(classes[i],class2=classes[i+n],sep="-vs-")
 
           diffrep=diffreport(object=xset,class1=classes[i],class2=classes[i+n],filebase=filebase,eicmax=listArguments[["eicmax"]],eicwidth=listArguments[["eicwidth"]],sortpval=TRUE,value=listArguments[["value"]],h=listArguments[["h"]],w=listArguments[["w"]],mzdec=listArguments[["mzdec"]])
+
+          diffrepOri = diffrep
+
           # renamming of the column rtmed to rt to fit with camera peaklist function output
           colnames(diffrep)[colnames(diffrep)=="rtmed"] <- "rt"
           colnames(diffrep)[colnames(diffrep)=="mzmed"] <- "mz"
 
-          diffrep = RTSecondToMinute(diffrep, listArguments[["convert_param"]])
-          diffrep$name = formatIonIdentifiers(diffrep, numDigitsRT=listArguments[["num_digits"]], numDigitsMZ=0)
+          # combines results and reorder columns
+          diffrep = merge(peakList, diffrep[,c("name","fold","tstat","pvalue")], by.x="name", by.y="name", sort=F)
+          diffrep = cbind(diffrep[,!(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))],diffrep[,(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))])
 
-          #combines results
-          diffreportTSV=merge(peakList, diffrep[,c("name","fold","tstat","pvalue")], by.x="name", by.y="name", sort=F)
-          diffreportTSV=cbind(diffreportTSV[,!(colnames(diffreportTSV) %in% c(sampnames(xa@xcmsSet)))],diffreportTSV[,(colnames(diffreportTSV) %in% c(sampnames(xa@xcmsSet)))])
+          diffrep = RTSecondToMinute(diffrep, listArguments[["convertRTMinute"]])
+          diffrep = formatIonIdentifiers(diffrep, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
 
           if(listArguments[["sortpval"]]){
-            diffreportTSV=diffreportTSV[order(diffreportTSV$pvalue), ]
+            diffrep=diffrep[order(diffrep$pvalue), ]
           }
 
-          write.table(diffreportTSV, sep="\t", quote=FALSE, row.names=FALSE, file=paste(new_file_path,filebase,"-tabular_visible_tabular",sep=""))
+          write.table(diffrep, sep="\t", quote=FALSE, row.names=FALSE, file=paste(new_file_path,filebase,"-tabular_visible_tabular",sep=""))
 
           if (listArguments[["eicmax"]] != 0) {
               diffreport_png2pdf(filebase, new_file_path)
@@ -106,8 +108,22 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     }
   }
 
+  #grep  M213T3904 peakList*
+  #peakList:184	M213T3904	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	1	1	0	01230.08999999997	0	0			4788
+  #peakList:192	M213T3904.1	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181	4804
+  #peakListOri:184	M213T3904_1	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	1	1	0	01230.08999999997	0	0			4788
+  #peakListOri:192	M213T3904_2	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181	4804
+  #grep  M213T3904 diffrep*
+  #diffrep:1763	M213T3904	2.22982535057412	0.898369982214248	0.464165630574311	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181
+  #diffrep:2100	M213T3904.1	Inf	-1	0.5	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	110	0	1230.08999999997	0	0
+  #diffrepOri:1763	M213T3904_2	2.22982535057412	0.898369982214248	0.464165630574311	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181
+  #diffrepOri:2100	M213T3904_1	Inf	-1	0.5	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	110	0	1230.08999999997	0	0
+
+
   # --- variableMetadata ---
   variableMetadata=peakList[,!(make.names(colnames(peakList)) %in% c(make.names(sampnames(xa@xcmsSet))))]
+  variableMetadata = RTSecondToMinute(variableMetadata, listArguments[["convertRTMinute"]])
+  variableMetadata = formatIonIdentifiers(variableMetadata, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
   # if we have 2 conditions, we keep stat of diffrep
   if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))==2) {
     variableMetadata = merge(variableMetadata, diffrep[,c("name","fold","tstat","pvalue")],by.x="name", by.y="name", sort=F)
@@ -119,7 +135,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   variableMetadataOri=variableMetadata
   write.table(variableMetadata, sep="\t", quote=FALSE, row.names=FALSE, file=variableMetadataOutput)
 
-  return(list("xa"=xa,"diffrep"=diffrep,"variableMetadata"=variableMetadataOri));
+  return(list("xa"=xa,"diffrep"=diffrepOri,"variableMetadata"=variableMetadataOri));
 
 }
 
