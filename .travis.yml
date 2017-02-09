@@ -13,5 +13,6 @@ before_install:
  - pip install planemo==0.37.0
 
 script:
-- planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.01 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/camera_suite/
+ - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/camera_suite
+ - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.01 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/camera_suite/
 
