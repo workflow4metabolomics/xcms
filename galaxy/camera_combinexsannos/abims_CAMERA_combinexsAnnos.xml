@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.0.5">
+<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.0.6">
 
     <description>Wrapper function for the combinexsAnnos CAMERA function. Returns a dataframe with recalculated annotations.</description>
 
@@ -197,6 +197,11 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.0.6 - 10/02/2017**
+
+- IMPROVEMENT: Synchronize the variableMetadata export option with the other tools (xcms.group, xcms.fillpeaks, camera.annotate)
+
 
 **Version 2.0.5 - 22/12/2016**
 
