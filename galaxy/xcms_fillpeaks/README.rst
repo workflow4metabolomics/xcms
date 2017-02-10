@@ -2,11 +2,9 @@
 Changelog/News
 --------------
 
-**Version 2.1.1 - 07/02/2017**
+**Version 2.1.0 - 07/02/2017**
 
 - IMPROVEMENT: change the management of the peaklist ids. The main ids remain the same as xcms generated. The export setiings now only add custom names in the variableMetadata tab (namecustom)
-
-**Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
 
