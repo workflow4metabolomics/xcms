@@ -2,7 +2,7 @@
 Changelog/News
 --------------
 
-**Version 2.1.6 - 09/02/2017**
+**Version 2.2.0 - 03/02/2017**
 
 - BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
 
@@ -11,6 +11,8 @@ Changelog/News
 - IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
 
 - IMPROVEMENT: add the possibility to use defined ruleset
+
+- IMPROVEMENT: CAMERA.annotate is now compatible with merged individual data from xcms.xcmsSet
 
 
 **Version 2.1.5 - 21/04/2016**

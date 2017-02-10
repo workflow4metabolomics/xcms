@@ -1,0 +1,1 @@
+../../camera_annotate/test-data/ko16.CDF

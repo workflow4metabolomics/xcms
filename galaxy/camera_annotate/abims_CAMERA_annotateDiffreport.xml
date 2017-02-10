@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.1.6">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.0">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -53,7 +53,7 @@
             new_file_path ${__new_file_path__}/primary_${output_diffreport.id}_
         #end if
 
-        @COMMAND_ZIPFILE_LOAD@
+        @COMMAND_FILE_LOAD@
 
     ]]></command>
 
@@ -70,7 +70,7 @@
         <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
         <param name="mzabs" type="float" value="0.015" label="mzabs" help="General absolut error in m/z" />
         <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
-        
+
         <conditional name="quick_block">
             <param name="quick" type="select" label="Quick mode" help="[quick] If TRUE, use only groupFWHM and findIsotopes functions. Else if FALSE, use also groupCorr and findAdducts">
                 <option value="TRUE">TRUE</option>
@@ -133,7 +133,7 @@
             </when>
         </conditional>
 
-        <expand macro="zipfile_load"/>
+        <expand macro="file_load"/>
     </inputs>
 
     <outputs>
@@ -223,13 +223,58 @@
                 <param name="mzdec" value="2"/>
                 <param name="sortpval" value="False"/>
             </conditional>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="file_load_conditional|file_load_select" value="yes" />
+            <param name="file_load_conditional|inputs|input" value="zip_file" />
+            <param name="file_load_conditional|inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
         <test>
-            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
+            <param name="sigma" value="6"/>
+            <param name="perfwhm" value="0.6"/>
+            <param name="maxcharge" value="3"/>
+            <param name="maxiso" value="4"/>
+            <param name="minfrac" value="0.5"/>
+            <param name="ppm" value="5"/>
+            <param name="mzabs" value="0.015"/>
+            <param name="max_peaks" value="100"/>
+            <conditional name="quick_block">
+                <param name="quick" value="FALSE"/>
+                <param name="polarity" value="negative"/>
+                <param name="cor_eic_th" value="0.75"/>
+                <param name="graphMethod" value="hcs"/>
+                <param name="pval" value="0.05"/>
+                <param name="calcCiS" value="True"/>
+                <param name="calcIso" value="False"/>
+                <param name="calcCaS" value="False"/>
+                <conditional name="rules_block">
+                    <param name="rules_select" value="FALSE"/>
+                    <param name="multiplier" value="3"/>
+                </conditional>
+            </conditional>
+            <param name="convertRTMinute" value="False"/>
+            <param name="numDigitsMZ" value="4" />
+            <param name="numDigitsRT" value="1" />
+            <param name="intval" value="into"/>
+            <conditional name="options">
+                <param name="option" value="show"/>
+                <param name="eicmax" value="200"/>
+                <param name="eicwidth" value="200"/>
+                <param name="value" value="into"/>
+                <param name="h" value="480"/>
+                <param name="w" value="640"/>
+                <param name="mzdec" value="2"/>
+                <param name="sortpval" value="False"/>
+            </conditional>
+            <param name="file_load_conditional|file_load_select" value="yes" />
+            <param name="file_load_conditional|inputs|input" value="single_file" />
+            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
             <param name="sigma" value="6"/>
             <param name="perfwhm" value="0.6"/>
             <param name="maxcharge" value="3"/>
@@ -266,8 +311,9 @@
                 <param name="mzdec" value="2"/>
                 <param name="sortpval" value="False"/>
             </conditional>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="file_load_conditional|file_load_select" value="yes" />
+            <param name="file_load_conditional|inputs|input" value="single_file" />
+            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.dataMatrix.tsv" />
         </test>
@@ -455,7 +501,7 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.6 - 09/02/2017**
+**Version 2.2.0 - 03/02/2017**
 
 - BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
 
@@ -464,6 +510,8 @@ Changelog/News
 - IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
 
 - IMPROVEMENT: add the possibility to use defined ruleset
+
+- IMPROVEMENT: CAMERA.annotate is now compatible with merged individual data from xcms.xcmsSet
 
 
 **Version 2.1.5 - 21/04/2016**
