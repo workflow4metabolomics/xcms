@@ -217,7 +217,10 @@
                 <param name="calcCiS" value="True"/>
                 <param name="calcIso" value="False"/>
                 <param name="calcCaS" value="False"/>
-                <param name="multiplier" value="3"/>
+                <conditional name="rules_block">
+                    <param name="rules_select" value="FALSE"/>
+                    <param name="multiplier" value="3"/>
+                </conditional>
             </conditional>
             <conditional name="options">
                 <param name="option" value="show"/>
@@ -233,6 +236,49 @@
             <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
+            <param name="convertRTMinute" value="False"/>
+            <param name="numDigitsMZ" value="4" />
+            <param name="numDigitsRT" value="1" />
+            <param name="sigma" value="6"/>
+            <param name="perfwhm" value="0.6"/>
+            <param name="maxcharge" value="3"/>
+            <param name="maxiso" value="4"/>
+            <param name="minfrac" value="0.5"/>
+            <param name="ppm" value="5"/>
+            <param name="mzabs" value="0.015"/>
+            <param name="intval" value="into"/>
+            <param name="max_peaks" value="100"/>
+            <conditional name="quick_block">
+                <param name="quick" value="FALSE"/>
+                <param name="polarity" value="negative"/>
+                <param name="cor_eic_th" value="0.75"/>
+                <param name="graphMethod" value="hcs"/>
+                <param name="pval" value="0.05"/>
+                <param name="calcCiS" value="True"/>
+                <param name="calcIso" value="False"/>
+                <param name="calcCaS" value="False"/>
+                <conditional name="rules_block">
+                    <param name="rules_select" value="TRUE"/>
+                    <param name="rules" value="CASMI_extended_NEG_rules.csv" ftype="csv"/>
+                </conditional>
+            </conditional>
+            <conditional name="options">
+                <param name="option" value="show"/>
+                <param name="eicmax" value="200"/>
+                <param name="eicwidth" value="200"/>
+                <param name="value" value="into"/>
+                <param name="h" value="480"/>
+                <param name="w" value="640"/>
+                <param name="mzdec" value="2"/>
+                <param name="sortpval" value="False"/>
+            </conditional>
+            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
+            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.dataMatrix.tsv" />
         </test>
     </tests>
 
