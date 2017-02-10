@@ -21,23 +21,40 @@
     </token>
 
     <!-- zipfile load for planemo test -->
-    <token name="@COMMAND_ZIPFILE_LOAD@">
-        #if $zipfile_load_conditional.zipfile_load_select == "yes":
-            #if $zipfile_load_conditional.zip_file:
-                zipfile '$zipfile_load_conditional.zip_file'
+    <token name="@COMMAND_FILE_LOAD@">
+        #if $file_load_conditional.file_load_select == "yes":
+            #if $file_load_conditional.inputs.input == "zip_file":
+                zipfile '$file_load_conditional.inputs.zip_file'
+            #else
+                #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_conditional.inputs.single_file ] )
+                #set singlefile_sampleName = ','.join( [ str( $single_file.name ) for $single_file in $file_load_conditional.inputs.single_file ] )
+
+                singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #end if
         #end if
     </token>
-    <xml name="zipfile_load">
-        <conditional name="zipfile_load_conditional">
-            <param name="zipfile_load_select" type="select" label="Resubmit your zip file" help="Use only if you get a message which say that your original zip file have been deleted on the server." >
+
+    <xml name="file_load">
+        <conditional name="file_load_conditional">
+            <param name="file_load_select" type="select" label="Resubmit your dataset or your zip file" help="Use only if you get a message which say that your original dataset or zip file have been deleted on the server." >
                 <option value="no" >no need</option>
                 <option value="yes" >yes</option>
             </param>
             <when value="no">
             </when>
             <when value="yes">
-                <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
+                <conditional name="inputs">
+                    <param name="input" type="select" label="Choose your inputs method" >
+                        <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
+                        <option value="single_file">A mzXML or netCDF file from your history</option>
+                    </param>
+                    <when value="zip_file">
+                        <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
+                    </when>
+                    <when value="single_file">
+                        <param name="single_file" type="data" format="mzxml,netcdf" label="Single file"  multiple="true"/>
+                    </when>
+                </conditional>
             </when>
         </conditional>
     </xml>
