@@ -49,15 +49,43 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   listArguments[["calcCiS"]]=as.logical(listArguments[["calcCiS"]])
   listArguments[["calcIso"]]=as.logical(listArguments[["calcIso"]])
   listArguments[["calcCaS"]]=as.logical(listArguments[["calcCaS"]])
+  
+  # common parameters
+  listArguments4annotate = list(object=xset,
+    nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
+    maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],
+    ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],
+    polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
+ 
+  # quick == FALSE
+  if(listArguments[["quick"]]==FALSE) {
+    listArguments4annotate = append(listArguments4annotate,
+        list(graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],
+        calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]))
+    # no ruleset
+    if (!is.null(listArguments[["multiplier"]])) {
+        listArguments4annotate = append(listArguments4annotate,
+            list(multiplier=listArguments[["multiplier"]]))
+    }
+    # ruleset
+    else {
+        rulset=read.table(listArguments[["rules"]], h=T, sep=";")
+        if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep="\t")
+        if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep=",")
+        if (ncol(rulset) < 4) {
+            error_message="Your ruleset file seems not well formatted. The column separators accepted are ; , and tabulation"
+            print(error_message)
+            stop(error_message)
+        }	
 
-  #graphMethod parameter bugs where this parameter is not defined in quick=true
-  if(listArguments[["quick"]]==TRUE) {
-    xa= annotate(object=xset,nSlaves=1,sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
+        listArguments4annotate = append(listArguments4annotate,
+            list(rules=rulset))
+    }
   }
-  else {
-    xa= annotate(object=xset,nSlaves=1,sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]],multiplier=listArguments[["multiplier"]],maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
 
-  }
+  
+  # launch annotate
+  xa = do.call("annotate", listArguments4annotate)
   peakList=getPeaklist(xa,intval=listArguments[["intval"]])
   peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
 

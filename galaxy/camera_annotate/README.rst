@@ -10,6 +10,8 @@ Changelog/News
 
 - IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
 
+- IMPROVEMENT: add the possibility to use defined ruleset
+
 
 **Version 2.1.5 - 21/04/2016**
 
@@ -43,14 +45,3 @@ VERSION 2.1.0 - 07/06/2015**
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
 
 - UPDATE: merged with annotateDiffreport. Some parameters are dedicated to experiences with several conditions
-
-
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed

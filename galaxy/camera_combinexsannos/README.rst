@@ -2,6 +2,11 @@
 Changelog/News
 --------------
 
+**Version 2.0.5 - 22/12/2016**
+
+- IMPROVEMENT: add the possibility to add a personal Matrix of matching rules (ruleset)
+
+
 **Version 2.0.4 - 21/04/2016**
 
 - UPGRADE: upgrate the CAMERA version from 1.22.0 to 1.26.0
