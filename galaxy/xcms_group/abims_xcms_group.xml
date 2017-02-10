@@ -12,10 +12,10 @@
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
         xfunction group
-        image $image
+        image '$image'
 
-        xsetRdataOutput $xsetRData
-        rplotspdf $rplotsPdf
+        xsetRdataOutput '$xsetRData'
+        rplotspdf '$rplotsPdf'
 
         method $methods.method sleep 0.001
         #if $methods.method == "density":

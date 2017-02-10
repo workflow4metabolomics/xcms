@@ -11,13 +11,13 @@
 
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
-        image $image
+        image '$image'
         xfunction retcor
 
-        xsetRdataOutput $xsetRData
-        ticspdf $ticsCorPdf
-        bicspdf $bpcsCorPdf
-        rplotspdf $rplotsPdf
+        xsetRdataOutput '$xsetRData'
+        ticspdf '$ticsCorPdf'
+        bicspdf '$bpcsCorPdf'
+        rplotspdf '$rplotsPdf'
 
         method $methods.method
         #if $methods.method == "obiwarp":

@@ -12,9 +12,9 @@
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
         xfunction fillPeaks
-        image $image
+        image '$image'
 
-        xsetRdataOutput $xsetRData
+        xsetRdataOutput '$xsetRData'
 
         method $method
 

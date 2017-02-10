@@ -25,8 +25,8 @@
     <token name="@COMMAND_LOG_EXIT@">
         ;
         return=\$?;
-        mv log.txt $log;
-        cat $log;
+        mv log.txt '$log';
+        cat '$log';
         sh -c "exit \$return"
     </token>
 
@@ -35,12 +35,12 @@
     <token name="@COMMAND_FILE_LOAD@">
         #if $file_load_conditional.file_load_select == "yes":
             #if $file_load_conditional.inputs.input == "zip_file":
-                zipfile $file_load_conditional.inputs.zip_file
+                zipfile '$file_load_conditional.inputs.zip_file'
             #else
                 #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_conditional.inputs.single_file ] )
                 #set singlefile_sampleName = ','.join( [ str( $single_file.name ) for $single_file in $file_load_conditional.inputs.single_file ] )
 
-                singlefile_galaxyPath $singlefile_galaxyPath singlefile_sampleName $singlefile_sampleName
+                singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #end if
         #end if
     </token>
@@ -72,8 +72,8 @@
 
     <token name="@COMMAND_PEAKLIST@">
         #if $peaklist.peaklistBool
-            variableMetadataOutput $variableMetadata
-            dataMatrixOutput $dataMatrix
+            variableMetadataOutput '$variableMetadata'
+            dataMatrixOutput '$dataMatrix'
             convertRTMinute $peaklist.convertRTMinute
             numDigitsMZ $peaklist.numDigitsMZ
             numDigitsRT $peaklist.numDigitsRT

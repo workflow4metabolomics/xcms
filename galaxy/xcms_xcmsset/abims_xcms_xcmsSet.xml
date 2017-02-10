@@ -12,17 +12,17 @@
         @COMMAND_XCMS_SCRIPT@
 
         #if $inputs.input == "zip_file":
-            zipfile $inputs.zip_file
+            zipfile '$inputs.zip_file'
         #elif $inputs.input == "single_file":
-            singlefile_galaxyPath $inputs.single_file singlefile_sampleName $inputs.single_file.name
+            singlefile_galaxyPath '$inputs.single_file' singlefile_sampleName '$inputs.single_file.name'
         #end if
 
         xfunction xcmsSet
 
-        xsetRdataOutput $xsetRData
-        sampleMetadataOutput $sampleMetadata
-        ticspdf $ticsRawPdf
-        bicspdf $bpcsRawPdf
+        xsetRdataOutput '$xsetRData'
+        sampleMetadataOutput '$sampleMetadata'
+        ticspdf '$ticsRawPdf'
+        bicspdf '$bpcsRawPdf'
 
 
         #if $options_scanrange.option == "show":
