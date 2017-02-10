@@ -24,7 +24,7 @@
     <token name="@COMMAND_ZIPFILE_LOAD@">
         #if $zipfile_load_conditional.zipfile_load_select == "yes":
             #if $zipfile_load_conditional.zip_file:
-                zipfile $zipfile_load_conditional.zip_file
+                zipfile '$zipfile_load_conditional.zip_file'
             #end if
         #end if
     </token>
@@ -40,6 +40,24 @@
                 <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
             </when>
         </conditional>
+    </xml>
+
+    <token name="@COMMAND_PEAKLIST@">
+        convertRTMinute $convertRTMinute
+        numDigitsMZ $numDigitsMZ
+        numDigitsRT $numDigitsRT
+        intval $intval
+    </token>
+
+    <xml name="input_peaklist">
+        <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
+        <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
+        <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
+        <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
+            <option value="into" selected="true">into</option>
+            <option value="maxo" >maxo</option>
+            <option value="intb">intb</option>
+        </param>
     </xml>
 
     <token name="@HELP_AUTHORS@">
