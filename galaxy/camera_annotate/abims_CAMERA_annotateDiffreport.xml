@@ -12,19 +12,16 @@
     <command><![CDATA[
         @COMMAND_CAMERA_SCRIPT@
         xfunction annotatediff
-        image $image
+        image '$image'
 
-        variableMetadataOutput $variableMetadata
-        dataMatrixOutput $datamatrix
-        xsetRdataOutput $rdata
+        variableMetadataOutput '$variableMetadata'
+        dataMatrixOutput '$datamatrix'
+        xsetRdataOutput '$rdata'
 
-        convertRTMinute $convertRTMinute
-        numDigitsMZ $numDigitsMZ
-        numDigitsRT $numDigitsRT
         nSlaves \${GALAXY_SLOTS:-1}
         sigma $sigma perfwhm $perfwhm
         maxcharge $maxcharge maxiso $maxiso minfrac $minfrac
-        ppm $ppm mzabs $mzabs intval $intval
+        ppm $ppm mzabs $mzabs
         max_peaks $max_peaks
         quick $quick_block.quick
         #if $quick_block.quick == "FALSE"
@@ -41,6 +38,8 @@
                 rules $quick_block.rules_block.rules
             #end if
         #end if
+
+        @COMMAND_PEAKLIST@
 
         #if $options.option == "show":
             runDiffreport TRUE
@@ -63,10 +62,6 @@
 
         <param name="image" type="data" label="RData file" format="rdata.xcms.fillpeaks,rdata" help="output file from another function xcms (fillPeaks)" />
 
-        <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
-        <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
-        <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
-
         <param name="sigma" type="integer" value="6" label="groupFWHM: multiplier of the standard deviation" help="[sigma]" />
         <param name="perfwhm" type="float" value="0.6" max="1" min="0" label="groupFWHM: percentage of FWHM width" help="[perfwhm]" />
         <param name="maxcharge" type="integer" value="3" label="findIsotopes: max. ion charge" help="[maxcharge]" />
@@ -74,14 +69,8 @@
         <param name="minfrac" type="float" value="0.5" max="1" min="0" label="findIsotopes: The percentage number of samples, which must satisfy the C12/C13 rule for isotope annotation" help="[minfrac]" />
         <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
         <param name="mzabs" type="float" value="0.015" label="mzabs" help="General absolut error in m/z" />
-        <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
-            <option value="into" selected="true">into</option>
-            <option value="maxo" >maxo</option>
-            <option value="intb">intb</option>
-        </param>
-
-
         <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
+        
         <conditional name="quick_block">
             <param name="quick" type="select" label="Quick mode" help="[quick] If TRUE, use only groupFWHM and findIsotopes functions. Else if FALSE, use also groupCorr and findAdducts">
                 <option value="TRUE">TRUE</option>
@@ -118,6 +107,8 @@
                 <param name="polarity" type="hidden" value="quick" label="for the output label" help="for the output label" />
             </when>
         </conditional>
+
+        <expand macro="input_peaklist"/>
 
         <!-- Annotatediffreport specific parameters -->
         <conditional name="options">
@@ -196,9 +187,6 @@
         </test>-->
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
-            <param name="convertRTMinute" value="False"/>
-            <param name="numDigitsMZ" value="4" />
-            <param name="numDigitsRT" value="1" />
             <param name="sigma" value="6"/>
             <param name="perfwhm" value="0.6"/>
             <param name="maxcharge" value="3"/>
@@ -206,7 +194,6 @@
             <param name="minfrac" value="0.5"/>
             <param name="ppm" value="5"/>
             <param name="mzabs" value="0.015"/>
-            <param name="intval" value="into"/>
             <param name="max_peaks" value="100"/>
             <conditional name="quick_block">
                 <param name="quick" value="FALSE"/>
@@ -222,6 +209,10 @@
                     <param name="multiplier" value="3"/>
                 </conditional>
             </conditional>
+            <param name="convertRTMinute" value="False"/>
+            <param name="numDigitsMZ" value="4" />
+            <param name="numDigitsRT" value="1" />
+            <param name="intval" value="into"/>
             <conditional name="options">
                 <param name="option" value="show"/>
                 <param name="eicmax" value="200"/>
@@ -239,9 +230,6 @@
         </test>
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
-            <param name="convertRTMinute" value="False"/>
-            <param name="numDigitsMZ" value="4" />
-            <param name="numDigitsRT" value="1" />
             <param name="sigma" value="6"/>
             <param name="perfwhm" value="0.6"/>
             <param name="maxcharge" value="3"/>
@@ -249,7 +237,6 @@
             <param name="minfrac" value="0.5"/>
             <param name="ppm" value="5"/>
             <param name="mzabs" value="0.015"/>
-            <param name="intval" value="into"/>
             <param name="max_peaks" value="100"/>
             <conditional name="quick_block">
                 <param name="quick" value="FALSE"/>
@@ -265,6 +252,10 @@
                     <param name="rules" value="CASMI_extended_NEG_rules.csv" ftype="csv"/>
                 </conditional>
             </conditional>
+            <param name="convertRTMinute" value="False"/>
+            <param name="numDigitsMZ" value="4" />
+            <param name="numDigitsRT" value="1" />
+            <param name="intval" value="into"/>
             <conditional name="options">
                 <param name="option" value="show"/>
                 <param name="eicmax" value="200"/>

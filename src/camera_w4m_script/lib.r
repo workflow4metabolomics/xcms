@@ -49,14 +49,14 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
   listArguments[["calcCiS"]]=as.logical(listArguments[["calcCiS"]])
   listArguments[["calcIso"]]=as.logical(listArguments[["calcIso"]])
   listArguments[["calcCaS"]]=as.logical(listArguments[["calcCaS"]])
-  
+
   # common parameters
   listArguments4annotate = list(object=xset,
     nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
     maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],
     ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],
     polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
- 
+
   # quick == FALSE
   if(listArguments[["quick"]]==FALSE) {
     listArguments4annotate = append(listArguments4annotate,
@@ -76,14 +76,14 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
             error_message="Your ruleset file seems not well formatted. The column separators accepted are ; , and tabulation"
             print(error_message)
             stop(error_message)
-        }	
+        }
 
         listArguments4annotate = append(listArguments4annotate,
             list(rules=rulset))
     }
   }
 
-  
+
   # launch annotate
   xa = do.call("annotate", listArguments4annotate)
   peakList=getPeaklist(xa,intval=listArguments[["intval"]])
@@ -136,17 +136,6 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     }
   }
 
-  #grep  M213T3904 peakList*
-  #peakList:184	M213T3904	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	1	1	0	01230.08999999997	0	0			4788
-  #peakList:192	M213T3904.1	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181	4804
-  #peakListOri:184	M213T3904_1	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	1	1	0	01230.08999999997	0	0			4788
-  #peakListOri:192	M213T3904_2	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181	4804
-  #grep  M213T3904 diffrep*
-  #diffrep:1763	M213T3904	2.22982535057412	0.898369982214248	0.464165630574311	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181
-  #diffrep:2100	M213T3904.1	Inf	-1	0.5	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	110	0	1230.08999999997	0	0
-  #diffrepOri:1763	M213T3904_2	2.22982535057412	0.898369982214248	0.464165630574311	213	213	213	3903.6249434652	3903.6249434652	3903.6249434652	1	1	0	1081.29983333335	0	700.103750256462	1711.00602968181
-  #diffrepOri:2100	M213T3904_1	Inf	-1	0.5	212.800003051758	212.800003051758	212.800003051758	3904.42566271432	3904.42566271432	3904.42566271432	110	0	1230.08999999997	0	0
-
 
   # --- variableMetadata ---
   variableMetadata=peakList[,!(make.names(colnames(peakList)) %in% c(make.names(sampnames(xa@xcmsSet))))]
@@ -168,7 +157,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
 }
 
 
-combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArgumentsN, diffrepP=NULL,diffrepN=NULL,convert_param=FALSE,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, variableMetadataOutput="variableMetadata.tsv"){
+combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArgumentsN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, intval="into", convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
 
   #Load the two Rdata to extract the xset objects from positive and negative mode
   cat("\tObject xset from positive mode\n")
@@ -193,8 +182,6 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
     stop("You must relauch the CAMERA.annotate step with the lastest version.")
   }
 
-
-
   if(pos){
     xa=xaP
     listOFlistArgumentsP=listOFlistArguments
@@ -204,7 +191,7 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
     listOFlistArgumentsN=listOFlistArguments
     mode="pos. Mode"
   }
-  intval = "into"; for (steps in names(listOFlistArguments)) { if (!is.null(listOFlistArguments[[steps]]$intval)) intval = listOFlistArguments[[steps]]$intval }
+
   peakList=getPeaklist(xa,intval=intval)
   peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
   variableMetadata=cbind(peakList, cAnnot[, c("isotopes", "adduct", "pcgroup",mode)]);
@@ -223,12 +210,8 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
   #TODO: checker
   #colnames(variableMetadata)[1:2] = c("name","mz/rt");
 
-  #If the user want to convert the retention times (seconds) into minutes.
-  if (listArguments[["convert_param"]]){
-    #converting the retention times (seconds) into minutes
-    cat("\tConverting the retention times into minutes\n")
-    variableMetadata$rtmed=cAnnot$rt/60; variableMetadata$rtmin=cAnnot$rtmin/60; variableMetadata$rtmax=cAnnot$rtmax/60;
-  }
+  variableMetadata = RTSecondToMinute(variableMetadata, convertRTMinute)
+  variableMetadata = formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
 
   #If the user want to keep only the metabolites which match a difference
   if(keep_meta){

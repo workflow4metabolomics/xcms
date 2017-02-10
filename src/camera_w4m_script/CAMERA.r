@@ -160,7 +160,14 @@ if (thefunction %in% c("annotatediff")) {
 }
 
 if (thefunction %in% c("combinexsAnnos")) {
-  cAnnot=combinexsAnnos_function(xaP=xaP,xaN=xaN,listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,diffrepP=diffrepP,diffrepN=diffrepN,convert_param=listArguments[["convert_param"]],pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],variableMetadataOutput=variableMetadataOutput)
+    cAnnot=combinexsAnnos_function(
+        xaP=xaP,xaN=xaN,
+        listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,
+        diffrepP=diffrepP,diffrepN=diffrepN,
+        pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],
+        intval=listArguments[["intval"]], convertRTMinute=listArguments[["convertRTMinute"]], numDigitsMZ=listArguments[["numDigitsMZ"]], numDigitsRT=listArguments[["numDigitsRT"]],
+        variableMetadataOutput=variableMetadataOutput
+    )
 }
 
 dev.off()
