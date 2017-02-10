@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms.group" version="2.1.1">
+<tool id="abims_xcms_group" name="xcms.group" version="2.1.0">
 
     <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
 
@@ -413,11 +413,9 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.1 - 07/02/2017**
+**Version 2.1.0 - 07/02/2017**
 
 - IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
-
-**Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.group can deal with merged individual data from "xcms.xcmsSet Merger"
 
