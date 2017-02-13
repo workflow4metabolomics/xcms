@@ -19,13 +19,12 @@
         LANG=C Rscript $__tool_directory__/CAMERA.r
     </token>
 
-    <!-- zipfile load for planemo test -->
+    <!-- raw file load for planemo test -->
     <token name="@COMMAND_FILE_LOAD@">
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
             #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
                 #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
                 #set singlefile_sampleName = ','.join( [ str( $single_file.name ) for $single_file in $file_load_section.file_load_conditional.input ] )
-
                 singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #else
                 zipfile '$file_load_section.file_load_conditional.input'
@@ -67,22 +66,77 @@
         </section>
     </xml>
 
+    <!-- peaklist export option management -->
     <token name="@COMMAND_PEAKLIST@">
-        convertRTMinute $convertRTMinute
-        numDigitsMZ $numDigitsMZ
-        numDigitsRT $numDigitsRT
-        intval $intval
+        convertRTMinute $export.convertRTMinute
+        numDigitsMZ $export.numDigitsMZ
+        numDigitsRT $export.numDigitsRT
+        intval $export.intval
     </token>
 
     <xml name="input_peaklist">
-        <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
-        <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
-        <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
-        <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
-            <option value="into" selected="true">into</option>
-            <option value="maxo" >maxo</option>
-            <option value="intb">intb</option>
-        </param>
+        <section name="export" title="Export options">
+            <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
+            <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
+            <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
+            <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
+                <option value="into" selected="true">into</option>
+                <option value="maxo" >maxo</option>
+                <option value="intb">intb</option>
+            </param>
+        </section>
+    </xml>
+
+    <xml name="test_peaklist">
+        <section name="export">
+            <param name="convertRTMinute" value="True"/>
+            <param name="numDigitsMZ" value="4" />
+            <param name="numDigitsRT" value="1" />
+            <param name="intval" value="into"/>
+        </section>
+    </xml>
+
+    <!-- annotate_diffreport <test> commun part -->
+    <xml name="test_annotate_diffreport">
+        <section name="groupfwhm">
+            <param name="sigma" value="6"/>
+            <param name="perfwhm" value="0.6"/>
+        </section>
+        <section name="findisotopes">
+            <param name="maxcharge" value="3"/>
+            <param name="maxiso" value="4"/>
+            <param name="minfrac" value="0.5"/>
+        </section>
+        <section name="general">
+            <param name="ppm" value="5"/>
+            <param name="mzabs" value="0.015"/>
+            <param name="max_peaks" value="100"/>
+        </section>
+        <section name="diffreport">
+        <conditional name="options">
+            <param name="option" value="show"/>
+            <param name="eicmax" value="200"/>
+            <param name="eicwidth" value="200"/>
+            <param name="value" value="into"/>
+            <param name="h" value="480"/>
+            <param name="w" value="640"/>
+            <param name="mzdec" value="2"/>
+            <param name="sortpval" value="False"/>
+        </conditional>
+        </section>
+        <expand macro="test_peaklist"/>
+    </xml>
+
+    <xml name="test_annotate_diffreport_quick">
+        <param name="quick" value="FALSE"/>
+        <section name="groupcorr">
+            <param name="cor_eic_th" value="0.75"/>
+            <param name="graphMethod" value="hcs"/>
+            <param name="pval" value="0.05"/>
+            <param name="calcCiS" value="True"/>
+            <param name="calcIso" value="False"/>
+            <param name="calcCaS" value="False"/>
+        </section>
     </xml>
 
     <token name="@HELP_AUTHORS@">
