@@ -95,7 +95,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
 
 
     # --- Multi condition : diffreport ---
-    diffrep=NULL
+    diffrepOri=NULL
     if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))>=2) {
     #Check if the fillpeaks step has been done previously, if it hasn't, there is an error message and the execution is stopped.
     res=try(is.null(xset@filled))
