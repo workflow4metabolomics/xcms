@@ -202,7 +202,7 @@ dev.off()
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFlistArguments","zipfile")
+objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFlistArguments","zipfile","singlefile")
 save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
 
 cat("\n\n")
