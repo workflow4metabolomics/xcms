@@ -1,4 +1,4 @@
-<tool id="abims_corr_analysis" name="Metabolites Correlation Analysis" version="1.0.1" force_history_refresh="true">
+<tool id="abims_corr_analysis" name="Metabolites Correlation Analysis" version="1.0.1" >
 
     <description></description>
 
@@ -142,10 +142,31 @@
             <param name="cond_input_type|sampleMetadata" value="faahKO.xset.group.retcor.group.fillpeaks.annotate.sampleMetadata.tsv" ftype="tabular" />
             <param name="cond_input_type|variableMetadata" value="faahKO.xset.group.retcor.group.fillpeaks.annotate.variableMetadata.tsv" ftype="tabular" />
             <param name="cond_input_type|cond_function|select_funtion" value="sort_and_corr" />
-            <output name="sorted_table" file="sorted_table.tsv" />
-            <output name="correlation_matrix" file="correlation_matrix.tsv" />
-            <output name="correlation_matrix_selected" file="correlation_matrix_selected.tsv" />
-            <output name="siff_table" file="siff_table.tsv" />
+            <!-- 5th first column of the first (minus header) and last line -->
+            <output name="sorted_table">
+                <assert_contents>
+                    <has_text text="50645694.9848612&#009;1&#009;M508T3522&#009;M508.2T58.7&#009;508.200012207031" />
+                    <has_text text="201.46799999999&#009;6245&#009;M580T4354&#009;M579.9T72.6&#009;579.900024414062" />
+                </assert_contents>
+            </output>
+            <output name="correlation_matrix">
+                <assert_contents>
+                    <has_text text="M508T3522&#009;&#009;58.6953870068201&#009;50645694.9848612&#009;1" />
+                    <has_text text="M580T4354&#009;&#009;72.5711124072004&#009;201.46799999999&#009;0.722231096181192" />
+                </assert_contents>
+            </output>
+            <output name="correlation_matrix_selected">
+                <assert_contents>
+                    <has_text text="M508T3522&#009;58.6953870068201&#009;50645694.9848612&#009;1&#009;0.35762418631501" />
+                    <has_text text="M580T4354&#009;72.5711124072004&#009;201.46799999999&#009;0.722231096181192&#009;-0.225535327789639" />
+                </assert_contents>
+            </output>
+            <output name="siff_table">
+                <assert_contents>
+                    <has_text text="M506T3391&#009;0.944510391048912&#009;M508T3522" />
+                    <has_text text="M530T4365&#009;0.856995510195474&#009;M580T4354" />
+                </assert_contents>
+            </output>
         </test>
     </tests>
 
