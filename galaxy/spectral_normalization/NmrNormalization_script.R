@@ -141,45 +141,7 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     NormalizedBucketedSpectra <- NmrBrucker_bioFact(dataMatrix,sampleMetadata,bioFact)
   }
 
-  # Graphic
-  if (graph != "None")
-  {
-    # Graphic Device opening
-    pdf(nomFichier,onefile=TRUE)
-    if (graph == "Overlay")
-    {
-      ymax <- max(NormalizedBucketedSpectra)
-      plot(1:length(NormalizedBucketedSpectra[,1]),NormalizedBucketedSpectra[,1],ylim=c(0,ymax),
-            type='l',col=1,xlab="Chemical shift",ylab="Intensity")
-      for (i in 2:ncol(NormalizedBucketedSpectra))
-      {
-        spectre <- NormalizedBucketedSpectra[,i]
-        lines(spectre,col=i)
-      }
-    }
-    else
-    {
-      for (i in 1:ncol(NormalizedBucketedSpectra))
-      {
-        plot(1:length(NormalizedBucketedSpectra[,i]),NormalizedBucketedSpectra[,i],type='l',col=1,
-             xlab="Chemical shift",ylab="Intensity")
-      }
-    }
-    dev.off()
-  }
-
-  # Output datasets creation
-  if (scalingMethod == "None" || scalingMethod == "Total")
-  {
-      sampleMetadata <- data.frame(1:ncol(NormalizedBucketedSpectra))
-      rownames(sampleMetadata) <- colnames(NormalizedBucketedSpectra)
-      colnames(sampleMetadata) <- "SampleOrder"
-  }
-
-  variableMetadata <- data.frame(1:nrow(NormalizedBucketedSpectra))
-  rownames(variableMetadata) <- rownames(NormalizedBucketedSpectra)
-  colnames(variableMetadata) <- "VariableOrder"
-
-  return(list(NormalizedBucketedSpectra,sampleMetadata,variableMetadata))
+  ## OUTPUTS
+  return(list(NormalizedBucketedSpectra))
 
 }
