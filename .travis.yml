@@ -6,16 +6,11 @@
 language: python
 
 before_install:
- - sudo apt-get install -y python-virtualenv
- - virtualenv planemo-venv
- - . planemo-venv/bin/activate
- - pip install --upgrade pip setuptools
- - pip install planemo
- - planemo conda_init
+ - export GALAXY_RELEASE=release_17.01
+ - export PLANEMO_RELEASE=0.37.0
 
 install:
- - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization/
+ - pip install planemo==$PLANEMO_RELEASE
 
-#TODO: delete --galaxy_branch "dev" as soon as planemo fix the bug
 script:
- - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization/
+ - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization && planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch $GALAXY_RELEASE --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization
