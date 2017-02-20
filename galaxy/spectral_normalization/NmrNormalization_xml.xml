@@ -42,8 +42,6 @@
 		    ## Outputs
 		    logOut $logOut
 		    dataMatrixOut $dataMatrixOut
-		    sampleMetadataOut $sampleMetadataOut
-		    variableMetadataOut $variableMetadataOut
 		    graphOut $graphOut
 
 
@@ -82,9 +80,7 @@
 
 	<outputs>
 		<data format="txt" name="logOut" label="${tool.name}_log" />
-		<data format="tabular" name="sampleMetadataOut" label="${tool.name}_sampleMetadata" />
-		<data format="tabular" name="variableMetadataOut" label="${tool.name}_variableMetadata" />
-    <data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrix" />
+        <data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrix" />
 		<data format="pdf" name="graphOut" label="${tool.name}_spectra" >
 			<filter> graphType != "None" </filter>
 		</data>
