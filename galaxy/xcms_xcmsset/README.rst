@@ -4,7 +4,7 @@ Changelog/News
 
 **Version 2.1.0 - 03/02/2017**
 
-- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
+- NEW: The W4M tools will be able now to take as input a single file (mzXML, mzML, NetCDF or mzData). It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
 
 **Version 2.0.11 - 22/12/2016**
 
