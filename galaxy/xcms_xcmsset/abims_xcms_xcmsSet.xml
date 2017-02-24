@@ -68,13 +68,13 @@
       <conditional name="inputs">
             <param name="input" type="select" label="Choose your inputs method" >
                 <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
-                <option value="single_file">mzXML file from your history</option>
+                <option value="single_file">mzXML, mzML, NetCDF or mzData file from your history</option>
             </param>
             <when value="zip_file">
                 <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
             </when>
             <when value="single_file">
-                <param name="single_file" type="data" format="mzxml,netcdf" label="Single file" />
+                <param name="single_file" type="data" format="mzxml,netcdf,mzml,mzdata" label="Single file" />
             </when>
         </conditional>
 
@@ -405,13 +405,13 @@ The output file is an xset.RData file. You can continue your analysis using it i
 Input files
 -----------
 
-+---------------------------+--------------------+
-| Parameter : num + label   |   Format           |
-+===========================+====================+
-| OR : Zip file             |   zip              |
-+---------------------------+--------------------+
-| OR : Single file          |   mzXML, netCDF    |
-+---------------------------+--------------------+
++---------------------------+------------------------------------+
+| Parameter : num + label   |   Format                           |
++===========================+====================================+
+| OR : Zip file             |   zip                              |
++---------------------------+------------------------------------+
+| OR : Single file          |   mzXML, mzML, netCDF or mzData    |
++---------------------------+------------------------------------+
 
 **Choose your inputs**
 
@@ -581,7 +581,7 @@ Changelog/News
 
 **Version 2.1.0 - 03/02/2017**
 
-- NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
+- NEW: The W4M tools will be able now to take as input a single file (mzXML, mzML, NetCDF or mzData). It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
 
 **Version 2.0.11 - 22/12/2016**
 
