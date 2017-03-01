@@ -82,7 +82,7 @@
             </when>
         </conditional>
 
-        <expand macro="file_load"/>
+        <expand macro="input_file_load"/>
 
     </inputs>
 
@@ -133,9 +133,7 @@
             <param name="methods|options|span" value="0.2"/>
             <param name="methods|options|family" value="gaussian"/>
             <param name="methods|options|plottype" value="deviation"/>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <param name="file_load_conditional|inputs|input" value="zip_file" />
-            <param name="file_load_conditional|inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <expand macro="test_file_load_zip"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -157,9 +155,7 @@
             <param name="methods|options|span" value="0.2"/>
             <param name="methods|options|family" value="gaussian"/>
             <param name="methods|options|plottype" value="deviation"/>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <param name="file_load_conditional|inputs|input" value="single_file" />
-            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
+            <expand macro="test_file_load_single"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
