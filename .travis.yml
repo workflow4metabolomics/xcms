@@ -13,4 +13,4 @@ install:
  - pip install planemo==$PLANEMO_RELEASE
 
 script:
- - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization && planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch $GALAXY_RELEASE --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/spectral_normalization
+ - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/normalization && planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch $GALAXY_RELEASE --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/normalization

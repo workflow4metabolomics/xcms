@@ -1,4 +1,4 @@
-<tool id="spectral_normalization" name="Spectral Normalization" version="1.0.2">
+<tool id="normalization" name="Normalization" version="1.0.2">
 
     <description> Normalization of (preprocessed) spectra </description>
 
@@ -48,7 +48,7 @@
 	</command>
 
 	<inputs>
-		<param name="dataMatrix" type="data" label="Data matrix of spectral data" help="" format="tabular" />
+		<param name="dataMatrix" type="data" label="Data matrix of preprocessed data" help="" format="tabular" />
 
 		<conditional name="scalingMethod" >
 			<param name="method" label="Normalization method" type="select" help="Default method is total intensity" >
@@ -115,15 +115,15 @@ Analytical Chemistry 78(13): 4281-4290.
 
 ---------------------------------------------------
 
-======================
-Spectral Normalization
-======================
+===============
+ Normalization
+===============
 
 -----------
 Description
 -----------
 
-Normalization (operation applied on each (preprocessed) individual spectrum) of spectral data
+Normalization (operation applied on each (preprocessed) individual spectrum) of preprocessed data
 
 -----------------
 Workflow position
@@ -257,7 +257,7 @@ Changelog/News
 
 **Version 1.0.2 - 22/10/2016**
 
-- NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of spectral data
+- NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of preprocessed data
 
 **Version 1.0.1 - 14/04/2016**
 
