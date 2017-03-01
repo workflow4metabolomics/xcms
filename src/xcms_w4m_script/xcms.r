@@ -170,8 +170,8 @@ if (thefunction  == "xcmsSet") {
 
     #transform the files absolute pathways into relative pathways
     xset@filepaths<-sub(paste(getwd(),"/",sep="") ,"", xset@filepaths)
-
-    if(exists("zipfile") && (zipfile!="")) {
+    print(zipfile)
+    if(exists("zipfile") && !is.null(zipfile) && (zipfile!="")) {
 
         #Modify the samples names (erase the path)
         for(i in 1:length(sampnames(xset))){
