@@ -98,64 +98,13 @@ if (!is.null(listArguments[["new_file_path"]])){
 #Import the different functions
 source_local("lib.r")
 
-#necessary to unzip .zip file uploaded to Galaxy
-#thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
-
-if (!is.null(listArguments[["zipfile"]])){
-    zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
-}
-
-if (!is.null(listArguments[["singlefile_galaxyPath"]])){
-    singlefile_galaxyPaths = unlist(strsplit(listArguments[["singlefile_galaxyPath"]],",")); listArguments[["singlefile_galaxyPath"]]=NULL
-    singlefile_sampleNames = unlist(strsplit(listArguments[["singlefile_sampleName"]],",")); listArguments[["singlefile_sampleName"]]=NULL
-
-    singlefile=NULL
-    for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
-        singlefile_galaxyPath=singlefile_galaxyPaths[singlefile_galaxyPath_i]
-        singlefile_sampleName=singlefile_sampleNames[singlefile_galaxyPath_i]
-        singlefile[[singlefile_sampleName]] = singlefile_galaxyPath
-    }
-}
-
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("annotatediff"))  {
-    if(exists("singlefile") && (length("singlefile")>0)) {
-        for (singlefile_sampleName in names(singlefile)) {
-            singlefile_galaxyPath = singlefile[[singlefile_sampleName]]
-            if(!file.exists(singlefile_galaxyPath)){
-                error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
-                print(error_message); stop(error_message)
-            }
-
-            file.symlink(singlefile_galaxyPath,singlefile_sampleName)
-        }
-        directory = "."
-
-
-    }
-    if(exists("zipfile") && (zipfile!="")) {
-        if(!file.exists(zipfile)){
-            error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
-            print(error_message)
-            stop(error_message)
-        }
-
-        #list all file in the zip file
-        #zip_files=unzip(zipfile,list=T)[,"Name"]
-
-        #unzip
-        suppressWarnings(unzip(zipfile, unzip="unzip"))
-
-        #get the directory name
-        filesInZip=unzip(zipfile, list=T);
-        directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
-        directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
-        directory = "."
-        if (length(directories) == 1) directory = directories
-
-        cat("files_root_directory\t",directory,"\n")
-
-    }
+    rawFilePath = getRawfilePathFromArguments(listArguments)
+    zipfile = rawFilePath$zipfile
+    singlefile = rawFilePath$singlefile
+    listArguments = rawFilePath$listArguments
+    directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 }
 
 

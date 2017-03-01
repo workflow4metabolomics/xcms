@@ -223,3 +223,84 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
     return(variableMetadata);
 
 }
+
+# This function get the raw file path from the arguments
+getRawfilePathFromArguments <- function(listArguments) {
+    zipfile = NULL
+    singlefile = NULL
+    if (!is.null(listArguments[["zipfile"]]))           zipfile = listArguments[["zipfile"]]
+    if (!is.null(listArguments[["zipfilePositive"]]))   zipfile = listArguments[["zipfilePositive"]]
+    if (!is.null(listArguments[["zipfileNegative"]]))   zipfile = listArguments[["zipfileNegative"]]
+
+    if (!is.null(listArguments[["singlefile_galaxyPath"]])) {
+        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPath"]];
+        singlefile_sampleNames = listArguments[["singlefile_sampleName"]]
+    }
+    if (!is.null(listArguments[["singlefile_galaxyPathPositive"]])) {
+        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPathPositive"]];
+        singlefile_sampleNames = listArguments[["singlefile_sampleNamePositive"]]
+    }
+    if (!is.null(listArguments[["singlefile_galaxyPathNegative"]])) {
+        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPathNegative"]];
+        singlefile_sampleNames = listArguments[["singlefile_sampleNameNegative"]]
+    }
+    if (exists("singlefile_galaxyPaths")){
+        singlefile_galaxyPaths = unlist(strsplit(singlefile_galaxyPaths,","))
+        singlefile_sampleNames = unlist(strsplit(singlefile_sampleNames,","))
+
+        singlefile=NULL
+        for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
+            singlefile_galaxyPath=singlefile_galaxyPaths[singlefile_galaxyPath_i]
+            singlefile_sampleName=singlefile_sampleNames[singlefile_galaxyPath_i]
+            singlefile[[singlefile_sampleName]] = singlefile_galaxyPath
+        }
+    }
+    for (argument in c("zipfile","zipfilePositive","zipfileNegative","singlefile_galaxyPath","singlefile_sampleName","singlefile_galaxyPathPositive","singlefile_sampleNamePositive","singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
+        listArguments[[argument]]=NULL
+    }
+    return(list(zipfile=zipfile, singlefile=singlefile, listArguments=listArguments))
+}
+
+
+# This function retrieve the raw file in the working directory
+#   - if zipfile: unzip the file with its directory tree
+#   - if singlefiles: set symlink with the good filename
+retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
+    if(!is.null(singlefile) && (length("singlefile")>0)) {
+        for (singlefile_sampleName in names(singlefile)) {
+            singlefile_galaxyPath = singlefile[[singlefile_sampleName]]
+            if(!file.exists(singlefile_galaxyPath)){
+                error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
+                print(error_message); stop(error_message)
+            }
+
+            file.symlink(singlefile_galaxyPath,singlefile_sampleName)
+        }
+        directory = "."
+
+    }
+    if(!is.null(zipfile) && (zipfile!="")) {
+        if(!file.exists(zipfile)){
+            error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
+            print(error_message)
+            stop(error_message)
+        }
+
+        #list all file in the zip file
+        #zip_files=unzip(zipfile,list=T)[,"Name"]
+
+        #unzip
+        suppressWarnings(unzip(zipfile, unzip="unzip"))
+
+        #get the directory name
+        filesInZip=unzip(zipfile, list=T);
+        directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
+        directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
+        directory = "."
+        if (length(directories) == 1) directory = directories
+
+        cat("files_root_directory\t",directory,"\n")
+
+    }
+    return (directory)
+}
