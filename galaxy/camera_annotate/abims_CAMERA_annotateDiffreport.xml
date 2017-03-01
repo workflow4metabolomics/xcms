@@ -133,7 +133,7 @@
             </when>
         </conditional>
 
-        <expand macro="file_load"/>
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
@@ -223,9 +223,7 @@
                 <param name="mzdec" value="2"/>
                 <param name="sortpval" value="False"/>
             </conditional>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <param name="file_load_conditional|inputs|input" value="zip_file" />
-            <param name="file_load_conditional|inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <expand macro="test_file_load_zip"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
@@ -267,9 +265,7 @@
                 <param name="mzdec" value="2"/>
                 <param name="sortpval" value="False"/>
             </conditional>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <param name="file_load_conditional|inputs|input" value="single_file" />
-            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
+            <expand macro="test_file_load_single"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
@@ -311,9 +307,7 @@
                 <param name="mzdec" value="2"/>
                 <param name="sortpval" value="False"/>
             </conditional>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <param name="file_load_conditional|inputs|input" value="single_file" />
-            <param name="file_load_conditional|inputs|single_file" value="wt15.CDF,ko16.CDF,ko15.CDF,wt16.CDF"  ftype="netcdf" />
+            <expand macro="test_file_load_single"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.dataMatrix.tsv" />
         </test>
