@@ -11,10 +11,10 @@
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
 
-        #if $inputs.input == "zip_file":
-            zipfile '$inputs.zip_file'
-        #elif $inputs.input == "single_file":
-            singlefile_galaxyPath '$inputs.single_file' singlefile_sampleName '$inputs.single_file.name'
+        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+        #else
+            zipfile '$input'
         #end if
 
         xfunction xcmsSet
@@ -65,18 +65,7 @@
 
     <inputs>
 
-      <conditional name="inputs">
-            <param name="input" type="select" label="Choose your inputs method" >
-                <option value="zip_file" selected="true">Zip file from your history containing your chromatograms</option>
-                <option value="single_file">mzXML file from your history</option>
-            </param>
-            <when value="zip_file">
-                <param name="zip_file" type="data" format="no_unzip.zip,zip" label="Zip file" />
-            </when>
-            <when value="single_file">
-                <param name="single_file" type="data" format="mzxml,netcdf" label="Single file" />
-            </when>
-        </conditional>
+        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
 
         <conditional name="options_scanrange">
             <param name="option" type="select" label="Scan range option " >
@@ -221,8 +210,7 @@
             </output>
         </test>-->
         <test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -307,8 +295,7 @@
             </output>
         </test>-->
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="HU_neg_017.mzXML"  ftype="mzxml" />
+            <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -324,8 +311,7 @@
             </output>
         </test>
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="MM14.mzML"  ftype="mzxml" />
+            <param name="input" value="MM14.mzML"  ftype="mzxml" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="56" />
             <param name="methods|peakwidth" value="5.275,13.5" />
@@ -405,20 +391,20 @@ The output file is an xset.RData file. You can continue your analysis using it i
 Input files
 -----------
 
-+---------------------------+--------------------+
-| Parameter : num + label   |   Format           |
-+===========================+====================+
-| OR : Zip file             |   zip              |
-+---------------------------+--------------------+
-| OR : Single file          |   mzXML, netCDF    |
-+---------------------------+--------------------+
++---------------------------+----------------------------------+
+| Parameter : num + label   |   Format                         |
++===========================+==================================+
+| OR : Zip file             |   zip                            |
++---------------------------+----------------------------------+
+| OR : Single file          |   mzXML, mzML, mzData, netCDF    |
++---------------------------+----------------------------------+
 
 **Choose your inputs**
 
 You have two methods for your inputs:
 
-    | Zip file (recommended): You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-    | Single file: You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
+    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
+    | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
 
 Zip file: Steps for creating the zip file
 -----------------------------------------
