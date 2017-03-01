@@ -10,7 +10,6 @@ Changelog/News
 
 - TEST: refactoring to pass planemo test using conda dependencies
 
-
 **Version 2015-01-28 - 28/01/2015**
 
 

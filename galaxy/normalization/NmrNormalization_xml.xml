@@ -89,11 +89,11 @@
   <tests>
         <test>
             <param name="dataMatrix" value="MTBLS1_bucketedData.tabular" ftype="tabular" />
-            <param name="scalingMethod|method" value="Total" />
+            <conditional name="scalingMethod" >
+                <param name="method" value="Total" />
+            </conditional>
             <param name="graphType" value="Overlay" />
             <output name="dataMatrixOut" file="MTBLS1_bucketedData_normalized.tabular" />
-            <output name="sampleMetadataOut" file="MTBLS1_sampleMetadata_normalized.tabular" />
-            <output name="variableMetadataOut" file="MTBLS1_variableMetadata_normalized.tabular" />
         </test>
     </tests>
 
@@ -213,19 +213,7 @@ Output files
 
 dataMatrix.tsv
 	| tabular output
-	| Data matrix with p rows (buckets) and n columns (samples) containing the intensities
-	|
-
-sampleMetadata.tsv
-	| tabular output
-	| sampleMetadata file identical to the file given as argument if "PQN" or "Quantitative" normalization method; file with n rows (samples) and 2 columns containing sample identifier (rownames) and sample order if "None" or "Total" normalization methof
-	| Mandatory file in the statistical analysis step of the workflow
-	|
-
-variableMetadata.tsv
-	| tabular output
-	| file with p rows (buckets) and 2 columns containing variable identifier (rownames) and bucket order. Can add columns with numeric and/or character variable metadata.
-	| Mandatory file in the statistical analysis step of the workflow
+	| Data matrix with p rows (variable) and n columns (samples) containing the intensities
 	|
 
 spectra.pdf
@@ -262,7 +250,6 @@ Changelog/News
 **Version 1.0.1 - 14/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
-
 
 **Version 2015-01-28 - 28/01/2015**
 
