@@ -161,6 +161,11 @@ if (thefunction == "group") {
 cat("\t\tCOMPUTE\n")
 xset = do.call(thefunction, listArguments)
 
+# check if there are no peaks
+if (nrow(peaks(xset)) == 0) {
+    stop("No peaks were detected. You should review your settings")
+}
+
 
 cat("\n\n")
 
