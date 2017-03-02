@@ -1,7 +1,0 @@
-categories: [Metabolomics]
-description: '[Metabolomics][W4M][ALL] Spectral Normalization - Normalization (operation applied on each individual spectrum) of spectral data'
-homepage_url: http://workflow4metabolomics.org
-long_description: 'Part of the W4M project: http://workflow4metabolomics.org'
-name: spectral_normalization
-owner: marie-tremblay-metatoul
-remote_repository_url: https://github.com/workflow4metabolomics/spectral_normalization

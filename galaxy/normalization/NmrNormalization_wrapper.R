@@ -31,6 +31,8 @@ source_local <- function(fname)
 }
 #Import the different functions
 source_local("NmrNormalization_script.R")
+source_local("DrawSpec.R")
+
 
 ##------------------------------
 ## Errors ?????????????????????
@@ -76,8 +78,6 @@ if (scaling=='QuantitativeVariable')
   # Outputs
 nomGraphe <- argLs[["graphOut"]]
 dataMatrixOut <- argLs[["dataMatrixOut"]]
-sampleMetadataOut <- argLs[["sampleMetadataOut"]]
-variableMetadataOut <- argLs[["variableMetadataOut"]]
 log <- argLs[["logOut"]]
 
 ## Checking arguments
@@ -95,9 +95,31 @@ NormalizationResults <- NmrNormalization(dataMatrix=data,scalingMethod=scaling,s
                                     graph=graphique,nomFichier=nomGraphe,savLog.txtC=log)
 
 data_normalized <- NormalizationResults[[1]]
-data_sample <- NormalizationResults[[2]]
-data_variable <- NormalizationResults[[3]]
 
+
+## Graphical outputs
+##------------------
+if (graphique != "None")
+{
+  # Graphic Device opening
+  pdf(nomGraphe,onefile=TRUE)
+  
+  if (graphique == "Overlay")
+  {
+    # Global spectral window
+    spectra <- data.frame(t(data_normalized))
+    drawSpec(spectra,xlab="", ylab="Intensity", main="")
+  }
+  else
+  {
+    for (i in 1:ncol(data_normalized))
+    {
+      spectra <- t(data_normalized[,i])
+      drawSpec(spectra,xlab="", ylab="Intensity", main=colnames(data_normalized)[i])
+    }
+  }
+  dev.off()
+}
 
 
 ## Saving
@@ -106,22 +128,11 @@ data_variable <- NormalizationResults[[3]]
 data_normalized <- cbind(rownames(data_normalized),data_normalized)
 colnames(data_normalized) <- c("Bucket",colnames(data_normalized)[-1])
 write.table(data_normalized,file=argLs$dataMatrixOut,quote=FALSE,row.names=FALSE,sep="\t")
-  # Sample
-data_sample <- cbind(rownames(data_sample),data_sample)
-colnames(data_sample) <- c("Sample",colnames(data_sample)[-1])
-write.table(data_sample,file=argLs$sampleMetadataOut,quote=FALSE,row.names=FALSE,sep="\t")
-  # Variable
-data_variable <- cbind(rownames(data_variable),data_variable)
-colnames(data_variable) <- c("Bucket",colnames(data_variable)[-1])
-write.table(data_variable,file=argLs$variableMetadataOut,quote=FALSE,row.names=FALSE,sep="\t")
 
 
 ## Ending
 ##---------------------
-
 cat("\nEnd of 'Normalization' Galaxy module call: ", as.character(Sys.time()), sep = "")
-
-## sink(NULL)
 
 options(stringsAsFactors = strAsFacL)
 
