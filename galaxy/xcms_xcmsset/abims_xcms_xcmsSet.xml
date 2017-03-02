@@ -163,17 +163,18 @@
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
-        <data name="sampleMetadata" format="tabular" label="sampleMetadata.tsv" />
-        <data name="ticsRawPdf"   format="pdf" label="xset.TICs_raw.pdf" />
-        <data name="bpcsRawPdf"   format="pdf" label="xset.BPCs_raw.pdf" />
-        <data name="log" format="txt" label="xset.log.txt" />
+        <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" />
+        <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+        <data name="ticsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf" />
+        <data name="bpcsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf" />
+        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
     </outputs>
 
     <tests>
         <!--<test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
+            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
             <param name="methods|method" value="matchedFilter" />
             <param name="methods|step" value="0.01" />
             <param name="methods|fwhm" value="4" />
@@ -193,8 +194,7 @@
             </output>
         </test>
         <test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="sacuri_current_root.zip"  ftype="zip" />
+            <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -227,8 +227,7 @@
         </test>
         <!-- Passed but disable to save time for Travis" -->
         <!--<test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="ko15.CDF"  ftype="netcdf" />
+            <param name="input" value="ko15.CDF"  ftype="netcdf" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -244,8 +243,7 @@
             </output>
         </test>
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="ko16.CDF"  ftype="netcdf" />
+            <param name="input" value="ko16.CDF"  ftype="netcdf" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
@@ -261,8 +259,7 @@
             </output>
         </test>
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="wt15.CDF"  ftype="netcdf" />
+            <param name="input" value="wt15.CDF"  ftype="netcdf" />
             <param name="methods|method" value="centWave" />
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
