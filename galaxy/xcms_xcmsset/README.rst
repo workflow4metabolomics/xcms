@@ -1,3 +1,23 @@
+Job Dynamic Destination Mapping
+-------------------------------
+
+**Why**
+
+xcmsSet wrapper allow both individual file and zip file which can contain several samples.
+Thus, it can be interesting to adjust the number of thread according to the input type.
+For example: 1 thread for a single mzXML or NetCDF file and 8 threads for a zip file.
+
+**What**
+
+The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#dynamic-destination-mapping) allow Galaxy to choose a destination at runtime based on factors such as the job inputs, user submitting the job, cluster status, etc...
+
+**How**
+
+ - The file `destinations_input_type.py` (shiped with this tool) must be place in `lib/galaxy/jobs/rules/`
+ - The `job_conf.xml` must be inspired by the `job_conf.xml.sample` shiped with this tool
+ - The final destination names must match between the `job_conf.xml` and the `destinations_input_type.py`
+ - Restart Galaxy
+
 
 Changelog/News
 --------------
@@ -53,4 +73,3 @@ Changelog/News
 - IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
-
