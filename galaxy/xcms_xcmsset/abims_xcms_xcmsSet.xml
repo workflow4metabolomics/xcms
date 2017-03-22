@@ -48,9 +48,8 @@
                 ## sigma "$methods.options_m.sigma"
                 max $methods.options_m.max
                 snthresh $methods.options_m.snthresh
-                ## mzdiff $methods.options_m.mzdiff
                 steps $methods.options_m.steps
-                ## sleep $methods.options_m.sleep
+                mzdiff $methods.options_m.mzdiff
             #end if
         #elif $methods.method == "MSW":
             snthr $methods.snthr
@@ -109,7 +108,7 @@
                     </param>
                     <when value="show">
                         <param name="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="[snthresh] Signal to noise ratio cutoff" />
-                        <param name="mzdiff" type="float" value="-0.001" label="Min m/z difference" help="[mzdiff] Min m/z difference for peaks with overlapping RT " />
+                        <param name="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap" />
                         <param name="integrate" type="select" label="peak limits method" help="[integrate]" >
                             <option value="1">peak limits based on smoothed 2nd derivative (less precise)</option>
                             <option value="2">peak limits based on real data (more sensitive to noise)</option>
@@ -132,15 +131,11 @@
                         <option value="hide" selected="true">hide</option>
                     </param>
                     <when value="show">
-<!--
-                        <param name="sigma" type="hidden" value="fwhm/2.3548" label="sigma" help="standard deviation (fwhm/2.3548)" />
--->
+                        <!--<param name="sigma" type="float" value="12.739935451" label="Standard deviation (width) of matched filtration model peak" help="[sigma] By default: fwhm/2.3548" />-->
                         <param name="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" help="[max]" />
                         <param name="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" help="[snthresh]" />
                         <param name="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="[steps] The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
-<!--
-                        <param name="mzdiff" type="text" size="20" value="0.8-step*steps" label="m/z difference" help="min m/z difference for peaks with overlapping RT " />
--->
+                        <param name="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps " />
                     </when>
                     <when value="hide">
                     </when>
