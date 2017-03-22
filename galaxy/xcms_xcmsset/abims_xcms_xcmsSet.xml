@@ -124,7 +124,7 @@
 
             <!-- matched Filter options -->
             <when value="matchedFilter">
-                <param name="step" type="float" value="0.01" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
+                <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
                 <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
                 <conditional name="options_m">
                     <param name="option" type="select" label="Advanced options" >
@@ -562,9 +562,11 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.1.0 - 03/02/2017**
+**Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
+
+- BUGFIX: the default value of "matchedFilter" -> "Step size to use for profile generation" which was of 0.01 have been changed to fix with the XMCS default values to 0.1
 
 **Version 2.0.11 - 22/12/2016**
 

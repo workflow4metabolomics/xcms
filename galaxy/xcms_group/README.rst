@@ -8,6 +8,8 @@ Changelog/News
 
 - IMPROVEMENT: xcms.group can deal with merged individual data from "xcms.xcmsSet Merger"
 
+- BUGFIX: the default value of "density" -> "Maximum number of groups to identify in a single m/z slice" which was of 5 have been changed to fix with the XMCS default values to 50
+
 **Version 2.0.6 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
