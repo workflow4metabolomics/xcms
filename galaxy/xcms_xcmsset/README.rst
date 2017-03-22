@@ -22,9 +22,11 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 Changelog/News
 --------------
 
-**Version 2.1.0 - 03/02/2017**
+**Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
+
+- BUGFIX: the default value of "matchedFilter" -> "Step size to use for profile generation" which was of 0.01 have been changed to fix with the XMCS default values to 0.1
 
 **Version 2.0.11 - 22/12/2016**
 
