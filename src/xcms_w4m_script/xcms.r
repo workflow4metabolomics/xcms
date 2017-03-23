@@ -11,18 +11,20 @@ sink(log_file, type = "output")
 
 
 # ----- PACKAGE -----
-cat("\tPACKAGE INFO\n")
-#pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","batch")
-for(pkg in pkgs) {
-    suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
-    cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
-}
+cat("\tSESSION INFO\n")
+
+pkgs=c("xcms","batch")
+for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+
+sessioninfo = sessionInfo()
+cat(sessioninfo$R.version$version.string,"\n")
+cat("Main packages:\n")
+for (pkg in names(si$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+cat("Other loaded packages:\n")
+for (pkg in names(si$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 cat("\n\n");
-
-
-
 
 
 # ----- ARGUMENTS -----
