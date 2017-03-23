@@ -19,9 +19,9 @@ for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly
 sessioninfo = sessionInfo()
 cat(sessioninfo$R.version$version.string,"\n")
 cat("Main packages:\n")
-for (pkg in names(si$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
 cat("Other loaded packages:\n")
-for (pkg in names(si$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
 
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 cat("\n\n");
