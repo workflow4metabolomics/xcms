@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.0-1.50.1 - 23/03/2017**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 1.50.1
+
 **Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.retcor can deal with merged individual data
@@ -34,4 +38,3 @@ Changelog/News
 - IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
-
