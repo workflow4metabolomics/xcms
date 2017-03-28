@@ -54,10 +54,7 @@
             <param name="pos" value="TRUE"/>
             <param name="tol" value="2"/>
             <param name="ruleset" value="1,1"/>
-            <param name="convertRTMinute" value="True"/>
-            <param name="numDigitsMZ" value="4" />
-            <param name="numDigitsRT" value="1" />
-            <param name="intval" value="into"/>
+            <expand macro="test_peaklist"/>
             <output name="variableMetadata" file="faahOK.xset.group.retcor.group.fillPeaks.annotate.positive.combinexsAnnos.variableMetadata.tsv" />
         </test>
     </tests>
