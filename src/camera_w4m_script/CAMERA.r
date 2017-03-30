@@ -100,7 +100,9 @@ source_local("lib.r")
 
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("annotatediff"))  {
-    rawFilePath = getRawfilePathFromArguments(listArguments)
+    if (!exists("zipfile")) zipfile=NULL
+    if (!exists("singlefile")) singlefile=NULL
+    rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, listArguments)
     zipfile = rawFilePath$zipfile
     singlefile = rawFilePath$singlefile
     listArguments = rawFilePath$listArguments
