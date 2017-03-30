@@ -476,9 +476,7 @@ getMd5sum <- function (directory) {
 
 
 # This function get the raw file path from the arguments
-getRawfilePathFromArguments <- function(listArguments) {
-    zipfile = NULL
-    singlefile = NULL
+getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {    
     if (!is.null(listArguments[["zipfile"]]))           zipfile = listArguments[["zipfile"]]
     if (!is.null(listArguments[["zipfilePositive"]]))   zipfile = listArguments[["zipfilePositive"]]
     if (!is.null(listArguments[["zipfileNegative"]]))   zipfile = listArguments[["zipfileNegative"]]
