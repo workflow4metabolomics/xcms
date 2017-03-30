@@ -101,7 +101,9 @@ if (thefunction %in% c("xcmsSet","retcor")) {
 
 
 if (thefunction %in% c("xcmsSet","retcor","fillPeaks"))  {
-    rawFilePath = getRawfilePathFromArguments(listArguments)
+    if (!exists("singlefile")) singlefile=NULL
+    if (!exists("zipfile")) zipfile=NULL
+    rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, listArguments)
     zipfile = rawFilePath$zipfile
     singlefile = rawFilePath$singlefile
     listArguments = rawFilePath$listArguments
