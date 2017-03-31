@@ -107,7 +107,7 @@
             <param name="maxiso" value="4"/>
             <param name="minfrac" value="0.5"/>
         </section>
-        <section name="general">
+        <section name="findgeneral">
             <param name="ppm" value="5"/>
             <param name="mzabs" value="0.015"/>
             <param name="max_peaks" value="100"/>

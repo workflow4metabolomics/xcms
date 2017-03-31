@@ -25,26 +25,17 @@
         sigma $groupfwhm.sigma
         perfwhm $groupfwhm.perfwhm
 
+        ## findGeneral
+        ppm $findgeneral.ppm
+        mzabs $findgeneral.mzabs
+
         ## findIsotopes
         maxcharge $findisotopes.maxcharge
         maxiso $findisotopes.maxiso
         minfrac $findisotopes.minfrac
 
-        ## General
-        ppm $general.ppm
-        mzabs $general.mzabs
-        max_peaks $general.max_peaks
-
-
         quick $quick_block.quick
         #if $quick_block.quick == "FALSE":
-            ## findadducts
-            polarity $quick_block.findadducts.polarity
-            #if $quick_block.findadducts.rules_block.rules_select == "FALSE":
-                multiplier $quick_block.findadducts.rules_block.multiplier
-            #else
-                rules $quick_block.findadducts.rules_block.rules
-            #end if
 
             ## groupcorr
             cor_eic_th $quick_block.groupcorr.cor_eic_th
@@ -53,6 +44,15 @@
             calcCiS $quick_block.groupcorr.calcCiS
             calcIso $quick_block.groupcorr.calcIso
             calcCaS $quick_block.groupcorr.calcCaS
+
+            ## findadducts
+            polarity $quick_block.findadducts.polarity
+            max_peaks $quick_block.findadducts.max_peaks
+            #if $quick_block.findadducts.rules_block.rules_select == "FALSE":
+                multiplier $quick_block.findadducts.rules_block.multiplier
+            #else
+                rules $quick_block.findadducts.rules_block.rules
+            #end if
         #end if
 
         #if $diffreport.options.option == "show":
@@ -79,21 +79,20 @@
 
         <param name="image" type="data" label="RData file" format="rdata.xcms.fillpeaks,rdata" help="output file from another function xcms (fillPeaks)" />
 
-        <section name="groupfwhm" title="Function: groupFWHM"  expanded="True">
+        <section name="groupfwhm" title="Group co-eluted peaks based on RT [groupFWHM]"  expanded="True">
             <param name="sigma" type="integer" value="6" label="Multiplier of the standard deviation" help="[sigma]" />
             <param name="perfwhm" type="float" value="0.6" max="1" min="0" label="Percentage of FWHM width" help="[perfwhm]" />
         </section>
 
-        <section name="findisotopes" title="Function: findIsotopes"  expanded="True">
+        <section name="findgeneral" title="Annotation general options"  expanded="True">
+            <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
+            <param name="mzabs" type="float" value="0.015" label="General absolut error in m/z" help="[mzabs]" />
+        </section>
+
+        <section name="findisotopes" title="Annotate Isotopes [findIsotopes]"  expanded="True">
             <param name="maxcharge" type="integer" value="3" label="Max. ion charge" help="[maxcharge]" />
             <param name="maxiso" type="integer" value="4" label="Max. number of expected isotopes" help="[maxiso]" />
             <param name="minfrac" type="float" value="0.5" max="1" min="0" label="The percentage number of samples, which must satisfy the C12/C13 rule for isotope annotation" help="[minfrac]" />
-        </section>
-
-        <section name="general" title="General"  expanded="True">
-            <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
-            <param name="mzabs" type="float" value="0.015" label="General absolut error in m/z" help="[mzabs]" />
-            <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
         </section>
 
         <conditional name="quick_block">
@@ -102,11 +101,25 @@
                 <option value="TRUE">Only groupFWHM and findIsotopes functions [quick]</option>
             </param>
             <when value="FALSE">
-                <section name="findadducts" title="Function: findAdducts"  expanded="True">
+
+                <section name="groupcorr" title="Verifying grouping co-eluted peaks [groupCorr]"  expanded="True">
+                    <param name="cor_eic_th" type="float" value="0.75" max="1" min="0" label="groupCorr: correlation threshold (0..1)" help="[cor_eic_th]" />
+                    <param name="graphMethod" type="select" label="groupCorr: Method selection for grouping peaks after correlation analysis into pseudospectra" help="[graphMethod]">
+                        <option value="hcs" selected="true">hcs</option>
+                        <option value="lpc">lpc</option>
+                    </param>
+                    <param name="pval" type="float" value="0.05" max="1" min="0" label="groupCorr: significant correlation threshold" help="[pval]" />
+                    <param name="calcCiS" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation inside samples for peak grouping" help="[calcCiS]"/>
+                    <param name="calcIso" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use isotopic relationship for peak grouping" help="[calcIso]"/>
+                    <param name="calcCaS" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation across samples for peak grouping" help="[calcCaS]"/>
+                </section>
+
+                <section name="findadducts" title="Annotate Adducts [findAdducts]"  expanded="True">
                     <param name="polarity" type="select" label="Which polarity mode was used for measuring of the ms sample" help="polarity">
                         <option value="positive" >positive</option>
                         <option value="negative" selected="true">negative</option>
                     </param>
+                    <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
                     <conditional name="rules_block">
                         <param name="rules_select" type="select" label="Use a personal ruleset file">
                             <option value="TRUE">TRUE</option>
@@ -120,17 +133,6 @@
                         </when>
                     </conditional>
                 </section>
-                <section name="groupcorr" title="Function: groupCorr"  expanded="True">
-                    <param name="cor_eic_th" type="float" value="0.75" max="1" min="0" label="groupCorr: correlation threshold (0..1)" help="[cor_eic_th]" />
-                    <param name="graphMethod" type="select" label="groupCorr: Method selection for grouping peaks after correlation analysis into pseudospectra" help="[graphMethod]">
-                        <option value="hcs" selected="true">hcs</option>
-                        <option value="lpc">lpc</option>
-                    </param>
-                    <param name="pval" type="float" value="0.05" max="1" min="0" label="groupCorr: significant correlation threshold" help="[pval]" />
-                    <param name="calcCiS" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation inside samples for peak grouping" help="[calcCiS]"/>
-                    <param name="calcIso" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use isotopic relationship for peak grouping" help="[calcIso]"/>
-                    <param name="calcCaS" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation across samples for peak grouping" help="[calcCaS]"/>
-                </section>
 
             </when>
             <when value="TRUE">
@@ -139,7 +141,7 @@
         </conditional>
 
         <!-- Diffreport specific parameters -->
-        <section name="diffreport" title="Function: diffreport"  expanded="True">
+        <section name="diffreport" title="Statistics and results export: [diffreport]"  expanded="True">
             <conditional name="options">
                 <param name="option" type="select" label="Number of condition">
                     <option value="hide" selected="true">One condition</option>
