@@ -41,7 +41,7 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.fillpeaks" label="${image.name[:-6]}.fillPeaks.RData" />
-        <expand macro="output_peaklist"/>
+        <expand macro="output_peaklist" function="fillpeaks" />
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
