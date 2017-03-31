@@ -93,11 +93,11 @@ writehtml("<BODY>")
         } else if (is.null(md5sumList$removalBadCharacters)) {
             md5sumHeaderHtml = paste("<th>md5sum<sup>*</sup></th>")
             md5sumHtml = paste("<td>",md5sumList$origin,"</td>")
-            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were chancged during the process."
+            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process."
         } else {
             md5sumHeaderHtml = paste("<th>md5sum<sup>*</sup></th><th>md5sum<sup>**</sup> after bad characters removal</th>")
             md5sumHtml = paste("<td>",md5sumList$origin,"</td><td>",md5sumList$removalBadCharacters,"</td>")
-            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were chancged during the process.<br/><sup>**</sup>Because some bad characters (eg: accent) were removed from your original file, the checksum have changed too.<br/>"
+            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.<br/><sup>**</sup>Because some bad characters (eg: accent) were removed from your original file, the checksum have changed too.<br/>"
         } 
         
         writehtml("<tr>",sampleNameHeaderHtml,"<th>filename</th>",md5sumHeaderHtml,"</tr>")
