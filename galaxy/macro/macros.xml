@@ -107,11 +107,11 @@
         </conditional>
     </xml>
 
-    <xml name="output_peaklist">
-        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.fillPeaks.variableMetadata.tsv">
+    <xml name="output_peaklist"  token_function="">
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.@FUNCTION@.variableMetadata.tsv">
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
-        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.fillPeaks.dataMatrix.tsv" >
+        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.@FUNCTION@.dataMatrix.tsv" >
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
     </xml>

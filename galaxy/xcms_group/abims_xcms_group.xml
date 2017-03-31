@@ -98,7 +98,7 @@
     <outputs>
         <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData"/>
         <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf"/>
-        <expand macro="output_peaklist"/>
+        <expand macro="output_peaklist" function="group"/>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
