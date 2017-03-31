@@ -127,7 +127,7 @@
         <expand macro="test_peaklist"/>
     </xml>
 
-    <xml name="test_annotate_diffreport_quick">
+    <xml name="test_annotate_quick_false">
         <param name="quick" value="FALSE"/>
         <section name="groupcorr">
             <param name="cor_eic_th" value="0.75"/>
@@ -137,6 +137,12 @@
             <param name="calcIso" value="False"/>
             <param name="calcCaS" value="False"/>
         </section>
+    </xml>
+
+    <xml name="test_annotate_quick_true">
+        <conditional name="quick_block">
+            <param name="quick" value="TRUE"/>
+        </conditional>
     </xml>
 
     <token name="@HELP_AUTHORS@">

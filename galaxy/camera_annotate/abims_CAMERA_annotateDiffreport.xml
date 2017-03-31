@@ -37,10 +37,10 @@
 
 
         quick $quick_block.quick
-        #if $quick_block.quick == "FALSE"
+        #if $quick_block.quick == "FALSE":
             ## findadducts
             polarity $quick_block.findadducts.polarity
-            #if $quick_block.findadducts.rules_block.rules_select == "FALSE"
+            #if $quick_block.findadducts.rules_block.rules_select == "FALSE":
                 multiplier $quick_block.findadducts.rules_block.multiplier
             #else
                 rules $quick_block.findadducts.rules_block.rules
@@ -92,7 +92,7 @@
 
         <section name="general" title="General"  expanded="True">
             <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
-            <param name="mzabs" type="float" value="0.015" label="mzabs" help="General absolut error in m/z" />
+            <param name="mzabs" type="float" value="0.015" label="General absolut error in m/z" help="[mzabs]" />
             <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
         </section>
 
@@ -171,10 +171,14 @@
         <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" />
         <data name="datamatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" />
         <data name="rdata" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
+            <filter>(quick_block.quick == "FALSE")</filter>
             <change_format>
                 <when input="quick_block.findadducts.polarity" value="positive" format="rdata.camera.positive" />
                 <when input="quick_block.findadducts.polarity" value="negative" format="rdata.camera.negative" />
             </change_format>
+        </data>
+        <data name="rdata" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
+            <filter>(quick_block.quick == "TRUE")</filter>
         </data>
         <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="true">
             <filter>(diffreport.options.option == "show")</filter>
@@ -185,16 +189,7 @@
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
-            <conditional name="quick_block">
-                <expand macro="test_annotate_diffreport_quick" />
-                <section name="findadducts">
-                    <param name="polarity" value="negative"/>
-                    <conditional name="rules_block">
-                        <param name="rules_select" value="FALSE"/>
-                        <param name="multiplier" value="3"/>
-                    </conditional>
-                </section>
-            </conditional>
+            <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_zip"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
@@ -202,16 +197,7 @@
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
-            <conditional name="quick_block">
-                <expand macro="test_annotate_diffreport_quick" />
-                <section name="findadducts">
-                    <param name="polarity" value="negative"/>
-                    <conditional name="rules_block">
-                        <param name="rules_select" value="FALSE"/>
-                        <param name="multiplier" value="3"/>
-                    </conditional>
-                </section>
-            </conditional>
+            <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_single"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
@@ -220,7 +206,7 @@
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
             <conditional name="quick_block">
-                <expand macro="test_annotate_diffreport_quick" />
+                <expand macro="test_annotate_quick_false" />
                 <section name="findadducts">
                     <param name="polarity" value="negative"/>
                     <conditional name="rules_block">
