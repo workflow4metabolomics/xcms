@@ -19,7 +19,9 @@
 
         pos $pos tol $tol ruleset $ruleset keep_meta $keep_meta
 
-        @COMMAND_PEAKLIST@
+        convertRTMinute $export.convertRTMinute
+        numDigitsMZ $export.numDigitsMZ
+        numDigitsRT $export.numDigitsRT
 
     ]]></command>
 
@@ -36,7 +38,11 @@
         <param name="ruleset" type="text" value="1,1" label="Matrix of matching rules" help="[ruleset] Matrix of matching rules. By default, the matrix (1,1) would create the M+H/M-H rule, since the first rule of xsa.pos@ruleset and xsa.neg@ruleset is M+H respectively M-H. Only rules with identical charge can be combined!" />
         <param name="keep_meta" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Keep only the metabolites which match a difference "/>
 
-        <expand macro="input_peaklist"/>
+        <section name="export" title="Export options">
+            <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
+            <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
+            <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
+        </section>
     </inputs>
 
     <outputs>
@@ -54,7 +60,11 @@
             <param name="pos" value="TRUE"/>
             <param name="tol" value="2"/>
             <param name="ruleset" value="1,1"/>
-            <expand macro="test_peaklist"/>
+            <section name="export">
+                <param name="convertRTMinute" value="True"/>
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </section>
             <output name="variableMetadata" file="faahOK.xset.group.retcor.group.fillPeaks.annotate.positive.combinexsAnnos.variableMetadata.tsv" />
         </test>
     </tests>

@@ -157,7 +157,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
 }
 
 
-combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArgumentsN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, intval="into", convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
+combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArgumentsN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
 
     #Load the two Rdata to extract the xset objects from positive and negative mode
     cat("\tObject xset from positive mode\n")
@@ -192,7 +192,7 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
         mode="pos. Mode"
     }
 
-    peakList=getPeaklist(xa,intval=intval)
+    peakList=getPeaklist(xa)
     peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
     variableMetadata=cbind(peakList, cAnnot[, c("isotopes", "adduct", "pcgroup",mode)]);
     variableMetadata=variableMetadata[,!(colnames(variableMetadata) %in% c(sampnames(xa@xcmsSet)))]
