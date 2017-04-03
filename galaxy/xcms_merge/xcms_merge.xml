@@ -170,6 +170,7 @@ xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
 |xcms.group                 | xset.RData         | rdata.xcms.raw  |
 +---------------------------+--------------------+-----------------+
 
+.. image:: xcms_merge_workflow.png
 
 -----------
 Input files
