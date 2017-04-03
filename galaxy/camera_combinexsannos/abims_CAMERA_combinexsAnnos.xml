@@ -141,6 +141,10 @@ The output file **xset.annotateDiffreport.variableMetadata.tsv** is a tabular fi
     | Multivariate PCA, PLS and OPLS
 
 
+**Place of CAMERA.combinexsannot after XCMS part of the metabolomic workflow**
+
+.. image:: combinexsannos_workflow_zoom.png
+
 **General schema of the metabolomic workflow**
 
 .. image:: combinexsannos_workflow.png
@@ -196,10 +200,6 @@ Output files
 ------------
 
 **Example of an xset.combinexsAnnos.variableMetadata.tsv output:**
-
-.. image:: combinexsannos_variableMetadata_zomm.png
-
-**Place in a larger workflow**
 
 .. image:: combinexsannos_variableMetadata.png
 
