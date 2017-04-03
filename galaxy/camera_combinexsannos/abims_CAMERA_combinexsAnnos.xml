@@ -197,6 +197,10 @@ Output files
 
 **Example of an xset.combinexsAnnos.variableMetadata.tsv output:**
 
+.. image:: combinexsannos_variableMetadata_zomm.png
+
+**Place in a larger workflow**
+
 .. image:: combinexsannos_variableMetadata.png
 
 
