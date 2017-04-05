@@ -19,7 +19,6 @@
         ## output
         variableMetadataOutput '$variableMetadata'
         dataMatrixOutput '$datamatrix'
-        xsetRdataOutput '$rdata'
 
         ## groupFWHM
         sigma $groupfwhm.sigma
@@ -36,6 +35,7 @@
 
         quick $quick_block.quick
         #if $quick_block.quick == "FALSE":
+            xsetRdataOutput '$rdata_quick_false'
 
             ## groupcorr
             cor_eic_th $quick_block.groupcorr.cor_eic_th
@@ -53,6 +53,8 @@
             #else
                 rules $quick_block.findadducts.rules_block.rules
             #end if
+        #else
+            xsetRdataOutput '$rdata_quick_true'
         #end if
 
         #if $diffreport.options.option == "show":
@@ -172,18 +174,18 @@
     <outputs>
         <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" />
         <data name="datamatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" />
-        <data name="rdata" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
-            <filter>(quick_block.quick == "FALSE")</filter>
+        <data name="rdata_quick_false" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
+            <filter>quick_block['quick'] == 'FALSE'</filter>
             <change_format>
                 <when input="quick_block.findadducts.polarity" value="positive" format="rdata.camera.positive" />
                 <when input="quick_block.findadducts.polarity" value="negative" format="rdata.camera.negative" />
             </change_format>
         </data>
-        <data name="rdata" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
-            <filter>(quick_block.quick == "TRUE")</filter>
+        <data name="rdata_quick_true" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
+            <filter>quick_block['quick'] == 'TRUE'</filter>
         </data>
         <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="true">
-            <filter>(diffreport.options.option == "show")</filter>
+            <filter>diffreport['options']['option'] == 'show'</filter>
         </data>
     </outputs>
 
