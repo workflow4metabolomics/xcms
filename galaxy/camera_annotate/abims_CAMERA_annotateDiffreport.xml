@@ -67,7 +67,6 @@
             h $diffreport.options.h
             w $diffreport.options.w
             mzdec $diffreport.options.mzdec
-            new_file_path ${__new_file_path__}/primary_${output_diffreport.id}_
         #end if
 
         @COMMAND_PEAKLIST@
@@ -186,6 +185,8 @@
         </data>
         <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="true">
             <filter>diffreport['options']['option'] == 'show'</filter>
+            <discover_datasets pattern="__designation_and_ext__" directory="pdf" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="tabular" visible="true" />
         </data>
     </outputs>
 
