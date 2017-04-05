@@ -91,10 +91,6 @@ if (!is.null(listArguments[["variableMetadataOutput"]])){
     variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
 }
 
-if (!is.null(listArguments[["new_file_path"]])){
-    new_file_path = listArguments[["new_file_path"]]; listArguments[["new_file_path"]]=NULL
-}
-
 #Import the different functions
 source_local("lib.r")
 
@@ -128,7 +124,7 @@ pdf(file=rplotspdf, width=16, height=12)
 
 
 if (thefunction %in% c("annotatediff")) {
-    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput,new_file_path=new_file_path)
+    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput)
     xa=results_list[["xa"]]
     diffrep=results_list[["diffrep"]]
     variableMetadata=results_list[["variableMetadata"]]
