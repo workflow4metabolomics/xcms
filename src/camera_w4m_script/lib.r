@@ -96,43 +96,43 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     # --- Multi condition : diffreport ---
     diffrepOri=NULL
     if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))>=2) {
-    #Check if the fillpeaks step has been done previously, if it hasn't, there is an error message and the execution is stopped.
-    res=try(is.null(xset@filled))
-    classes=levels(sampclass(xset))
-    x=1:(length(classes)-1)
-    for (i in seq(along=x) ) {
-        y=1:(length(classes))
-        for (n in seq(along=y)){
-            if(i+n <= length(classes)){
-                filebase=paste(classes[i],class2=classes[i+n],sep="-vs-")
-
-                diffrep=diffreport(object=xset,class1=classes[i],class2=classes[i+n],filebase=filebase,eicmax=listArguments[["eicmax"]],eicwidth=listArguments[["eicwidth"]],sortpval=TRUE,value=listArguments[["value"]],h=listArguments[["h"]],w=listArguments[["w"]],mzdec=listArguments[["mzdec"]])
-
-                diffrepOri = diffrep
-
-                # renamming of the column rtmed to rt to fit with camera peaklist function output
-                colnames(diffrep)[colnames(diffrep)=="rtmed"] <- "rt"
-                colnames(diffrep)[colnames(diffrep)=="mzmed"] <- "mz"
-
-                # combines results and reorder columns
-                diffrep = merge(peakList, diffrep[,c("name","fold","tstat","pvalue")], by.x="name", by.y="name", sort=F)
-                diffrep = cbind(diffrep[,!(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))],diffrep[,(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))])
-
-                diffrep = RTSecondToMinute(diffrep, listArguments[["convertRTMinute"]])
-                diffrep = formatIonIdentifiers(diffrep, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
-
-                if(listArguments[["sortpval"]]){
-                    diffrep=diffrep[order(diffrep$pvalue), ]
-                }
-
-                dir.create("tabular") 
-                write.table(diffrep, sep="\t", quote=FALSE, row.names=FALSE, file=paste("tabular/",filebase,"_tsv.tabular",sep=""))
-
-                if (listArguments[["eicmax"]] != 0) {
-                    diffreport_png2pdf(filebase)
+        #Check if the fillpeaks step has been done previously, if it hasn't, there is an error message and the execution is stopped.
+        res=try(is.null(xset@filled))
+        classes=levels(sampclass(xset))
+        x=1:(length(classes)-1)
+        for (i in seq(along=x) ) {
+            y=1:(length(classes))
+            for (n in seq(along=y)){
+                if(i+n <= length(classes)){
+                    filebase=paste(classes[i],class2=classes[i+n],sep="-vs-")
+                    
+                    diffrep=diffreport(object=xset,class1=classes[i],class2=classes[i+n],filebase=filebase,eicmax=listArguments[["eicmax"]],eicwidth=listArguments[["eicwidth"]],sortpval=TRUE,value=listArguments[["value"]],h=listArguments[["h"]],w=listArguments[["w"]],mzdec=listArguments[["mzdec"]])
+                    
+                    diffrepOri = diffrep
+                    
+                    # renamming of the column rtmed to rt to fit with camera peaklist function output
+                    colnames(diffrep)[colnames(diffrep)=="rtmed"] <- "rt"
+                    colnames(diffrep)[colnames(diffrep)=="mzmed"] <- "mz"
+                    
+                    # combines results and reorder columns
+                    diffrep = merge(peakList, diffrep[,c("name","fold","tstat","pvalue")], by.x="name", by.y="name", sort=F)
+                    diffrep = cbind(diffrep[,!(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))],diffrep[,(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))])
+                    
+                    diffrep = RTSecondToMinute(diffrep, listArguments[["convertRTMinute"]])
+                    diffrep = formatIonIdentifiers(diffrep, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
+                    
+                    if(listArguments[["sortpval"]]){
+                        diffrep=diffrep[order(diffrep$pvalue), ]
+                    }
+                    
+                    dir.create("tabular")
+                    write.table(diffrep, sep="\t", quote=FALSE, row.names=FALSE, file=paste("tabular/",filebase,"_tsv.tabular",sep=""))
+                    
+                    if (listArguments[["eicmax"]] != 0) {
+                        diffreport_png2pdf(filebase)
+                    }
                 }
             }
-        }
         }
     }
 
@@ -145,7 +145,7 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))==2) {
         variableMetadata = merge(variableMetadata, diffrep[,c("name","fold","tstat","pvalue")],by.x="name", by.y="name", sort=F)
         if(exists("listArguments[[\"sortpval\"]]")){
-          variableMetadata=variableMetadata[order(variableMetadata$pvalue), ]
+            variableMetadata=variableMetadata[order(variableMetadata$pvalue), ]
         }
     }
 
