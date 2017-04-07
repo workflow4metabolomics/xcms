@@ -2,6 +2,21 @@
 Changelog/News
 --------------
 
+**Version 2.2.0 - 03/02/2017**
+
+- BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
+
+- UPDATE: the settings (digits, convertion in minutes) of the identifiants will no longer modify the native one. Because we want to be conservative and because it can be dangerous for the data integrity during a futur merge of the table, we decide to put those customization in a new column namecustom within the variableMetadata.
+
+- IMPROVEMENT: add some sections within the form to separate the different parts of the process
+
+- IMPROVEMENT: add the possibility to use defined ruleset
+
+- IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
+
+- IMPROVEMENT: CAMERA.annotate is now compatible with merged individual data from xcms.xcmsSet
+
+
 **Version 2.1.5 - 21/04/2016**
 
 - UPGRADE: upgrate the CAMERA version from 1.22.0 to 1.26.0
@@ -22,26 +37,15 @@ Changelog/News
 - UPDATE: refactoring of internal management of inputs/outputs
 
 
-VERSION 2.1.0 - 09/10/2015**
+**VERSION 2.1.0 - 09/10/2015**
 
 - BUGFIX: There was a bug with the CAMERA.annotate (generating a bad dataMatrix (intensities which don't match with the metabolites))
 
 
-VERSION 2.1.0 - 07/06/2015**
+**VERSION 2.1.0 - 07/06/2015**
 
 - IMPROVEMENT: new datatype/dataset formats (rdata.camera.positive, rdata.camera.negative, rdata.camera.quick ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
 
 - UPDATE: merged with annotateDiffreport. Some parameters are dedicated to experiences with several conditions
-
-
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed

@@ -11,12 +11,12 @@ setRepositories(graphics=F, ind=31)
 #pkgs=c("xcms","batch")
 pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","igraph","CAMERA","multtest","batch")
 for(p in pkgs) {
-  suppressPackageStartupMessages(suppressWarnings(library(p, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
-  cat(p,"\t",as.character(packageVersion(p)),"\n",sep="")
+    suppressPackageStartupMessages(suppressWarnings(library(p, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+    cat(p,"\t",as.character(packageVersion(p)),"\n",sep="")
 }
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 
-cat("\n\n"); 
+cat("\n\n");
 
 
 
@@ -34,25 +34,25 @@ cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
 if (!is.null(listArguments[["image"]])){
-  load(listArguments[["image"]]); listArguments[["image"]]=NULL
+    load(listArguments[["image"]]); listArguments[["image"]]=NULL
 }
 
 if (listArguments[["xfunction"]] %in% c("combinexsAnnos")) {
-  load(listArguments[["image_pos"]])
-  xaP=xa
-  listOFlistArgumentsP=listOFlistArguments
-  if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
-  
-  diffrepP=NULL
-  if (exists("diffrep")) diffrepP=diffrep
+    load(listArguments[["image_pos"]])
+    xaP=xa
+    listOFlistArgumentsP=listOFlistArguments
+    if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
 
-  load(listArguments[["image_neg"]])
-  xaN=xa
-  listOFlistArgumentsN=listOFlistArguments
-  if (exists("xsAnnotate_object")) xaN=xsAnnotate_object
+    diffrepP=NULL
+    if (exists("diffrep")) diffrepP=diffrep
 
-  diffrepN=NULL
-  if (exists("diffrep")) diffrepN=diffrep
+    load(listArguments[["image_neg"]])
+    xaN=xa
+    listOFlistArgumentsN=listOFlistArguments
+    if (exists("xsAnnotate_object")) xaN=xsAnnotate_object
+
+    diffrepN=NULL
+    if (exists("diffrep")) diffrepN=diffrep
 }
 
 
@@ -73,67 +73,42 @@ listArguments[["xfunction"]]=NULL #delete from the list of arguments
 
 xsetRdataOutput = paste(thefunction,"RData",sep=".")
 if (!is.null(listArguments[["xsetRdataOutput"]])){
-  xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
+    xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
 }
 
 rplotspdf = "Rplots.pdf"
 if (!is.null(listArguments[["rplotspdf"]])){
-  rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
+    rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
 }
 
 dataMatrixOutput = "dataMatrix.tsv"
 if (!is.null(listArguments[["dataMatrixOutput"]])){
-  dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
+    dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
 }
 
 variableMetadataOutput = "variableMetadata.tsv"
 if (!is.null(listArguments[["variableMetadataOutput"]])){
-  variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
-}
-
-if (!is.null(listArguments[["new_file_path"]])){
-  new_file_path = listArguments[["new_file_path"]]; listArguments[["new_file_path"]]=NULL
+    variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
 }
 
 #Import the different functions
 source_local("lib.r")
 
-#necessary to unzip .zip file uploaded to Galaxy
-#thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
-
-
-if (!is.null(listArguments[["zipfile"]])){
-  zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
-}
-
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("annotatediff"))  {
-  if(exists("zipfile") && (zipfile!="")) {
-    if(!file.exists(zipfile)){
-      error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
-      print(error_message)
-      stop(error_message)
-    }
-
-    #unzip
-    suppressWarnings(unzip(zipfile, unzip="unzip"))
-
-    #get the directory name
-    filesInZip=unzip(zipfile, list=T); 
-    directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
-    directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
-    directory = "."
-    if (length(directories) == 1) directory = directories
-    
-    cat("files_root_directory\t",directory,"\n")
-  }
+    if (!exists("zipfile")) zipfile=NULL
+    if (!exists("singlefile")) singlefile=NULL
+    rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+    zipfile = rawFilePath$zipfile
+    singlefile = rawFilePath$singlefile
+    listArguments = rawFilePath$listArguments
+    directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 }
-
 
 
 #addition of xset object to the list of arguments in the first position
 if (exists("xset") != 0){
-  listArguments=append(list(xset), listArguments)
+    listArguments=append(list(xset), listArguments)
 }
 
 cat("\n\n")
@@ -149,25 +124,32 @@ pdf(file=rplotspdf, width=16, height=12)
 
 
 if (thefunction %in% c("annotatediff")) {
-  results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput,new_file_path=new_file_path)
-  xa=results_list[["xa"]]
-  diffrep=results_list[["diffrep"]]
-  variableMetadata=results_list[["variableMetadata"]]
+    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput)
+    xa=results_list[["xa"]]
+    diffrep=results_list[["diffrep"]]
+    variableMetadata=results_list[["variableMetadata"]]
 
-  cat("\n\n")
-  cat("\tXSET OBJECT INFO\n")
-  print(xa)
+    cat("\n\n")
+    cat("\tXSET OBJECT INFO\n")
+    print(xa)
 }
 
 if (thefunction %in% c("combinexsAnnos")) {
-  cAnnot=combinexsAnnos_function(xaP=xaP,xaN=xaN,listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,diffrepP=diffrepP,diffrepN=diffrepN,convert_param=listArguments[["convert_param"]],pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],variableMetadataOutput=variableMetadataOutput)
+    cAnnot=combinexsAnnos_function(
+        xaP=xaP,xaN=xaN,
+        listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,
+        diffrepP=diffrepP,diffrepN=diffrepN,
+        pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],
+        convertRTMinute=listArguments[["convertRTMinute"]], numDigitsMZ=listArguments[["numDigitsMZ"]], numDigitsRT=listArguments[["numDigitsRT"]],
+        variableMetadataOutput=variableMetadataOutput
+    )
 }
 
 dev.off()
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFlistArguments","zipfile")
+objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFlistArguments","zipfile","singlefile")
 save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
 
 cat("\n\n")

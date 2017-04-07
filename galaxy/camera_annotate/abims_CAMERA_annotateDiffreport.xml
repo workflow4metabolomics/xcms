@@ -1,7 +1,7 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.1.5">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.0">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
-    
+
     <macros>
         <import>macros.xml</import>
     </macros>
@@ -11,213 +11,225 @@
 
     <command><![CDATA[
         @COMMAND_CAMERA_SCRIPT@
-        xfunction annotatediff 
-        image $image
+        xfunction annotatediff
+        image '$image'
 
-        variableMetadataOutput $variableMetadata
-        dataMatrixOutput $datamatrix
-        xsetRdataOutput $rdata
-
-        convert_param $convert_param num_digits $num_digits 
         nSlaves \${GALAXY_SLOTS:-1}
-        sigma $sigma perfwhm $perfwhm 
-        maxcharge $maxcharge maxiso $maxiso minfrac $minfrac
-        ppm $ppm mzabs $mzabs intval $intval 
-        max_peaks $max_peaks
+
+        ## output
+        variableMetadataOutput '$variableMetadata'
+        dataMatrixOutput '$datamatrix'
+
+        ## groupFWHM
+        sigma $groupfwhm.sigma
+        perfwhm $groupfwhm.perfwhm
+
+        ## findGeneral
+        ppm $findgeneral.ppm
+        mzabs $findgeneral.mzabs
+
+        ## findIsotopes
+        maxcharge $findisotopes.maxcharge
+        maxiso $findisotopes.maxiso
+        minfrac $findisotopes.minfrac
+
         quick $quick_block.quick
-        #if $quick_block.quick == "FALSE"
-            polarity $quick_block.polarity
-            cor_eic_th $quick_block.cor_eic_th
-            graphMethod $quick_block.graphMethod 
-            pval $quick_block.pval 
-            calcCiS $quick_block.calcCiS
-            calcIso $quick_block.calcIso
-            calcCaS $quick_block.calcCaS
-            multiplier $quick_block.multiplier
+        #if $quick_block.quick == "FALSE":
+            xsetRdataOutput '$rdata_quick_false'
+
+            ## groupcorr
+            cor_eic_th $quick_block.groupcorr.cor_eic_th
+            graphMethod $quick_block.groupcorr.graphMethod
+            pval $quick_block.groupcorr.pval
+            calcCiS $quick_block.groupcorr.calcCiS
+            calcIso $quick_block.groupcorr.calcIso
+            calcCaS $quick_block.groupcorr.calcCaS
+
+            ## findadducts
+            polarity $quick_block.findadducts.polarity
+            max_peaks $quick_block.findadducts.max_peaks
+            #if $quick_block.findadducts.rules_block.rules_select == "FALSE":
+                multiplier $quick_block.findadducts.rules_block.multiplier
+            #else
+                rules $quick_block.findadducts.rules_block.rules
+            #end if
+        #else
+            xsetRdataOutput '$rdata_quick_true'
         #end if
 
-        #if $options.option == "show":
+        #if $diffreport.options.option == "show":
+            ## diffreport
             runDiffreport TRUE
-            eicmax $options.eicmax
-            eicwidth $options.eicwidth
-            value $options.value
-            sortpval $options.sortpval 
-            h $options.h
-            w $options.w
-            mzdec $options.mzdec
-            new_file_path ${__new_file_path__}/primary_${output_diffreport.id}_
+            eicmax $diffreport.options.eicmax
+            eicwidth $diffreport.options.eicwidth
+            value $diffreport.options.value
+            sortpval $diffreport.options.sortpval
+            h $diffreport.options.h
+            w $diffreport.options.w
+            mzdec $diffreport.options.mzdec
         #end if
-            
-        @COMMAND_ZIPFILE_LOAD@
+
+        @COMMAND_PEAKLIST@
+
+        @COMMAND_FILE_LOAD@
 
     ]]></command>
 
     <inputs>
-    
-    
+
+
         <param name="image" type="data" label="RData file" format="rdata.xcms.fillpeaks,rdata" help="output file from another function xcms (fillPeaks)" />
 
-        <param name="convert_param" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
-        <param name="num_digits" type="integer" value="4" label="" help="Number of decimal places for mass values reported in ions identifiers. A minimum of 4 decimal places should be set" />
+        <section name="groupfwhm" title="Group co-eluted peaks based on RT [groupFWHM]"  expanded="True">
+            <param name="sigma" type="integer" value="6" label="Multiplier of the standard deviation" help="[sigma]" />
+            <param name="perfwhm" type="float" value="0.6" max="1" min="0" label="Percentage of FWHM width" help="[perfwhm]" />
+        </section>
 
-        <param name="sigma" type="integer" value="6" label="groupFWHM: multiplier of the standard deviation" help="[sigma]" />
-        <param name="perfwhm" type="float" value="0.6" max="1" min="0" label="groupFWHM: percentage of FWHM width" help="[perfwhm]" />
-        <param name="maxcharge" type="integer" value="3" label="findIsotopes: max. ion charge" help="[maxcharge]" />
-        <param name="maxiso" type="integer" value="4" label="findIsotopes: max. number of expected isotopes" help="[maxiso]" />
-        <param name="minfrac" type="float" value="0.5" max="1" min="0" label="findIsotopes: The percentage number of samples, which must satisfy the C12/C13 rule for isotope annotation" help="[minfrac]" />
-        <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
-        <param name="mzabs" type="float" value="0.015" label="mzabs" help="General absolut error in m/z" />
-        <param name="intval" type="select" label="General used intensity value" help="[intval] See the help section below">
-            <option value="into" selected="true">into</option>
-            <option value="maxo" >maxo</option>
-            <option value="intb">intb</option>
-        </param> 
-    
+        <section name="findgeneral" title="Annotation general options"  expanded="True">
+            <param name="ppm" type="integer" value="5" label="General ppm error" help="[ppm]" />
+            <param name="mzabs" type="float" value="0.015" label="General absolut error in m/z" help="[mzabs]" />
+        </section>
 
-        <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
+        <section name="findisotopes" title="Annotate Isotopes [findIsotopes]"  expanded="True">
+            <param name="maxcharge" type="integer" value="3" label="Max. ion charge" help="[maxcharge]" />
+            <param name="maxiso" type="integer" value="4" label="Max. number of expected isotopes" help="[maxiso]" />
+            <param name="minfrac" type="float" value="0.5" max="1" min="0" label="The percentage number of samples, which must satisfy the C12/C13 rule for isotope annotation" help="[minfrac]" />
+        </section>
+
         <conditional name="quick_block">
-            <param name="quick" type="select" label="Quick mode" help="[quick] If TRUE, use only groupFWHM and findIsotopes functions. Else if FALSE, use also groupCorr and findAdducts">
-                <option value="TRUE">TRUE</option>
-                <option value="FALSE" selected="true">FALSE</option>
+            <param name="quick" type="select" label="Mode" help="[quick] If TRUE, use only groupFWHM and findIsotopes functions. Else if FALSE, use also groupCorr and findAdducts">
+                <option value="FALSE" selected="true">All functions</option>
+                <option value="TRUE">Only groupFWHM and findIsotopes functions [quick]</option>
             </param>
             <when value="FALSE">
-                <param name="polarity" type="select" label="findAdducts: Which polarity mode was used for measuring of the ms sample" help="polarity">
-                    <option value="positive" >positive</option>
-                    <option value="negative" selected="true">negative</option>
-                </param>		
-                <param name="cor_eic_th" type="float" value="0.75" max="1" min="0" label="groupCorr: correlation threshold (0..1)" help="[cor_eic_th]" />
-                <param name="graphMethod" type="select" label="groupCorr: Method selection for grouping peaks after correlation analysis into pseudospectra" help="[graphMethod]">
-                    <option value="hcs" selected="true">hcs</option>
-                    <option value="lpc">lpc</option>
-                </param>
-                <param name="pval" type="float" value="0.05" max="1" min="0" label="groupCorr: significant correlation threshold" help="[pval]" />
-                <param name="calcCiS" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation inside samples for peak grouping" help="[calcCiS]"/>
-                <param name="calcIso" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use isotopic relationship for peak grouping" help="[calcIso]"/>
-                <param name="calcCaS" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation across samples for peak grouping" help="[calcCaS]"/>
-                <param name="multiplier" type="integer" value="3" label="findAdducts: If no ruleset is provided, calculate ruleset with max. number n of [nM+x] clusterions" help="[multiplier]" />
-            </when>	
-                <when value="TRUE">
+
+                <section name="groupcorr" title="Verifying grouping co-eluted peaks [groupCorr]"  expanded="True">
+                    <param name="cor_eic_th" type="float" value="0.75" max="1" min="0" label="groupCorr: correlation threshold (0..1)" help="[cor_eic_th]" />
+                    <param name="graphMethod" type="select" label="groupCorr: Method selection for grouping peaks after correlation analysis into pseudospectra" help="[graphMethod]">
+                        <option value="hcs" selected="true">hcs</option>
+                        <option value="lpc">lpc</option>
+                    </param>
+                    <param name="pval" type="float" value="0.05" max="1" min="0" label="groupCorr: significant correlation threshold" help="[pval]" />
+                    <param name="calcCiS" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation inside samples for peak grouping" help="[calcCiS]"/>
+                    <param name="calcIso" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use isotopic relationship for peak grouping" help="[calcIso]"/>
+                    <param name="calcCaS" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="groupCorr: Use correlation across samples for peak grouping" help="[calcCaS]"/>
+                </section>
+
+                <section name="findadducts" title="Annotate Adducts [findAdducts]"  expanded="True">
+                    <param name="polarity" type="select" label="Which polarity mode was used for measuring of the ms sample" help="polarity">
+                        <option value="positive" >positive</option>
+                        <option value="negative" selected="true">negative</option>
+                    </param>
+                    <param name="max_peaks" type="integer" value="100" label="How much peaks will be calculated in every thread using the parallel mode" help="[max_peaks]" />
+                    <conditional name="rules_block">
+                        <param name="rules_select" type="select" label="Use a personal ruleset file">
+                            <option value="TRUE">TRUE</option>
+                            <option value="FALSE" selected="true">FALSE</option>
+                        </param>
+                        <when value="FALSE">
+                            <param name="multiplier" type="integer" value="3" label="If no ruleset is provided, calculate ruleset with max. number n of [nM+x] clusterions" help="[multiplier]" />
+                        </when>
+                        <when value="TRUE">
+                            <param name="rules" type="data" format="csv" label="User defined ruleset" help="[rules]" />
+                        </when>
+                    </conditional>
+                </section>
+
+            </when>
+            <when value="TRUE">
                 <param name="polarity" type="hidden" value="quick" label="for the output label" help="for the output label" />
-            </when>	
-        </conditional>
-                           
-    
-        <!-- Annotatediffreport specific parameters -->
-        <conditional name="options">
-            <param name="option" type="select" label="Number of condition">
-                <option value="hide" selected="true">One condition</option>
-                <option value="show">Two or more conditions</option>  
-            </param>
-            <when value="show">
-                <param name="eicmax" type="integer" value="0" label="diffreport: number of the most significantly different analytes to create EICs for" help="[eicmax]" />
-                <param name="eicwidth" type="integer" value="200" label="diffreport: width (in seconds) of EICs produced" help="[eicwidth]" />
-                <param name="value" type="select" label="diffreport: Intensity values to be used for the diffreport" help="[value]">
-                    <option value="into" selected="true">into</option>
-                    <option value="maxo" >maxo</option>
-                    <option value="intb">intb</option>
-                </param> 
-                <param name="h" type="integer" value="480" label="diffreport: Numeric variable for the height of the eic and boxplots that are printed out" help="[height]" /> 
-                <param name="w" type="integer" value="640" label="diffreport: Numeric variable for the width of the eic and boxplots print out made" help="[width]" />
-                <param name="mzdec" type="integer" value="2" label="diffreport: Number of decimal places of title m/z values in the eic plot" help="[mzdec]" />
-                <param name="sortpval" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="diffreport: logical indicating whether the reports should be sorted by p-value" help="[sortpval]"/>
-            </when>
-            <when value="hide">
             </when>
         </conditional>
-        
-        <expand macro="zipfile_load"/>
+
+        <!-- Diffreport specific parameters -->
+        <section name="diffreport" title="Statistics and results export: [diffreport]"  expanded="True">
+            <conditional name="options">
+                <param name="option" type="select" label="Number of condition">
+                    <option value="hide" selected="true">One condition</option>
+                    <option value="show">Two or more conditions</option>
+                </param>
+                <when value="show">
+                    <param name="eicmax" type="integer" value="0" label="Number of the most significantly different analytes to create EICs for" help="[eicmax]" />
+                    <param name="eicwidth" type="integer" value="200" label="Width (in seconds) of EICs produced" help="[eicwidth]" />
+                    <param name="value" type="select" label="Intensity values to be used for the diffreport" help="[value]">
+                        <option value="into" selected="true">into</option>
+                        <option value="maxo" >maxo</option>
+                        <option value="intb">intb</option>
+                    </param>
+                    <param name="h" type="integer" value="480" label="Numeric variable for the height of the eic and boxplots that are printed out" help="[height]" />
+                    <param name="w" type="integer" value="640" label="Numeric variable for the width of the eic and boxplots print out made" help="[width]" />
+                    <param name="mzdec" type="integer" value="2" label="Number of decimal places of title m/z values in the eic plot" help="[mzdec]" />
+                    <param name="sortpval" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="logical indicating whether the reports should be sorted by p-value" help="[sortpval]"/>
+                </when>
+                <when value="hide">
+                </when>
+            </conditional>
+        </section>
+
+        <expand macro="input_peaklist"/>
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
         <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" />
         <data name="datamatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" />
-        <data name="rdata" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.polarity}.Rdata" >
+        <data name="rdata_quick_false" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
+            <filter>quick_block['quick'] == 'FALSE'</filter>
             <change_format>
-                <when input="quick_block.polarity" value="positive" format="rdata.camera.positive" />
-                <when input="quick_block.polarity" value="negative" format="rdata.camera.negative" />
+                <when input="quick_block.findadducts.polarity" value="positive" format="rdata.camera.positive" />
+                <when input="quick_block.findadducts.polarity" value="negative" format="rdata.camera.negative" />
             </change_format>
         </data>
-        <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="True">
-		        <filter>(options['option'] == 'show')</filter>
-	      </data>    
+        <data name="rdata_quick_true" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
+            <filter>quick_block['quick'] == 'TRUE'</filter>
+        </data>
+        <data name="output_diffreport" format="text" label="${image.name[:-6]}.annotateDiffreport" hidden="true">
+            <filter>diffreport['options']['option'] == 'show'</filter>
+            <discover_datasets pattern="__designation_and_ext__" directory="pdf" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="tabular" visible="true" />
+        </data>
     </outputs>
-    
+
     <tests>
-        <!--<test>
-            <param name="image" value="xset.group.retcor.group.fillPeaks.RData"/>
-            <param name="convert_param" value="False"/>
-            <param name="num_digits" value="0"/>
-            <param name="sigma" value="6"/>
-            <param name="perfwhm" value="0.6"/>
-            <param name="maxcharge" value="3"/>
-            <param name="maxiso" value="4"/>
-            <param name="minfrac" value="0.5"/>
-            <param name="ppm" value="5"/>
-            <param name="mzabs" value="0.015"/>
-            <param name="intval" value="into"/>
-            <param name="max_peaks" value="100"/>
-            <param name="quick_block|quick" value="FALSE"/>
-            <param name="quick_block|polarity" value="negative"/>
-            <param name="quick_block|cor_eic_th" value="0.75"/>
-            <param name="quick_block|graphMethod" value="hcs"/>
-            <param name="quick_block|pval" value="0.05"/>
-            <param name="quick_block|calcCiS" value="True"/>
-            <param name="quick_block|calcIso" value="False"/>
-            <param name="quick_block|calcCaS" value="False"/>
-            <param name="quick_block|multiplier" value="3"/>
-            <param name="options|option" value="show"/>
-            <param name="options|eicmax" value="200"/>
-            <param name="options|eicwidth" value="200"/>
-            <param name="options|value" value="into"/>
-            <param name="options|h" value="480"/>
-            <param name="options|w" value="640"/>
-            <param name="options|mzdec" value="2"/>
-            <param name="options|sortpval" value="False"/>
-            <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
-            <output name="variableMetadata" file="xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
-            <output name="datamatrix" file="xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
-        </test>-->
         <test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
-            <param name="convert_param" value="False"/>
-            <param name="num_digits" value="0"/>
-            <param name="sigma" value="6"/>
-            <param name="perfwhm" value="0.6"/>
-            <param name="maxcharge" value="3"/>
-            <param name="maxiso" value="4"/>
-            <param name="minfrac" value="0.5"/>
-            <param name="ppm" value="5"/>
-            <param name="mzabs" value="0.015"/>
-            <param name="intval" value="into"/>
-            <param name="max_peaks" value="100"/>
-            <param name="quick_block|quick" value="FALSE"/>
-            <param name="quick_block|polarity" value="negative"/>
-            <param name="quick_block|cor_eic_th" value="0.75"/>
-            <param name="quick_block|graphMethod" value="hcs"/>
-            <param name="quick_block|pval" value="0.05"/>
-            <param name="quick_block|calcCiS" value="True"/>
-            <param name="quick_block|calcIso" value="False"/>
-            <param name="quick_block|calcCaS" value="False"/>
-            <param name="quick_block|multiplier" value="3"/>
-            <param name="options|option" value="show"/>
-            <param name="options|eicmax" value="200"/>
-            <param name="options|eicwidth" value="200"/>
-            <param name="options|value" value="into"/>
-            <param name="options|h" value="480"/>
-            <param name="options|w" value="640"/>
-            <param name="options|mzdec" value="2"/>
-            <param name="options|sortpval" value="False"/>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <expand macro="test_annotate_diffreport"/>
+            <expand macro="test_annotate_quick_true"/>
+            <expand macro="test_file_load_zip"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
+            <expand macro="test_annotate_diffreport"/>
+            <expand macro="test_annotate_quick_true"/>
+            <expand macro="test_file_load_single"/>
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
+            <expand macro="test_annotate_diffreport"/>
+            <conditional name="quick_block">
+                <expand macro="test_annotate_quick_false" />
+                <section name="findadducts">
+                    <param name="polarity" value="negative"/>
+                    <conditional name="rules_block">
+                        <param name="rules_select" value="TRUE"/>
+                        <param name="rules" value="CASMI_extended_NEG_rules.csv" ftype="csv"/>
+                    </conditional>
+                </section>
+            </conditional>
+            <expand macro="test_file_load_single"/>
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.dataMatrix.tsv" />
+        </test>
     </tests>
-    
-    
-    
+
+
+
     <help><![CDATA[
-        
+
 @HELP_AUTHORS@
 
 ================
@@ -239,7 +251,7 @@ R-package **xcms**.
 
 **What it does?**
 
-The CAMERA annotation procedure can be split into two parts: We want to answer the questions which peaks occur from the same molecule and secondly compute its exact mass and annotate the ion species. Therefore CAMERA annotation workflow contains following primary functions: 1. peak grouping after retention time (**groupFWHM**) 2. peak group verification with peakshape correlation (**groupCorr**) Both methods separate peaks into different groups, which we define as ”pseu- dospectra”. Those pseudospectra can consists from one up to 100 ions, de- pending on the molecules amount and ionizability. Afterwards the exposure of the ion species can be performed with: 2 1. annotation of possible isotopes (**findIsotopes**) 2. annotation of adducts and calculating hypothetical masses for the group (**findAdducts**) This workflow results in a data-frame similar to a xcms peak table, that can be easily stored in a comma separated table .csv (Excel-readable). 
+The CAMERA annotation procedure can be split into two parts: We want to answer the questions which peaks occur from the same molecule and secondly compute its exact mass and annotate the ion species. Therefore CAMERA annotation workflow contains following primary functions: 1. peak grouping after retention time (**groupFWHM**) 2. peak group verification with peakshape correlation (**groupCorr**) Both methods separate peaks into different groups, which we define as ”pseu- dospectra”. Those pseudospectra can consists from one up to 100 ions, de- pending on the molecules amount and ionizability. Afterwards the exposure of the ion species can be performed with: 2 1. annotation of possible isotopes (**findIsotopes**) 2. annotation of adducts and calculating hypothetical masses for the group (**findAdducts**) This workflow results in a data-frame similar to a xcms peak table, that can be easily stored in a comma separated table .csv (Excel-readable).
 
 If you have two or more conditions, it will return a diffreport result within the annotation results.
 The diffreport result shows the most significant differences between two sets of samples. Optionally
@@ -265,7 +277,7 @@ xcms.fillPeaks            xset.fillPeaks.RData rdata.xcms.fillpeaks   RData file
 +---------------------------+---------------------------------------+------------------------------------------------+
 | Name                      | Output file                           | Format                                         |
 +===========================+=======================================+================================================+
-|CAMERA_combinexsAnnot      |xset.annotate.dataMatrix.tsv           | rdata.camera.positive or rdata.camera.negative |
+|CAMERA_combinexsAnnot      |xset.annotate.Rdata                    | rdata.camera.positive or rdata.camera.negative |
 +---------------------------+---------------------------------------+------------------------------------------------+
 |Determine Vdk or Lowess    |xset.annotate.dataMatrix.tsv           | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
@@ -303,6 +315,22 @@ Input files
 +---------------------------+---------------------------+
 
 
+[Optional] User defined ruleset:
+--------------------------------
+
+Example:
+
+    | "name","nmol","charge","massdiff","oidscore","quasi","ips"
+    | "[M-H]-",1,-1,-1.007276,1,1,1
+    | "[M-2H]2-",1,-2,-2.014552,2,0,1
+    | "[M-3H]3-",1,-3,-3.021828,3,0,1
+    | "[M-2H+Na]-",1,-1,20.974666,4,0,0.25
+    | "[M-H+Cl]2-",1,-2,33.962126,5,0,1
+    | "[M-2H+K]-",1,-1,36.948606,6,0,0.25
+    | "[M+Cl]-",1,-1,34.969402,7,1,1
+    | "[M+2Cl]2-",1,-2,69.938804,8,0,1
+    | "[2M-H]-",2,-1,-1.007276,1,0,0.5
+
 ----------
 Parameters
 ----------
@@ -328,7 +356,7 @@ xset.annotate.variableMetadata.tsv
 xset.annotate.dataMatrix.tsv
 
     | A tabular file which represents for each metabolite (row), the value of the intensity in each sample (column).
-    
+
 xset.annotate.zip
 
     | It contains filebase_eic, filebase_box and filebase.tsv for one conditon vs another (Anova analysis).
@@ -336,10 +364,10 @@ xset.annotate.zip
 xset.annotate.Rdata rdata.camera.quick or rdata.camera.positive or rdata.camera.negative
 
     | Rdata file, that be used outside Galaxy in R.
-    
+
 ------
 
-.. class:: infomark 
+.. class:: infomark
 
 The output **"xset.annotate.dataMatrix.tsv"** is a tabular file. You can continue your analysis using it in the following tools of the workflow:
 
@@ -349,7 +377,7 @@ The output **"xset.annotate.dataMatrix.tsv"** is a tabular file. You can continu
     | PCA (Statistical analysis)
     | Hierarchical Clustering (Statistical analysis)
 
-    
+
 ---------------------------------------------------
 
 ---------------
@@ -377,7 +405,7 @@ Parameters
     | eicmax -> **200**
     | eicwidth -> **200 (default)**
 
-    
+
 
 Output files
 ------------
@@ -386,7 +414,7 @@ Output files
 
 .. image:: annotatediffreport_dataMatrix.png
 
-**Example of a part of xset.annotate.variableMetadata.tsv output** 
+**Example of a part of xset.annotate.variableMetadata.tsv output**
 
 .. image:: annotatediffreport_variableMetadata.png
 
@@ -396,9 +424,24 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.2.0 - 28/03/2017**
+
+- BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
+
+- UPDATE: the settings (digits, convertion in minutes) of the identifiants will no longer modify the native one. Because we want to be conservative and because it can be dangerous for the data integrity during a futur merge of the table, we decide to put those customization in a new column namecustom within the variableMetadata.
+
+- IMPROVEMENT: add some sections within to separate the different parts of the process
+
+- IMPROVEMENT: add the possibility to use defined ruleset
+
+- IMPROVEMENT: add the possibility to set the MZ digit within the identifiants
+
+- IMPROVEMENT: CAMERA.annotate is now compatible with merged individual data from xcms.xcmsSet
+
+
 **Version 2.1.5 - 21/04/2016**
 
-- UPGRADE: upgrate the CAMERA version from 1.22.0 to 1.26.0
+- UPGRADE: upgrade the CAMERA version from 1.22.0 to 1.26.0
 
 
 **Version 2.1.4 - 18/04/2016**
@@ -417,12 +460,12 @@ Changelog/News
 - UPDATE: refactoring of internal management of inputs/outputs
 
 
-VERSION 2.1.0 - 09/10/2015**
+**VERSION 2.1.0 - 09/10/2015**
 
 - BUGFIX: There was a bug with the CAMERA.annotate (generating a bad dataMatrix (intensities which don't match with the metabolites))
 
 
-VERSION 2.1.0 - 07/06/2015**
+**VERSION 2.1.0 - 07/06/2015**
 
 - IMPROVEMENT: new datatype/dataset formats (rdata.camera.positive, rdata.camera.negative, rdata.camera.quick ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
@@ -437,5 +480,3 @@ VERSION 2.1.0 - 07/06/2015**
 
 
 </tool>
- 
- 
