@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.0.8">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.1.0">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
@@ -11,13 +11,13 @@
 
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
-        image $image
+        image '$image'
         xfunction retcor
 
-        xsetRdataOutput $xsetRData
-        ticspdf $ticsCorPdf
-        bicspdf $bpcsCorPdf
-        rplotspdf $rplotsPdf
+        xsetRdataOutput '$xsetRData'
+        ticspdf '$ticsCorPdf'
+        bicspdf '$bpcsCorPdf'
+        rplotspdf '$rplotsPdf'
 
         method $methods.method
         #if $methods.method == "obiwarp":
@@ -33,7 +33,7 @@
             #end if
         #end if
 
-        @COMMAND_ZIPFILE_LOAD@
+        @COMMAND_FILE_LOAD@
 
         @COMMAND_LOG_EXIT@
     ]]></command>
@@ -43,7 +43,7 @@
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for retention time correction" help="[method] See the help section below" >
                 <option value="obiwarp" >obiwarp</option>
-                <option value="peakgroups" selected="peakgroups">peakgroups</option>
+                <option value="peakgroups" selected="true">peakgroups</option>
             </param>
             <when value="obiwarp">
                 <param name="profStep" type="float" value="1" label="Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files" />
@@ -82,7 +82,7 @@
             </when>
         </conditional>
 
-        <expand macro="zipfile_load"/>
+        <expand macro="input_file_load"/>
 
     </inputs>
 
@@ -133,8 +133,29 @@
             <param name="methods|options|span" value="0.2"/>
             <param name="methods|options|family" value="gaussian"/>
             <param name="methods|options|plottype" value="deviation"/>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <expand macro="test_file_load_zip"/>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: KO, WT" />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="image" value="faahKO-single-class.xset.group.RData"/>
+            <param name="methods|method" value="peakgroups"/>
+            <param name="methods|smooth" value="loess"/>
+            <param name="methods|extra" value="1"/>
+            <param name="methods|missing" value="1"/>
+            <param name="methods|options|option" value="show"/>
+            <param name="methods|options|span" value="0.2"/>
+            <param name="methods|options|family" value="gaussian"/>
+            <param name="methods|options|plottype" value="deviation"/>
+            <expand macro="test_file_load_single"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -297,6 +318,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.0 - 03/02/2017**
+
+- IMPROVEMENT: xcms.retcor can deal with merged individual data
 
 **Version 2.0.8 - 22/12/2016**
 

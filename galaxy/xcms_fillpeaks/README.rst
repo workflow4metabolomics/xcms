@@ -2,6 +2,12 @@
 Changelog/News
 --------------
 
+**Version 2.1.0 - 07/02/2017**
+
+- IMPROVEMENT: change the management of the peaklist ids. The main ids remain the same as xcms generated. The export setiings now only add custom names in the variableMetadata tab (namecustom)
+
+- IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
+
 **Version 2.0.8 - 22/12/2016**
 
 - IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
@@ -29,15 +35,3 @@ Changelog/News
 - IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
-
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo test using source env.sh: passed
-
-Planemo shed_test : passed
-
-

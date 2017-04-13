@@ -6,7 +6,7 @@
 
 # ----- ARGUMENTS BLACKLIST -----
 #xcms.r
-argBlacklist=c("zipfile","xfunction","xsetRdataOutput","sampleMetadataOutput","ticspdf","bicspdf","rplotspdf")
+argBlacklist=c("zipfile","singlefile_galaxyPath","singlefile_sampleName","xfunction","xsetRdataOutput","sampleMetadataOutput","ticspdf","bicspdf","rplotspdf")
 #CAMERA.r
 argBlacklist=c(argBlacklist,"dataMatrixOutput","variableMetadataOutput","new_file_path")
 
@@ -57,7 +57,7 @@ writehtml("<HEAD>")
     writehtml("<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />")
 
     writehtml("<title>[W4M] XCMS analysis summary</title>")
-    
+
     writehtml("<style>")
         writehtml("table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }")
         writehtml("td,th { padding: 5px; padding-right: 12px; }")
@@ -84,8 +84,8 @@ writehtml("<BODY>")
         } else {
             sampleNameHeaderHtml = paste("<th>sample</th><th>sample renamed</th>")
             sampleNameHtml = paste("<td>",sampnames(xset),"</td><td>",sampleNamesList$sampleNamesMakeNames,"</td>")
-        } 
-        
+        }
+
         if (!exists("md5sumList")) {
             md5sumHeaderHtml = ""
             md5sumHtml = ""
@@ -93,16 +93,16 @@ writehtml("<BODY>")
         } else if (is.null(md5sumList$removalBadCharacters)) {
             md5sumHeaderHtml = paste("<th>md5sum<sup>*</sup></th>")
             md5sumHtml = paste("<td>",md5sumList$origin,"</td>")
-            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were chancged during the process."
+            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process."
         } else {
             md5sumHeaderHtml = paste("<th>md5sum<sup>*</sup></th><th>md5sum<sup>**</sup> after bad characters removal</th>")
             md5sumHtml = paste("<td>",md5sumList$origin,"</td><td>",md5sumList$removalBadCharacters,"</td>")
-            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were chancged during the process.<br/><sup>**</sup>Because some bad characters (eg: accent) were removed from your original file, the checksum have changed too.<br/>"
-        } 
-        
+            md5sumLegend = "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.<br/><sup>**</sup>Because some bad characters (eg: accent) were removed from your original file, the checksum have changed too.<br/>"
+        }
+
         writehtml("<tr>",sampleNameHeaderHtml,"<th>filename</th>",md5sumHeaderHtml,"</tr>")
         writehtml(paste("<tr>",sampleNameHtml,"<td>",xset@filepaths,"</td>",md5sumHtml,"</tr>"))
-        
+
     writehtml("</table>")
     writehtml(md5sumLegend)
     writehtml("</div>")
@@ -170,4 +170,3 @@ writehtml("<BODY>")
 writehtml("</BODY>")
 
 writehtml("</HTML>")
-

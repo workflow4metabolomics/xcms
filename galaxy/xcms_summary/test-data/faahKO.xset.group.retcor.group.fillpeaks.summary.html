@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<HTML lang='en'>
+<HEAD>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+<title>[W4M] XCMS analysis summary</title>
+<style>
+table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }
+td,th { padding: 5px; padding-right: 12px; }
+th { background: #898989; text-align:left;color: white;}
+h2 { color: #FFA212; }
+ul li { margin-bottom:10px; }
+</style>
+</HEAD>
+<BODY>
+<div><h1>___ XCMS analysis summary using Workflow4Metabolomics ___</h1>
+</div>
+<h2>Samples used:</h2>
+<div><table>
+<tr><th>sample</th><th>filename</th><th>md5sum<sup>*</sup></th></tr>
+<tr> <td> ko15 </td> <td> faahKO_reduce/KO/ko15.CDF </td> <td> 4698c36c0b3af007faf70975c04ccf2a </td> </tr><tr> <td> ko16 </td> <td> faahKO_reduce/KO/ko16.CDF </td> <td> afaeed94ced3140bc042d5ab6aeb16c1 </td> </tr><tr> <td> wt15 </td> <td> faahKO_reduce/WT/wt15.CDF </td> <td> d58a27fad7c04ddddb0359ddc2b7ba68 </td> </tr><tr> <td> wt16 </td> <td> faahKO_reduce/WT/wt16.CDF </td> <td> 29654e9f8ad48c1fbe2a41b9ba578f6e </td> </tr>
+</table>
+<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.
+</div>
+<h2>Function launched:</h2>
+<div><table>
+<tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
+<tr><td rowspan='4'>160420-14:09:46</td><td rowspan='4'>xcmsSet</td>
+<td>nSlaves</td><td>1</td></tr>
+<tr><td>method</td><td>centWave</td></tr>
+<tr><td>ppm</td><td>25</td></tr>
+<tr><td>peakwidth</td><td>2050</td></tr>
+<tr><td rowspan='6'>160420-15:07:14</td><td rowspan='6'>group</td>
+<td>method</td><td>density</td></tr>
+<tr><td>sleep</td><td>0.001</td></tr>
+<tr><td>minfrac</td><td>0.3</td></tr>
+<tr><td>bw</td><td>5</td></tr>
+<tr><td>mzwid</td><td>0.01</td></tr>
+<tr><td>max</td><td>50</td></tr>
+<tr><td rowspan='7'>160421-11:10:32</td><td rowspan='7'>retcor</td>
+<td>method</td><td>peakgroups</td></tr>
+<tr><td>smooth</td><td>loess</td></tr>
+<tr><td>extra</td><td>1</td></tr>
+<tr><td>missing</td><td>1</td></tr>
+<tr><td>span</td><td>0.2</td></tr>
+<tr><td>family</td><td>gaussian</td></tr>
+<tr><td>plottype</td><td>deviation</td></tr>
+<tr><td rowspan='6'>160421-11:19:31</td><td rowspan='6'>group</td>
+<td>method</td><td>density</td></tr>
+<tr><td>sleep</td><td>0.001</td></tr>
+<tr><td>minfrac</td><td>0.3</td></tr>
+<tr><td>bw</td><td>5</td></tr>
+<tr><td>mzwid</td><td>0.01</td></tr>
+<tr><td>max</td><td>50</td></tr>
+<tr><td rowspan='1'>160421-11:50:48</td><td rowspan='1'>fillPeaks</td>
+<td>method</td><td>chrom</td></tr>
+</table>
+<br/><sup>***</sup>timestamp format: yymmdd-hh:mm:ss
+</div>
+<h2>Informations about the xcmsSet object:</h2>
+<div><pre>
+An "xcmsSet" object with 4 samples
+
+Time range: 2506-4484 seconds (41.8-74.7 minutes)
+Mass range: 200.1-600 m/z
+Peaks: 32720 (about 8180 per sample)
+Peak Groups: 8157 
+Sample classes: KO, WT 
+
+Profile settings: method = bin
+                  step = 0.1
+
+Memory usage: 4.25 MB
+</pre></div>
+<h2>Citations:</h2>
+<div><ul>
+<li>To cite the <b>XCMS</b> package in publications use:
+<ul>
+<li>Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)</li>
+<li>Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)</li>
+<li>H. Paul Benton, Elizabeth J. Want and Timothy M. D. Ebbels Correction of mass calibration gaps in liquid chromatography-mass spectrometry metabolomics data Bioinformatics, 26:2488 (2010)</li>
+</ul>
+</li>
+<li>To cite the <b>CAMERA</b> package in publications use:
+<ul>
+<li>Kuhl, C., Tautenhahn, R., Boettcher, C., Larson, T. R. and Neumann,S. CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets. Analytical Chemistry, 84:283-289 (2012)</li>
+</ul>
+</li>
+<li>To cite the <b>Workflow4Metabolimics (W4M)</b> project in publications use:
+<ul>
+<li>Franck Giacomoni, Gildas Le Corguillé, Misharl Monsoor, Marion Landi, Pierre Pericard, Mélanie Pétéra, Christophe Duperier, Marie Tremblay-Franco, Jean-François Martin, Daniel Jacob, Sophie Goulitquer, Etienne A. Thévenot and Christophe Caron (2014). Workflow4Metabolomics: A collaborative research infrastructure for computational metabolomics. Bioinformatics  doi:10.1093/bioinformatics/btu813</li>
+</ul>
+</li>
+</ul></div>
+</BODY>
+</HTML>

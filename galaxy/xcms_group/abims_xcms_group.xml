@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms.group" version="2.0.6">
+<tool id="abims_xcms_group" name="xcms.group" version="2.1.0">
 
     <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
 
@@ -11,21 +11,21 @@
 
     <command><![CDATA[
         @COMMAND_XCMS_SCRIPT@
-        xfunction group 
-        image $image 
+        xfunction group
+        image '$image'
 
-        xsetRdataOutput $xsetRData
-        rplotspdf $rplotsPdf
+        xsetRdataOutput '$xsetRData'
+        rplotspdf '$rplotsPdf'
 
-        method $methods.method sleep 0.001 
+        method $methods.method sleep 0.001
         #if $methods.method == "density":
-            ## minsamp $methods.minsamp 
-            minfrac $methods.minfrac 
-            bw $methods.bw 
+            ## minsamp $methods.minsamp
+            minfrac $methods.minfrac
+            bw $methods.bw
             mzwid $methods.mzwid
         #if $methods.density_options.option == "show":
             max $methods.density_options.max
-        #end if 
+        #end if
         #elif $methods.method == "mzClust":
             mzppm $methods.mzppm
             mzabs $methods.mzabs
@@ -37,8 +37,11 @@
             rtCheck $methods.rtCheck
             kNN $methods.kNN
         #end if
+
+        @COMMAND_PEAKLIST@
+
         @COMMAND_LOG_EXIT@
-   ]]></command> 
+   ]]></command>
 
     <inputs>
         <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
@@ -53,7 +56,7 @@
                 <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
                 <param name="mzwid" type="float" value="0.25" label="Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples " />
 <!--
-                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " /> 
+                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
 -->
             <conditional name="density_options">
             <param name="option" type="select" label="Advanced options">
@@ -61,7 +64,7 @@
                 <option value="hide" selected="true">hide</option>
             </param>
             <when value="show">
-                <param name="max" type="integer" value="5" label="Maximum number of groups to identify in a single m/z slice" help="[max]" />
+                <param name="max" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" help="[max]" />
             </when>
             <when value="hide">
             </when>
@@ -73,27 +76,29 @@
                 <param name="mzabs" type="float" value="0" label="Absolute error used for clustering/grouping" help="[mzabs]" />
                 <param name="minfrac" type="float" value="0" label="Minimum fraction of each class in one bin" help="[minfrac] minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group" />
 <!--
-                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />   
+                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
 -->
             </when>
             <when value="nearest">
                 <param name="mzVsRTbalance" type="integer" value="10 " label="Multiplicator for mz value before calculating the (euclidean) distance between two peaks." help="[mzVsRTbalance]" />
                 <param name="mzCheck" type="float" value="0.2" label="Maximum tolerated distance for mz" help="[mzCheck]" />
                 <param name="rtCheck" type="integer" value="15" label="Maximum tolerated distance for RT" help="[rtCheck]" />
-                <param name="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" help="[kNN]" />    
+                <param name="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" help="[kNN]" />
             </when>
         </conditional>
 <!--
-        <param name="sleepy" type="float" value="0.001" label="sleep" help="seconds to pause between plotting successive steps of the peak grouping algorithm. peaks are plotted as points showing relative intensity. identified groups are flanked by dotted vertical lines"> 
+        <param name="sleepy" type="float" value="0.001" label="sleep" help="seconds to pause between plotting successive steps of the peak grouping algorithm. peaks are plotted as points showing relative intensity. identified groups are flanked by dotted vertical lines">
             <validator type="in_range" message="Must be more than 0" min="0.001" max="inf"/>
         </param>
 -->
 
+        <expand macro="input_peaklist"/>
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData"/>
         <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf"/>
+        <expand macro="output_peaklist" function="group"/>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
@@ -125,6 +130,12 @@
             <param name="methods|mzwid" value="0.01"/>
             <param name="methods|density_options|option" value="show"/>
             <param name="methods|density_options|max" value="50"/>
+            <conditional name="peaklist">
+                <param name="convertRTMinute" value="false" />
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -133,6 +144,73 @@
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
                     <has_text text="Peak Groups: 8275" />
                     <has_text text="Sample classes: KO, WT" />
+                </assert_contents>
+            </output>
+            <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single-class.xset.merged.RData"/>
+            <param name="methods|method" value="density"/>
+            <param name="methods|bw" value="5"/>
+            <param name="methods|minfrac" value="0.3"/>
+            <param name="methods|mzwid" value="0.01"/>
+            <param name="methods|density_options|option" value="show"/>
+            <param name="methods|density_options|max" value="50"/>
+            <conditional name="peaklist">
+                <param name="convertRTMinute" value="false" />
+                <param name="peaklistBool" value="true" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                    <has_text text="Peak Groups: 8275" />
+                    <has_text text="Sample classes: KO, WT" />
+                </assert_contents>
+            </output>
+            <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.RData"/>
+            <param name="methods|method" value="density"/>
+            <param name="methods|bw" value="5"/>
+            <param name="methods|minfrac" value="0.3"/>
+            <param name="methods|mzwid" value="0.01"/>
+            <param name="methods|density_options|option" value="show"/>
+            <param name="methods|density_options|max" value="50"/>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                    <has_text text="Peak Groups: 664" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        <test>
+            <param name="image" value="MM-single.xset.merged.RData"/>
+            <param name="methods|method" value="density"/>
+            <param name="methods|bw" value="5"/>
+            <param name="methods|minfrac" value="0.3"/>
+            <param name="methods|mzwid" value="0.01"/>
+            <param name="methods|density_options|option" value="show"/>
+            <param name="methods|density_options|max" value="50"/>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 2 samples" />
+                    <has_text text="Time range: 19.7-307.3 seconds (0.3-5.1 minutes)" />
+                    <has_text text="Mass range: 117.0357-936.7059 m/z" />
+                    <has_text text="Peaks: 236 (about 118 per sample)" />
+                    <has_text text="Peak Groups: 236" />
+                    <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
         </test>
@@ -174,10 +252,29 @@
                 </assert_contents>
             </output>
         </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <param name="methods|method" value="density"/>
+            <param name="methods|bw" value="5"/>
+            <param name="methods|minfrac" value="0.3"/>
+            <param name="methods|mzwid" value="0.01"/>
+            <param name="methods|density_options|option" value="show"/>
+            <param name="methods|density_options|max" value="50"/>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                    <has_text text="Peak Groups: 8157" />
+                    <has_text text="Sample classes: KO, WT" />
+                </assert_contents>
+            </output>
+        </test>
     </tests>
 
     <help><![CDATA[
-        
+
 @HELP_AUTHORS@
 
 ==========
@@ -202,6 +299,8 @@ Workflow position
 Name                      output file       format              parameter
 ========================= ================= =================== ==========
 xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+xcms.xcmsSet Merger       xset.RData        rdata.xcms.raw      RData file
 ------------------------- ----------------- ------------------- ----------
 xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
 ========================= ================= =================== ==========
@@ -231,7 +330,9 @@ Input files
 +---------------------------+-----------------------+
 | Parameter : num + label   |   Format              |
 +===========================+=======================+
-| 1 : RData file            |   rdata.xcms.group    |
+| Or : RData file            |   rdata.xcms.raw     |
++---------------------------+-----------------------+
+| Or : RData file            |   rdata.xcms.retcor  |
 +---------------------------+-----------------------+
 
 
@@ -264,15 +365,15 @@ xset.group.Rplots.pdf
 xset.group.RData: rdata.xcms.group format
 
     | Rdata file that will be necessary in the third and fourth step of the workflow (xcms.retcor and xcms.fillpeaks).
-    
+
 
 ------
 
-.. class:: infomark 
+.. class:: infomark
 
 The output file is an xset.group.RData file. You can continue your analysis using it in **xcms.retcor** tool.
 
-    
+
 ---------------------------------------------------
 
 
@@ -312,13 +413,21 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.1.0 - 07/02/2017**
+
+- IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
+
+- IMPROVEMENT: xcms.group can deal with merged individual data from "xcms.xcmsSet Merger"
+
+- BUGFIX: the default value of "density" -> "Maximum number of groups to identify in a single m/z slice" which was of 5 have been changed to fix with the XMCS default values to 50
+
 **Version 2.0.6 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
 
 **Version 2.0.5 - 04/04/2016**
 
-- TEST: refactoring to pass planemo test using conda dependencies 
+- TEST: refactoring to pass planemo test using conda dependencies
 
 
 **Version 2.0.4 - 10/02/2016**
