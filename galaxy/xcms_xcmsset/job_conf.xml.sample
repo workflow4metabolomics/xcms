@@ -2,7 +2,6 @@
 <!-- A sample job config that explicitly configures job running the way it is configured by default (if there is no explicit config). -->
 <job_conf>
     <plugins>
-        <plugin id="local" type="runner" load="galaxy.jobs.runners.local:LocalJobRunner" workers="4"/>
         <plugin id="sge" load="galaxy.jobs.runners.drmaa:DRMAAJobRunner" type="runner"/>
         <plugin id="dynamic" type="runner" >
             <param id="rules_module">galaxy.jobs.rules</param>
@@ -12,11 +11,10 @@
         <handler id="main"/>
     </handlers>
     <destinations default="sge_default">
-        <destination id="local" runner="local"/>
         <destination id="sge_default" runner="sge">
              <param id="nativeSpecification">-V -w n -q galaxy.q</param>
         </destination>
-        
+
         <destination id="thread1-men_free10" runner="sge">
              <param id="nativeSpecification">-V -w n -q galaxy.q -pe thread 1 -R y -l mem_free=10G </param>
         </destination>
@@ -31,6 +29,5 @@
     </destinations>
     <tools>
         <tool destination="python_destination_input_type" id="abims_xcms_xcmsSet" />
-        <tool destination="local" id="upload1"/>
     </tools>
 </job_conf>

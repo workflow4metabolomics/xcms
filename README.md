@@ -33,7 +33,7 @@ Homepage: [https://bioconductor.org/packages/release/bioc/html/xcms.html](https:
 
 Galaxy
 ------
-Galaxy is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses. 
+Galaxy is an open, web-based platform for data intensive biomedical research. Whether on the free public server or your own instance, you can perform, reproduce, and share complete analyses.
 
 Homepage: [https://galaxyproject.org/](https://galaxyproject.org/)
 
@@ -55,6 +55,10 @@ conda create -n bioconductor-xcms r-snow bioconductor-xcms r-batch`
 #To activate the environment:
 . activate bioconductor-xcms
 ```
+Job Dynamic Destination Mapping
+-------------------------------
+
+See: [Job Dynamic Destination Mapping](https://github.com/workflow4metabolomics/xcms/tree/master/galaxy/xcms_xcmsset#job-dynamic-destination-mapping) for xcmsSet
 
 Travis
 ------
