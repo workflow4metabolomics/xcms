@@ -18,6 +18,6 @@ def input_type(job):
     input_extension = inp_data[ "input" ].extension
     log.debug("The input extension is %s" % input_extension)
     if input_extension in ["mzxml","mzml","mzdata","netcdf"]:
-        return 'thread1-men_free10'
+        return 'thread1-mem_free10'
     else: # zip file
         return 'thread4-men_free10'

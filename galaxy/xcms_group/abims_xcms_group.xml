@@ -17,12 +17,13 @@
         xsetRdataOutput '$xsetRData'
         rplotspdf '$rplotsPdf'
 
-        method $methods.method sleep 0.001
+        method $methods.method 
         #if $methods.method == "density":
             ## minsamp $methods.minsamp
             minfrac $methods.minfrac
             bw $methods.bw
             mzwid $methods.mzwid
+            sleep 0.001
         #if $methods.density_options.option == "show":
             max $methods.density_options.max
         #end if

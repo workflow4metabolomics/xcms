@@ -13,10 +13,10 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 
 **How**
 
- - The file `destinations_input_type.py` (shiped with this tool) must be place in `lib/galaxy/jobs/rules/`
- - The `job_conf.xml` must be inspired by the `job_conf.xml.sample` shiped with this tool
- - The final destination names must match between the `job_conf.xml` and the `destinations_input_type.py`
- - Restart Galaxy
+1. The file [`destinations_input_type.py`](https://raw.githubusercontent.com/workflow4metabolomics/xcms/master/galaxy/xcms_xcmsset/destinations_input_type.py) (shiped with this tool) must be place in `lib/galaxy/jobs/rules/`
+2. The `job_conf.xml` must be inspired by the [`job_conf.xml.sample`](https://github.com/workflow4metabolomics/xcms/blob/master/galaxy/xcms_xcmsset/job_conf.xml.sample) shiped with this tool
+3. The final destination names must match between the `job_conf.xml` and the `destinations_input_type.py`
+4. Restart Galaxy
 
 
 Changelog/News
