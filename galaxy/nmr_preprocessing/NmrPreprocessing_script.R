@@ -1064,7 +1064,7 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   # Baseline Correction implementation definition ----------------------
   
   # 2 Ways: either use the function asysm from the ptw package or by 
-  # built-in functions
+  # built-in functions 
   if (ptw.bc) {
     asysm <- ptw::asysm
   } else {
@@ -1081,12 +1081,9 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
       D <- Matrix::diff(E, differences = d)
       C <- Matrix::chol(W + lambda * t(D) %*% D)
       x <- Matrix::solve(C, Matrix::solve(t(C), w * y))
-      return(as.numeric(x))     
+      return(as.numeric(x))
+      
     }
-<<<<<<< HEAD
-=======
-	
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
     asysm <- function(y, lambda, p, eps) {
       # Baseline estimation with asymmetric least squares
       # y: signal

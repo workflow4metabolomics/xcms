@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 <tool id="NMR_Read" name="NMR_Read" version="3.0.1">
-=======
-<tool id="NMR_Read" name="NMR_Read" version="0.1.0">
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 	<description> Read NMR raw files</description>
 	
     <stdio>
@@ -174,15 +170,5 @@ Example
 
 
    </help>
-
-   <citations>
-        <citation type="bibtex">@ARTICLE{Kim07aninterior-point,
-   author = {R. Rousseau},
-   title = {Statistical contribution to the analysis of metabonomic data in 1H-NMR spectroscopy},
-   journal = {Ph.D. Thesis},
-   year = {2011}
-        }</citation>
-        <citation type="doi">10.1093/bioinformatics/btu813</citation>
-    </citations>
     
 </tool>

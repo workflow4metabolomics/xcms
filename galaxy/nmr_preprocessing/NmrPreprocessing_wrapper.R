@@ -20,27 +20,12 @@ options(stringsAsFactors = FALSE)
 ##------------------------------
 ## Libraries laoding
 ##------------------------------
-<<<<<<< HEAD
 library(batch)
 library(ptw)
 library(Matrix)
 library(ggplot2)
 library(gridExtra)
 library(reshape2)
-=======
-# For parseCommandArgs function
-ip <- as.data.frame(installed.packages()[,c(1,3:4)])
-rownames(ip) <- NULL
-ip <- ip[is.na(ip$Priority),1:2,drop=FALSE]
-# print(ip, row.names=FALSE)
-
-# library(batch)
-# library(ptw)
-# library(Matrix)
-# library(ggplot2)
-# library(gridExtra)
-# library(reshape2)
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 
 # R script call
@@ -115,11 +100,7 @@ ptwSS1 <- argLs[["ptwSS"]]
 ptwSS <- FALSE
 if (ptwSS1=="YES")
  	ptwSS <- TRUE
-<<<<<<< HEAD
 
-=======
-	
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 # apodization -----------------------------------------
   # Inputs
@@ -154,7 +135,6 @@ if (apodization=='exp'){
 
 # Internal referencering ----------------------------------
   # Inputs
-<<<<<<< HEAD
 shiftTreshold = 2 # c
 ppm = TRUE
 shiftReferencingRangeList = NULL  # fromto.RC
@@ -193,47 +173,6 @@ ppm_ref = 0 # ppm.ref
 	
 	shiftHandling <- argLs[["shiftHandling"]]
 	
-=======
-ShiftReferencing <- argLs[["shift_referencing.choice"]]
-print(ShiftReferencing)
-if (ShiftReferencing=="YES")
-{
-	shiftTreshold = 2 # c
-	ppmxaxis = TRUE
-	shiftReferencingRangeList = NULL  # fromto.TMSP
-	pctNear0 = 0.02 # pc 
-	rowindex_graph = NULL
-	shiftReferencingMethod <- argLs[["shiftReferencingMethod"]]
-	if (shiftReferencingMethod == "thres")
-	{
-		shiftTreshold <- argLs[["shiftTreshold"]]
-	}
-	shiftReferencingRange <- argLs[["shiftReferencingRange"]]
-	print(shiftReferencingRange)
-	if (shiftReferencingRange == "near0"){
-		pctNear0 <- argLs[["pctNear0"]]
-	}
-	 if (shiftReferencingRange == "window"){
-			shiftReferencingRangeList <- NULL
-			shiftReferencingRangeLeft <- argLs[["shiftReferencingRangeLeft"]]
-			shiftReferencingRangeRight <- argLs[["shiftReferencingRangeRight"]]
-			shiftReferencingRangeList <- list(shiftReferencingRangeList,c(shiftReferencingRangeLeft,shiftReferencingRangeRight))
-	 }
-	shiftHandling <- argLs[["shiftHandling"]]
-	shiftReferencing <- argLs[["shiftReferencing"]]
-	if (shiftReferencingRange == "near0"){
-		  pctNear0 <- argLs[["pctNear0"]]
-	}
-		
-	if (shiftReferencingRange == "window"){
-		shiftReferencingRangeList <- NULL
-		shiftReferencingRangeLeft <- argLs[["shiftReferencingRangeLeft"]]
-		shiftReferencingRangeRight <- argLs[["shiftReferencingRangeRight"]]
-		shiftReferencingRangeList <- list(shiftReferencingRangeList,c(shiftReferencingRangeLeft,shiftReferencingRangeRight))
-	}
-	shiftHandling <- argLs[["shiftHandling"]]
-}
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 	
 # }
@@ -265,6 +204,7 @@ if (excludeZoneZeroPhase == 'YES') {
   exclude <- excludeZoneZeroPhaseList
 }
 
+
 # Baseline Correction -------------------------------
   # Inputs
 ptwBc <- as.logical(argLs[["ptwBc"]])
@@ -272,10 +212,7 @@ maxIter <- argLs[["maxIter"]]
 lambdaBc <- argLs[["lambdaBc"]] 
 pBc <- argLs[["pBc"]] 
 epsilon <- argLs[["epsilon"]] 
-<<<<<<< HEAD
 
-=======
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 
 # transformation of negative values -------------------------------
@@ -345,10 +282,7 @@ if (ApodGraph == "YES") {
 # FourierTransform ---------------------------------
 Spectrum_data <- FourierTransform(Fid_data, Fid_info = samplemetadataFid, reverse.axis = TRUE)
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 if (FTGraph == "YES") {
   title = "Fourier transformed spectra"
   DrawSignal(Spectrum_data, subtype = "stacked",
@@ -357,9 +291,7 @@ if (FTGraph == "YES") {
              main = title, createWindow=FALSE)
 }
 
-
 # InternalReferencing ---------------------------------
-<<<<<<< HEAD
 # if (shiftReferencing=="YES") {
 Spectrum_data <- InternalReferencing(Spectrum_data, samplemetadataFid, method = "max", range = shiftReferencingRange,
                                      ppm.ref = 0, shiftHandling = shiftHandling,ppm = TRUE,
@@ -371,20 +303,9 @@ if (SRGraph == "YES") {
              ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
              xlab = "Frequency", num.stacked = 4, 
              main = title, createWindow=FALSE)
-=======
-if (ShiftReferencing=="YES")
-{
-	Spectrum_data <- InternalReferencing(Spectrum_data, samplemetadataFid, method = shiftReferencingMethod, range = shiftReferencingRange, shiftHandling = shiftHandling,
-										c = shiftTreshold, fromto.TMSP = shiftReferencingRangeList, pc = pctNear0)
-	
-	title = "Spectra after Shift referencing"
-	DrawSignal(Spectrum_data, subtype = "stacked",
-               ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
-               xlab = "Frequency", num.stacked = 4, 
-               main.title = title, createWindow=FALSE)
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 }
 
+# }
 
 # ZeroOrderPhaseCorrection ---------------------------------
 Spectrum_data  <- ZeroOrderPhaseCorrection(Spectrum_data, method = zeroOrderPhaseMethod,
@@ -398,7 +319,6 @@ title = "Spectra after Zero Order Phase Correction"
 DrawSignal(Spectrum_data, subtype = "stacked",
            ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
            xlab = "Frequency", num.stacked = 4, 
-<<<<<<< HEAD
            main = title, createWindow=FALSE)
 }
 
@@ -413,27 +333,12 @@ DrawSignal(Spectrum_data, subtype = "stacked",
            main = title, createWindow=FALSE)
 }
 
-=======
-           main.title = title, createWindow=FALSE)
-
-
-# BaselineCorrection ---------------------------------			
-Spectrum_data <- BaselineCorrection(Spectrum_data, ptw.bc = ptwBc, maxIter = maxIter, lambda.bc = lambdaBc, p.bc = pBc, eps = epsilon, returnBaseline = F) 
-
-title = "Spectra after Baseline Correction"
-DrawSignal(Spectrum_data, subtype = "stacked",
-			ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
-			xlab = "Frequency", num.stacked = 4, 
-			main.title = title, createWindow=FALSE)
- 	
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 # NegativeValuesZeroing ---------------------------------
 if (NegativetoZero=="YES") {
   Spectrum_data <- NegativeValuesZeroing(Spectrum_data)
 }
 
-<<<<<<< HEAD
 if (FinalGraph == "YES") {
   title = "Final preprocessed spectra"
   DrawSignal(Spectrum_data, subtype = "stacked",
@@ -442,25 +347,24 @@ if (FinalGraph == "YES") {
              main = title, createWindow=FALSE)
 }
 
-=======
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 invisible(dev.off())
-
 
 ##======================================================
 ##======================================================
 ## Saving
 ##======================================================
 ##======================================================
+
 # Data Matrix
-<<<<<<< HEAD
 write.table(t(Re(Spectrum_data)),file=argLs$dataMatrixOut, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
-=======
-write.table(Spectrum_data,file=argLs$dataMatrixOut, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
 
 
 ## Ending
+
 cat("\nEnd of 'Preprocessing' Galaxy module call: ", as.character(Sys.time()), sep = "")
+
+sink()
+
 options(stringsAsFactors = strAsFacL)
+
 rm(list = ls())
