@@ -139,7 +139,7 @@
        	<param name="lambda" label="Solvent Suppression: Smoothing parameter" type="float" value="1000000" help="Default value is 1e6"/>
 		<param name="ptwSS" label="Use of C library for computation of the solvent signal" type="select" help="Select 'Yes' to compute the solvent signal in C using the ptw package which is a lot faster">
 				<option value="NO"> NO </option>
-				<option value="YES" selected="YES"> YES </option>
+				<option value="YES" selected='true' YES </option>
 		</param>
 		
 		<param name="SSGraph" label="Display the FIDs after solvent suppression?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
@@ -151,13 +151,13 @@
 
 		<conditional name="apodizationMethod" >
 			<param name="method" label="Apodization: method" type="select" help="Default method is Decreasing Exponential signal. See details below" >
-				<option value="exp" label="Decreasing Exponential window" />
-				<option value="cos2" label="Cosinus squared window"/>
-				<option value="hanning" label="Hanning window"/>
-				<option value="hamming" label="Hanning window"/>
-				<option value="blockexp" label="Block exponential window"/>
-				<option value="blockcos2" label="Block cosinus squared window"/>
-				<option value="gauss" label="Gaussian window" />
+				<option value="exp" />
+				<option value="cos2" />
+				<option value="hanning" />
+				<option value="hamming" />
+				<option value="blockexp" />
+				<option value="blockcos2" />
+				<option value="gauss" />
 			</param>
 			<when value="exp">
 				<param name="expLB" type="float" label="Line broadening" value="1" help="Default value is 1" />
@@ -198,9 +198,9 @@
 		
 		<conditional name="shiftReferencingRange" >
 					<param name="method" label="Shift Referencing: definition of the search zone" type="select" help="Definition of the search zone" >
-						<option value="near0" label="Near the 0 ppm location" help="Near the 0 ppm location"/>
-						<option value="all" label="Accross the whole ppm axis" help="Accross the whole ppm axis"/>
-						<option value="window" label="Manually specified area of the ppm axis with the non-null parameter fromto" help="Manually specified area of the ppm axis with the non-null parameter fromto"/>
+						<option value="near0" label="Near the 0 ppm location"/>
+						<option value="all" />
+						<option value="window" />
 					</param>
 					
 					<when value="all" />
@@ -215,7 +215,7 @@
 					</when>					
 		</conditional>
 		<param name="shiftHandling" type="select" label="Shift Referencing: shiftHandling" help="How to deal with shifts between spectra on their left and right sides" >
-					<option value="zerofilling" selected="zerofilling"> zerofilling </option>
+					<option value="zerofilling" selected='true'> zerofilling </option>
 					<option value="cut" > cut </option>
 					<option value="circular" > circular </option>
 		</param>
@@ -228,7 +228,7 @@
 		## zero Order Phase Correction
 		
 		<param name="zeroOrderPhaseMethod" type="select" label="Zero Order Phase Correction: method" help="Method used to select the angles to rotate the spectra" >
-					<option value="rms" selected="rms"> rms </option>
+					<option value="rms" selected='true'> rms </option>
 					<option value="max" > max </option>
 		</param>
 
