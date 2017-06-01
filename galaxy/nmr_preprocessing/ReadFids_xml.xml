@@ -1,6 +1,5 @@
-<tool id="NMR_Read" name="NMR_Read" version="2016-12-29">
+<tool id="NMR_Read" name="NMR_Read" version="3.0.1">
 	<description> Read NMR raw files</description>
-
 	
     <stdio>
         <exit_code range="1:" level="fatal" />
@@ -11,17 +10,16 @@
         Rscript $__tool_directory__/ReadFids_wrapper.R
 
 		## File input
-        #if $inputs.input == "FID":
-            fidzipfile $inputs.fidzipfile
-        #elif $inputs.input == "Jcamp-dx":
-            jcampzipfile $inputs.jcampzipfile
-        #end if
+        fidzipfile $fidzipfile
 		
 		## Title line
 		title_line $title_line
 		
 		## Subdirectories
 		subdirectories $subdirectories
+		
+		## Use subdirectories names as FID names?
+		subdirs_names $subdirs_names
 
         ## Outputs
         dataMatrixOut $dataMatrixOut
@@ -32,48 +30,40 @@
 	</command>
 		
   	<inputs>
-        <conditional name="inputs">
-            <param name="input" type="select" label="Choose your inputs method" >
-                <option value="FID" selected="true"> FID Bruker files</option>
-                <option value="Jcamp-dx"> Jcamp-dx files</option>
-            </param>
-            <when value="FID">
-                <param name="fidzipfile" type="data" format="no_unzip.zip" label="FID file" />
-            </when>
-            <when value="Jcamp-dx">
-                <param name="jcampzipfile" type="data" format="no_unzip.zip" label="Jcamp-dx file" />
-            </when>
-        </conditional>
+		<param name="fidzipfile" type="data" format="no_unzip.zip" label="Bruker FID file" />
         
 		<param name="title_line" label="FID title" type="integer" value="1" size="100" help="Default value is line 1"/>
 
-        <param name="subdirectories" label="Presence of subdirectories" type="select" help="Select 'No' when ...,'Yes' when ... ">
+        <param name="subdirectories" label="Presence of subdirectories?" type="select" help="Select 'FALSE' when there is no subdirectories, 'TRUE' if there are subdirectories">
             <option value="FALSE"> FALSE </option>
             <option value="TRUE"> TRUE </option>
         </param>
-
+        
+        <param name="subdirs_names" label="Use subdirectories names as FID names?" type="select" help="Select 'TRUE' to use the subdirectories names as the FID names">
+            <option value="FALSE"> FALSE </option>
+            <option value="TRUE"> TRUE </option>
+        </param>
 	</inputs>	
 	
 	
 	<outputs>
-	
 		<data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrixOut" />
 		<data format="tabular" name="sampleOut" label="${tool.name}_sampleMetadataOut" />
 		<data format="txt" name="logOut" label="${tool.name}_log" />
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
-		 
 	</outputs>
 
 	<help>
 
 .. class:: infomark
 
-**Authors** Manon Martin (manon.martin@uclouvain.be)
+**Authors** Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
 
 .. class:: infomark
 
 **Please cite**
-R. Rousseau. Statistical contribution to the analysis of metabonomic data in 1H-NMR spectroscopy. 2011. Ph.D. Thesis
+Rousseau, R. (2011). Statistical contribution to the analysis of metabonomics data in 1H NMR spectroscopy (Doctoral dissertation, PhD thesis. 
+Institut de statistique, biostatistique et sciences actuarielles, Université catholique de Louvain, Belgium).
 
 
 =============

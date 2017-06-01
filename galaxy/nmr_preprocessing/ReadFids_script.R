@@ -5,6 +5,13 @@
 #
 ################################################################################################
 
+
+# vec2mat ==============================================================================
+vec2mat <- function(vec) {
+  return(matrix(vec, nrow = 1, dimnames = list(c(1), names(vec)))) 
+}
+
+
 # ReadFid ==============================================================================
 ReadFid <- function(path) {
   
@@ -296,7 +303,7 @@ readParams <- function(file, paramsName) {
 
 
 # ReadFids ==============================================================================
-ReadFids <- function(path, l = 1, subdirs = FALSE) {
+ReadFids <- function(path, l = 1, subdirs = FALSE, subdirs.names = FALSE) {
   
   # Data initialisation and checks ----------------------------------------------
   begin_info <- beginTreatment("ReadFids")
@@ -332,20 +339,23 @@ ReadFids <- function(path, l = 1, subdirs = FALSE) {
     }
     
   } else  {
-    maindirs <- dir(path, full.names = TRUE)
+    maindirs <- dir(path, full.names = TRUE) # subdirectories
     Fid_data <- numeric()
     Fid_info <- numeric()
     
     fidDirs <- c()
     for (j in maindirs) {
-      fd <- getDirsContainingFid(j)
+      fd <- getDirsContainingFid(j) # recoved FIDs from subdirectories
       n <- length(fd)
       if (n > 0L)  {
         fidDirs <- c(fidDirs, fd)
       } else {warning(paste("No valid fid in",j ))}
     }
     
-    fidNames <- sapply(X = fidDirs, FUN = getTitle, l = l, subdirs = subdirs, USE.NAMES = F)
+    if (subdirs.names==TRUE) {
+      fidNames <- dir(path)
+    } else {fidNames <- sapply(X = fidDirs, FUN = getTitle, l = l, subdirs = subdirs, USE.NAMES = F)}
+    
     for (i in 1:length(fidNames))  {
       fidList <- ReadFid(fidDirs[i])
       fid <- fidList[["fid"]]
@@ -378,5 +388,6 @@ ReadFids <- function(path, l = 1, subdirs = FALSE) {
   return(list(Fid_data = endTreatment("ReadFids", begin_info, Fid_data), Fid_info = Fid_info))
   
 }
+
 
 

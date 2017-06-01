@@ -192,7 +192,6 @@ Interpol <- function(t, y) {
 
 # vec2mat
 vec2mat <- function(vec) {
-  
   return(matrix(vec, nrow = 1, dimnames = list(c(1), names(vec)))) 
   
 }
@@ -550,19 +549,19 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
 # InternalReferencing       
 ## ====================================================
 
-InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", "thres"), 
-                                range = c("near0", "all", "window"), 
+InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thres"), 
+                                range = c("near0", "all", "window"), ppm.ref = 0, 
                                 shiftHandling = c("zerofilling", "cut", "NAfilling", 
-                                                  "circular"), c = 2, ppmxaxis = TRUE, fromto.TMSP = NULL, 
-                                pc = 0.02, rowindex_graph = NULL) {
+                                                  "circular"), c = 2, pc = 0.02, fromto.RC = NULL,
+                                ppm = TRUE, rowindex_graph = NULL) {
   
   
   
   # Data initialisation and checks ----------------------------------------------
   
-  begin_info <- beginTreatment("InternalReferencing", RawSpect_data, RawSpect_info)
-  RawSpect_data <- begin_info[["Signal_data"]]
-  RawSpect_info <- begin_info[["Signal_info"]]
+  begin_info <- beginTreatment("InternalReferencing", Spectrum_data, Fid_info)
+  Spectrum_data <- begin_info[["Signal_data"]]
+  Fid_info <- begin_info[["Signal_info"]]
   
   
   # Check input arguments
@@ -571,18 +570,20 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
   method <- match.arg(method)
   plots <- NULL
   
-  checkArg(ppmxaxis, c("bool"))
-  checkArg(unlist(fromto.TMSP), c("num"), can.be.null = TRUE)
+  
+  checkArg(ppm, c("bool"))
+  checkArg(unlist(fromto.RC), c("num"), can.be.null = TRUE)
   checkArg(pc, c("num"))
+  checkArg(ppm.ref, c("num"))
   checkArg(rowindex_graph, "num", can.be.null = TRUE)
   
-  # fromto.TMSP
-  if (!is.null(fromto.TMSP)) {
-    diff <- diff(unlist(fromto.TMSP))[1:length(diff(unlist(fromto.TMSP)))%%2 !=0]
+  # fromto.RC
+  if (!is.null(fromto.RC)) {
+    diff <- diff(unlist(fromto.RC))[1:length(diff(unlist(fromto.RC)))%%2 !=0]
     for (i in 1:length(diff)) {
-      if (diff[i] <= 0)  {
-        stop(paste("Invalid region removal because from > to"))
-      }
+      if (ppm == TRUE & diff[i] >= 0)  {
+        stop(paste("Invalid region removal because from <= to in ppm"))
+      } else if (ppm == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
     }
   }
   
@@ -625,41 +626,41 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
   # Apply the method ('thres' or 'max') on spectra
   # ----------------------------------------------
   
-  n <- nrow(RawSpect_data)
-  m <- ncol(RawSpect_data)
+  n <- nrow(Spectrum_data)
+  m <- ncol(Spectrum_data)
   
   # The Sweep Width has to be the same since the column names are the same
-  SW <- RawSpect_info[1, "SW"]  # Sweep Width in ppm (semi frequency scale in ppm)
+  SW <- Fid_info[1, "SW"]  # Sweep Width in ppm (semi frequency scale in ppm)
   ppmInterval <- SW/m  # FIXME divide by two ??
   
   if (range == "all") {
-    Data <- RawSpect_data
+    Data <- Spectrum_data
   } else {
     if (range == "near0")  {
-      fromto.TMSP <- list(c(-(SW * pc)/2, (SW * pc)/2))  # automatic fromto values in ppm
+      fromto.RC <- list(c(-(SW * pc)/2, (SW * pc)/2))  # automatic fromto values in ppm
     }
     
-    # if ppmxaxis == TRUE, then fromto is in the colnames values, else, in the column
+    # if ppm == TRUE, then fromto is in the colnames values, else, in the column
     # index
-    if (ppmxaxis == TRUE)   {
-      colindex <- as.numeric(colnames(RawSpect_data))
+    if (ppm == TRUE)   {
+      colindex <- as.numeric(colnames(Spectrum_data))
     } else   {
       colindex <- 1:m
     }
     
     
-    Int <- vector("list", length(fromto.TMSP))
-    for (i in 1:length(fromto.TMSP))  {
-      Int[[i]] <- indexInterval(colindex, from = fromto.TMSP[[i]][1], 
-                                to = fromto.TMSP[[i]][2], inclusive = TRUE)
+    Int <- vector("list", length(fromto.RC))
+    for (i in 1:length(fromto.RC))  {
+      Int[[i]] <- indexInterval(colindex, from = fromto.RC[[i]][1], 
+                                to = fromto.RC[[i]][2], inclusive = TRUE)
     }
     
     vector <- rep(0, m)
     vector[unlist(Int)] <- 1
     if (n > 1)  {
-      Data <- sweep(RawSpect_data, MARGIN = 2, FUN = "*", vector)  # Cropped_Spectrum
+      Data <- sweep(Spectrum_data, MARGIN = 2, FUN = "*", vector)  # Cropped_Spectrum
     } else  {
-      Data <- RawSpect_data * vector
+      Data <- Spectrum_data * vector
     }  # Cropped_Spectrum
   }
   
@@ -667,7 +668,7 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
   if (method == "thres") {
     TMSPpeaks <- apply(Data, 1, findTMSPpeak)
   } else {
-    TMSPpeaks <- apply(Re(Data), 1, which.max)
+    TMSPpeaks <- apply(abs(Re(Data)), 1, which.max)
   }
   
   # TMSPpeaks is an column index
@@ -689,32 +690,52 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
     end <- minpeak - m
     
     ppmScale <- (start:end) * ppmInterval
-    Spectrum_data <- matrix(fill, nrow = n, ncol =  -(end - start) + 1, 
-                            dimnames = list(rownames(RawSpect_data), ppmScale))
+    
+    # check if ppm.ref in is the ppmScale interval
+    if(ppm.ref < min(ppmScale) | ppm.ref > max(ppmScale)) {
+      warning("ppm.ref = ", ppm.ref, " is not in the ppm interval [", 
+              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default value 0")
+      ppm.ref = 0
+    }
+    
+    ppmScale <- ppmScale + ppm.ref
+    
+    Spectrum_data_calib <- matrix(fill, nrow = n, ncol =  -(end - start) + 1, 
+                                  dimnames = list(rownames(Spectrum_data), ppmScale))
     for (i in 1:n)  {
       shift <- (1 - TMSPpeaks[i]) + start
-      Spectrum_data[i, (1 + shift):(m + shift)] <- RawSpect_data[i, ]
+      Spectrum_data_calib[i, (1 + shift):(m + shift)] <- Spectrum_data[i, ]
     }
     
     if (shiftHandling == "cut")  {
-      Spectrum_data = as.matrix(stats::na.omit(t(Spectrum_data)))
-      Spectrum_data = t(Spectrum_data)
-      base::attr(Spectrum_data, "na.action") <- NULL
+      Spectrum_data_calib = as.matrix(stats::na.omit(t(Spectrum_data_calib)))
+      Spectrum_data_calib = t(Spectrum_data_calib)
+      base::attr(Spectrum_data_calib, "na.action") <- NULL
     }
     
     
   } else {
     # circular
-    start <-  maxpeak - 1
-    end <- minpeak - m
+    start <- 1 - maxpeak
+    end <- m - maxpeak
+    
     ppmScale <- (start:end) * ppmInterval
-    Spectrum_data <- matrix(nrow = n, ncol = -(end - start) + 1, 
-                            dimnames = list(rownames(RawSpect_data), ppmScale))
-    for (i in 1:n)  {
-      shift <- (maxpeak - TMSPpeaks[i])
-      Spectrum_data[i, (1 + shift):m] <- RawSpect_data[i, 1:(m - shift)]
-      if (shift > 0)  {
-        Spectrum_data[i, 1:shift] <- RawSpect_data[i, (m - shift + 1):m]
+    
+    # check if ppm.ref in is the ppmScale interval
+    if(ppm.ref < min(ppmScale) | ppm.ref > max(ppmScale)) {
+      warning("ppm.ref = ", ppm.ref, " is not in the ppm interval [", 
+              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default value 0")
+      ppm.ref = 0
+    }
+    ppmScale <- ppmScale + ppm.ref
+    
+    Spectrum_data_calib <- matrix(nrow=n, ncol=end-start+1,
+                                  dimnames=list(rownames(Spectrum_data), ppmScale))
+    for (i in 1:n) {
+      shift <- (maxpeak-TMSPpeaks[i])
+      Spectrum_data_calib[i,(1+shift):m] <- Spectrum_data[i,1:(m-shift)]
+      if (shift > 0) {
+        Spectrum_data_calib[i,1:shift] <- Spectrum_data[i,(m-shift+1):m]
       }
     }
   }
@@ -731,21 +752,21 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
   if (!is.null(rowindex_graph)) {
     
     if (range == "window")  {
-      if (ppmxaxis == TRUE)   {
-        fromto <- fromto.TMSP
+      if (ppm == TRUE)   {
+        fromto <- fromto.RC
       } else  {
         fromto <- list()
-        idcol <- as.numeric(colnames(RawSpect_data))
-        for (i in 1:length(fromto.TMSP)) {
-          fromto[[i]] <- as.numeric(colnames(RawSpect_data))[fromto.TMSP[[i]]]
+        idcol <- as.numeric(colnames(Spectrum_data))
+        for (i in 1:length(fromto.RC)) {
+          fromto[[i]] <- as.numeric(colnames(Spectrum_data))[fromto.RC[[i]]]
         }
       }
     } else {
-      fromto <- fromto.TMSP
+      fromto <- fromto.RC
     }
     
     # TMSPloc in ppm
-    TMSPloc <- as.numeric(colnames(RawSpect_data))[TMSPpeaks[rowindex_graph]]
+    TMSPloc <- as.numeric(colnames(Spectrum_data))[TMSPpeaks[rowindex_graph]]
     
     # num plot per window
     num.stacked <- 6
@@ -756,7 +777,7 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
                         Legend = "TMSP search zone and location")
     
     # vlines for TMSP peak
-    addlines <- data.frame(rowname = rownames(RawSpect_data)[rowindex_graph],TMSPloc)
+    addlines <- data.frame(rowname = rownames(Spectrum_data)[rowindex_graph],TMSPloc)
     
     nn <- length(rowindex_graph)
     i <- 1
@@ -767,7 +788,7 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
       
       last <- min(i + num.stacked - 1, nn)
       
-      melted <- reshape2::melt(Re(RawSpect_data[i:last, ]), 
+      melted <- reshape2::melt(Re(Spectrum_data[i:last, ]), 
                                varnames = c("rowname", "ppm"))
       
       plots[[j]] <- ggplot2::ggplot() + ggplot2::theme_bw() + 
@@ -797,7 +818,7 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
   
   
   # Return the results ----------------------------------------------
-  Spectrum_data <- endTreatment("InternalReferencing", begin_info, Spectrum_data)
+  Spectrum_data <- endTreatment("InternalReferencing", begin_info, Spectrum_data_calib)
   
   if (is.null(plots)) {
     return(Spectrum_data)
@@ -815,18 +836,18 @@ InternalReferencing <- function(RawSpect_data, RawSpect_info, method = c("max", 
 
 ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", "max"), 
                                      plot_rms = NULL, returnAngle = FALSE, createWindow = TRUE, 
-                                     Angle = NULL, plot_spectra = FALSE, quant = 0.95, 
-                                     freq = TRUE, fromto.0OPC = NULL) {
+                                     angle = NULL, plot_spectra = FALSE,  
+                                     ppm = TRUE, exclude = list(c(5.1,4.5))) {
   
   
   # Data initialisation and checks ----------------------------------------------
   
   # Entry arguments definition:
   # plot_rms : graph of rms criterion returnAngle : if TRUE, returns avector of
-  # optimal angles createWindow : for plot_rms plots Angle : If Angle is not NULL,
-  # spectra are rotated according to the Angle vector values
+  # optimal angles createWindow : for plot_rms plots angle : If angle is not NULL,
+  # spectra are rotated according to the angle vector values
   # plot_spectra : if TRUE, plot rotated spectra  
-  # quant: probability for sample quantile used to trim the spectral intensities
+  
   
   
   begin_info <- beginTreatment("ZeroOrderPhaseCorrection", Spectrum_data)
@@ -838,75 +859,62 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
   
   # Check input arguments
   method <- match.arg(method)
-  checkArg(freq, c("bool"))
-  checkArg(unlist(fromto.0OPC), c("num"), can.be.null = TRUE)
+  checkArg(ppm, c("bool"))
+  checkArg(unlist(exclude), c("num"), can.be.null = TRUE)
   
   
   # method in c("max", "rms") -----------------------------------------
   if (method %in% c("max", "rms")) {
-    # Angle is found by optimization
+    # angle is found by optimization
     
     # rms function to be optimised
-    rms <- function(ang, y, meth = c("max", "rms"), p = 0.95)  {
+    rms <- function(ang, y, meth = c("max", "rms"))  {
       # if (debug_plot) { graphics::abline(v=ang, col='gray60') }
       roty <- y * exp(complex(real = 0, imaginary = ang))  # spectrum rotation
       Rey <- Re(roty)
       
       if (meth == "rms")  {
-        si <- sign(Rey)  # sign of intensities
-        
-        Rey[abs(Rey) >= quantile(abs(Rey), p)] <- quantile(abs(Rey), p)  # trim the values
-        Rey <- abs(Rey) * si  # spectral trimmed values
-        
-        if ((sum(Rey==0)/length(Rey)) >= 0.99) {
-          stop("More than 99% of intensities are null, the rms criterion cannot work properly. \n
-               Either increase p or the window(s) in fromto.0OPC")
-        }
         ReyPos <- Rey[Rey >= 0]  # select positive intensities
-        
-        # POSss = sum((ReyPos-mean(ReyPos))^2) # centred SS for positive intensities
-        POSss <- sum((ReyPos)^2)  # SS for positive intensities
-        
-        # ss = sum((Rey - mean(Rey) )^2) # centred SS for all intensities
-        ss <- sum((Rey)^2)  #  SS for all intensities
-        
+        POSss <- sum((ReyPos)^2, na.rm = TRUE)  # SS for positive intensities
+        ss <- sum((Rey)^2, na.rm = TRUE)  #  SS for all intensities
         return(POSss/ss)  # criterion : SS for positive values / SS for all intensities 
-        } else  {
-          maxi <- max(Rey)
-          return(maxi)
-        }
+      } else  {
+        maxi <- max(Rey, na.rm = TRUE)
+        return(maxi)
+      }
     }
     
     
     # Define the interval where to search for (by defining Data)
-    if (is.null(fromto.0OPC)) {
+    if (is.null(exclude)) {
       Data <- Spectrum_data
     } else  {
       
-      # if freq == TRUE, then fromto is in the colnames values, else, in the column
+      # if ppm == TRUE, then fromto is in the colnames values, else, in the column
       # index
-      if (freq == TRUE)  {
+      if (ppm == TRUE)  {
         colindex <- as.numeric(colnames(Spectrum_data))
       } else  {
         colindex <- 1:m
       }
       
-      # Second check for the argument fromto.0OPC
-      diff <- diff(unlist(fromto.0OPC))[1:length(diff(unlist(fromto.0OPC)))%%2 != 0]
-      for (i in 1:length(diff))   {
-        if (diff[i] < 0)   {
-          stop(paste("Invalid region removal because from > to"))
-        }
+      # Second check for the argument exclude
+      diff <- diff(unlist(exclude))[1:length(diff(unlist(exclude)))%%2 !=0]
+      for (i in 1:length(diff)) {
+        if (ppm == TRUE & diff[i] >= 0)  {
+          stop(paste("Invalid region removal because from <= to in ppm"))
+        } else if (ppm == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
       }
       
-      Int <- vector("list", length(fromto.0OPC))
-      for (i in 1:length(fromto.0OPC))  {
-        Int[[i]] <- indexInterval(colindex, from = fromto.0OPC[[i]][1], 
-                                  to = fromto.0OPC[[i]][2], inclusive = TRUE)
+      
+      Int <- vector("list", length(exclude))
+      for (i in 1:length(exclude))  {
+        Int[[i]] <- indexInterval(colindex, from = exclude[[i]][1], 
+                                  to = exclude[[i]][2], inclusive = TRUE)
       }
       
-      vector <- rep(0, m)
-      vector[unlist(Int)] <- 1
+      vector <- rep(1, m)
+      vector[unlist(Int)] <- 0
       if (n > 1)  {
         Data <- sweep(Spectrum_data, MARGIN = 2, FUN = "*", vector)  # Cropped_Spectrum
       } else   {
@@ -915,7 +923,7 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
     }
     
     
-    # Angles computation
+    # angles computation
     Angle <- c()
     for (k in 1:n)
     {
@@ -931,8 +939,8 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
       # work in either [-pi;pi] or [0;2pi] (this is not easy to be convinced by that I
       # agree) and we can check which one it is simply by the following trick
       
-      f0 <- rms(0, Data[k, ], p = quant, meth = method)
-      fpi <- rms(pi, Data[k, ], p = quant, meth = method)
+      f0 <- rms(0, Data[k, ],meth = method)
+      fpi <- rms(pi, Data[k, ], meth = method)
       if (f0 < fpi) {
         interval <- c(-pi, pi)
       } else {
@@ -945,7 +953,7 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
         x <- seq(min(interval), max(interval), length.out = 100)
         y <- rep(1, 100)
         for (K in (1:100))   {
-          y[K] <- rms(x[K], Data[k, ], p = quant, meth = method)
+          y[K] <- rms(x[K], Data[k, ],  meth = method)
         }
         if (createWindow == TRUE)  {
           grDevices::dev.new(noRStudioGD = FALSE)
@@ -956,7 +964,7 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
       
       # Best angle
       best <- stats::optimize(rms, interval = interval, maximum = TRUE, 
-                              y = Data[k,], p = quant, meth = method)
+                              y = Data[k,],  meth = method)
       ang <- best[["maximum"]]
       
       
@@ -977,41 +985,21 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
     # method is "manual" -------------------------------------------------------
     # if Angle is already specified and no optimisation is needed
     
-    if (!is.vector(Angle)) {
-      stop("Angle is not a vector")
+    if (!is.vector(angle)) {
+      stop("angle is not a vector")
     }
     
-    if (!is.numeric(Angle))  {
-      stop("Angle is not a numeric")
+    if (!is.numeric(angle))  {
+      stop("angle is not a numeric")
     }
     
-    if (length(Angle) != n) {
-      stop(paste("Angle has length", length(Angle), "and there are", n, "spectra to rotate."))
+    if (length(angle) != n) {
+      stop(paste("angle has length", length(angle), "and there are", n, "spectra to rotate."))
     }
     for (k in 1:n)  {
-      Spectrum_data[k, ] <- Spectrum_data[k, ] * exp(complex(real = 0, imaginary = ang))
+      Spectrum_data[k, ] <- Spectrum_data[k, ] * exp(complex(real = 0, imaginary = - angle[k]))
     }
   }
-  
-  
-  
-  # #================== Detect a 180° rotation due to the water signal MEAN_Q = c()
-  # for (i in 1:nrow(Spectrum_data)) { data = Re(Spectrum_data[i,]) data_p =
-  # data[data >= stats::quantile(data[data >=0 ], p.zo)] data_n = data[data <=
-  # stats::quantile(data[data <0 ], (1-p.zo))] mean_quant = (sum(data_p) +
-  # sum(data_n)) / (length(data_p) +length(data_n)) # mean(p.zo% higher pos and neg
-  # values) MEAN_Q = c(MEAN_Q, mean_quant) } vect = which(MEAN_Q < 0) if
-  # (length(vect)!=0) { warning('The mean of', p.zo,' positive and negative
-  # quantiles is negative for ', paste0(rownames(Spectrum_data)[vect],'; '))
-  # if(rotation == TRUE) { warning(' An automatic 180 degree rotation is applied to
-  # these spectra') Angle[vect] = Angle[vect] + pi } } vect_risk =
-  # which(MEAN_Q<0.1*mean(MEAN_Q[MEAN_Q>0])) # is there any MEAN_Q with a very low
-  # value copared to mean of positive mean values?  if (length(vect_risk)!=0)
-  # { warning('the rotation angle for spectra',
-  # paste0(rownames(Spectrum_data)[vect_risk],'; '), 'might not be optimal, you
-  # need to check visually for those spectra') } # result of automatic rotation for
-  # (k in vect_risk) { Spectrum_data[k,] <- Spectrum_data[k,] * exp(complex(real=0,
-  # imaginary=Angle[k])) } #==================
   
   
   
@@ -1048,11 +1036,10 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
 }
 
 
+
 ## ====================================================
 # Baseline Correction   
 ## ====================================================
-
-
 BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42, 
                                lambda.bc = 1e+07, p.bc = 0.05, eps = 1e-08, 
                                returnBaseline = F) {
@@ -1061,12 +1048,13 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   begin_info <- beginTreatment("BaselineCorrection", Spectrum_data, force.real = T)
   Spectrum_data <- begin_info[["Signal_data"]]
   p <- p.bc
+  lambda <- lambda.bc
   n <- dim(Spectrum_data)[1]
   
   # Data check
   checkArg(ptw.bc, c("bool"))
   checkArg(maxIter, c("int", "pos"))
-  checkArg(lambda.bc, c("num", "pos0"))
+  checkArg(lambda, c("num", "pos0"))
   checkArg(p.bc, c("num", "pos0"))
   checkArg(eps, c("num", "pos0"))
   checkArg(returnBaseline, c("bool"))
@@ -1080,26 +1068,26 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   if (ptw.bc) {
     asysm <- ptw::asysm
   } else {
-    difsmw <- function(y, lambda.bc, w, d) {
+    difsmw <- function(y, lambda, w, d) {
       # Weighted smoothing with a finite difference penalty cf Eilers, 2003.
       # (A perfect smoother) 
       # y: signal to be smoothed 
-      # lambda.bc: smoothing parameter 
+      # lambda: smoothing parameter 
       # w: weights (use0 zeros for missing values) 
       # d: order of differences in penalty (generally 2)
       m <- length(y)
       W <- Matrix::Diagonal(x=w)
       E <- Matrix::Diagonal(m)
       D <- Matrix::diff(E, differences = d)
-      C <- Matrix::chol(W + lambda.bc * t(D) %*% D)
+      C <- Matrix::chol(W + lambda * t(D) %*% D)
       x <- Matrix::solve(C, Matrix::solve(t(C), w * y))
       return(as.numeric(x))
       
     }
-    asysm <- function(y, d, lambda.bc, p, eps) {
+    asysm <- function(y, lambda, p, eps) {
       # Baseline estimation with asymmetric least squares
       # y: signal
-      # lambda.bc: smoothing parameter (generally 1e5 to 1e8)
+      # lambda: smoothing parameter (generally 1e5 to 1e8)
       # p: asymmetry parameter (generally 0.001)
       # d: order of differences in penalty (generally 2)
       # eps: 1e-8 in ptw package
@@ -1107,7 +1095,7 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
       w <- rep(1, m)
       i <- 1
       repeat {
-        z <- difsmw(y, lambda.bc, w, d)
+        z <- difsmw(y, lambda, w, d = 2)
         w0 <- w
         w <- p * (y > z + eps | y < 0) + (1 - p) * (y <= z + eps)
         if (sum(abs(w - w0)) == 0) {
@@ -1127,11 +1115,11 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   Baseline <- matrix(NA, nrow = nrow(Spectrum_data), ncol = ncol(Spectrum_data))
   
   for (k in 1:n) {
-    Baseline[k, ] <- asysm(y = Spectrum_data[k, ], d = 2, lambda.bc = lambda.bc, p = p, eps = eps)
+    Baseline[k, ] <- asysm(y = Spectrum_data[k, ], lambda = lambda, p = p, eps = eps)
     if (F & k == 1) {
       m <- ncol(Spectrum_data)
-      graphics::plot(1:mm, Spectrum_data[k, ], type = "l", col = "red")
-      graphics::lines(1:mm, Baseline[k, ], type = "l", col = "blue")
+      graphics::plot(1:m, Spectrum_data[k, ], type = "l", col = "red")
+      graphics::lines(1:m, Baseline[k, ], type = "l", col = "blue")
       graphics::lines(1:m, Spectrum_data[k, ] - Baseline[k, ], type = "l",
                       col = "green")
     }
@@ -1148,6 +1136,7 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
     return(Spectrum_data)
   }
 }
+
 
 
 ## ====================================================

@@ -23,7 +23,6 @@ options(warn=1)
 ##------------------------------
 ## Libraries laoding
 ##------------------------------
-# For parseCommandArgs function
 library(batch) 
 library(ggplot2)
 library(gridExtra)
@@ -38,7 +37,7 @@ source_local <- function(fname)
   source(paste(base_dir, fname, sep="/"))
 }
 #Import the different functions
-source_local("ReadFids_Manon.R")
+source_local("ReadFids_script.R")
 source_local("DrawFunctions.R")
 ##------------------------------
 ## Errors ?????????????????????
@@ -68,22 +67,16 @@ if(!runExampleL)
 	## Inputs
 		# Path
 			## Bruker FIDs
-if (!is.null(argLs[["fidzipfile"]])){
-	fileType="Bruker"
-	zipfile= argLs[["fidzipfile"]]
-	directory=unzip(zipfile, list=F)
-	path=paste(getwd(),strsplit(directory[1],"/")[[1]][2],sep="/")
-} else if (!is.null(argLs[["jcampzipfile"]])){
-	fileType="Jcamp"
-	zipfile=argLs[["jcampzipfile"]]
- 	directory=unzip(zipfile, list=F)
-	path=paste(getwd(),strsplit(directory[1],"/")[[1]][2],sep="/")
+fileType="Bruker"
+zipfile= argLs[["fidzipfile"]]
+directory=unzip(zipfile, list=F)
+path=paste(getwd(),strsplit(directory[1],"/")[[1]][2],sep="/")
 
-}
 
-# other inputs
+# other inputs from ReadFids
 l = argLs[["title_line"]]
 subdirs <- argLs[["subdirectories"]]
+subdirs.names <- argLs[["subdirs_names"]]
 
 
 # Outputs
@@ -91,6 +84,9 @@ dataMatrixOut <- argLs[["dataMatrixOut"]]
 sampleMetadataOut <- argLs[["sampleOut"]]
 logOut <- argLs[["logOut"]]
 nomGraphe <- argLs[["graphOut"]]
+
+	
+
 
 ## Checking arguments
 ##-------------------
@@ -115,18 +111,17 @@ if(length(warnings())>0){ # or !is.null(warnings())
 ## Starting
 cat("\nStart of 'ReadFids' Galaxy module call: ", as.character(Sys.time()), "\n\n", sep = "")
 
-
-outputs <- ReadFids(path = path, l=l, subdirs = subdirs) 
+outputs <- ReadFids(path = path, l=l, subdirs = subdirs, subdirs.names = subdirs.names) 
 
 data_matrix <- outputs[["Fid_data"]] # Data matrix
 data_sample <- outputs[["Fid_info"]] # Sample metadata
-
+  
 pdf(nomGraphe, onefile = TRUE, width = 13, height = 13)
 title = "Raw FID data"
 DrawSignal(data_matrix, subtype = "stacked",
-           ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
-           xlab = "Frequency", num.stacked = 4, 
-           main.title = title, createWindow=FALSE)
+             ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T,
+             xlab = "Frequency", num.stacked = 4,
+             main = title, createWindow=FALSE)
 invisible(dev.off())
 
 ##======================================================
