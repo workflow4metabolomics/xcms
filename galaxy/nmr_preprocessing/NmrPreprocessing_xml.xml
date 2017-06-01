@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="3.1.0">
 	<description> Preprocessing of 1D NMR spectra </description>
 
@@ -398,3 +399,491 @@ The **searching window** can be adapted:
    </help>
     
 </tool>
+=======
+<tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="2017-01-17">
+	<description> Preprocessing of 1D NMR spectra </description>
+
+	<requirements>
+        <requirement type="package" version="3.1.2">R</requirement>
+	    <requirement type="package" version="1.1_4">r-batch</requirement>
+	    <requirement type="package" version="1.9-12">pwt</requirement>
+	    <requirement type="package" version="1.2-8">Matrix</requirement>
+	    <requirement type="package" version="2.2.1">ggplot2</requirement>
+	    <requirement type="package" version="2.2.1">gridExtra</requirement>
+	    <requirement type="package" version="1.4.2">reshape2</requirement>
+  	</requirements>
+	
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
+	
+  	<command>
+  	    ## Wrapper
+        Rscript $__tool_directory__/NmrPreprocessing_wrapper.R
+
+		## First order phase correction
+			## Data matrix of FID spectra
+		dataMatrixFid '$dataMatrixFid'
+			## Sample metadata matrix
+		sampleMetadataFid '$sampleMetadataFid'
+
+		
+		## Water and / or solvents suppression
+		    ## Smoothing parameter
+        --lambda $WaterSuppr.lambda
+		--ptwSS  $WaterSuppr.ptwSS
+		
+		## Apodization
+	    --apodizationMethod $Apodization.apodizationMethod.method
+		    #if $Apodization.apodizationMethod.method == "exp":
+			    ## Line broadening for the exponential window
+			    --expLB $Apodization.apodizationMethod.expLB 
+		    #end if
+		    #if $Apodization.apodizationMethod.method == "cos2":
+			    ## Phase
+			    --phase $Apodization.apodizationMethod.phase
+		    #end if
+		    #if $Apodization.apodizationMethod.method == "hanning":
+			    ## Phase
+			    --phase $Apodization.apodizationMethod.phase
+		    #end if
+		    #if $Apodization.apodizationMethod.method == "hamming":
+			    ## Phase
+			    --phase $Apodization.apodizationMethod.phase
+		    #end if
+		    #if $Apodization.apodizationMethod.method == "blockexp":
+			    ## Proportion of signal in the window
+			    --rectRatio $Apodization.apodizationMethod.rectRatio
+			    --expLB $Apodization.apodizationMethod.expLB 
+		    #end if			
+		    #if $Apodization.apodizationMethod.method == "blockcos2":
+			    ## Proportion of signal in the window
+			    --rectRatio $Apodization.apodizationMethod.rectRatio
+		    #end if			
+		    #if $Apodization.apodizationMethod.method == "gauss":
+			    ## Line broadening for the gaussian window
+			    --gaussLB $Apodization.apodizationMethod.expLB 
+		    #end if
+	
+	
+		## Fourier transform
+			## Graphical display
+			--FTGraph $FT.FTGraph
+		
+		
+		## Shift referencing
+<<<<<<< HEAD
+        shift_referencing.choice $shift_referencing.choice
+        #if str($shift_referencing.choice) == 'YES'
+				## Method used to find the TMSP peaks in spectra
+			shiftReferencingMethod $shift_referencing.shiftReferencingMethod.method
+			#if str($shift_referencing.shiftReferencingMethod.method) == "thres"
+				shiftTreshold $shift_referencing.shiftReferencingMethod.shiftTreshold
+			#end if
+				## Definition of the search zone
+			shiftReferencingRange $shift_referencing.shiftReferencingRange.method
+			#if str($shift_referencing.shiftReferencingRange.method) == "near0"
+				pctNear0 $shift_referencing.shiftReferencingRange.pctNear0
+			#end if
+			#if str($shift_referencing.shiftReferencingRange.method) == "window"
+				#for $i in $shift_referencing.shiftReferencingRange.conditions
+					shiftReferencingRangeLeft ${i.shiftReferencingRangeLeft}
+					shiftReferencingRangeRight ${i.shiftReferencingRangeRight}
+				#end for
+			#end if
+			shiftHandling $shift_referencing.shiftHandling
+        #end if
+=======
+			## Method used to find the TMSP peaks in spectra
+			--shiftReferencingMethod $ShiftRef.shiftReferencingMethod.method
+			#if $ShiftRef.shiftReferencingMethod.method == "thres":
+				--shiftTreshold $ShiftRef.shiftReferencingMethod.shiftTreshold
+			#end if
+			## Definition of the search zone
+			--shiftReferencingRange $ShiftRef.shiftReferencingRange.method
+			#if $ShiftRef.shiftReferencingRange.method == "near0":
+				--pctNear0 $ShiftRef.shiftReferencingRange.pctNear0
+			#end if			
+			#if $ShiftRef.shiftReferencingRange.method == "window":
+				#for $i in $ShiftRef.shiftReferencingRange.conditions:
+               	 	--shiftReferencingRangeLeft ${ShiftRef.i.shiftReferencingRangeLeft}
+               	 	--shiftReferencingRangeRight ${ShiftRef.i.shiftReferencingRangeRight}
+               	 #end for
+			#end if
+			--shiftHandling $ShiftRef.shiftHandling
+>>>>>>> origin/dev_sections-lecorguille
+
+		
+		## Zero order phase correction
+		--zeroOrderPhaseMethod $ZeroCorrection.zeroOrderPhaseMethod.method
+	    #if $ZeroCorrection.zeroOrderPhaseMethod.method == "rms":
+			    ## Line broadening for the exponential window
+			    --quant $ZeroCorrection.zeroOrderPhaseMethod.quant 
+		#end if
+	    #if $ZeroCorrection.zeroOrderPhaseMethod.method == "max":
+			    ## Line broadening for the exponential window
+			    --angle $ZeroCorrection.zeroOrderPhaseMethod.angle
+		#end if
+		--searchZoneZeroPhase.choice ${ZeroCorrection.searchZoneZeroPhase.choice}
+        #if str($ZeroCorrection.searchZoneZeroPhase.choice) == "YES":
+            #for $i in $searchZoneZeroPhase.conditions:
+                --searchZoneZeroPhase_left ${ZeroCorrection.i.searchZoneZeroPhase_left}
+                --searchZoneZeroPhase_right ${ZeroCorrection.i.searchZoneZeroPhase_right}
+            #end for
+        #end if		
+
+
+		## Baseline correction
+		--ptwBc $BaselineCorr.ptwBc
+		--maxIter $BaselineCorr.maxIter
+		--lambdaBc $BaselineCorr.lambdaBc
+		--pBc $BaselineCorr.pBc
+		--epsilon $BaselineCorr.epsilon
+		
+		
+		## sets negative intensities to zero
+		--NegativetoZero $NegIntensities.NegativetoZero
+				
+		
+        ## Outputs
+        dataMatrixOut '$dataMatrixOut'
+		graphOut '$graphOut'
+		logOut '$logOut'
+		
+	</command>
+		
+  	<inputs>
+		<param name="dataMatrixFid" type="data" label="Data matrix of FIDs" help="" format="tabular" />
+		<param name="sampleMetadataFid" type="data" label="Sample metadata matrix" help="" format="tabular" />
+
+<<<<<<< HEAD
+		<param name="lambda" label="Smoothing parameter" type="float" value="1000000" help="Default value is 1e6 ppm"/>
+		<param name="ptwSS" label="Use of C library for computation of the solvent signal" type="select" help="Select 'Yes' to compute the solvent signal in C using the ptw package which is a lot faster">
+				<option value="NO"> NO </option>
+				<option value="YES"> YES </option>
+		</param>
+
+
+		<conditional name="apodizationMethod" >
+			<param name="method" label="Method" type="select" help="Default method is Decreasing Exponential" >
+				<option value="exp" label="Decreasing Exponential window" />
+				<option value="cos2" label="Cosinus squared"/>
+				<option value="hanning" label="Hanning window"/>
+				<option value="hamming" label="Hanning window"/>
+				<option value="blockexp" label="Block exponential"/>
+				<option value="blockcos2" label="Block cosinus squared"/>
+				<option value="gauss" label="Gaussian window" />
+			</param>
+			<when value="exp">
+				<param name="expLB" type="float" label="Proportion of signal in the window" value="1" help="Default method is 1" />
+			</when>			
+			<when value="cos2">
+				<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+			</when>
+			<when value="hanning">
+				<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+			</when>
+			<when value="hamming">
+				<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+			</when>
+			<when value="blockexp">
+				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default method is 0.5" />
+				<param name="expLB" type="float" label="Line broadening" value="1" help="Default method is 1" />
+			</when>		
+			<when value="blockcos2">
+				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default method is 0.5" />
+			</when>		
+			<when value="gauss">
+				<param name="gaussLB" type="float" label="Proportion of signal in the window" value="1" help="Default method is 1" />
+			</when>		
+		</conditional>			
+	
+
+		<param name="FTGraph" label="Result display" type="select" help="Select 'No' when ...,'Yes' when ... ">
+				<option value="NO"> NO </option>
+				<option value="YES"> YES </option>
+		</param>
+
+
+		<conditional name="shift_referencing">
+			<param name="choice" type="select" label="Shift referencing" help="" >
+				<option value="YES" > YES </option>
+				<option value="NO" selected="true"> NO </option>
+			</param>
+			<when value="YES">
+				<conditional name="shiftReferencingMethod" >
+					<param name="method" label="Method of shift referencing used to find the TMSP peaks" type="select" help="Method used to find the TMSP peaks in spectra" >
+						<option value="max" label="Maximum real intensity location" />
+						<option value="thres" label="Threshold"/>
+					</param>
+					<when value="max" />
+					<when value="thres">
+						<param name="shiftTreshold" type="float" label="Predefined threshold" value="2" help="Default treshold is 2" />
+					</when>
+				</conditional>	
+				<conditional name="shiftReferencingRange" >
+					<param name="method" label="Definition of the search zone" type="select" help="Definition of the search zone" >
+							<option value="near0" label="Near the 0 ppm location" help="Near the 0 ppm location"/>
+							<option value="all" label="Accross the whole ppm axis" help="Accross the whole ppm axis"/>
+							<option value="window" label="Manually specified area of the ppm axis with the non-null parameter fromto TMSP" help="Manually specified area of the ppm axis with the non-null parameter fromto TMSP"/>
+					</param>
+					<when value="all" />
+					<when value="near0">
+						<param name="pctNear0" type="float" label="percentage of the ppm axis around 0 ppm to look for the TMSP peak" value="0.02" help="Default treshold is 0.02" />
+					</when>
+					<when value="window">
+						<repeat name="conditions" title="Search_zone">
+							<param name="shiftReferencingRangeLeft" label="Search zone: left border" type="float" value="10.0" />
+							<param name="shiftReferencingRangeRight" label="Search zone: right border" type="float" value="10.0" />
+						</repeat>
+					</when>								
+				</conditional>
+				<param name="shiftHandling" type="select" label="shiftHandling" help="..." >
+							<option value="zerofilling" selected="zerofilling"> zerofilling </option>
+							<option value="cut" > cut </option>
+							<option value="NAfilling" > NAfilling </option>
+							<option value="circular" > circular </option>
+				</param>
+			</when>
+			<when value="NO">
+			</when>
+		</conditional>
+		
+		<param name="zeroOrderPhaseMethod" type="select" label="Method" help="Method used to select the angles to rotate the spectra" >
+					<option value="rms" selected="rms"> rms </option>
+					<option value="manual" > manual </option>
+					<option value="max" > max </option>
+		</param>		
+		<conditional name="zeroOrderPhaseMethod" >
+			<param name="method" label="Zero Order Phase correction" type="select" help="Zero Order Phase correction" >
+				<option value="rms" selected="rms" label="A positiveness criterion is applied on the spectrum" />
+				<option value="manual" label="Specification of a vector of angles"/>
+				<option value="max" label="Optimization of a maximum spectral intensity"/>
+			</param>
+			<when value="rms">
+				<param name="quant" type="float" label="Quantile probability for the positiveness criterion" value="0.95" help="Default method is 0.95" />
+			</when>			
+			<when value="manual">
+				<param name="angle" type="float" label="numeric vector with angles specified in radian to maually rotate the spectra" value="0" help="Default method is 0" />
+			</when>	
+		</conditional>	
+		<conditional name="searchZoneZeroPhase">
+			<param name="choice" type="select" label="Search zone for Zero order phase correction" help="Choose if you want to exclude particular zone(s)" >
+				<option value="YES" > YES </option>
+				<option value="NO" selected="true"> NO </option>
+			</param>
+			<when value="YES">
+				<repeat name="conditions" title="Search_zone">
+					<param name="searchZoneZeroPhase_left" label="Search zone: left border" type="float" value="10.0" />
+					<param name="searchZoneZeroPhase_right" label="Search zone: right border" type="float" value="10.0" />
+				</repeat>
+			</when>
+			<when value="no">
+			</when>
+		</conditional>
+
+	
+		<param name="ptwBc" label="Baseline computation" type="select" help="If TRUE, calculates the baseline in C using the ptw library which is a lot faster. The R version is only kept because it is easier to understand than C and in case of problems with the installation of ptw.maxIter">
+			<option value="FALSE"> NO </option>
+			<option value="TRUE" selected="TRUE"> YES </option>
+		</param>
+		<param name="maxIter" type="integer" label="Maximum of iterations if ptw.bc is set to FALSE" value="50" help="Maximum of iterations if ptw.bc is set to FALSE. Default method is 50" />
+		<param name="lambdaBc" type="float" label="Smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default method is 100000" />
+		<param name="pBc" type="float" label="Asymmetry parameter" value="0.05" help="Asymmetry parameter. Default method is 0.05" />
+		<param name="epsilon" type="float" label="Numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the baseline. Default method is 1e-8" />
+
+	
+		<param name="NegativetoZero" label="Sets negative intensities to zero" type="select" help="If TRUE, sets negative intensities to zero">
+			<option value="NO"> NO </option>
+			<option value="YES"> YES </option>
+		</param>
+=======
+
+        <section name="WaterSuppr" title="Water and / or solvents suppression" expanded="True">
+			<param name="lambda" label="Smoothing parameter" type="float" value="1000000" help="Default value is 1e6 ppm"/>
+			<param name="ptwSS" label="Computation of the solvent signal" type="select" help="Select 'Yes' to compute the solvent signal in C using the ptw package which is a lot faster">
+					<option value="NO"> NO </option>
+					<option value="YES"> YES </option>
+			</param>
+		</section>
+		
+        <section name="Apodization" title="Apodization" expanded="True">
+			<conditional name="apodizationMethod" >
+				<param name="method" label="Method" type="select" help="Default method is Decreasing Exponential" >
+					<option value="exp">Decreasing Exponential window</option>
+					<option value="cos2">Cosinus squared</option>
+					<option value="hanning">Hanning window</option>
+					<option value="hamming">Hanning window</option>
+					<option value="blockexp">Block exponential</option>
+					<option value="blockcos2">Block cosinus squared</option>
+					<option value="gauss">Gaussian window</option>
+				</param>
+				<when value="exp">
+					<param name="expLB" type="float" label="Proportion of signal in the window" value="1" help="Default method is 1" />
+				</when>			
+				<when value="cos2">
+					<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+				</when>
+				<when value="hanning">
+					<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+				</when>
+				<when value="hamming">
+					<param name="phase" type="float" label="Phase" value="0" help="Default method is 0" />
+				</when>
+				<when value="blockexp">
+					<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default method is 0.5" />
+					<param name="expLB" type="float" label="Line broadening" value="1" help="Default method is 1" />
+				</when>		
+				<when value="blockcos2">
+					<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default method is 0.5" />
+				</when>		
+				<when value="gauss">
+					<param name="gaussLB" type="float" label="Proportion of signal in the window" value="1" help="Default method is 1" />
+				</when>		
+			</conditional>			
+		</section>
+		
+
+		<section name="FT" title="Fourier transform" expanded="True">
+			<param name="FTGraph" label="Result display" type="select" help="Select 'No' when ...,'Yes' when ... ">
+				<option value="NO"> NO </option>
+				<option value="YES"> YES </option>
+			</param>
+		</section>
+
+           	
+		<section name="ShiftRef" title="Shift referencing" expanded="True">
+			<conditional name="shiftReferencingMethod" >
+				<param name="method" label="Method of shift referencing used to find the TMSP peaks" type="select" help="Method used to find the TMSP peaks in spectra" >
+					<option value="max">Maximum real intensity location</option>
+					<option value="thres">Threshold</option>
+				</param>
+				<when value="max" />
+				<when value="thres">
+					<param name="shiftTreshold" type="float" label="Predefined threshold" value="2" help="Default treshold is 2" />
+				</when>
+			</conditional>					
+			<conditional name="shiftReferencingRange" >
+				<param name="method" label="Definition of the search zone" type="select" help="Definition of the search zone" >
+					<option value="near0">Near the 0 ppm location"</option>
+					<option value="all">Accross the whole ppm axis"</option>
+					<option value="window">Manually specified area of the ppm axis with the non-null parameter fromto TMSP"</option>
+				</param>
+				
+				<when value="all" />
+				<when value="near0">
+					<param name="pctNear0" type="float" label="percentage of the ppm axis around 0 ppm to look for the TMSP peak" value="0.02" help="Default treshold is 0.02" />
+				</when>
+				<when value="window">
+					<repeat name="conditions" title="Search_zone">
+						<param name="shiftReferencingRangeLeft" label="Search zone: left border" type="float" value="10.0" />
+						<param name="shiftReferencingRangeRight" label="Search zone: right border" type="float" value="10.0" />
+					</repeat>
+				</when>								
+			</conditional>
+			<param name="shiftHandling" type="select" label="shiftHandling" help="..." >
+				<option value="zerofilling" selected="true"> zerofilling </option>
+				<option value="cut" > cut </option>
+				<option value="NAfilling" > NAfilling </option>
+				<option value="circular" > circular </option>
+			</param>
+		</section>
+				
+
+		<section name="ZeroCorrection" title="Zero order phase correction" expanded="True">		
+			<param name="zeroOrderPhaseMethod" type="select" label="Method" help="Method used to select the angles to rotate the spectra" >
+				<option value="rms" selected="true"> rms </option>
+				<option value="manual" > manual </option>
+				<option value="max" > max </option>
+			</param>		
+			<conditional name="zeroOrderPhaseMethod" >
+				<param name="method" label="Zero Order Phase correction" type="select" help="Zero Order Phase correction" >
+					<option value="rms" selected="true">A positiveness criterion is applied on the spectrum</option>
+					<option value="manual">Specification of a vector of angles</option>
+					<option value="max">Optimization of a maximum spectral intensity</option>
+				</param>
+				<when value="rms">
+					<param name="quant" type="float" label="Quantile probability for the positiveness criterion" value="0.95" help="Default method is 0.95" />
+				</when>			
+				<when value="manual">
+					<param name="angle" type="float" label="numeric vector with angles specified in radian to maually rotate the spectra" value="0" help="Default method is 0" />
+				</when>	
+				<when value="max" />
+			</conditional>	
+			<conditional name="searchZoneZeroPhase">
+				<param name="choice" type="select" label="Search zone for Zero order phase correction" help="Choose if you want to exclude particular zone(s)" >
+					<option value="YES" > YES </option>
+					<option value="NO" selected="true"> NO </option>
+				</param>
+				<when value="YES">
+					<repeat name="conditions" title="Search_zone">
+						<param name="searchZoneZeroPhase_left" label="Search zone: left border" type="float" value="10.0" />
+						<param name="searchZoneZeroPhase_right" label="Search zone: right border" type="float" value="10.0" />
+					</repeat>
+				</when>
+				<when value="NO" />
+			</conditional>
+		</section>
+
+		
+		<section name="BaselineCorr" title="Baseline correction" expanded="True">		
+			<param name="ptwBc" label="Baseline computation" type="select" help="If TRUE, calculates the baseline in C using the ptw library which is a lot faster. The R version is only kept because it is easier to understand than C and in case of problems with the installation of ptw.maxIter">
+				<option value="FALSE"> NO </option>
+				<option value="TRUE"> YES </option>
+			</param>
+			<param name="maxIter" type="integer" label="Maximum of iterations if ptw.bc is set to FALSE" value="50" help="Maximum of iterations if ptw.bc is set to FALSE. Default method is 50" />
+			<param name="lambdaBc" type="float" label="Smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default method is 100000" />
+			<param name="pBc" type="float" label="Asymmetry parameter" value="0.05" help="Asymmetry parameter. Default method is 0.05" />
+			<param name="epsilon" type="float" label="Numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the baseline. Default method is 1e-8" />
+		</section>
+
+		
+		<section name="NegIntensities" title="Negative intensities" expanded="True">		
+			<param name="NegativetoZero" label="Sets negative intensities to zero" type="select" help="If TRUE, sets negative intensities to zero">
+				<option value="NO"> NO </option>
+				<option value="YES"> YES </option>
+			</param>
+		</section>
+>>>>>>> origin/dev_sections-lecorguille
+	</inputs>	
+	
+	<outputs>
+		<data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrixOut" />
+		<data format="txt" name="logOut" label="${tool.name}_log" />
+		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
+	</outputs>
+
+	<help>
+
+.. class:: infomark
+
+**Authors** Manon Martin (manon.martin@uclouvain.be)
+
+.. class:: infomark
+
+**Please cite**
+R. Rousseau. Statistical contribution to the analysis of metabonomic data in 1H-NMR spectroscopy. 2011. Ph.D. Thesis
+
+
+=====================
+Spectra preprocessing
+=====================
+
+-----------
+Description
+-----------
+
+   	</help>
+
+    <citations>
+    	<citation type="bibtex">@ARTICLE{Kim07aninterior-point,
+   author = {R. Rousseau},
+   title = {Statistical contribution to the analysis of metabonomic data in 1H-NMR spectroscopy},
+   journal = {Ph.D. Thesis},
+   year = {2011}
+   		}</citation>
+		<citation type="doi">10.1093/bioinformatics/btu813</citation>
+	</citations>
+    
+</tool>
+>>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
