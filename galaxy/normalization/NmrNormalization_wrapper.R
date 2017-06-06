@@ -103,10 +103,22 @@ nomGraphe <- argLs[["graphOut"]]
 dataMatrixOut <- argLs[["dataMatrixOut"]]
 log <- argLs[["logOut"]]
 
+
+## Checking R packages
+##--------------------
+sink(logOut)
+cat("\tPACKAGE INFO\n")
+pkgs=c("batch")
+for(pkg in pkgs) {
+    suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+    cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
+}
+cat("\n")
+
+
 ## Checking arguments
 ##-------------------
 error.stock <- "\n"
-
 if(length(error.stock) > 1)
   stop(error.stock)
   
@@ -156,7 +168,6 @@ write.table(data_normalized,file=argLs$dataMatrixOut,quote=FALSE,row.names=FALSE
 ## Ending
 ##---------------------
 cat("\nEnd of 'Normalization' Galaxy module call: ", as.character(Sys.time()), sep = "")
-
+sink()
 options(stringsAsFactors = strAsFacL)
-
 rm(list = ls())
