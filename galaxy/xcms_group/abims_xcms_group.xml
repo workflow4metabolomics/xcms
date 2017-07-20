@@ -53,7 +53,7 @@
                 <option value="nearest" >nearest</option>
             </param>
             <when value="density">
-                <param name="bw" type="integer" value="30" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
+                <param name="bw" type="float" value="30" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
                 <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
                 <param name="mzwid" type="float" value="0.25" label="Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples " />
 <!--
