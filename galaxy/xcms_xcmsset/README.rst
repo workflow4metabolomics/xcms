@@ -22,6 +22,10 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 Changelog/News
 --------------
 
+**Version 2.2.0-1.50.1 - 23/03/2017**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 1.50.1
+
 **Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".

@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.0-1.50.1 - 23/03/2017**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 1.50.1
+
 **Version 2.1.0 - 07/02/2017**
 
 - IMPROVEMENT: change the management of the peaklist ids. The main ids remain the same as xcms generated. The export setiings now only add custom names in the variableMetadata tab (namecustom)
