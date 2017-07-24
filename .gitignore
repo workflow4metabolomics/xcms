@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .Rproj.user
 .Rhistory
 .RData
@@ -7,7 +6,5 @@
 .DS_Store
 nmr_preprocessing.Rproj
 galaxy/nmr_preprocessing/.DS_Store
-=======
-tool_test_output.html
-tool_test_output.json
->>>>>>> 3cdb294d8554f70467930c415d2a905d833fbcec
+
+
