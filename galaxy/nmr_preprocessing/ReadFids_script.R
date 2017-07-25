@@ -238,14 +238,14 @@ getTitle <- function(path, l, subdirs) {
       if (nchar(first_line) >= 1)  {
         title <- first_line
       } else {
-        warning(paste("The first line of the title file is blank for directory ", 
-                      path))
+        warning(paste("The", l ,"line of the title file is blank for directory ", 
+                      path, "and the (sub)dirs names are used instead"))
       }
     } else {
-      warning(paste("The title file is empty for directory ", path))
+      warning(paste("The title file is empty for directory ", path, "and the (sub)dirs names are used instead"))
     }
   } else {
-    warning(paste("Title file doesn't exists for directory ", path, "\n the repertory name is used instead"))
+    warning(paste("Title file doesn't exists for directory ", path, "\n the (sub)dirs names are  used instead"))
   }
   if (is.null(title)) {
     if(subdirs) {
@@ -256,6 +256,7 @@ getTitle <- function(path, l, subdirs) {
   }
   return(title)
 }
+
 
 
 
@@ -303,7 +304,8 @@ readParams <- function(file, paramsName) {
 
 
 # ReadFids ==============================================================================
-ReadFids <- function(path, l = 1, subdirs = FALSE, subdirs.names = FALSE) {
+
+ReadFids <- function(path, l = 1, subdirs = FALSE, dirs.names = FALSE) {
   
   # Data initialisation and checks ----------------------------------------------
   begin_info <- beginTreatment("ReadFids")
@@ -322,7 +324,12 @@ ReadFids <- function(path, l = 1, subdirs = FALSE, subdirs.names = FALSE) {
     if (n == 0L)  {
       stop(paste("No valid fid in", path))
     }
-    fidNames <- sapply(X = fidDirs, FUN = getTitle, l = l, subdirs = subdirs,  USE.NAMES = F)
+    if (dirs.names) {
+      separator <- .Platform$file.sep
+      path_elem <- strsplit(fidDirs,separator)
+      fidNames <- sapply(path_elem, function(x) x[[length(path_elem[[1]])]])
+    }else {fidNames <- sapply(X = fidDirs, FUN = getTitle, l = l, subdirs = subdirs,  USE.NAMES = F)}
+    
     for (i in 1:n)  {
       fidList <- ReadFid(fidDirs[i])
       fid <- fidList[["fid"]]
@@ -352,8 +359,14 @@ ReadFids <- function(path, l = 1, subdirs = FALSE, subdirs.names = FALSE) {
       } else {warning(paste("No valid fid in",j ))}
     }
     
-    if (subdirs.names==TRUE) {
-      fidNames <- dir(path)
+    if (dirs.names==TRUE) {
+      if (length(fidDirs)!= length(dir(path))) { # at least one subdir contains more than 1 FID
+        separator <- .Platform$file.sep
+        path_elem <- strsplit(fidDirs,separator)
+        fidNames <- sapply(path_elem, function(x) paste(x[[length(path_elem[[1]])-1]],
+                                                        x[[length(path_elem[[1]])]], sep = "_"))
+      }else {fidNames <- dir(path)}
+      
     } else {fidNames <- sapply(X = fidDirs, FUN = getTitle, l = l, subdirs = subdirs, USE.NAMES = F)}
     
     for (i in 1:length(fidNames))  {
@@ -388,6 +401,4 @@ ReadFids <- function(path, l = 1, subdirs = FALSE, subdirs.names = FALSE) {
   return(list(Fid_data = endTreatment("ReadFids", begin_info, Fid_data), Fid_info = Fid_info))
   
 }
-
-
 

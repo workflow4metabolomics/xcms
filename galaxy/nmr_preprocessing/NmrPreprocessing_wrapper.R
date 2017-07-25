@@ -98,8 +98,10 @@ samplemetadataFid <- as.matrix(samplemetadataFid)
 lambda <- argLs[["lambda"]]
 ptwSS1 <- argLs[["ptwSS"]]
 ptwSS <- FALSE
-if (ptwSS1=="YES")
- 	ptwSS <- TRUE
+if (ptwSS1=="YES") {
+  ptwSS <- TRUE
+}
+
 
 
 # apodization -----------------------------------------

@@ -8,3 +8,5 @@ planemo-venv/
 nmr_preprocessing.Rproj
 galaxy/nmr_preprocessing/.DS_Store
 .Rproj.user
+Rproj.user/
+.*~

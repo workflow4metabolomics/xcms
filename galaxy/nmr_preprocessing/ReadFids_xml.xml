@@ -19,7 +19,7 @@
 		subdirectories $subdirectories
 		
 		## Use subdirectories names as FID names?
-		subdirs_names $subdirs_names
+		dirs_names $dirs_names
 
         ## Outputs
         dataMatrixOut $dataMatrixOut
@@ -39,7 +39,7 @@
             <option value="TRUE"> TRUE </option>
         </param>
         
-        <param name="subdirs_names" label="Use subdirectories names as FID names?" type="select" help="Select 'TRUE' to use the subdirectories names as the FID names">
+        <param name="dirs_names" label="Use (sub)directories names as FID names?" type="select" help="Select 'TRUE' to use the subdirectories names as the FID names">
             <option value="FALSE"> FALSE </option>
             <option value="TRUE"> TRUE </option>
         </param>
@@ -60,10 +60,6 @@
 **Authors** Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
 
 .. class:: infomark
-
-**Please cite**
-Rousseau, R. (2011). Statistical contribution to the analysis of metabonomics data in 1H NMR spectroscopy (Doctoral dissertation, PhD thesis. 
-Institut de statistique, biostatistique et sciences actuarielles, Université catholique de Louvain, Belgium).
 
 
 =============
@@ -144,6 +140,9 @@ subdirectories
 	| Organization of individual's files
 	| TRUE: will search inside subdirectories for FIDs and will merge them to have unique FID and info matrices.
 	|
+	
+dirs_names
+	| Use the (sub)directories names as FID names?
 
 ------------
 Output files
@@ -170,5 +169,18 @@ Example
 
 
    </help>
-    
+   
+   
+   <citations>
+     
+     <citation type="bibtex">@PhDThesis{Rousseau2011,
+      title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy.},
+      author = {Rousseau, R.},
+      school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
+      year = {2011}}
+      </citation>
+      
+   </citations> 
+   
+   
 </tool>

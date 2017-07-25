@@ -76,7 +76,7 @@ path=paste(getwd(),strsplit(directory[1],"/")[[1]][2],sep="/")
 # other inputs from ReadFids
 l = argLs[["title_line"]]
 subdirs <- argLs[["subdirectories"]]
-subdirs.names <- argLs[["subdirs_names"]]
+dirs.names <- argLs[["dirs_names"]]
 
 
 # Outputs
@@ -111,7 +111,7 @@ if(length(warnings())>0){ # or !is.null(warnings())
 ## Starting
 cat("\nStart of 'ReadFids' Galaxy module call: ", as.character(Sys.time()), "\n\n", sep = "")
 
-outputs <- ReadFids(path = path, l=l, subdirs = subdirs, subdirs.names = subdirs.names) 
+outputs <- ReadFids(path = path, l=l, subdirs = subdirs, dirs.names = dirs.names) 
 
 data_matrix <- outputs[["Fid_data"]] # Data matrix
 data_sample <- outputs[["Fid_info"]] # Sample metadata
