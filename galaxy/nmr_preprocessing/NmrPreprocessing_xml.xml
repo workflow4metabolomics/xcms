@@ -9,91 +9,92 @@
   	    ## Wrapper
         Rscript $__tool_directory__/NmrPreprocessing_wrapper.R
 
-		## First order phase correction
-			## Graphical display
-		FirstOPCGraph $GDC.FirstOPCGraph
-			## Data matrix of FID spectra
+	## Data matrix of FID spectra
 		dataMatrixFid $dataMatrixFid
 			## Sample metadata matrix
 		sampleMetadataFid $sampleMetadataFid
-
+		
+		
+		## First order phase correction
+			## Graphical display
+		FirstOPCGraph $GDC.FirstOPCGraph
 		
 		## Water and / or solvents suppression
 		    ## Smoothing parameter
-        lambda $lambda
-		ptwSS  $ptwSS
+        lambda $SS.lambda
+
 			## Graphical display
-		SSGraph $SSGraph
+		SSGraph $SS.SSGraph
 		
 		
 		## Apodization
 				## Graphical display
-		ApodGraph $ApodGraph
+		ApodGraph $Apod.ApodGraph
 	
-	    apodizationMethod $apodizationMethod.method
-		    #if $apodizationMethod.method == "exp":
+	    apodizationMethod $Apod.apodizationMethod.method
+		    #if $Apod.apodizationMethod.method == "exp":
 			    ## Line broadening for the exponential window
-			    expLB $apodizationMethod.expLB 
+			    expLB $Apod.apodizationMethod.expLB 
 		    #end if
-		    #if $apodizationMethod.method == "cos2":
+		    #if $Apod.apodizationMethod.method == "cos2":
 			    ## Phase
-			    phase $apodizationMethod.phase
+			    phase $Apod.apodizationMethod.phase
 		    #end if
-		    #if $apodizationMethod.method == "hanning":
+		    #if $Apod.apodizationMethod.method == "hanning":
 			    ## Phase
-			    phase $apodizationMethod.phase
+			    phase $Apod.apodizationMethod.phase
 		    #end if
-		    #if $apodizationMethod.method == "hamming":
+		    #if $Apod.apodizationMethod.method == "hamming":
 			    ## Phase
-			    phase $apodizationMethod.phase
+			    phase $Apod.apodizationMethod.phase
 		    #end if
-		    #if $apodizationMethod.method == "blockexp":
+		    #if $Apod.apodizationMethod.method == "blockexp":
 			    ## Proportion of signal in the window
-			    rectRatio $apodizationMethod.rectRatio
-			    expLB $apodizationMethod.expLB 
+			    rectRatio $Apod.apodizationMethod.rectRatio
+			    expLB $Apod.apodizationMethod.expLB 
 		    #end if			
-		    #if $apodizationMethod.method == "blockcos2":
+		    #if $Apod.apodizationMethod.method == "blockcos2":
 			    ## Proportion of signal in the window
-			    rectRatio $apodizationMethod.rectRatio
+			    rectRatio $Apod.apodizationMethod.rectRatio
 		    #end if			
-		    #if $apodizationMethod.method == "gauss":
+		    #if $Apod.apodizationMethod.method == "gauss":
 			    ## Line broadening for the gaussian window
-			    gaussLB $apodizationMethod.gaussLB 
+			    gaussLB $Apod.apodizationMethod.gaussLB 
 		    #end if
 	
 		## Fourier transform
 			## Graphical display
-			FTGraph $FTGraph
+			FTGraph $FT.FTGraph
 		
 		
 		## Shift referencing
 			## Graphical display
-			SRGraph $SRGraph
+			SRGraph $SR.SRGraph
 		
 			## Definition of the search zone
-			shiftReferencingRange $shiftReferencingRange.method
-			#if $shiftReferencingRange.method == "near0":
-				pctNear0 $shiftReferencingRange.pctNear0
+			shiftReferencingRange $SR.shiftReferencingRange.method
+			#if $SR.shiftReferencingRange.method == "nearvalue":
+				pctNearValue $SR.shiftReferencingRange.pctNearValue
 			#end if
-			#if $shiftReferencingRange.method == "window":
-				#for $i in $shiftReferencingRange.conditions:
+			#if $SR.shiftReferencingRange.method == "window":
+				#for $i in $SR.shiftReferencingRange.conditions:
                	 	shiftReferencingRangeLeft ${i.shiftReferencingRangeLeft}
                	 	shiftReferencingRangeRight ${i.shiftReferencingRangeRight}
                	 #end for
 			#end if
-			shiftHandling $shiftHandling
-			
+			shiftHandling $SR.shiftHandling
+			ppmvalue $SR.ppmvalue
 		
 		
 		## Zero order phase correction
 		## Graphical display
-			ZeroOPCGraph $ZeroOPCGraph
+			ZeroOPCGraph $ZOPC.ZeroOPCGraph
 			
-		zeroOrderPhaseMethod $zeroOrderPhaseMethod
+		zeroOrderPhaseMethod $ZOPC.zeroOrderPhaseMethod
 		
-		excludeZoneZeroPhase.choice ${excludeZoneZeroPhase.choice}
-        #if str($excludeZoneZeroPhase.choice) == "YES":
-            #for $i in $excludeZoneZeroPhase.conditions:
+		excludeZoneZeroPhase.choice ${ZOPC.excludeZoneZeroPhase.choice}
+        #if str($ZOPC.excludeZoneZeroPhase.choice) == "YES":
+            #for $i in $ZOPC.excludeZoneZeroPhase.conditions:
                 excludeZoneZeroPhase_left ${i.excludeZoneZeroPhase_left}
                 excludeZoneZeroPhase_right ${i.excludeZoneZeroPhase_right}
             #end for
@@ -102,16 +103,16 @@
 
 		## Baseline correction
 		## Graphical display
-			BCGraph $BCGraph
-		ptwBc $ptwBc
-		maxIter $maxIter
-		lambdaBc $lambdaBc
-		pBc $pBc
-		epsilon $epsilon
+			BCGraph $BC.BCGraph
+		  ptwBc $BC.ptwBc
+		  maxIter $BC.maxIter
+		  lambdaBc $BC.lambdaBc
+		  pBc $BC.pBc
+		  epsilon $BC.epsilon
 		
 		
 		## sets negative intensities to zero
-		NegativetoZero $NegativetoZero
+		NegativetoZero $NZ.NegativetoZero
 				
 		## final spectra
 		## Graphical display
@@ -137,146 +138,149 @@
 			</param>
 		</section>
     
-		
+    
+    <section name="SS" title="Solvent Suppression" expanded="true">
+		  <param name="lambda" label="Solvent Suppression: Smoothing parameter" type="float" value="1000000" help="Default value is 1e6"/>
+		       	  
+  		<param name="SSGraph" label="Display the FIDs after solvent suppression?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+    </section>
+    
 
-       	<param name="lambda" label="Solvent Suppression: Smoothing parameter" type="float" value="1000000" help="Default value is 1e6"/>
-		<param name="ptwSS" label="Use of C library for computation of the solvent signal" type="select" help="Select 'Yes' to compute the solvent signal in C using the ptw package which is a lot faster">
-				<option value="NO"> NO </option>
-				<option value="YES" selected="yes"> YES </option>
-		</param>
-		
-		<param name="SSGraph" label="Display the FIDs after solvent suppression?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
+    <section name="Apod" title="Apodization" expanded="true">
+  		<conditional name="apodizationMethod" >
+  			<param name="method" label="Apodization: method" type="select" help="Default method is Decreasing Exponential signal. See details below" >
+  				<option value="exp"  />
+  				<option value="cos2" />
+  				<option value="hanning" />
+  				<option value="hamming" />
+  				<option value="blockexp" />
+  				<option value="blockcos2" />
+  				<option value="gauss" />
+  			</param>
+  			<when value="exp">
+  				<param name="expLB" type="float" label="Line broadening" value="1" help="Default value is 1" />
+  			</when>			
+  			<when value="cos2">
+  				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
+  			</when>
+  			<when value="hanning">
+  				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
+  			</when>
+  			<when value="hamming">
+  				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
+  			</when>
+  			<when value="blockexp">
+  				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default value is 0.5" />
+  				<param name="expLB" type="float" label="Line broadening" value="1" help="Default value is 1" />
+  			</when>		
+  			<when value="blockcos2">
+  				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default value is 0.5" />
+  			</when>		
+  			<when value="gauss">
+  				<param name="gaussLB" type="float" label="Line broadening" value="0.3" help="Default value is 0.3" />
+  			</when>		
+  		</conditional>		
+  		
+  		<param name="ApodGraph" label="Display the FIDs after Apodization?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+		</section>
 
+    <section name="FT" title="Fourier Transform" expanded="true">
+  		<param name="FTGraph" label="Display the Fourier transformed spectra?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+  	</section>				
 
-		<conditional name="apodizationMethod" >
-			<param name="method" label="Apodization: method" type="select" help="Default method is Decreasing Exponential signal. See details below" >
-				<option value="exp"  />
-				<option value="cos2" />
-				<option value="hanning" />
-				<option value="hamming" />
-				<option value="blockexp" />
-				<option value="blockcos2" />
-				<option value="gauss" />
-			</param>
-			<when value="exp">
-				<param name="expLB" type="float" label="Line broadening" value="1" help="Default value is 1" />
-			</when>			
-			<when value="cos2">
-				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
-			</when>
-			<when value="hanning">
-				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
-			</when>
-			<when value="hamming">
-				<param name="phase" type="float" label="Phase" value="0" help="Default value is 0" />
-			</when>
-			<when value="blockexp">
-				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default value is 0.5" />
-				<param name="expLB" type="float" label="Line broadening" value="1" help="Default value is 1" />
-			</when>		
-			<when value="blockcos2">
-				<param name="rectRatio" type="float" label="Proportion of signal in the window" value="0.5" help="Default value is 0.5" />
-			</when>		
-			<when value="gauss">
-				<param name="gaussLB" type="float" label="Line broadening" value="0.3" help="Default value is 0.3" />
-			</when>		
-		</conditional>		
-		
-		<param name="ApodGraph" label="Display the FIDs after Apodization?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
-		
+		<section name="SR" title="Shift Referencing" expanded="true">
+  		<conditional name="shiftReferencingRange" >
+  					<param name="method" label="Shift Referencing: definition of the search zone" type="select" help="Definition of the search zone" >
+  						<option value="nearvalue" />
+  						<option value="all"  />
+  						<option value="window" />
+  					</param>
+  					
+  					<when value="all" />
+  					<when value="nearvalue">
+  						<param name="pctNearValue" type="float" label="percentage of the ppm axis around the ppm value to look for the reference compound peak" value="0.02" help="Default value is 0.02" />
+  					</when>
+  					<when value="window">
+  						<repeat name="conditions" title="Search_zone">
+  						<param name="shiftReferencingRangeLeft" label="Search zone: left border" type="float" value="1" />
+  						<param name="shiftReferencingRangeRight" label="Search zone: right border" type="float" value="-1" />
+  						</repeat>
+  					</when>					
+  		</conditional>
+  		
+  		<param name="shiftHandling" type="select" label="Shift Referencing: shiftHandling" help="How to deal with shifts between spectra on their left and right sides" >
+  					<option value="zerofilling" selected="yes"> zerofilling </option>
+  					<option value="cut" > cut </option>
+  					<option value="circular" > circular </option>
+  		</param>
+  		
+  		<param name="ppmvalue" type="float" label="Shift Referencing: the value of the reference peak in ppm" value="0" help="Default value is 0" />
+  		
+  			
+  		<param name="SRGraph" label="Display the spectra after Shift Referencing?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+    </section>
 
-		<param name="FTGraph" label="Display the Fourier transformed spectra?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
-				
+		<section name="ZOPC" title="Zero Order Phase Correction" expanded="true">
+  		<param name="zeroOrderPhaseMethod" type="select" label="Zero Order Phase Correction: method" help="Method used to select the angles to rotate the spectra" >
+  					<option value="rms" selected="yes"> rms </option>
+  					<option value="max" > max </option>
+  		</param>
+  
+  		<conditional name="excludeZoneZeroPhase">
+  			<param name="choice" type="select" label="Zero Order Phase Correction: exclusion area(s)" help="Choose if you want to exclude particular zone(s)" >
+  				<option value="YES" selected="true" > YES </option>
+  				<option value="NO" > NO </option>
+  			</param>
+  			<when value="YES">
+  				<repeat name="conditions" title="Exclusion_zone" min="1">
+  					<param name="excludeZoneZeroPhase_left" label="Excusion zone: left border" type="float" value="5.1" />
+  					<param name="excludeZoneZeroPhase_right" label="Excusion zone: right border" type="float" value="4.5" />
+  				</repeat>
+  			</when>
+  			<when value="NO">
+  			</when>
+  		</conditional>		
+  
+  		<param name="ZeroOPCGraph" label="Display the spectra after the Zero Order Phase Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+  		</section>
 
+		<section name="BC" title="Baseline Correction" expanded="true">
+  		<param name="ptwBc" label="Baseline Correction: use ptw for baseline computation?" type="select" help="If TRUE, calculates the baseline in C using the ptw library which is a lot faster. The R version is only kept because it is easier to understand than C and in case of problems with the installation of ptw.maxIter">
+  			<option value="FALSE"> NO </option>
+  			<option value="TRUE" selected="true"> YES </option>
+  		</param>
+  		<param name="maxIter" type="integer" label="Baseline Correction: maximum number of iterations if ptw.bc is set to FALSE" value="50" help="Maximum of iterations if ptw.bc is set to FALSE. Default value is 50" />
+  		<param name="lambdaBc" type="float" label="Baseline Correction: smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default value is 100000" />
+  		<param name="pBc" type="float" label="Baseline Correction: asymmetry parameter" value="0.05" help="Asymmetry parameter. Default value is 0.05" />
+  		<param name="epsilon" type="float" label="Baseline Correction: numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the 	baseline. Default value is 1e-8" />
+  		
+  		<param name="BCGraph" label="Display the spectra after Baseline Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+  	</section>		
 		
-		<conditional name="shiftReferencingRange" >
-					<param name="method" label="Shift Referencing: definition of the search zone" type="select" help="Definition of the search zone" >
-						<option value="near0" />
-						<option value="all"  />
-						<option value="window" />
-					</param>
-					
-					<when value="all" />
-					<when value="near0">
-						<param name="pctNear0" type="float" label="percentage of the ppm axis around 0 ppm to look for the reference compound peak" value="0.02" help="Default treshold is 0.02" />
-					</when>
-					<when value="window">
-						<repeat name="conditions" title="Search_zone">
-						<param name="shiftReferencingRangeLeft" label="Search zone: left border" type="float" value="10.0" />
-						<param name="shiftReferencingRangeRight" label="Search zone: right border" type="float" value="10.0" />
-						</repeat>
-					</when>					
-		</conditional>
-		<param name="shiftHandling" type="select" label="Shift Referencing: shiftHandling" help="How to deal with shifts between spectra on their left and right sides" >
-					<option value="zerofilling" selected="yes"> zerofilling </option>
-					<option value="cut" > cut </option>
-					<option value="circular" > circular </option>
-		</param>
-		
-		<param name="SRGraph" label="Display the spectra after Shift Referencing?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
-
-
-		
-		<param name="zeroOrderPhaseMethod" type="select" label="Zero Order Phase Correction: method" help="Method used to select the angles to rotate the spectra" >
-					<option value="rms" selected="yes"> rms </option>
-					<option value="max" > max </option>
-		</param>
-
-		<conditional name="excludeZoneZeroPhase">
-			<param name="choice" type="select" label="Zero Order Phase Correction: exclusion area(s)" help="Choose if you want to exclude particular zone(s)" >
-				<option value="YES" selected="true" > YES </option>
-				<option value="NO" > NO </option>
-			</param>
-			<when value="YES">
-				<repeat name="conditions" title="Exclusion_zone" min="1">
-					<param name="excludeZoneZeroPhase_left" label="Excusion zone: left border" type="float" value="5.1" />
-					<param name="excludeZoneZeroPhase_right" label="Excusion zone: right border" type="float" value="4.5" />
-				</repeat>
-			</when>
-			<when value="NO">
-			</when>
-		</conditional>		
-
-		<param name="ZeroOPCGraph" label="Display the spectra after the Zero Order Phase Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
-		
-
-		
-		<param name="ptwBc" label="Baseline Correction: use ptw for baseline computation?" type="select" help="If TRUE, calculates the baseline in C using the ptw library which is a lot faster. The R version is only kept because it is easier to understand than C and in case of problems with the installation of ptw.maxIter">
-			<option value="FALSE"> NO </option>
-			<option value="TRUE" selected="true"> YES </option>
-		</param>
-		<param name="maxIter" type="integer" label="Baseline Correction: maximum number of iterations if ptw.bc is set to FALSE" value="50" help="Maximum of iterations if ptw.bc is set to FALSE. Default value is 50" />
-		<param name="lambdaBc" type="float" label="Baseline Correction: smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default value is 100000" />
-		<param name="pBc" type="float" label="Baseline Correction: asymmetry parameter" value="0.05" help="Asymmetry parameter. Default value is 0.05" />
-		<param name="epsilon" type="float" label="Baseline Correction: numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the 	baseline. Default value is 1e-8" />
-		
-		<param name="BCGraph" label="Display the spectra after Baseline Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-				<option value="NO"> NO </option>
-				<option value="YES"> YES </option>
-		</param>
-		
-		
-
-		<param name="NegativetoZero" label="Set negative intensities to zero?" type="select" help="If YES, sets negative intensities to zero">
-			<option value="NO"> NO </option>
-			<option value="YES"> YES </option>
-		</param>
-		
+		<section name="NZ" title="Negative intensities to Zero" expanded="true">
+  		<param name="NegativetoZero" label="Set negative intensities to zero?" type="select" help="If YES, sets negative intensities to zero">
+  			<option value="NO"> NO </option>
+  			<option value="YES"> YES </option>
+  		</param>
+		</section>
 
 		<param name="FinalGraph" label="Display the final spectra?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
 			<option value="YES"> YES </option>		
@@ -297,7 +301,9 @@
 
 .. class:: infomark
 
-**Authors** Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
+**Authors** 
+
+Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
 
 
 .. class:: infomark
@@ -372,6 +378,8 @@ The **searching window** can be adapted:
 
 
 
+
+
 **Zero Order Phase correction**
 -----------------------------------
 
@@ -402,7 +410,7 @@ The **searching window** can be adapted:
    <citations>
      
      <citation type="bibtex">@PhDThesis{Rousseau2011,
-      title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy.},
+      title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
       author = {Rousseau, R.},
       school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
       year = {2011}}

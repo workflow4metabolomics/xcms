@@ -96,11 +96,6 @@ samplemetadataFid <- as.matrix(samplemetadataFid)
 # water and solvent(s) correction ------------------------
   # Inputs
 lambda <- argLs[["lambda"]]
-ptwSS1 <- argLs[["ptwSS"]]
-ptwSS <- FALSE
-if (ptwSS1=="YES") {
-  ptwSS <- TRUE
-}
 
 
 
@@ -140,7 +135,7 @@ if (apodization=='exp'){
 shiftTreshold = 2 # c
 ppm = TRUE
 shiftReferencingRangeList = NULL  # fromto.RC
-pctNear0 = 0.02 # pc 
+pctNearValue = 0.02 # pc 
 rowindex_graph = NULL
 ppm_ref = 0 # ppm.ref
 
@@ -160,7 +155,7 @@ ppm_ref = 0 # ppm.ref
 	shiftReferencingRange <- argLs[["shiftReferencingRange"]]
 	
 	if (shiftReferencingRange == "near0"){
-	  pctNear0 <- argLs[["pctNear0"]]
+	  pctNearValue <- argLs[["pctNearValue"]]
 	}
 	
 	if (shiftReferencingRange == "window"){
@@ -175,6 +170,8 @@ ppm_ref = 0 # ppm.ref
 	
 	shiftHandling <- argLs[["shiftHandling"]]
 	
+	ppmvalue <- argLs[["ppmvalue"]]
+	
 
 	
 # }
@@ -188,7 +185,7 @@ createWindow = TRUE
 angle = NULL
 plot_spectra = FALSE
 ppm = TRUE
-exclude = NULL
+excludeZOPC = NULL
 zeroOrderPhaseMethod <- argLs[["zeroOrderPhaseMethod"]]
 										   
 if (zeroOrderPhaseMethod=='manual'){
@@ -203,7 +200,7 @@ if (excludeZoneZeroPhase == 'YES') {
     excludeZoneZeroPhaseRight <- argLs[[i+1]]
     excludeZoneZeroPhaseList <- c(excludeZoneZeroPhaseList,list(c(excludeZoneZeroPhaseLeft,excludeZoneZeroPhaseRight)))
   }
-  exclude <- excludeZoneZeroPhaseList
+  excludeZOPC <- excludeZoneZeroPhaseList
 }
 
 
@@ -246,7 +243,7 @@ if(length(error.stock) > 1)
 pdf(nomGraphe, onefile = TRUE, width = 13, height = 13)
 
 # FirstOrderPhaseCorrection ---------------------------------
-Fid_data <- FirstOrderPhaseCorrection(Fid_data0, Fid_info = samplemetadataFid, group_delay = NULL)
+Fid_data <- GroupDelayCorrection(Fid_data0, Fid_info = samplemetadataFid, group_delay = NULL)
 
 if (FirstOPCGraph == "YES") {
   title = "FIDs after First Order Phase Correction"
@@ -257,7 +254,7 @@ if (FirstOPCGraph == "YES") {
 }
 
 # SolventSuppression ---------------------------------
-Fid_data <- SolventSuppression(Fid_data, lambda.ss = lambda, ptw.ss = ptwSS, plotSolvent = F, returnSolvent = F)
+Fid_data <- SolventSuppression(Fid_data, lambda.ss = lambda, ptw.ss = TRUE, plotSolvent = F, returnSolvent = F)
 	
 if (SSGraph == "YES") {
   title = "FIDs after Solvent Suppression "
@@ -296,8 +293,8 @@ if (FTGraph == "YES") {
 # InternalReferencing ---------------------------------
 # if (shiftReferencing=="YES") {
 Spectrum_data <- InternalReferencing(Spectrum_data, samplemetadataFid, method = "max", range = shiftReferencingRange,
-                                     ppm.ref = 0, shiftHandling = shiftHandling,ppm = TRUE,
-									 c = shiftTreshold, fromto.RC = shiftReferencingRangeList, pc = pctNear0)
+                                     ppm.value = ppmvalue, shiftHandling = shiftHandling, ppm.ir = TRUE,
+									  fromto.RC = shiftReferencingRangeList, pc = pctNearValue)
 
 if (SRGraph == "YES") {
   title = "Spectra after Shift Referencing"
@@ -310,11 +307,11 @@ if (SRGraph == "YES") {
 # }
 
 # ZeroOrderPhaseCorrection ---------------------------------
-Spectrum_data  <- ZeroOrderPhaseCorrection(Spectrum_data, method = zeroOrderPhaseMethod,
+Spectrum_data  <- ZeroOrderPhaseCorrection(Spectrum_data, type.zopc = zeroOrderPhaseMethod,
                                            plot_rms = plot_rms, returnAngle = returnAngle,
                                            createWindow = createWindow,angle = angle,
                                            plot_spectra = plot_spectra,
-                                           ppm = ppm, exclude = exclude)
+                                           ppm.zopc = ppm, exclude.zopc = excludeZOPC)
 
 if (ZeroOPCGraph == "YES") {
 title = "Spectra after Zero Order Phase Correction"

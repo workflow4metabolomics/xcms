@@ -251,11 +251,12 @@ indexInterval <- function (a, from, to, inclusive=TRUE) {
 ## ==========================
 # FirstOrderPhaseCorrection 
 ## ==========================
-FirstOrderPhaseCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) {
+GroupDelayCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) {
+  
   
   # Data initialisation and checks ----------------------------------------------
   
-  begin_info <- beginTreatment("FirstOrderPhaseCorrection", Fid_data, Fid_info)
+  begin_info <- beginTreatment("GroupDelayCorrection", Fid_data, Fid_info)
   Fid_data <- begin_info[["Signal_data"]]
   Fid_info <- begin_info[["Signal_info"]]
   checkArg(group_delay, c("num", "pos0"), can.be.null = TRUE)
@@ -292,21 +293,21 @@ FirstOrderPhaseCorrection <- function(Fid_data, Fid_info = NULL, group_delay = N
   m <- ncol(Fid_data)
   
   
-  # FirstOrderPhaseCorrection ----------------------------------------------
+  # GroupDelayCorrection ----------------------------------------------
   
   # We do the shifting in the Fourier domain because the shift can be non-integer.
   # That way we automatically have the circular behaviour of the shift and the
   # interpolation if it is non-integer.
   
-  Spectrum <- t(stats::mvfft(t(Fid_data)))/m
+  Spectrum <- t(stats::mvfft(t(Fid_data)))
   Omega <- (0:(m - 1))/m
   i <- complex(real = 0, imaginary = 1)
   Spectrum <- sweep(Spectrum, MARGIN = 2, exp(i * group_delay * 2 * pi * Omega), `*`)
-  Fid_data <- t(stats::mvfft(t(Spectrum), inverse = TRUE))
+  Fid_data <- t(stats::mvfft(t(Spectrum), inverse = TRUE))/m
   
   # Data finalisation ----------------------------------------------
   
-  return(endTreatment("FirstOrderPhaseCorrection", begin_info, Fid_data))
+  return(endTreatment("GroupDelayCorrection", begin_info, Fid_data))
 }
 
 
@@ -358,8 +359,8 @@ SolventSuppression <- function(Fid_data, lambda.ss = 1e+06, ptw.ss = TRUE,
   for (i in 1:n) {
     FidRe <- Re(Fid_data[i, ])
     FidIm <- Im(Fid_data[i, ])
-    solventRe <- difsm(FidRe, lambda = lambda.ss)
-    solventIm <- difsm(FidIm, lambda = lambda.ss)
+    solventRe <- difsm(y = FidRe, lambda = lambda.ss)
+    solventIm <- difsm(y = FidIm, lambda = lambda.ss)
     
     if (plotSolvent)  {
       m <- length(FidRe)
@@ -382,14 +383,11 @@ SolventSuppression <- function(Fid_data, lambda.ss = 1e+06, ptw.ss = TRUE,
   
   Fid_data <- endTreatment("SolventSuppression", begin_info, Fid_data)
   if (returnSolvent) {
-    return(list(Fid_data = Fid_data, SolventRe = Re(SolventRe), SolventIm = Im(SolventIm)))
+    return(list(Fid_data = Fid_data, SolventRe = SolventRe, SolventIm = SolventIm))
   } else {
     return(Fid_data)
   }
 }
-
-
-
 
 
 ## ==========================
@@ -499,6 +497,7 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
     SW <- getArg(SW, Fid_info, "SW")  # Sweep Width in ppm (semi frequency scale in ppm)
   }
   
+  
   if (is.null(O1)) {
     O1 <- getArg(O1, Fid_info, "O1")
   }
@@ -512,9 +511,9 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
   # normalized.
   
   # FT
-  RawSpect_data <- fftshift1D2D(t(stats::mvfft(t(Fid_data))))/m
+  RawSpect_data <- fftshift1D2D(t(stats::mvfft(t(Fid_data))))
   # recover the frequencies values
-  f <- ((0:(m - 1)) - floor(m/2)) * Fid_info[1, "SW_h"]/m
+  f <- ((0:(m - 1)) - floor(m/2)) * Fid_info[1, "SW_h"]/(m-1)
   
   if(reverse.axis == TRUE) {
     revind <- rev(1:m)
@@ -528,9 +527,9 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
   
   # The Sweep Width has to be the same since the column names are the same
   
-  ppmInterval <- SW/m  # FIXME divide by two ??
+  ppmInterval <- SW/(m-1)
   
-  O1index <- binarySearch(a = f, target = O1, lower = TRUE)
+  O1index = round((m+1)/2+O1*(m - 1) / SW_h)
   
   end <- O1index - m
   start <- O1index -1
@@ -544,16 +543,16 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
 }
 
 
-
 ## ====================================================
 # InternalReferencing       
 ## ====================================================
 
 InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thres"), 
-                                range = c("near0", "all", "window"), ppm.ref = 0, 
-                                shiftHandling = c("zerofilling", "cut", "NAfilling", 
-                                                  "circular"), c = 2, pc = 0.02, fromto.RC = NULL,
-                                ppm = TRUE, rowindex_graph = NULL) {
+                                range = c("nearvalue", "all", "window"), ppm.value = 0, 
+                                direction = "left", shiftHandling = c("zerofilling", "cut", 
+                                                                      "NAfilling", "circular"), c = 2, 
+                                pc = 0.02, fromto.RC = NULL,
+                                ppm.ir = TRUE, rowindex_graph = NULL) {
   
   
   
@@ -571,31 +570,36 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   plots <- NULL
   
   
-  checkArg(ppm, c("bool"))
+  checkArg(ppm.ir, c("bool"))
   checkArg(unlist(fromto.RC), c("num"), can.be.null = TRUE)
   checkArg(pc, c("num"))
-  checkArg(ppm.ref, c("num"))
+  checkArg(ppm.value, c("num"))
   checkArg(rowindex_graph, "num", can.be.null = TRUE)
   
   # fromto.RC
   if (!is.null(fromto.RC)) {
     diff <- diff(unlist(fromto.RC))[1:length(diff(unlist(fromto.RC)))%%2 !=0]
     for (i in 1:length(diff)) {
-      if (ppm == TRUE & diff[i] >= 0)  {
-        stop(paste("Invalid region removal because from <= to in ppm"))
-      } else if (ppm == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
+      if (ppm.ir == TRUE & diff[i] >= 0)  {
+        stop(paste("Invalid region removal because from <= to in ppm.ir"))
+      } else if (ppm.ir == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
     }
   }
   
   
   
   # findTMSPpeak function ----------------------------------------------
-  findTMSPpeak <- function(ft, c = 2) {
+  findTMSPpeak <- function(ft, c = 2, direction = "left") {
     ft <- Re(ft)  # extraction de la partie réelle
     N <- length(ft)
+    if (direction == "left") {
+      newindex <- rev(1:N)
+      ft <- rev(ft)
+    }
     thres <- 99999
     i <- 1000  # Start at point 1000 to find the peak
     vect <- ft[1:i]
+    
     while (vect[i] <= (c * thres)) {
       cumsd <- stats::sd(vect)
       cummean <- mean(vect)
@@ -603,7 +607,10 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
       i <- i + 1
       vect <- ft[1:i]
     }
-    v <- i
+    if (direction == "left") {
+      v <- newindex[i]
+    } else {v <- i}
+    
     if (is.na(v))  {
       warning("No peak found, need to lower the threshold.")
       return(NA)
@@ -631,18 +638,18 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   
   # The Sweep Width has to be the same since the column names are the same
   SW <- Fid_info[1, "SW"]  # Sweep Width in ppm (semi frequency scale in ppm)
-  ppmInterval <- SW/m  # FIXME divide by two ??
+  ppmInterval <- SW/(m-1)  # FIXME divide by two ??
   
   if (range == "all") {
     Data <- Spectrum_data
   } else {
-    if (range == "near0")  {
+    if (range == "nearvalue")  {
       fromto.RC <- list(c(-(SW * pc)/2, (SW * pc)/2))  # automatic fromto values in ppm
     }
     
     # if ppm == TRUE, then fromto is in the colnames values, else, in the column
     # index
-    if (ppm == TRUE)   {
+    if (ppm.ir == TRUE)   {
       colindex <- as.numeric(colnames(Spectrum_data))
     } else   {
       colindex <- 1:m
@@ -666,7 +673,7 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   
   
   if (method == "thres") {
-    TMSPpeaks <- apply(Data, 1, findTMSPpeak)
+    TMSPpeaks <- apply(Data, 1, findTMSPpeak, c = c, direction = direction)
   } else {
     TMSPpeaks <- apply(abs(Re(Data)), 1, which.max)
   }
@@ -691,14 +698,14 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
     
     ppmScale <- (start:end) * ppmInterval
     
-    # check if ppm.ref in is the ppmScale interval
-    if(ppm.ref < min(ppmScale) | ppm.ref > max(ppmScale)) {
-      warning("ppm.ref = ", ppm.ref, " is not in the ppm interval [", 
-              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default value 0")
-      ppm.ref = 0
+    # check if ppm.value is in the ppmScale interval
+    if(ppm.value < min(ppmScale) | ppm.value > max(ppmScale)) {
+      warning("ppm.value = ", ppm.value, " is not in the ppm interval [", 
+              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default ppm.value 0")
+      ppm.value = 0
     }
     
-    ppmScale <- ppmScale + ppm.ref
+    ppmScale <- ppmScale + ppm.value
     
     Spectrum_data_calib <- matrix(fill, nrow = n, ncol =  -(end - start) + 1, 
                                   dimnames = list(rownames(Spectrum_data), ppmScale))
@@ -721,13 +728,13 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
     
     ppmScale <- (start:end) * ppmInterval
     
-    # check if ppm.ref in is the ppmScale interval
-    if(ppm.ref < min(ppmScale) | ppm.ref > max(ppmScale)) {
-      warning("ppm.ref = ", ppm.ref, " is not in the ppm interval [", 
-              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default value 0")
-      ppm.ref = 0
+    # check if ppm.value in is the ppmScale interval
+    if(ppm.value < min(ppmScale) | ppm.value > max(ppmScale)) {
+      warning("ppm.value = ", ppm.value, " is not in the ppm interval [", 
+              round(min(ppmScale),2), ",", round(max(ppmScale),2), "], and is set to its default ppm.value 0")
+      ppm.value = 0
     }
-    ppmScale <- ppmScale + ppm.ref
+    ppmScale <- ppmScale + ppm.value
     
     Spectrum_data_calib <- matrix(nrow=n, ncol=end-start+1,
                                   dimnames=list(rownames(Spectrum_data), ppmScale))
@@ -752,7 +759,7 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   if (!is.null(rowindex_graph)) {
     
     if (range == "window")  {
-      if (ppm == TRUE)   {
+      if (ppm.ir == TRUE)   {
         fromto <- fromto.RC
       } else  {
         fromto <- list()
@@ -828,16 +835,14 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   
 }
 
-
-
 ## ====================================================
 # ZeroOrderPhaseCorrection       
 ## ====================================================
 
-ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", "max"), 
+ZeroOrderPhaseCorrection <- function(Spectrum_data, type.zopc = c("rms", "manual", "max"), 
                                      plot_rms = NULL, returnAngle = FALSE, createWindow = TRUE, 
                                      angle = NULL, plot_spectra = FALSE,  
-                                     ppm = TRUE, exclude = list(c(5.1,4.5))) {
+                                     ppm.zopc = TRUE, exclude.zopc = list(c(5.1,4.5))) {
   
   
   # Data initialisation and checks ----------------------------------------------
@@ -858,13 +863,13 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
   rnames <- rownames(Spectrum_data)
   
   # Check input arguments
-  method <- match.arg(method)
-  checkArg(ppm, c("bool"))
-  checkArg(unlist(exclude), c("num"), can.be.null = TRUE)
+  type.zopc <- match.arg(type.zopc)
+  checkArg(ppm.zopc, c("bool"))
+  checkArg(unlist(exclude.zopc), c("num"), can.be.null = TRUE)
   
   
-  # method in c("max", "rms") -----------------------------------------
-  if (method %in% c("max", "rms")) {
+  # type.zopc in c("max", "rms") -----------------------------------------
+  if (type.zopc %in% c("max", "rms")) {
     # angle is found by optimization
     
     # rms function to be optimised
@@ -886,31 +891,31 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
     
     
     # Define the interval where to search for (by defining Data)
-    if (is.null(exclude)) {
+    if (is.null(exclude.zopc)) {
       Data <- Spectrum_data
     } else  {
       
-      # if ppm == TRUE, then fromto is in the colnames values, else, in the column
+      # if ppm.zopc == TRUE, then fromto is in the colnames values, else, in the column
       # index
-      if (ppm == TRUE)  {
+      if (ppm.zopc == TRUE)  {
         colindex <- as.numeric(colnames(Spectrum_data))
       } else  {
         colindex <- 1:m
       }
       
-      # Second check for the argument exclude
-      diff <- diff(unlist(exclude))[1:length(diff(unlist(exclude)))%%2 !=0]
+      # Second check for the argument exclude.zopc
+      diff <- diff(unlist(exclude.zopc))[1:length(diff(unlist(exclude.zopc)))%%2 !=0]
       for (i in 1:length(diff)) {
-        if (ppm == TRUE & diff[i] >= 0)  {
-          stop(paste("Invalid region removal because from <= to in ppm"))
-        } else if (ppm == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
+        if (ppm.zopc == TRUE & diff[i] >= 0)  {
+          stop(paste("Invalid region removal because from <= to in ppm.zopc"))
+        } else if (ppm.zopc == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
       }
       
       
-      Int <- vector("list", length(exclude))
-      for (i in 1:length(exclude))  {
-        Int[[i]] <- indexInterval(colindex, from = exclude[[i]][1], 
-                                  to = exclude[[i]][2], inclusive = TRUE)
+      Int <- vector("list", length(exclude.zopc))
+      for (i in 1:length(exclude.zopc))  {
+        Int[[i]] <- indexInterval(colindex, from = exclude.zopc[[i]][1], 
+                                  to = exclude.zopc[[i]][2], inclusive = TRUE)
       }
       
       vector <- rep(1, m)
@@ -939,8 +944,8 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
       # work in either [-pi;pi] or [0;2pi] (this is not easy to be convinced by that I
       # agree) and we can check which one it is simply by the following trick
       
-      f0 <- rms(0, Data[k, ],meth = method)
-      fpi <- rms(pi, Data[k, ], meth = method)
+      f0 <- rms(0, Data[k, ],meth = type.zopc)
+      fpi <- rms(pi, Data[k, ], meth = type.zopc)
       if (f0 < fpi) {
         interval <- c(-pi, pi)
       } else {
@@ -953,24 +958,26 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
         x <- seq(min(interval), max(interval), length.out = 100)
         y <- rep(1, 100)
         for (K in (1:100))   {
-          y[K] <- rms(x[K], Data[k, ],  meth = method)
+          y[K] <- rms(x[K], Data[k, ],  meth = type.zopc)
         }
         if (createWindow == TRUE)  {
           grDevices::dev.new(noRStudioGD = FALSE)
         }
-        graphics::plot(x, y, main = rownames(Data)[k])
+        graphics::plot(x, y, main = paste("Criterion maximization \n", 
+                                          rownames(Data)[k]), ylim = c(0, 1.1),
+                       ylab = "positiveness criterion", xlab = "angle ")
         debug_plot <- T
       }
       
       # Best angle
       best <- stats::optimize(rms, interval = interval, maximum = TRUE, 
-                              y = Data[k,],  meth = method)
+                              y = Data[k,],  meth = type.zopc)
       ang <- best[["maximum"]]
       
       
       if (debug_plot)  {
         graphics::abline(v = ang, col = "black")
-        # grDevices::dev.off()
+        graphics::text(x = (ang+0.1*ang), y = (y[ang]-0.1*y[ang]), labels = round(ang, 3))
       }
       
       # Spectrum rotation
@@ -982,8 +989,9 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
     
     
   } else {
-    # method is "manual" -------------------------------------------------------
+    # type.zopc is "manual" -------------------------------------------------------
     # if Angle is already specified and no optimisation is needed
+    Angle <- angle
     
     if (!is.vector(angle)) {
       stop("angle is not a vector")
@@ -1000,7 +1008,6 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
       Spectrum_data[k, ] <- Spectrum_data[k, ] * exp(complex(real = 0, imaginary = - angle[k]))
     }
   }
-  
   
   
   #  Draw spectra
@@ -1034,7 +1041,6 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, method = c("rms", "manual", 
     return(Spectrum_data)
   }
 }
-
 
 
 ## ====================================================
@@ -1138,7 +1144,6 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
 }
 
 
-
 ## ====================================================
 # NegativeValuesZeroing   
 ## ====================================================
@@ -1154,7 +1159,6 @@ NegativeValuesZeroing <- function(Spectrum_data) {
   # Data finalisation ----------------------------------------------
   return(endTreatment("NegativeValuesZeroing", begin_info, Spectrum_data))
 }
-
 
 ## ====================================================
 # Warping   
