@@ -1,10 +1,10 @@
-.Rproj.user
+.Rproj.user/
 .Rhistory
 .RData
 .Ruserdata
+planemo-venv/
 .planemo-venv/
 .DS_Store
 nmr_preprocessing.Rproj
 galaxy/nmr_preprocessing/.DS_Store
-
-
+.Rproj.user
