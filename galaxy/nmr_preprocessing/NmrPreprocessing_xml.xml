@@ -519,12 +519,12 @@ Output files
 
 NMR_Preprocessing_dataMatrix
 	| tabular output
-	| Data matrix with n rows (buckets) and p columns (samples) containing the preprocessed spectra.
+	| Data matrix with n rows (descriptors) and p columns (samples) containing the preprocessed spectra.
 	|
 
 NMR_Preprocessing_variableMetadata
 	| tabular output
-	| Data matrix with 1 row (ppm value of each bucket) and p columns (buckets).
+	| Data matrix with 1 row (ppm value) and p columns (descriptors).
 	|
 	
 NMR_Preprocessing_log
