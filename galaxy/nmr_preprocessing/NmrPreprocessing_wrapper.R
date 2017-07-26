@@ -206,8 +206,6 @@ if (excludeZoneZeroPhase == 'YES') {
 
 # Baseline Correction -------------------------------
   # Inputs
-ptwBc <- as.logical(argLs[["ptwBc"]])
-maxIter <- argLs[["maxIter"]] 
 lambdaBc <- argLs[["lambdaBc"]] 
 pBc <- argLs[["pBc"]] 
 epsilon <- argLs[["epsilon"]] 
@@ -322,7 +320,7 @@ DrawSignal(Spectrum_data, subtype = "stacked",
 }
 
 # BaselineCorrection ---------------------------------									 
-Spectrum_data <- BaselineCorrection(Spectrum_data, ptw.bc = ptwBc, maxIter = maxIter, lambda.bc = lambdaBc, p.bc = pBc, eps = epsilon, returnBaseline = F) 
+Spectrum_data <- BaselineCorrection(Spectrum_data, ptw.bc = TRUE, lambda.bc = lambdaBc, p.bc = pBc, eps = epsilon, returnBaseline = F) 
 
 if (BCGraph == "YES") {
 title = "Spectra after Baseline Correction"
