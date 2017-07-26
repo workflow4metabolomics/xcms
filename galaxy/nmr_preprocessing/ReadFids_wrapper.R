@@ -80,11 +80,10 @@ dirs.names <- argLs[["dirs_names"]]
 
 
 # Outputs
-dataMatrixOut <- argLs[["dataMatrixOut"]]
-sampleMetadataOut <- argLs[["sampleOut"]]
+# dataMatrix <- argLs[["dataMatrix"]]
+# sampleMetadata <- argLs[["sampleMetadata"]]
 logOut <- argLs[["logOut"]]
 nomGraphe <- argLs[["graphOut"]]
-
 	
 
 
@@ -115,7 +114,9 @@ outputs <- ReadFids(path = path, l=l, subdirs = subdirs, dirs.names = dirs.names
 
 data_matrix <- outputs[["Fid_data"]] # Data matrix
 data_sample <- outputs[["Fid_info"]] # Sample metadata
-  
+
+
+
 pdf(nomGraphe, onefile = TRUE, width = 13, height = 13)
 title = "Raw FID data"
 DrawSignal(data_matrix, subtype = "stacked",
@@ -131,10 +132,12 @@ invisible(dev.off())
 ##======================================================
 
 # Data matrix
-write.table(data_matrix,file=argLs$dataMatrixOut, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+write.table(data_matrix,file=argLs$dataMatrix, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
 
 # Sample metadata
-write.table(data_sample,file=argLs$sampleOut, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+write.table(data_sample,file=argLs$sampleMetadata, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+
+
 
 ## Ending
 

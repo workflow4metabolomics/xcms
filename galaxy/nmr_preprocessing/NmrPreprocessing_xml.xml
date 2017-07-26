@@ -120,7 +120,8 @@
 			
 			
         ## Outputs
-        dataMatrixOut $dataMatrixOut
+        dataMatrix $dataMatrix
+        variableMetadata $variableMetadata
 		graphOut $graphOut
 		logOut $logOut
 		
@@ -290,7 +291,8 @@
 		</inputs>	
 	
 	<outputs>
-		<data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrixOut" />
+		<data format="tabular" name="dataMatrix" label="${tool.name}_dataMatrix" />
+		<data format="tabular" name="variableMetadata" label="${tool.name}_variableMetadata" />
 		<data format="txt" name="logOut" label="${tool.name}_log" />
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
 	</outputs>
@@ -330,6 +332,69 @@ These steps correspond to the following steps in the PEPS-NMR R library (https:/
 * Baseline correction
 * Setting of negatives values to 0
 
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
++---------------------------+----------------------+--------+
+| Name                      | Output file          | Format |
++===========================+======================+========+
+|NMR_Read                   | dataMatrix           | Tabular|
++---------------------------+----------------------+--------+
+|                           | sampleMetadata       | Tabular|
++---------------------------+----------------------+--------+
+|                           | log                  | Tabular|
++---------------------------+----------------------+--------+
+|                           | graph                |  PDF   |
++---------------------------+----------------------+--------+
+
+|
+
+**Downstream tools**
+
++---------------------------+----------------------+--------+
+| Name                      | Output file          | Format |
++===========================+======================+========+
+|NMR_Alignement             | dataMatrix           | Tabular|
++---------------------------+----------------------+--------+
+|NMR_Bucketing              | dataMatrix           | Tabular|
++---------------------------+----------------------+--------+
+|Normalization              | dataMatrix           | Tabular|
++---------------------------+----------------------+--------+
+|Univariate                 | variableMetadata     | Tabular|
++---------------------------+----------------------+--------+
+|Multivariate               | sampleMetadata       | Tabular|
++---------------------------+----------------------+--------+
+|                           | variableMetadata     | Tabular|
++---------------------------+----------------------+--------+
+
+
+-----------
+Input files
+-----------
+
+
++--------------------------------+-----------------+
+| File                           |   Format        |
++================================+=================+
+|1 : dataMatrix                  |   tabular       |
++--------------------------------+-----------------+
+|2 : sampleMetadata              |   tabular       |
++--------------------------------+-----------------+
+ 
+| 
+ 
+**dataMatrix file**
+sample x variable matrix with tabular separations and "." as decimal; the table must not contain metadata apart from row and column names; the row names must be identical to the rownames of the sample metadata.
+
+
+**sampleMetadata file**
+sample x metadata matrix with tabular separations and "." as decimal for numeric metadata and NA for missing values.
+
+
 ----------------------
   Steps parameters 
 ----------------------
@@ -359,7 +424,7 @@ The **types of apodization** are:
 
 The **searching window** can be adapted:
 
-* near0: the search concentrates around the 0ppm.
+* nearvalue: the search concentrates around the 0ppm.
 
 * all: search accross the whole ppm axis.
 
@@ -378,8 +443,6 @@ The **searching window** can be adapted:
 
 
 
-
-
 **Zero Order Phase correction**
 -----------------------------------
 
@@ -392,7 +455,7 @@ The **searching window** can be adapted:
 * max: Optimization of the maximal spectral intensity.
 
 
-** Exclusion area(s) for the Zero order phase correction**: enables to optimize the criterion with excluded spectral window(s), by default the water region is excluded.
+**Exclusion area(s) for the Zero order phase correction**: enables to optimize the criterion with excluded spectral window(s), by default the water region is excluded.
 
 
 **Baseline computation**
@@ -404,6 +467,29 @@ The **searching window** can be adapted:
 **Asymmetry parameter**:  the smaller it is, the less the estimated baseline will try to follow peaks when it is under the spectrum and the more it will try to be under the spectrum.
 
 
+
+------------
+Output files
+------------
+
+NMR_Preprocessing_dataMatrix.txt
+	| tabular output
+	| Data matrix with n rows (buckets) and p columns (samples) containing the preprocessed spectra.
+	|
+
+NMR_Preprocessing_variableMetadata.txt
+	| tabular output
+	| Data matrix with 1 row (ppm value of each bucket) and p columns (buckets).
+	|
+	
+NMR_Preprocessing_log.txt
+	| Text output
+	| Contains warnings
+	|
+	
+NMR_Preprocessing_graph.pdf
+	| line plots of preprocessed spectra.
+	|
 
    </help>
     

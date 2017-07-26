@@ -221,7 +221,7 @@ NegativetoZero <- argLs[["NegativetoZero"]]
 
   # Outputs
 nomGraphe <- argLs[["graphOut"]]
-dataMatrixOut <- argLs[["dataMatrixOut"]]
+# dataMatrixOut <- argLs[["dataMatrixOut"]]
 log <- argLs[["logOut"]]
 
 
@@ -348,6 +348,12 @@ if (FinalGraph == "YES") {
 
 invisible(dev.off())
 
+
+data_variable <- matrix(NA, nrow = 1, ncol = dim(Spectrum_data)[2], dimnames = list("ID", NULL)) 
+colnames(data_variable) <- colnames(Spectrum_data)
+data_variable[1,] <- colnames(data_variable)
+
+
 ##======================================================
 ##======================================================
 ## Saving
@@ -355,7 +361,10 @@ invisible(dev.off())
 ##======================================================
 
 # Data Matrix
-write.table(t(Re(Spectrum_data)),file=argLs$dataMatrixOut, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+write.table(t(Re(Spectrum_data)),file=argLs$dataMatrix, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+
+# Variable metadata
+write.table(data_variable,file=argLs$variableMetadata, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
 
 
 ## Ending

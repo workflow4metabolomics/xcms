@@ -22,8 +22,8 @@
 		dirs_names $dirs_names
 
         ## Outputs
-        dataMatrixOut $dataMatrixOut
-        sampleOut $sampleOut
+        dataMatrix $dataMatrix
+        sampleMetadata $sampleMetadata
         logOut $logOut
         graphOut $graphOut
 		
@@ -47,8 +47,8 @@
 	
 	
 	<outputs>
-		<data format="tabular" name="dataMatrixOut" label="${tool.name}_dataMatrixOut" />
-		<data format="tabular" name="sampleOut" label="${tool.name}_sampleMetadataOut" />
+		<data format="tabular" name="dataMatrix" label="${tool.name}_dataMatrix" />
+		<data format="tabular" name="sampleMetadata" label="${tool.name}_sampleMetadata" />
 		<data format="txt" name="logOut" label="${tool.name}_log" />
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
 	</outputs>
@@ -90,23 +90,25 @@ NA                        NA                NA
 +---------------------------+----------------------+--------+
 | Name                      | Output file          | Format |
 +===========================+======================+========+
-|NMR_PreProcessing          | dataMatrix.tsv       | Tabular|
+|NMR_PreProcessing          | dataMatrix           | Tabular|
 +---------------------------+----------------------+--------+
-|                           | sampleMetadata.tsv   | Tabular|
+|                           | log                  | Tabular|
 +---------------------------+----------------------+--------+
-|                           | variableMetadata.tsv | Tabular|
+|                           | variableMetadata     | Tabular|
 +---------------------------+----------------------+--------+
-|NMR_Alignement             | dataMatrix.tsv       | Tabular|
+|                           | graph                | PDF    |
 +---------------------------+----------------------+--------+
-|NMR_Bucketing              | dataMatrix.tsv       | Tabular|
+|NMR_Alignement             | dataMatrix           | Tabular|
 +---------------------------+----------------------+--------+
-|Normalization              | dataMatrix.tsv       | Tabular|
+|NMR_Bucketing              | dataMatrix           | Tabular|
 +---------------------------+----------------------+--------+
-|Univariate                 | variableMetadata.tsv | Tabular|
+|Normalization              | dataMatrix           | Tabular|
 +---------------------------+----------------------+--------+
-|Multivariate               | sampleMetadata.tsv   | Tabular|
+|Univariate                 | variableMetadata     | Tabular|
 +---------------------------+----------------------+--------+
-|                           | variableMetadata.tsv | Tabular|
+|Multivariate               | sampleMetadata       | Tabular|
++---------------------------+----------------------+--------+
+|                           | variableMetadata     | Tabular|
 +---------------------------+----------------------+--------+
 
 
@@ -117,15 +119,13 @@ Input files
 +---------------------------+-----------------+
 | Parameter : num + label   |   Format        |
 +===========================+=================+
-| 1 : Choose your inputs    |   FID           |
+| 1 : Choose your inputs    |   Raw Bruker    |
 +---------------------------+-----------------+
-| 1 : Choose your inputs    |   Jcamp-dx      |
-+---------------------------+-----------------+
+
 
 **Choose your inputs**
 
     | Zip file (recommended) of FID Bruker files: you can put a zip file containing your FID Bruker files: myinputs.zip (containing all your conditions as sub-directories).
-    | Zip file (recommended) of Jcamp-dx files: you can put a zip file containing your Jcamp-dx files: myinputs.zip (containing all your conditions as sub-directories).
 
 
 ----------
@@ -143,29 +143,31 @@ subdirectories
 	
 dirs_names
 	| Use the (sub)directories names as FID names?
-
+	|
+	
+	
 ------------
 Output files
 ------------
 
-dataMatrixOut.tsv
+NMR_Read_dataMatrix.txt
 	| tabular output
-	| Data matrix with n rows (samples) and p columns (time) containing the raw FIDs
+	| Data matrix with n rows (samples) and p columns (time) containing the raw FIDs.
 	|
 
-sampleOut.pdf
+NMR_Read_sampleMetadata.txt
 	| tabular output
-	| Data matrix with n rows (samples) containing the acquisition parameters
-
-logOut.tsv
+	| Data matrix with n rows (samples) containing the acquisition parameters for each sample.
+	|
+	
+NMR_Read_log.txt
 	| Text output
 	| Contains warnings
-	|
----------------------------------------------------
 
----------------
-Example
----------------
+	
+NMR_Read_graph.pdf
+	| line plots of FID
+	|
 
 
    </help>
