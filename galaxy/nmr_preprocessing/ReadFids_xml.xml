@@ -44,6 +44,7 @@
             <option value="TRUE"> TRUE </option>
         </param>
 	</inputs>	
+
 	
 	
 	<outputs>
@@ -53,6 +54,21 @@
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
 	</outputs>
 
+
+	<tests>
+        <test>
+          <param name="fidzipfile" value="MTBLS1.zip" ftype="zip" />
+          <param name="title_line" value="1" />
+          <param name="subdirectories" value="TRUE" />
+          <param name="dirs_names" value="TRUE" />
+           
+          <output name="dataMatrix" value="NMR_ReadFids_dataMatrix.tabular" />
+  
+        </test>
+  </tests>
+
+  
+  
 	<help>
 
 .. class:: infomark
@@ -150,22 +166,23 @@ dirs_names
 Output files
 ------------
 
-NMR_Read_dataMatrix.txt
+NMR_Read_dataMatrix
 	| tabular output
 	| Data matrix with n rows (samples) and p columns (time) containing the raw FIDs.
 	|
 
-NMR_Read_sampleMetadata.txt
+NMR_Read_sampleMetadata
 	| tabular output
 	| Data matrix with n rows (samples) containing the acquisition parameters for each sample.
 	|
 	
-NMR_Read_log.txt
+NMR_Read_log
 	| Text output
 	| Contains warnings
 
 	
-NMR_Read_graph.pdf
+NMR_Read_graph
+	| pdf output
 	| line plots of FID
 	|
 

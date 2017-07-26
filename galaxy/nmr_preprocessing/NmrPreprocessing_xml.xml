@@ -104,8 +104,6 @@
 		## Baseline correction
 		## Graphical display
 			BCGraph $BC.BCGraph
-		  ptwBc $BC.ptwBc
-		  maxIter $BC.maxIter
 		  lambdaBc $BC.lambdaBc
 		  pBc $BC.pBc
 		  epsilon $BC.epsilon
@@ -261,12 +259,7 @@
   		</section>
 
 		<section name="BC" title="Baseline Correction" expanded="true">
-  		<param name="ptwBc" label="Baseline Correction: use ptw for baseline computation?" type="select" help="If TRUE, calculates the baseline in C using the ptw library which is a lot faster. The R version is only kept because it is easier to understand than C and in case of problems with the installation of ptw.maxIter">
-  			<option value="FALSE"> NO </option>
-  			<option value="TRUE" selected="true"> YES </option>
-  		</param>
-  		<param name="maxIter" type="integer" label="Baseline Correction: maximum number of iterations if ptw.bc is set to FALSE" value="50" help="Maximum of iterations if ptw.bc is set to FALSE. Default value is 50" />
-  		<param name="lambdaBc" type="float" label="Baseline Correction: smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default value is 100000" />
+    	<param name="lambdaBc" type="float" label="Baseline Correction: smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default value is 100000" />
   		<param name="pBc" type="float" label="Baseline Correction: asymmetry parameter" value="0.05" help="Asymmetry parameter. Default value is 0.05" />
   		<param name="epsilon" type="float" label="Baseline Correction: numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the 	baseline. Default value is 1e-8" />
   		
@@ -279,7 +272,7 @@
 		<section name="NZ" title="Negative intensities to Zero" expanded="true">
   		<param name="NegativetoZero" label="Set negative intensities to zero?" type="select" help="If YES, sets negative intensities to zero">
   			<option value="NO"> NO </option>
-  			<option value="YES"> YES </option>
+  			<option value="YES" selected="yes"> YES </option>
   		</param>
 		</section>
 
@@ -296,6 +289,58 @@
 		<data format="txt" name="logOut" label="${tool.name}_log" />
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
 	</outputs>
+
+
+ 	<tests>
+        <test> 
+          <param name="dataMatrixFid" value="NMR_ReadFids_dataMatrix.tabular"/>
+          <param name="sampleMetadataFid" value="sampleMetadata.tabular"/>
+          
+          <param name="FirstOPCGraph" value="NO"/>
+          
+          <param name="lambda" value="1000000" />
+        	<param name="SSGraph" value="NO"/>
+          
+          <conditional name="apodizationMethod">
+            <param name="method" value="exp" />
+            <param name="expLB" value="1"  />
+          </conditional>
+          <param name="ApodGraph" value="NO"/>
+          
+          <param name="FTGraph" value="NO"/>
+          
+          <conditional name="shiftReferencingRange">
+            <param name="method" value="nearvalue"/>
+            <param name="pctNearValue" value="0.02"/> 
+          </conditional>
+          <param name="shiftHandling" value= "zerofilling"/> 
+          <param name="ppmvalue" value="0" />
+          <param name="SRGraph"	value="NO"/>	
+          
+          <param name="zeroOrderPhaseMethod" value="rms" />
+            
+          <conditional name="excludeZoneZeroPhase" >
+            <param name="choice" value="YES" />
+            <param name="conditions_0|excludeZoneZeroPhase_left" value="5.1" />
+            <param name="conditions_0|excludeZoneZeroPhase_right" value="4.5" />
+          </conditional>
+          <param name="ZeroOPCGraph" value="NO"/>
+          
+          <param name="lambdaBc" value="100000.0" />
+          <param name="pBc" value="0.05" />
+          <param name="epsilon" value="0.00000001"/>
+          <param name="BCGraph" value="NO"/>
+            
+          <param name="NegativetoZero" value="YES" />
+          
+          <param name="FinalGraph" value="YES" />
+  
+          <output name="dataMatrix" value="NMR_Preprocessing_dataMatrix.tabular" />
+  
+        </test>
+  </tests>
+  
+
 
 
 
@@ -472,22 +517,23 @@ The **searching window** can be adapted:
 Output files
 ------------
 
-NMR_Preprocessing_dataMatrix.txt
+NMR_Preprocessing_dataMatrix
 	| tabular output
 	| Data matrix with n rows (buckets) and p columns (samples) containing the preprocessed spectra.
 	|
 
-NMR_Preprocessing_variableMetadata.txt
+NMR_Preprocessing_variableMetadata
 	| tabular output
 	| Data matrix with 1 row (ppm value of each bucket) and p columns (buckets).
 	|
 	
-NMR_Preprocessing_log.txt
+NMR_Preprocessing_log
 	| Text output
 	| Contains warnings
 	|
 	
 NMR_Preprocessing_graph.pdf
+	| pdf output
 	| line plots of preprocessed spectra.
 	|
 
