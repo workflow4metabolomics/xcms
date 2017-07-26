@@ -10,5 +10,5 @@ galaxy/nmr_preprocessing/.DS_Store
 .Rproj.user
 Rproj.user/
 .*~
--tool_test_output.html
- -tool_test_output.json
+tool_test_output.html
+tool_test_output.json

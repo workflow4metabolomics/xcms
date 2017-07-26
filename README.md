@@ -1,4 +1,4 @@
-NMR Bucketing for Galaxy
+NMR preprocessing for Galaxy
 ========================
 
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/nmr_preprocessing.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/nmr_preprocessing)
@@ -48,6 +48,6 @@ Test and Deploy with Confidence. Easily sync your GitHub projects with Travis CI
 
 Historic contributors
 ---------------------
- - Manon Martin @mmartin - [Université Catholique de Louvain (Belgique)]
+ - Manon Martin @mmartin - [Université catholique de Louvain (Belgique)]
  - Marie Tremblay-Franco @mtremblayfr - [French Metabolomics and Fluxomics Infrastructure (MetaboHUB)](http://www.metabohub.fr/en) - [MetaToul](http://www.metatoul.fr/)
  
