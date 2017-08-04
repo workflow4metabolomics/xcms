@@ -15,9 +15,6 @@
         xfunction retcor
 
         xsetRdataOutput '$xsetRData'
-        ticspdf '$ticsCorPdf'
-        bicspdf '$bpcsCorPdf'
-        rplotspdf '$rplotsPdf'
 
         method $methods.method
         #if $methods.method == "obiwarp":
@@ -88,14 +85,14 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" />
-        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf">
+        <data name="rplotsPdf" format="pdf"  from_work_dir="Rplots.pdf" label="${image.name[:-6]}.retcor.Rplots.pdf">
             <filter>(methods['method'] == 'peakgroups')</filter>
             <filter>(options['option'] == 'show')</filter>
             <filter>(family == 'symmetric')</filter>
             <filter>(plottype != 'none')</filter>
         </data>
-        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" />
-        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
+        <data name="ticsCorPdf" format="pdf" from_work_dir="TICs.pdf" label="${image.name[:-6]}.retcor.TICs_corrected.pdf" />
+        <data name="bpcsCorPdf" format="pdf" from_work_dir="BPCs.pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 

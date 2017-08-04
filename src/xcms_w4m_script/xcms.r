@@ -65,10 +65,6 @@ if (!is.null(listArguments[["xsetRdataOutput"]])){
 }
 
 #saving the specific parameters
-rplotspdf = "Rplots.pdf"
-if (!is.null(listArguments[["rplotspdf"]])){
-    rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
-}
 sampleMetadataOutput = "sampleMetadata.tsv"
 if (!is.null(listArguments[["sampleMetadataOutput"]])){
     sampleMetadataOutput = listArguments[["sampleMetadataOutput"]]; listArguments[["sampleMetadataOutput"]]=NULL
@@ -92,11 +88,6 @@ if (!is.null(listArguments[["numDigitsRT"]])){
 }
 if (!is.null(listArguments[["intval"]])){
     intval = listArguments[["intval"]]; listArguments[["intval"]]=NULL
-}
-
-if (thefunction %in% c("xcmsSet","retcor")) {
-    ticspdf = listArguments[["ticspdf"]]; listArguments[["ticspdf"]]=NULL
-    bicspdf = listArguments[["bicspdf"]]; listArguments[["bicspdf"]]=NULL
 }
 
 
@@ -147,7 +138,7 @@ if (thefunction == "fillPeaks") {
 
 #change the default display settings
 #dev.new(file="Rplots.pdf", width=16, height=12)
-pdf(file=rplotspdf, width=16, height=12)
+pdf(file="Rplots.pdf", width=16, height=12)
 if (thefunction == "group") {
     par(mfrow=c(2,2))
 }
@@ -197,12 +188,12 @@ if (thefunction  == "xcmsSet") {
 if (thefunction == "xcmsSet") {
     cat("\t\tGET TIC GRAPH\n")
     sampleNamesList = getSampleMetadata(xcmsSet=xset, sampleMetadataOutput=sampleMetadataOutput)
-    getTICs(xcmsSet=xset, pdfname=ticspdf,rt="raw")
-    getBPCs(xcmsSet=xset,rt="raw",pdfname=bicspdf)
+    getTICs(xcmsSet=xset, rt="raw")
+    getBPCs(xcmsSet=xset, rt="raw")
 } else if (thefunction == "retcor") {
     cat("\t\tGET TIC GRAPH\n")
-    getTICs(xcmsSet=xset, pdfname=ticspdf,rt="corrected")
-    getBPCs(xcmsSet=xset,rt="corrected",pdfname=bicspdf)
+    getTICs(xcmsSet=xset, rt="corrected")
+    getBPCs(xcmsSet=xset, rt="corrected")
 }
 
 if ((thefunction == "group" || thefunction == "fillPeaks") && exists("intval")) {

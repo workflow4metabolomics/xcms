@@ -51,6 +51,42 @@ getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,n
     write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
 }
 
+#@author G. Le Corguille
+exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
+
+        section_name = ''
+        title = ''
+        if (rt=='corrected') {
+            section_name = 'corrected'
+            title = 'corrected by retcor'
+        }
+
+        if (ticORbpc == "TIC") {
+            section_name = paste('TIC',section_name)
+            title = paste('Total Ion Current (TIC) chromatogram',title)
+            description = 'Sum of intensity (Y) of all ions detected at each retention time(X)'
+        } else if (ticORbpc == "BPC") {
+            section_name = paste('BPC',section_name)
+            title = paste('Base Peak Chromatogram (BPC)',title)
+            description = 'Sum of intensity (Y) of the most intense peaks at each retention time(X)'
+        }
+
+        filename=paste0(filenameBase,"-",ticORbpc,"_mqc.out")
+
+        # Headers for MultiQC
+        cat("# file_format: 'tsv'\n", filename)
+        cat("# section_name: '",section_name,"'\n", filename)
+        cat("# title: '",title,"'\n", filename)
+        cat("# description: '",description,"'\n", filename)
+        cat("# plot_type: 'linegraph'\n", filename)
+        cat("# pconfig:\n", filename)
+        cat("#     id: '",ticORbpc,"_lineplot'\n", filename)
+        cat("#     ylab: 'Base Peak Intensity'\n", filename)
+        cat("#     xlab: 'Retention Time'\n", filename)
+
+        write.table(dataset, ,row.names = F, sep = "\t")
+}
+
 #@author Y. Guitton
 getBPC <- function(file,rtcor=NULL, ...) {
     object <- xcmsRaw(file)
@@ -94,6 +130,9 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
             rtcor <- NULL
 
         TIC[[j]] <- getBPC(files[j],rtcor=rtcor)
+
+        exportTicBpcTabular(TIC[[j]], files[j], "BPC", rt=rt)
+
         # TIC[[j]][,1]<-rtcor
     }
 
@@ -221,6 +260,8 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
             rtcor <- xcmsSet@rt$corrected[[i]] else
         rtcor <- NULL
         TIC[[i]] <- getTIC(files[i],rtcor=rtcor)
+
+        exportTicBpcTabular(TIC[[j]], files[j], "TIC", rt=rt)
     }
 
     pdf(pdfname,w=16,h=10)
@@ -476,7 +517,7 @@ getMd5sum <- function (directory) {
 
 
 # This function get the raw file path from the arguments
-getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {    
+getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
     if (!is.null(listArguments[["zipfile"]]))           zipfile = listArguments[["zipfile"]]
     if (!is.null(listArguments[["zipfilePositive"]]))   zipfile = listArguments[["zipfilePositive"]]
     if (!is.null(listArguments[["zipfileNegative"]]))   zipfile = listArguments[["zipfileNegative"]]

@@ -21,9 +21,6 @@
 
         xsetRdataOutput '$xsetRData'
         sampleMetadataOutput '$sampleMetadata'
-        ticspdf '$ticsRawPdf'
-        bicspdf '$bpcsRawPdf'
-
 
         #if $options_scanrange.option == "show":
             scanrange "c($options_scanrange.scanrange)"
@@ -59,7 +56,13 @@
             scales "c($methods.scales)"
             SNR.method "$methods.SNR_method"
         #end if
-        @COMMAND_LOG_EXIT@
+        @COMMAND_LOG_EXIT@;
+
+        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+            &&
+            mv *-TIC_mqc.out $ticsRawTab
+            mv *-BPC_mqc.out $bpcsRawTab
+        #end if
     ]]></command>
 
     <inputs>
@@ -155,15 +158,38 @@
                 <param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />
             </when>
         </conditional>
+
+        <param name="tic_bpc_pdf" type="boolean" checked="False" label="Do you want TIC and BCP in PDF Format" help="Whatever, you will be able to use MultiQC tools on the tabular files" />
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" />
+
+        <data name="ticsRawTab" format="tabular" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.tabular">
+            <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+        <data name="bpcsRawTab" format="tabular" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.tabular">
+            <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+
         <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
-        <data name="ticsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf" />
-        <data name="bpcsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf" />
+        <data name="ticsRawPdf" format="pdf" from_work_dir="TICs.pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <data name="bpcsRawPdf" format="pdf" from_work_dir="BPCs.pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <collection name="ticsRawTabCollection" type="list" label="TIC raw tabular">
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out\" ext="tabular" visible="true" />
+        </collection>
+        <collection name="bpcsRawTabCollection" type="list" label="BPC raw tabular">
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out\" ext="tabular" visible="true" />
+        </collection>
+
         <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
     </outputs>
 
