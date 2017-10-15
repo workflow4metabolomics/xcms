@@ -84,7 +84,7 @@ exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
         cat("#     ylab: 'Base Peak Intensity'\n", filename)
         cat("#     xlab: 'Retention Time'\n", filename)
 
-        write.table(dataset, ,row.names = F, sep = "\t")
+        write.table(dataset, filename ,row.names = F, sep = "\t", append = FALSE, quote = F)
 }
 
 #@author Y. Guitton
@@ -261,7 +261,7 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf",rt=c("raw","corr
         rtcor <- NULL
         TIC[[i]] <- getTIC(files[i],rtcor=rtcor)
 
-        exportTicBpcTabular(TIC[[j]], files[j], "TIC", rt=rt)
+        exportTicBpcTabular(TIC[[i]], files[i], "TIC", rt=rt)
     }
 
     pdf(pdfname,w=16,h=10)

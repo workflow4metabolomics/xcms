@@ -56,13 +56,13 @@
             scales "c($methods.scales)"
             SNR.method "$methods.SNR_method"
         #end if
-        @COMMAND_LOG_EXIT@;
 
         #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            &&
-            mv *-TIC_mqc.out $ticsRawTab
-            mv *-BPC_mqc.out $bpcsRawTab
+            && mv *-TIC_mqc.out $ticsRawTab
+            && mv *-BPC_mqc.out $bpcsRawTab
         #end if
+
+        @COMMAND_LOG_EXIT@;
     ]]></command>
 
     <inputs>
