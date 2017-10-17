@@ -451,7 +451,7 @@ For more informations, don't hesitate to send us an email at supportATworkflow4m
 Advices for converting your files for the XCMS input
 ----------------------------------------------------
 
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
+We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xcms centWave method.
 
 **We recommend you the following parameters:**
 
@@ -619,7 +619,7 @@ Changelog/News
 - TEST: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
