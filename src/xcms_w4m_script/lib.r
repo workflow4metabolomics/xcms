@@ -54,19 +54,19 @@ getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,n
 #@author G. Le Corguille
 exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
 
-        section_name = ''
+        rawORcorrected = ''
         title = ''
         if (rt=='corrected') {
-            section_name = '_corrected'
+            rawORcorrected = '_corrected'
             title = ' corrected by retcor'
         }
 
         if (ticORbpc == "TIC") {
-            section_name = paste0('TIC',section_name)
+            section_name = paste0('TIC',rawORcorrected)
             title = paste0('Total Ion Current (TIC) chromatogram',title)
             description = 'Sum of intensity (Y) of all ions detected at each retention time(X)'
         } else if (ticORbpc == "BPC") {
-            section_name = paste0('BPC',section_name)
+            section_name = paste0('BPC',rawORcorrected)
             title = paste0('Base Peak Chromatogram (BPC)',title)
             description = 'Sum of intensity (Y) of the most intense peaks at each retention time(X)'
         }
@@ -80,7 +80,7 @@ exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
         cat("# description: '",description,"'\n", sep="", file = filename, append = T)
         cat("# plot_type: 'linegraph'\n", sep="", file = filename, append = T)
         cat("# pconfig:\n", sep="", file = filename, append = T)
-        cat("#     id: '",ticORbpc,"_lineplot'\n", sep="", file = filename, append = T)
+        cat("#     id: '",ticORbpc,rawORcorrected,"_lineplot'\n", sep="", file = filename, append = T)
         cat("#     ylab: 'Base Peak Intensity'\n", sep="", file = filename, append = T)
         cat("#     xlab: 'Retention Time'\n", sep="", file = filename, append = T)
         colnames(dataset) = c("Intensity","RT")

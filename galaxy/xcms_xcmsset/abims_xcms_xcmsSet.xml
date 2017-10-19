@@ -159,7 +159,8 @@
             </when>
         </conditional>
 
-        <param name="tic_bpc_pdf" type="boolean" checked="False" label="Do you want TIC and BCP in PDF Format" help="Whatever, you will be able to use MultiQC tools on the tabular files" />
+
+        <expand macro="input_tic_bpc_pdf"/>
     </inputs>
 
     <outputs>

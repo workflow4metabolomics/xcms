@@ -116,6 +116,46 @@
         </data>
     </xml>
 
+    <xml name="input_tic_bpc_pdf">
+        <param name="tic_bpc_pdf" type="boolean" checked="False" label="Do you want TIC and BCP in PDF Format" help="Whatever, you will be able to use MultiQC tools on the tabular files" />
+    </xml>
+
+    <xml name="test_retcor_param">
+        <param name="methods|method" value="peakgroups"/>
+        <param name="methods|smooth" value="loess"/>
+        <param name="methods|extra" value="1"/>
+        <param name="methods|missing" value="1"/>
+        <param name="methods|options|option" value="show"/>
+        <param name="methods|options|span" value="0.2"/>
+        <param name="methods|options|family" value="gaussian"/>
+        <param name="methods|options|plottype" value="deviation"/>
+    </xml>
+
+    <xml name="test_retcor_output">
+        <output name="log">
+            <assert_contents>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_contents>
+        </output>
+        <output_collection name="ticsCorrectedTabCollection" type="list">
+            <element name="ko15" value="ko15-TIC_mqc.out" />
+            <element name="ko16" value="ko16-TIC_mqc.out" />
+            <element name="wt15" value="wt15-TIC_mqc.out" />
+            <element name="wt16" value="wt16-TIC_mqc.out" />
+        </output_collection>
+        <output_collection name="bpcsCorrectedTabCollection" type="list">
+            <element name="ko15" value="ko15-BPC_mqc.out" />
+            <element name="ko16" value="ko16-BPC_mqc.out" />
+            <element name="wt15" value="wt15-BPC_mqc.out" />
+            <element name="wt16" value="wt16-BPC_mqc.out" />
+        </output_collection>
+    </xml>
+
     <token name="@HELP_AUTHORS@">
 .. class:: infomark
 
