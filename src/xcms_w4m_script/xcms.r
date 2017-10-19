@@ -13,7 +13,7 @@ sink(log_file, type = "output")
 # ----- PACKAGE -----
 cat("\tPACKAGE INFO\n")
 #pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","batch")
+pkgs=c("tools","parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","batch")
 for(pkg in pkgs) {
     suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
     cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")

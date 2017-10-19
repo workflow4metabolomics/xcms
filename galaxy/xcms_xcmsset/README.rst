@@ -22,6 +22,10 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 Changelog/News
 --------------
 
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
+
 **Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".

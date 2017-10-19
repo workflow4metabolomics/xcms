@@ -57,34 +57,34 @@ exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
         section_name = ''
         title = ''
         if (rt=='corrected') {
-            section_name = 'corrected'
-            title = 'corrected by retcor'
+            section_name = '_corrected'
+            title = ' corrected by retcor'
         }
 
         if (ticORbpc == "TIC") {
-            section_name = paste('TIC',section_name)
-            title = paste('Total Ion Current (TIC) chromatogram',title)
+            section_name = paste0('TIC',section_name)
+            title = paste0('Total Ion Current (TIC) chromatogram',title)
             description = 'Sum of intensity (Y) of all ions detected at each retention time(X)'
         } else if (ticORbpc == "BPC") {
-            section_name = paste('BPC',section_name)
-            title = paste('Base Peak Chromatogram (BPC)',title)
+            section_name = paste0('BPC',section_name)
+            title = paste0('Base Peak Chromatogram (BPC)',title)
             description = 'Sum of intensity (Y) of the most intense peaks at each retention time(X)'
         }
 
-        filename=paste0(filenameBase,"-",ticORbpc,"_mqc.out")
+        filename=paste0(basename(file_path_sans_ext(filenameBase)),"-",ticORbpc,"_mqc.out")
 
         # Headers for MultiQC
-        cat("# file_format: 'tsv'\n", filename)
-        cat("# section_name: '",section_name,"'\n", filename)
-        cat("# title: '",title,"'\n", filename)
-        cat("# description: '",description,"'\n", filename)
-        cat("# plot_type: 'linegraph'\n", filename)
-        cat("# pconfig:\n", filename)
-        cat("#     id: '",ticORbpc,"_lineplot'\n", filename)
-        cat("#     ylab: 'Base Peak Intensity'\n", filename)
-        cat("#     xlab: 'Retention Time'\n", filename)
-
-        write.table(dataset, filename ,row.names = F, sep = "\t", append = FALSE, quote = F)
+        cat("# file_format: 'tsv'\n", sep="", file = filename)
+        cat("# section_name: '",section_name,"'\n", sep="", file = filename, append = T)
+        cat("# title: '",title,"'\n", sep="", file = filename, append = T)
+        cat("# description: '",description,"'\n", sep="", file = filename, append = T)
+        cat("# plot_type: 'linegraph'\n", sep="", file = filename, append = T)
+        cat("# pconfig:\n", sep="", file = filename, append = T)
+        cat("#     id: '",ticORbpc,"_lineplot'\n", sep="", file = filename, append = T)
+        cat("#     ylab: 'Base Peak Intensity'\n", sep="", file = filename, append = T)
+        cat("#     xlab: 'Retention Time'\n", sep="", file = filename, append = T)
+        colnames(dataset) = c("Intensity","RT")
+        write.table(dataset, filename ,row.names = F, sep = "\t", append = T, quote = F)
 }
 
 #@author Y. Guitton

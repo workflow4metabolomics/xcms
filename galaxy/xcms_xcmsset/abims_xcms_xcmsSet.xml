@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.0">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.2.0">
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
     <macros>
@@ -164,7 +164,9 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" />
+        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
 
+        <!-- SINGLE MODE -->
         <data name="ticsRawTab" format="tabular" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.tabular">
             <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
@@ -172,6 +174,7 @@
             <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
 
+        <!-- ZIP MODE -->
         <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
@@ -184,36 +187,17 @@
             <filter>tic_bpc_pdf</filter>
         </data>
         <collection name="ticsRawTabCollection" type="list" label="TIC raw tabular">
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out\" ext="tabular" visible="true" />
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out" ext="tabular" visible="true" />
         </collection>
         <collection name="bpcsRawTabCollection" type="list" label="BPC raw tabular">
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out\" ext="tabular" visible="true" />
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out" ext="tabular" visible="true" />
         </collection>
-
-        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
     </outputs>
 
     <tests>
-        <!--<test>
-            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
-            <param name="methods|method" value="matchedFilter" />
-            <param name="methods|step" value="0.01" />
-            <param name="methods|fwhm" value="4" />
-            <param name="methods|options_m|option" value="show" />
-            <param name="methods|options_m|max" value="50" />
-            <param name="methods|options_m|snthresh" value="1" />
-            <param name="methods|options_m|steps" value="2" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
+        <!--
         <test>
             <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
             <param name="methods|method" value="centWave" />
@@ -245,56 +229,21 @@
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
+            <output_collection name="ticsRawTabCollection" type="list">
+                <element name="ko15" value="ko15-TIC_mqc.out" />
+                <element name="ko16" value="ko16-TIC_mqc.out" />
+                <element name="wt15" value="wt15-TIC_mqc.out" />
+                <element name="wt16" value="wt16-TIC_mqc.out" />
+            </output_collection>
+            <output_collection name="bpcsRawTabCollection" type="list">
+                <element name="ko15" value="ko15-BPC_mqc.out" />
+                <element name="ko16" value="ko16-BPC_mqc.out" />
+                <element name="wt15" value="wt15-BPC_mqc.out" />
+                <element name="wt16" value="wt16-BPC_mqc.out" />
+            </output_collection>
         </test>
         <!-- Passed but disable to save time for Travis" -->
-        <!--<test>
-            <param name="input" value="ko15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
-                    <has_text text="Mass range: 200.2-600 m/z" />
-                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="ko16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="wt15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.2-599.8 m/z" />
-                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
+        <!--
         <test>
             <param name="inputs|input" value="single_file" />
             <param name="inputs|single_file" value="wt16.CDF"  ftype="netcdf" />
@@ -327,6 +276,8 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
+            <output name="ticsRawTab" value="HU_neg_017-TIC_mqc.out" />
+            <output name="bpcsRawTab" value="HU_neg_017-BPC_mqc.out" />
         </test>
         <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
@@ -343,6 +294,8 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
+            <output name="ticsRawTab" value="MM14-TIC_mqc.out" />
+            <output name="bpcsRawTab" value="MM14-BPC_mqc.out" />
         </test>
     </tests>
 
@@ -582,6 +535,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
 
 **Version 2.1.0 - 22/02/2017**
 
