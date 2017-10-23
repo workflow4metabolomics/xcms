@@ -51,31 +51,30 @@
 Xcms.summary
 ============
 
------------
 Description
 -----------
 
 This tool provide a HTML summary which summarizes your analysis using the [W4M] XCMS and CAMERA tools
 
------------------
+
 Workflow position
 -----------------
 
 **Upstream tools**
 
-========================= ================= ===================== ==========
-Name                      output file       format                parameter
-========================= ================= ===================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw        RData file
-------------------------- ----------------- --------------------- ----------
-xcms.group                xset.RData        rdata.xcms.group      RData file
-------------------------- ----------------- --------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor     RData file
-------------------------- ----------------- --------------------- ----------
-xcms.fillpeaks            xset.RData        rdata.xcms.fillpeaks  RData file
-------------------------- ----------------- --------------------- ----------
-CAMERA.annotate           xset.RData        rdata.camera.*        RData file
-========================= ================= ===================== ==========
++------------------------+------------------+----------------------+------------+
+| Name                   | output file      | format               | parameter  |
++========================+==================+======================+============+
+| xcms.xcmsSet           | xset.RData       | rdata.xcms.raw       | RData file |
++------------------------+------------------+----------------------+------------+
+| xcms.group             | xset.RData       | rdata.xcms.group     | RData file |
++------------------------+------------------+----------------------+------------+
+| xcms.retcor            | xset.RData       | rdata.xcms.retcor    | RData file |
++------------------------+------------------+----------------------+------------+
+| xcms.fillpeaks         | xset.RData       | rdata.xcms.fillpeaks | RData file |
++------------------------+------------------+----------------------+------------+
+| CAMERA.annotate        | xset.RData       | rdata.camera.*       | RData file |
++------------------------+------------------+----------------------+------------+
 
 
 .. image:: xcms_summary_workflow.png

@@ -154,7 +154,6 @@
 Xcms.retcor
 ===========
 
------------
 Description
 -----------
 
@@ -173,18 +172,17 @@ discarded)**
 
 
 
------------------
 Workflow position
 -----------------
 
 
 **Upstream tools**
 
-========================= ================= ======= ==========
-Name                      output file       format  parameter
-========================= ================= ======= ==========
-xcms.group                xset.group.RData  RData   RData file
-========================= ================= ======= ==========
++------------------------+------------------+--------------------+------------+
+| Name                   | output file      | format             | parameter  |
++========================+==================+====================+============+
+| xcms.group             | xset.group.RData | RData              | RData file |
++------------------------+------------------+--------------------+------------+
 
 
 **Downstream tools**
@@ -195,13 +193,12 @@ xcms.group                xset.group.RData  RData   RData file
 |xcms.group                 | xset.retcor.RData| RData  |
 +---------------------------+------------------+--------+
 
-The output file **xset.retcor.RData** is an RData file. You can continue your analysis using it in **xcms.group** tool as an next step.
-
-
 **General schema of the metabolomic workflow**
 
 .. image:: xcms_retcor_workflow.png
 
+
+---------------------------------------------------
 
 -----------
 Input files
@@ -237,24 +234,11 @@ Method
 Output files
 ------------
 
-xset.group.retcor.TICs_corrected.pdf
-
-    | "Total Ion Chromatograms" graph in pdf format,corrected after a retcor step.
-
-xset.group.retcor.BPCs_corrected.pdf
-
-    | "Total Io"Base Peak Chromatograms" graph in pdf format,corrected after a retcor step
-
 xset.group.retcor.RData: rdata.xcms.retcor format
 
     | Rdata file that will be necessary in the **xcms.group** step of the workflow.
 
-
-------
-
-.. class:: infomark
-
-The output file is an xset.retcor.RData file. You can continue your analysis using it in **xcms.fillPeaks** tool.
+@HELP_BCP_TIC@
 
 
 ---------------------------------------------------
@@ -271,24 +255,14 @@ Input files
 Parameters
 ----------
 
-    | Method: -> **peakgroups**
-    | smooth: -> **loess**
-    | extra: -> **1**
-    | missing -> **1**
-    | Advanced options: -> **show**
-    | span -> **0.2**
-    | family -> **gaussian**
-    | plottype -> **deviation**
-
-
-Output files
-------------
-
-    | **1) xset.group.retcor.RData: RData file**
-
-    | **2) Example of an xset.group.retcor.TICs_corrected pdf file**
-
-.. image:: xcms_retcor.png
+    | **Method**: peakgroups
+    | **smooth**: loess
+    | **extra**: 1
+    | **missing**: 5
+    | **Advanced options**: show
+    | **span**: 0.4
+    | **family**: gaussian
+    | **plottype**: deviation
 
 
 ---------------------------------------------------

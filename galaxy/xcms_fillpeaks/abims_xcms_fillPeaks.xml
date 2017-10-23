@@ -117,7 +117,6 @@
 Xcms.fillPeaks
 ==============
 
------------
 Description
 -----------
 
@@ -134,18 +133,17 @@ like those from direct-infusion spectra.
 
 
 
------------------
 Workflow position
 -----------------
 
 
 **Upstream tools**
 
-========================= ================= ================== ==========
-Name                      output file       format             parameter
-========================= ================= ================== ==========
-xcms.group                xset.group.RData  rdata.xcms.group   RData file
-========================= ================= ================== ==========
++------------------------+------------------+--------------------+------------+
+| Name                   | output file      | format             | parameter  |
++========================+==================+====================+============+
+| xcms.group             | xset.group.RData | rdata.xcms.group   | RData file |
++------------------------+------------------+--------------------+------------+
 
 
 **Downstream tools**
@@ -158,14 +156,11 @@ xcms.group                xset.group.RData  rdata.xcms.group   RData file
 |xcms.summary               | xset.retcor.RData| rdata.xcms.fillpeaks  |
 +---------------------------+------------------+-----------------------+
 
-The output file **xset.fillpeaks** is a RData file. You can continue your analysis using it in **CAMERA.annotate** or **xcms.summary** tool as a following step of your workflow.
-
-
 **General schema of the metabolomic workflow**
 
 .. image:: xcms_fillpeaks_workflow.png
 
-
+---------------------------------------------------
 
 -----------
 Input files
@@ -195,26 +190,7 @@ Method
 
     | "MSW" is used for peaklists without retention-time information like those from direct-infusion spectra.
 
-
-Get a Peak List
----------------
-
-If 'true', the module generates two additional files corresponding to the peak list:
-- the variable metadata file (corresponding to information about extracted ions such as mass or retention time)
-- the data matrix (corresponding to related intensities)
-
-**decimal places for [mass or retention time] values in identifiers**
-
-    | Ions' identifiers are constructed as MxxxTyyy where 'xxx' is the ion median mass and 'yyy' the ion median retention time.
-    | Two parameters are used to adjust the number of decimal places wanted in identifiers for mass and retention time respectively.
-    | Theses parameters do not affect decimal places in columns other than the identifier one.
-
-**Reported intensity values**
-
-    | This parameter determines which values should be reported as intensities in the dataMatrix table; it correspond to xcms 'intval' parameter:
-    | - into: integrated area of original (raw) peak
-    | - maxo: maximum intensity of original (raw) peak
-    | - intb: baseline corrected integrated peak area (only available if peak detection was done by ‘findPeaks.centWave’)
+@HELP_GET_PEAK_LIST@
 
 ------------
 Output files
@@ -224,19 +200,7 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 
     | Rdata file that will be used in the **CAMERA.annotate** or **xcms.summary** step of the workflow.
 
-xset.variableMetadata.tsv : tabular format
-
-    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
-
-xset.dataMatrix.tsv : tabular format
-
-    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
-
-------
-
-.. class:: infomark
-
-The output file is a xset.fillPeaks.RData file. You can continue your analysis using it in **CAMERA.annotate** or **xcms.summary** tool.
+@HELP_GET_PEAK_LIST_OUTPUTS@
 
 
 ---------------------------------------------------
@@ -253,14 +217,7 @@ Input files
 Parameters
 ----------
 
-    | method -> **chrom**
-    | Get a Peak List -> **false**
-
-
-Output files
-------------
-
-    | **xset.fillPeaks.RData: RData file**
+    | **method**: chrom
 
 
 ---------------------------------------------------
