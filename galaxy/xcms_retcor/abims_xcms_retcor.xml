@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.1.0">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.2.0">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
@@ -295,6 +295,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
 
 **Version 2.1.0 - 03/02/2017**
 

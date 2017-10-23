@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
+
 **Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.retcor can deal with merged individual data
