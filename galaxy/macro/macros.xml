@@ -132,7 +132,7 @@
         <param name="methods|options|plottype" value="deviation"/>
     </xml>
 
-    <xml name="test_retcor_output">
+    <xml name="test_retcor_output" token_raworcorrected="">
         <output name="log">
             <assert_contents>
                 <has_text text="object with 4 samples" />
@@ -144,16 +144,16 @@
             </assert_contents>
         </output>
         <output_collection name="ticsCorrectedTabCollection" type="list">
-            <element name="ko15" value="ko15-TIC_mqc.out" />
-            <element name="ko16" value="ko16-TIC_mqc.out" />
-            <element name="wt15" value="wt15-TIC_mqc.out" />
-            <element name="wt16" value="wt16-TIC_mqc.out" />
+            <element name="ko15" value="ko15-TIC@RAWORCORRECTED@_mqc.out" />
+            <element name="ko16" value="ko16-TIC@RAWORCORRECTED@_mqc.out" />
+            <element name="wt15" value="wt15-TIC@RAWORCORRECTED@_mqc.out" />
+            <element name="wt16" value="wt16-TIC@RAWORCORRECTED@_mqc.out" />
         </output_collection>
         <output_collection name="bpcsCorrectedTabCollection" type="list">
-            <element name="ko15" value="ko15-BPC_mqc.out" />
-            <element name="ko16" value="ko16-BPC_mqc.out" />
-            <element name="wt15" value="wt15-BPC_mqc.out" />
-            <element name="wt16" value="wt16-BPC_mqc.out" />
+            <element name="ko15" value="ko15-BPC@RAWORCORRECTED@_mqc.out" />
+            <element name="ko16" value="ko16-BPC@RAWORCORRECTED@_mqc.out" />
+            <element name="wt15" value="wt15-BPC@RAWORCORRECTED@_mqc.out" />
+            <element name="wt16" value="wt16-BPC@RAWORCORRECTED@_mqc.out" />
         </output_collection>
     </xml>
 
