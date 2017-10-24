@@ -137,11 +137,12 @@
             <param name="image" value="faahKO.xset.group.RData"/>
             <expand macro="test_retcor_param"/>
             <expand macro="test_file_load_zip"/>
-            <expand macro="test_retcor_output"/>
+            <expand macro="test_retcor_output" raworcorrected="_corrected" />
         </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.group.RData"/>
-            <expand macro="test_retcor_param" raworcorrected="_corrected" />
+            <expand macro="test_retcor_param" />
+	    <expand macro="test_file_load_single"/>
             <expand macro="test_retcor_output" raworcorrected="_corrected" />
         </test>
     </tests>

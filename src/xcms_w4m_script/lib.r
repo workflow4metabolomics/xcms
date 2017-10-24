@@ -83,8 +83,8 @@ exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
         cat("#     id: '",ticORbpc,rawORcorrected,"_lineplot'\n", sep="", file = filename, append = T)
         cat("#     ylab: 'Base Peak Intensity'\n", sep="", file = filename, append = T)
         cat("#     xlab: 'Retention Time'\n", sep="", file = filename, append = T)
-        colnames(dataset) = c("Intensity","RT")
-        write.table(dataset, filename ,row.names = F, sep = "\t", append = T, quote = F)
+        cat("Intensity\tRT\n", file = filename, append = T)
+        write.table(dataset, filename ,row.names = F, col.names = F, sep = "\t", append = T, quote = F)
 }
 
 #@author Y. Guitton
