@@ -71,7 +71,7 @@ exportTicBpcTabular <- function(dataset, filenameBase, ticORbpc, rt='raw') {
             description = 'Sum of intensity (Y) of the most intense peaks at each retention time(X)'
         }
 
-        filename=paste0(basename(file_path_sans_ext(filenameBase)),"-",ticORbpc,"_mqc.out")
+        filename=paste0(basename(file_path_sans_ext(filenameBase)),"-",ticORbpc,rawORcorrected,"_mqc.out")
 
         # Headers for MultiQC
         cat("# file_format: 'tsv'\n", sep="", file = filename)
