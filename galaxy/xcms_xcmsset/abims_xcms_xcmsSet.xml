@@ -189,11 +189,11 @@
         </data>
         <collection name="ticsRawTabCollection" type="list" label="TIC raw tabular">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out" ext="tabular" visible="true" />
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out" ext="tabular" />
         </collection>
         <collection name="bpcsRawTabCollection" type="list" label="BPC raw tabular">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out" ext="tabular" visible="true" />
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out" ext="tabular" />
         </collection>
     </outputs>
 

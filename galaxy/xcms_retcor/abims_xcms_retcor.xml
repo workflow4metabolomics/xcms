@@ -100,11 +100,11 @@
         </data>
         <collection name="ticsCorrectedTabCollection" type="list" label="TIC corrected tabular">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_corrected_mqc\.out" ext="tabular" visible="true" />
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_corrected_mqc\.out" ext="tabular" />
         </collection>
         <collection name="bpcsCorrectedTabCollection" type="list" label="BPC corrected tabular">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_corrected_mqc\.out" ext="tabular" visible="true" />
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_corrected_mqc\.out" ext="tabular" />
         </collection>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
