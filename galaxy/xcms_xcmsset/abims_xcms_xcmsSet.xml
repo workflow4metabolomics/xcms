@@ -117,8 +117,8 @@
                         </param>
                         <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
                         <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
-                        <param name="fitgauss" type="boolean" selected="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
-                        <param name="verboseColumns" type="boolean" selected="true" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
+                        <param name="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
+                        <param name="verboseColumns" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
                     </when>
                     <when value="hide">
                     </when>
@@ -214,8 +214,8 @@
             <param name="methods|ppm" value="25" />
             <param name="methods|peakwidth" value="20,50" />
             <param name="methods|options_c|option" value="show" />
-            <param name="methods|options_c|fitgauss" checked="false" />
-            <param name="methods|options_c|verboseColumns" checked="false" />
+            <param name="methods|options_c|fitgauss" value="FALSE" />
+            <param name="methods|options_c|verboseColumns" value="FALSE" />
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
