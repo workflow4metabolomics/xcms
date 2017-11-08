@@ -7,7 +7,7 @@
 #     id: 'BPC_lineplot'
 #     ylab: 'Base Peak Intensity'
 #     xlab: 'Retention Time'
-Intensity	RT
+RT	Intensity
 0.7297	7404300
 0.8794	5418759
 1.3837	4575903.5

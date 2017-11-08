@@ -7,7 +7,7 @@
 #     id: 'TIC_corrected_lineplot'
 #     ylab: 'Base Peak Intensity'
 #     xlab: 'Retention Time'
-Intensity	RT
+RT	Intensity
 2503.69308488001	679705
 2505.25808488001	678301
 2506.82308488001	679089
