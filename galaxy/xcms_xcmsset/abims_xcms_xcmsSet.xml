@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.0">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.2.0">
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
     <macros>
@@ -21,9 +21,6 @@
 
         xsetRdataOutput '$xsetRData'
         sampleMetadataOutput '$sampleMetadata'
-        ticspdf '$ticsRawPdf'
-        bicspdf '$bpcsRawPdf'
-
 
         #if $options_scanrange.option == "show":
             scanrange "c($options_scanrange.scanrange)"
@@ -59,7 +56,13 @@
             scales "c($methods.scales)"
             SNR.method "$methods.SNR_method"
         #end if
-        @COMMAND_LOG_EXIT@
+
+        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+            && mv *-TIC_mqc.out $ticsRawTab
+            && mv *-BPC_mqc.out $bpcsRawTab
+        #end if
+
+        @COMMAND_LOG_EXIT@;
     ]]></command>
 
     <inputs>
@@ -155,39 +158,47 @@
                 <param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />
             </when>
         </conditional>
+
+
+        <expand macro="input_tic_bpc_pdf"/>
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" />
+        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
+
+        <!-- SINGLE MODE -->
+        <data name="ticsRawTab" format="tabular" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.tabular">
+            <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+        <data name="bpcsRawTab" format="tabular" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.tabular">
+            <filter>input.extension in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+
+        <!-- ZIP MODE -->
         <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv">
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
-        <data name="ticsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf" />
-        <data name="bpcsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf" />
-        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
+        <data name="ticsRawPdf" format="pdf" from_work_dir="TICs.pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <data name="bpcsRawPdf" format="pdf" from_work_dir="BPCs.pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <collection name="ticsRawTabCollection" type="list" label="TIC raw tabular">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_mqc\.out" ext="tabular" />
+        </collection>
+        <collection name="bpcsRawTabCollection" type="list" label="BPC raw tabular">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_mqc\.out" ext="tabular" />
+        </collection>
     </outputs>
 
     <tests>
-        <!--<test>
-            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
-            <param name="methods|method" value="matchedFilter" />
-            <param name="methods|step" value="0.01" />
-            <param name="methods|fwhm" value="4" />
-            <param name="methods|options_m|option" value="show" />
-            <param name="methods|options_m|max" value="50" />
-            <param name="methods|options_m|snthresh" value="1" />
-            <param name="methods|options_m|steps" value="2" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
+        <!--
         <test>
             <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
             <param name="methods|method" value="centWave" />
@@ -219,56 +230,21 @@
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
+            <output_collection name="ticsRawTabCollection" type="list">
+                <element name="ko15" value="ko15-TIC_mqc.out" />
+                <element name="ko16" value="ko16-TIC_mqc.out" />
+                <element name="wt15" value="wt15-TIC_mqc.out" />
+                <element name="wt16" value="wt16-TIC_mqc.out" />
+            </output_collection>
+            <output_collection name="bpcsRawTabCollection" type="list">
+                <element name="ko15" value="ko15-BPC_mqc.out" />
+                <element name="ko16" value="ko16-BPC_mqc.out" />
+                <element name="wt15" value="wt15-BPC_mqc.out" />
+                <element name="wt16" value="wt16-BPC_mqc.out" />
+            </output_collection>
         </test>
         <!-- Passed but disable to save time for Travis" -->
-        <!--<test>
-            <param name="input" value="ko15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
-                    <has_text text="Mass range: 200.2-600 m/z" />
-                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="ko16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="wt15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.2-599.8 m/z" />
-                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
+        <!--
         <test>
             <param name="inputs|input" value="single_file" />
             <param name="inputs|single_file" value="wt16.CDF"  ftype="netcdf" />
@@ -301,6 +277,8 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
+            <output name="ticsRawTab" value="HU_neg_017-TIC_mqc.out" />
+            <output name="bpcsRawTab" value="HU_neg_017-BPC_mqc.out" />
         </test>
         <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
@@ -317,6 +295,8 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
+            <output name="ticsRawTab" value="MM14-TIC_mqc.out" />
+            <output name="bpcsRawTab" value="MM14-BPC_mqc.out" />
         </test>
     </tests>
 
@@ -328,7 +308,6 @@
 Xcms.xcmsSet
 ============
 
------------
 Description
 -----------
 
@@ -338,18 +317,16 @@ You can read a tutorial on how to perform xcms preprocessing which is available 
 .. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
 
 
------------------
 Workflow position
 -----------------
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
-
++------------------------+--------------------+-----------------------------+-----------+
+| Name                   | output file        | format                      | parameter |
++------------------------+--------------------+-----------------------------+-----------+
+| Upload File            | Dataset Collection | mzXML, mzML, mzData, netCDF | NA        |
++------------------------+--------------------+-----------------------------+-----------+
 
 **Downstream tools**
 
@@ -358,90 +335,89 @@ NA                        NA                zip     NA
 +===========================+====================+=================+
 |xcms.group                 | xset.RData         | rdata.xcms.raw  |
 +---------------------------+--------------------+-----------------+
-|PCA ellipsoid by factors   | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
-|Anova                      | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
 
 
 **Example of a metabolomic workflow**
 
 .. image:: xcms_xcmsset_workflow.png
 
-
-------
-
-.. class:: infomark
-
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
-
 ---------------------------------------------------
-
-
 
 -----------
 Input files
 -----------
 
+Choose your inputs
+------------------
+
 +---------------------------+----------------------------------+
-| Parameter : num + label   |   Format                         |
+| Parameter                 |   Format                         |
 +===========================+==================================+
-| OR : Zip file             |   zip                            |
-+---------------------------+----------------------------------+
 | OR : Single file          |   mzXML, mzML, mzData, netCDF    |
 +---------------------------+----------------------------------+
-
-**Choose your inputs**
+| OR : Zip file             |   zip                            |
++---------------------------+----------------------------------+
 
 You have two methods for your inputs:
 
-    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
-    | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
+* Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
 
-Zip file: Steps for creating the zip file
------------------------------------------
+* Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
+
+Single file
+-----------
+
+This method is recommended because:
+
+* Since files are uploaded indivudially, they are smaller. And so they should be able to be uploaded using the Get Data tools.
+
+* It allow you to launch your xcmsSet in parallele.
+
+You just have to create a Dataset Collection as explain in this video_
+
+.. _video: http://download.workflow4metabolomics.org/docs/170510_galaxy_xcms_dataset_collection.m4v
+
+
+Zip file
+--------
+
+This method isn't recommended because zip file aren't really well integrated
+
+Steps for creating the zip file
 
 **Step1: Creating your directory and hierarchize the subdirectories**
 
 
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
-
-Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
-arabidopsis/wild/01.raw
-arabidopsis/mutant/01.raw
+    | **VERY IMPORTANT**: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+    | Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
+    | - arabidopsis/wild/01.raw
+    | - arabidopsis/mutant/01.raw
 
 **Step2: Creating a zip file**
 
-Create your zip file (e.g.: arabidopsis.zip).
+    | Create your zip file (e.g.: arabidopsis.zip).
 
 **Step 3 : Uploading it to our Galaxy server**
 
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
+    | If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
+    | Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
+    | For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
+    | Advices for converting your files for the XCMS input
 
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
+Raw file format
+---------------
 
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
-
-Advices for converting your files for the XCMS input
-----------------------------------------------------
-
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
+We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xcms centWave method.
 
 **We recommend you the following parameters:**
 
-Use Filtering: **True**
-
-Use Peak Picking: **True**
-
-Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
-
-Use zlib: **64**
-
-Binary Encoding: **64**
-
-m/z Encoding: **64**
-
-Intensity Encoding: **64**
+    | **Use Filtering**: True
+    | **Use Peak Picking**: True
+    | **Peak Peaking**: -Apply to MS Levels: All Levels (1-) : Centroid Mode
+    | **Use zlib**: 64
+    | **Binary Encoding**: 64
+    | **m/z Encoding**: 64
+    | **Intensity Encoding**: 64
 
 
 ----------
@@ -475,28 +451,16 @@ Extraction method for peaks detection
 Output files
 ------------
 
-xset.TICs_raw.pdf
-
-    | "Total Ion Chromatograms" graph in pdf format.
-
-xset.BPCs_raw.pdf
-
-    | "Base Peak Chromatograms" graph in pdf format with each class samples opposed.
-
-sampleMetadata.tsv
-
-    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
-    | This file is necessary in the Anova and PCA step of the workflow.
-
 xset.RData: rdata.xcms.raw format
 
     | Rdata file that is necessary in the second step of the workflow "xcms.group".
 
-------
+@HELP_BCP_TIC@
 
-.. class:: infomark
+sampleMetadata.tsv [if using zip]
 
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
+    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
+    | This file is necessary in the Batch correction and statictics steps of the workflow.
 
 ---------------------------------------------------
 
@@ -507,55 +471,30 @@ Working example
 Input files
 -----------
 
-    | zip_file -> **sacuri.zip**
+    | Dataset Collection -> build using this dataset_
+
+.. _dataset: http://download.workflow4metabolomics.org/datasets/sacurine-neg-subset_mzXML.zip
 
 Parameters
 ----------
 
-    | Method -> **matchedFilter**
-    | step   -> **0.01**
-    | fwhm   -> **4**
-    | Advanced option -> **show**
-    | max: -> **50**
-    | snthresh -> **1**
-    | steps -> **2**
-
-
-Output files
-------------
-
-    | **1) xset.RData: RData file**
-
-    | **2) Example of a sampleMetadata.tsv  :**
-
-
-+---------------------------+------------+---------+
-| sampleMetadata            |   class    | polarity|
-+===========================+============+=========+
-|HU_neg_017                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_028                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_034                 |   bio      |negative |
-+---------------------------+------------+---------+
-|Blanc04                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc06                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc09                    |   blank    |negative |
-+---------------------------+------------+---------+
-
-
-
-    | **3) Example of xset.TICs_raw.pdf (Total Ion Chromatograms) :**
-
-.. image:: xcms_tics.png
+    | **Method**: centWave
+    | **Max tolerated ppm m/z deviation in consecutive scans in ppm**: 25
+    | **Min,Max peak width in seconds**: 10,40
+    | **Advanced option**: show
+    | **Signal/Noise threshold**: 50
+    | **Minimum difference in m/z for peaks with overlapping retention times**: 1
+    | **Prefilter step for the first phase**: 3,100
 
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
+
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
 
 **Version 2.1.0 - 22/02/2017**
 
@@ -593,7 +532,7 @@ Changelog/News
 - TEST: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 

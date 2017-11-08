@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.1.0">
+<tool id="abims_xcms_retcor" name="xcms.retcor" version="2.2.0">
 
     <description>Retention Time Correction using retcor function from xcms R package </description>
 
@@ -15,9 +15,6 @@
         xfunction retcor
 
         xsetRdataOutput '$xsetRData'
-        ticspdf '$ticsCorPdf'
-        bicspdf '$bpcsCorPdf'
-        rplotspdf '$rplotsPdf'
 
         method $methods.method
         #if $methods.method == "obiwarp":
@@ -83,19 +80,32 @@
         </conditional>
 
         <expand macro="input_file_load"/>
+        <expand macro="input_tic_bpc_pdf"/>
 
     </inputs>
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" />
-        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf">
+        <data name="rplotsPdf" format="pdf"  from_work_dir="Rplots.pdf" label="${image.name[:-6]}.retcor.Rplots.pdf">
             <filter>(methods['method'] == 'peakgroups')</filter>
-            <filter>(options['option'] == 'show')</filter>
-            <filter>(family == 'symmetric')</filter>
-            <filter>(plottype != 'none')</filter>
+            <filter>(methods['options']['option'] == 'show')</filter>
+            <filter>(methods['options']['family'] == 'symmetric')</filter>
+            <filter>(methods['options']['plottype'] != 'none')</filter>
         </data>
-        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" />
-        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
+        <data name="ticsCorPdf" format="pdf" from_work_dir="TICs.pdf" label="${image.name[:-6]}.retcor.TICs_corrected.pdf">
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <data name="bpcsCorPdf" format="pdf" from_work_dir="BPCs.pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf">
+            <filter>tic_bpc_pdf</filter>
+        </data>
+        <collection name="ticsCorrectedTabCollection" type="list" label="TIC corrected tabular">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-TIC_corrected_mqc\.out" ext="tabular" />
+        </collection>
+        <collection name="bpcsCorrectedTabCollection" type="list" label="BPC corrected tabular">
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+           <discover_datasets pattern="(?P&lt;designation&gt;.+)-BPC_corrected_mqc\.out" ext="tabular" />
+        </collection>
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
@@ -125,47 +135,15 @@
         </test>-->
         <test>
             <param name="image" value="faahKO.xset.group.RData"/>
-            <param name="methods|method" value="peakgroups"/>
-            <param name="methods|smooth" value="loess"/>
-            <param name="methods|extra" value="1"/>
-            <param name="methods|missing" value="1"/>
-            <param name="methods|options|option" value="show"/>
-            <param name="methods|options|span" value="0.2"/>
-            <param name="methods|options|family" value="gaussian"/>
-            <param name="methods|options|plottype" value="deviation"/>
+            <expand macro="test_retcor_param"/>
             <expand macro="test_file_load_zip"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <expand macro="test_retcor_output" raworcorrected="_corrected" />
         </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.group.RData"/>
-            <param name="methods|method" value="peakgroups"/>
-            <param name="methods|smooth" value="loess"/>
-            <param name="methods|extra" value="1"/>
-            <param name="methods|missing" value="1"/>
-            <param name="methods|options|option" value="show"/>
-            <param name="methods|options|span" value="0.2"/>
-            <param name="methods|options|family" value="gaussian"/>
-            <param name="methods|options|plottype" value="deviation"/>
-            <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <expand macro="test_retcor_param" />
+	    <expand macro="test_file_load_single"/>
+            <expand macro="test_retcor_output" raworcorrected="_corrected" />
         </test>
     </tests>
 
@@ -177,7 +155,6 @@
 Xcms.retcor
 ===========
 
------------
 Description
 -----------
 
@@ -196,18 +173,17 @@ discarded)**
 
 
 
------------------
 Workflow position
 -----------------
 
 
 **Upstream tools**
 
-========================= ================= ======= ==========
-Name                      output file       format  parameter
-========================= ================= ======= ==========
-xcms.group                xset.group.RData  RData   RData file
-========================= ================= ======= ==========
++------------------------+------------------+--------------------+------------+
+| Name                   | output file      | format             | parameter  |
++========================+==================+====================+============+
+| xcms.group             | xset.group.RData | RData              | RData file |
++------------------------+------------------+--------------------+------------+
 
 
 **Downstream tools**
@@ -218,13 +194,12 @@ xcms.group                xset.group.RData  RData   RData file
 |xcms.group                 | xset.retcor.RData| RData  |
 +---------------------------+------------------+--------+
 
-The output file **xset.retcor.RData** is an RData file. You can continue your analysis using it in **xcms.group** tool as an next step.
-
-
 **General schema of the metabolomic workflow**
 
 .. image:: xcms_retcor_workflow.png
 
+
+---------------------------------------------------
 
 -----------
 Input files
@@ -260,24 +235,11 @@ Method
 Output files
 ------------
 
-xset.group.retcor.TICs_corrected.pdf
-
-    | "Total Ion Chromatograms" graph in pdf format,corrected after a retcor step.
-
-xset.group.retcor.BPCs_corrected.pdf
-
-    | "Total Io"Base Peak Chromatograms" graph in pdf format,corrected after a retcor step
-
 xset.group.retcor.RData: rdata.xcms.retcor format
 
     | Rdata file that will be necessary in the **xcms.group** step of the workflow.
 
-
-------
-
-.. class:: infomark
-
-The output file is an xset.retcor.RData file. You can continue your analysis using it in **xcms.fillPeaks** tool.
+@HELP_BCP_TIC@
 
 
 ---------------------------------------------------
@@ -294,30 +256,24 @@ Input files
 Parameters
 ----------
 
-    | Method: -> **peakgroups**
-    | smooth: -> **loess**
-    | extra: -> **1**
-    | missing -> **1**
-    | Advanced options: -> **show**
-    | span -> **0.2**
-    | family -> **gaussian**
-    | plottype -> **deviation**
-
-
-Output files
-------------
-
-    | **1) xset.group.retcor.RData: RData file**
-
-    | **2) Example of an xset.group.retcor.TICs_corrected pdf file**
-
-.. image:: xcms_retcor.png
+    | **Method**: peakgroups
+    | **smooth**: loess
+    | **extra**: 1
+    | **missing**: 5
+    | **Advanced options**: show
+    | **span**: 0.4
+    | **family**: gaussian
+    | **plottype**: deviation
 
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
+
+**Version 2.2.0 - 19/10/2017**
+
+- NEW: The TIC and BPC is new exported as tabular files to be visualized using MultiQC.
 
 **Version 2.1.0 - 03/02/2017**
 
