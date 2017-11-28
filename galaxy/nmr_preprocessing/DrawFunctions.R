@@ -62,11 +62,17 @@ DrawSignal <- function(Signal_data, subtype = c("stacked", "together",
   # Data initialisation and checks ----------------------------------------------
   
   subtype <- match.arg(subtype)
-  
+  vec <- is.vector(Signal_data)
+  if (vec) {
+    Signal_data <- vec2mat(Signal_data)
+  }
   
   n <- nrow(Signal_data)
   m <- ncol(Signal_data)
   
+  if (n < num.stacked){
+    num.stacked <- n
+  }
   
   scale <- colnames(Signal_data)
   
@@ -112,15 +118,19 @@ DrawSignal <- function(Signal_data, subtype = c("stacked", "together",
   elements <- list()
   if (ReImModArg[1]) {
     elements[["Re"]] <- Re(Signal_data)
+    rownames(elements[["Re"]]) <- RowNames
   }
   if (ReImModArg[2]) {
     elements[["Im"]] <- Im(Signal_data)
+    rownames(elements[["Im"]]) <- RowNames
   }
   if (ReImModArg[3]) {
     elements[["Mod"]] <- Mod(Signal_data)
+    rownames(elements[["Mod"]]) <- RowNames
   }
   if (ReImModArg[4]) {
     elements[["Arg"]] <- Arg(Signal_data)
+    rownames(elements[["Arg"]]) <- RowNames
   }
   
   
@@ -157,7 +167,7 @@ DrawSignal <- function(Signal_data, subtype = c("stacked", "together",
           }
           
           plots[[name]] <- ggplot2::ggplot(data = df, ggplot2::aes(x = x, y = y)) + 
-            ggplot2::geom_line() + 
+            ggplot2::geom_line(size = 1) + 
             ggplot2::theme(legend.position = "none") + 
             ggplot2::labs(x = xlab, y = name) +
             ggplot2::ggtitle(RowNames[i]) +
@@ -181,7 +191,7 @@ DrawSignal <- function(Signal_data, subtype = c("stacked", "together",
           
           
           plots[[name]] <- ggplot2::ggplot(data = melted, ggplot2::aes(x = Var, y = value)) + 
-            ggplot2::geom_line() + 
+            ggplot2::geom_line(size = 0.3) + 
             ggplot2::facet_grid(rowname ~ ., scales = "free_y") + 
             ggplot2::theme(legend.position = "none") + 
             ggplot2::labs(x = xlab, y = name) +
@@ -196,7 +206,8 @@ DrawSignal <- function(Signal_data, subtype = c("stacked", "together",
       
       if (subtype == "stacked")  {
         do.call(gridExtra::grid.arrange, c(plots, list(nrow = nrow, ncol = ncol)))
-      }
+      } 
+      
       i <- last + 1
     }
   } else if (subtype %in% c("together", "diffmean", "diffmedian", "diffwith")) {

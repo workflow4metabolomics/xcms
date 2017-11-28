@@ -11,6 +11,7 @@
 
 runExampleL <- FALSE
 
+
 ##------------------------------
 ## Options
 ##------------------------------
@@ -40,6 +41,18 @@ source_local("NmrPreprocessing_script.R")
 source_local("DrawFunctions.R")
 
 ##------------------------------
+## Script
+##------------------------------
+runExampleL <- FALSE
+
+
+if(!runExampleL)
+  argLs <- parseCommandArgs(evaluate=FALSE)
+
+sink(argLs$logOut)
+
+
+##------------------------------
 ## Errors ?????????????????????
 ##------------------------------
 
@@ -51,17 +64,13 @@ topEnvC <- environment()
 flagC <- "\n"
 
 
-##------------------------------
-## Script
-##------------------------------
-if(!runExampleL)
-    argLs <- parseCommandArgs(evaluate=FALSE)
+
 
 # log file
-print(argLs[["logOut"]])
+# print(argLs[["logOut"]])
 
 ## Starting
-cat("\nStart of 'Preprocessing' Galaxy module call: ", as.character(Sys.time()), sep = "")
+cat("\nStart of 'Preprocessing' Galaxy module call: ", as.character(Sys.time()), "\n", sep = "")
 
 
 ##======================================================
@@ -179,13 +188,11 @@ ppm_ref = 0 # ppm.ref
 
 # Zero Order Phase Correction -------------------------------
   # Inputs
-plot_rms = NULL
-returnAngle = FALSE
-createWindow = TRUE
+
 angle = NULL
-plot_spectra = FALSE
-ppm = TRUE
 excludeZOPC = NULL
+
+
 zeroOrderPhaseMethod <- argLs[["zeroOrderPhaseMethod"]]
 										   
 if (zeroOrderPhaseMethod=='manual'){
@@ -210,7 +217,18 @@ lambdaBc <- argLs[["lambdaBc"]]
 pBc <- argLs[["pBc"]] 
 epsilon <- argLs[["epsilon"]] 
 
+excludeBC = NULL
 
+excludeZoneBC <- argLs[["excludeZoneBC.choice"]]
+if (excludeZoneBC == 'YES') {
+  excludeZoneBCList <- list()
+  for(i in which(names(argLs)=="excludeZoneBC_left")) {
+    excludeZoneBCLeft <- argLs[[i]]
+    excludeZoneBCRight <- argLs[[i+1]]
+    excludeZoneBCList <- c(excludeZoneBCList,list(c(excludeZoneBCLeft,excludeZoneBCRight)))
+  }
+  excludeBC <- excludeZoneBCList
+}
 
 # transformation of negative values -------------------------------
   # Inputs
@@ -288,11 +306,21 @@ if (FTGraph == "YES") {
              main = title, createWindow=FALSE)
 }
 
+
+
+# ZeroOrderPhaseCorrection ---------------------------------
+Spectrum_data  <- ZeroOrderPhaseCorrection(Spectrum_data, type.zopc = zeroOrderPhaseMethod,
+                                           plot_rms = NULL, returnAngle = FALSE,
+                                           createWindow = TRUE,angle = angle,
+                                           plot_spectra = FALSE,
+                                           ppm.zopc = TRUE, exclude.zopc = excludeZOPC)
+
+
 # InternalReferencing ---------------------------------
 # if (shiftReferencing=="YES") {
 Spectrum_data <- InternalReferencing(Spectrum_data, samplemetadataFid, method = "max", range = shiftReferencingRange,
                                      ppm.value = ppmvalue, shiftHandling = shiftHandling, ppm.ir = TRUE,
-									  fromto.RC = shiftReferencingRangeList, pc = pctNearValue)
+                                     fromto.RC = shiftReferencingRangeList, pc = pctNearValue)
 
 if (SRGraph == "YES") {
   title = "Spectra after Shift Referencing"
@@ -304,13 +332,6 @@ if (SRGraph == "YES") {
 
 # }
 
-# ZeroOrderPhaseCorrection ---------------------------------
-Spectrum_data  <- ZeroOrderPhaseCorrection(Spectrum_data, type.zopc = zeroOrderPhaseMethod,
-                                           plot_rms = plot_rms, returnAngle = returnAngle,
-                                           createWindow = createWindow,angle = angle,
-                                           plot_spectra = plot_spectra,
-                                           ppm.zopc = ppm, exclude.zopc = excludeZOPC)
-
 if (ZeroOPCGraph == "YES") {
 title = "Spectra after Zero Order Phase Correction"
 DrawSignal(Spectrum_data, subtype = "stacked",
@@ -319,8 +340,14 @@ DrawSignal(Spectrum_data, subtype = "stacked",
            main = title, createWindow=FALSE)
 }
 
+
 # BaselineCorrection ---------------------------------									 
-Spectrum_data <- BaselineCorrection(Spectrum_data, ptw.bc = TRUE, lambda.bc = lambdaBc, p.bc = pBc, eps = epsilon, returnBaseline = F) 
+Spectrum_data <- BaselineCorrection(Spectrum_data, ptw.bc = TRUE, lambda.bc = lambdaBc, 
+                                    p.bc = pBc, eps = epsilon, ppm.bc = TRUE, 
+                                    exclude.bc = excludeBC,
+                                    returnBaseline = F) 
+
+
 
 if (BCGraph == "YES") {
 title = "Spectra after Baseline Correction"
@@ -363,6 +390,14 @@ write.table(t(Re(Spectrum_data)),file=argLs$dataMatrix, quote=FALSE, row.names=T
 
 # Variable metadata
 write.table(data_variable,file=argLs$variableMetadata, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+
+# log file
+# write.table(t(data.frame(argLs)), file = argLs$logOut, col.names = FALSE, quote=FALSE)
+
+# input arguments
+cat("\n INPUT and OUTPUT ARGUMENTS :\n")
+
+argLs
 
 
 ## Ending

@@ -249,7 +249,7 @@ indexInterval <- function (a, from, to, inclusive=TRUE) {
 
 
 ## ==========================
-# FirstOrderPhaseCorrection 
+# GroupDelayCorrection 
 ## ==========================
 GroupDelayCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) {
   
@@ -300,9 +300,15 @@ GroupDelayCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) 
   # interpolation if it is non-integer.
   
   Spectrum <- t(stats::mvfft(t(Fid_data)))
+  # Spectrum <- FourierTransform(Fid_data, Fid_info)
+  p <- ceiling(m/2)
+  new_index <- c((p + 1):m, 1:p)
+  Spectrum <- Spectrum[,new_index]
+  
   Omega <- (0:(m - 1))/m
   i <- complex(real = 0, imaginary = 1)
   Spectrum <- sweep(Spectrum, MARGIN = 2, exp(i * group_delay * 2 * pi * Omega), `*`)
+  Spectrum <- Spectrum[,new_index]
   Fid_data <- t(stats::mvfft(t(Spectrum), inverse = TRUE))/m
   
   # Data finalisation ----------------------------------------------
@@ -544,14 +550,13 @@ FourierTransform <- function(Fid_data, Fid_info = NULL, SW_h = NULL, SW = NULL, 
 
 
 ## ====================================================
-# InternalReferencing       
+#   InternalReferencing       
 ## ====================================================
 
 InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thres"), 
                                 range = c("nearvalue", "all", "window"), ppm.value = 0, 
                                 direction = "left", shiftHandling = c("zerofilling", "cut", 
-                                                                      "NAfilling", "circular"), c = 2, 
-                                pc = 0.02, fromto.RC = NULL,
+                                                                      "NAfilling", "circular"), c = 2, pc = 0.02, fromto.RC = NULL,
                                 ppm.ir = TRUE, rowindex_graph = NULL) {
   
   
@@ -580,12 +585,12 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   if (!is.null(fromto.RC)) {
     diff <- diff(unlist(fromto.RC))[1:length(diff(unlist(fromto.RC)))%%2 !=0]
     for (i in 1:length(diff)) {
-      if (ppm.ir == TRUE & diff[i] >= 0)  {
-        stop(paste("Invalid region removal because from <= to in ppm.ir"))
-      } else if (ppm.ir == FALSE & diff[i] <= 0) {stop(paste("Invalid region removal because from >= to in column index"))}
+      if (diff[i] >= 0)  {
+        fromto <- c(fromto.RC[[i]][2], fromto.RC[[i]][1])
+        fromto.RC[[i]] <- fromto
+      }
     }
   }
-  
   
   
   # findTMSPpeak function ----------------------------------------------
@@ -638,21 +643,21 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   
   # The Sweep Width has to be the same since the column names are the same
   SW <- Fid_info[1, "SW"]  # Sweep Width in ppm (semi frequency scale in ppm)
-  ppmInterval <- SW/(m-1)  # FIXME divide by two ??
+  ppmInterval <- SW/(m-1)  
   
   if (range == "all") {
     Data <- Spectrum_data
-  } else {
-    if (range == "nearvalue")  {
-      fromto.RC <- list(c(-(SW * pc)/2, (SW * pc)/2))  # automatic fromto values in ppm
-    }
+  } else { # range = "nearvalue" or "window"
     
-    # if ppm == TRUE, then fromto is in the colnames values, else, in the column
-    # index
-    if (ppm.ir == TRUE)   {
+    if (range == "nearvalue")  {
+      fromto.RC <- list(c(-(SW * pc)/2 + ppm.value, (SW * pc)/2 + ppm.value))  # automatic fromto values in ppm
       colindex <- as.numeric(colnames(Spectrum_data))
-    } else   {
-      colindex <- 1:m
+    } else {
+      if (ppm.ir == TRUE)   {
+        colindex <- as.numeric(colnames(Spectrum_data))
+      } else   {
+        colindex <- 1:m
+      }
     }
     
     
@@ -830,7 +835,7 @@ InternalReferencing <- function(Spectrum_data, Fid_info, method = c("max", "thre
   if (is.null(plots)) {
     return(Spectrum_data)
   } else {
-    return(list(Spectrum_data, plots))
+    return(list(Spectrum_data = Spectrum_data, plots = plots))
   }
   
 }
@@ -895,7 +900,7 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, type.zopc = c("rms", "manual
       Data <- Spectrum_data
     } else  {
       
-      # if ppm.zopc == TRUE, then fromto is in the colnames values, else, in the column
+      # if ppm.zopc == TRUE, then exclude.zopc is in the colnames values, else, in the column
       # index
       if (ppm.zopc == TRUE)  {
         colindex <- as.numeric(colnames(Spectrum_data))
@@ -1048,6 +1053,7 @@ ZeroOrderPhaseCorrection <- function(Spectrum_data, type.zopc = c("rms", "manual
 ## ====================================================
 BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42, 
                                lambda.bc = 1e+07, p.bc = 0.05, eps = 1e-08, 
+                               ppm.bc = TRUE, exclude.bc = list(c(5.1,4.5)),
                                returnBaseline = F) {
   
   # Data initialisation ----------------------------------------------
@@ -1056,6 +1062,8 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   p <- p.bc
   lambda <- lambda.bc
   n <- dim(Spectrum_data)[1]
+  m <- dim(Spectrum_data)[2]
+  
   
   # Data check
   checkArg(ptw.bc, c("bool"))
@@ -1064,8 +1072,28 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   checkArg(p.bc, c("num", "pos0"))
   checkArg(eps, c("num", "pos0"))
   checkArg(returnBaseline, c("bool"))
+  checkArg(ppm.bc, c("bool"))
+  checkArg(unlist(exclude.bc), c("num"), can.be.null = TRUE)
   
-  
+  # Define the interval where to search for (by defining Data)
+  if (is.null(exclude.bc)) {
+    exclude_index <- NULL
+  } else  {
+    # if ppm.bc == TRUE, then exclude.bc is in the colnames values, else, in the column
+    # index
+    if (ppm.bc == TRUE)  {
+      colindex <- as.numeric(colnames(Spectrum_data))
+    } else  {
+      colindex <- 1:m
+    }
+    
+    Int <- vector("list", length(exclude.bc))
+    for (i in 1:length(exclude.bc))  {
+      Int[[i]] <- indexInterval(colindex, from = exclude.bc[[i]][1], 
+                                to = exclude.bc[[i]][2], inclusive = TRUE)
+    }
+    exclude_index <- unlist(Int)
+  }
   
   # Baseline Correction implementation definition ----------------------
   
@@ -1090,7 +1118,7 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
       return(as.numeric(x))
       
     }
-    asysm <- function(y, lambda, p, eps) {
+    asysm <- function(y, lambda, p, eps, exclude_index) {
       # Baseline estimation with asymmetric least squares
       # y: signal
       # lambda: smoothing parameter (generally 1e5 to 1e8)
@@ -1103,7 +1131,15 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
       repeat {
         z <- difsmw(y, lambda, w, d = 2)
         w0 <- w
-        w <- p * (y > z + eps | y < 0) + (1 - p) * (y <= z + eps)
+        p_vect <- rep((1-p), m) # if y <= z + eps
+        p_vect[y > z + eps | y < 0] <- p  # if y > z + eps | y < 0
+        if(!is.null(exclude_index)){
+          p_vect[exclude_index] <- 0 # if exclude area
+        }
+        
+        w <- p_vect  
+        # w <- p * (y > z + eps | y < 0) + (1 - p) * (y <= z + eps)
+        
         if (sum(abs(w - w0)) == 0) {
           break
         }
@@ -1120,18 +1156,20 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
   # Baseline estimation ----------------------------------------------
   Baseline <- matrix(NA, nrow = nrow(Spectrum_data), ncol = ncol(Spectrum_data))
   
-  for (k in 1:n) {
-    Baseline[k, ] <- asysm(y = Spectrum_data[k, ], lambda = lambda, p = p, eps = eps)
-    if (F & k == 1) {
-      m <- ncol(Spectrum_data)
-      graphics::plot(1:m, Spectrum_data[k, ], type = "l", col = "red")
-      graphics::lines(1:m, Baseline[k, ], type = "l", col = "blue")
-      graphics::lines(1:m, Spectrum_data[k, ] - Baseline[k, ], type = "l",
-                      col = "green")
-    }
-    
-    Spectrum_data[k, ] <- Spectrum_data[k, ] - Baseline[k, ]
+  # for (k in 1:n) {
+  # Baseline[k, ] <- asysm(y = Spectrum_data[k, ], lambda = lambda, p = p, eps = eps)
+  
+  if (ptw.bc ){
+    Baseline <- apply(Spectrum_data,1, asysm, lambda = lambda, p = p, 
+                      eps = eps)
+  }else {
+    Baseline <- apply(Spectrum_data,1, asysm, lambda = lambda, p = p, 
+                      eps = eps, exclude_index = exclude_index)
   }
+  
+  
+  Spectrum_data <- Spectrum_data - t(Baseline)
+  # }
   
   # Data finalisation ----------------------------------------------
   Spectrum_data <- endTreatment("BaselineCorrection", begin_info, Spectrum_data)  # FIXME create removeImaginary filter ??
@@ -1142,6 +1180,7 @@ BaselineCorrection <- function(Spectrum_data, ptw.bc = TRUE, maxIter = 42,
     return(Spectrum_data)
   }
 }
+
 
 
 ## ====================================================
@@ -1160,6 +1199,4 @@ NegativeValuesZeroing <- function(Spectrum_data) {
   return(endTreatment("NegativeValuesZeroing", begin_info, Spectrum_data))
 }
 
-## ====================================================
-# Warping   
-## ====================================================
+

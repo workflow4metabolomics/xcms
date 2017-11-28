@@ -57,6 +57,7 @@ flagC <- "\n"
 if(!runExampleL)
   argLs <- parseCommandArgs(evaluate=FALSE)
 
+sink(argLs$logOut)
 
 ##======================================================
 ##======================================================
@@ -137,14 +138,20 @@ write.table(data_matrix,file=argLs$dataMatrix, quote=FALSE, row.names=TRUE, sep=
 # Sample metadata
 write.table(data_sample,file=argLs$sampleMetadata, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
 
+# log file
+# write.table(t(data.frame(argLs)), file = argLs$logOut, col.names = FALSE, quote=FALSE)
 
+# input arguments
+cat("\n INPUT and OUTPUT ARGUMENTS :\n")
+
+argLs
 
 ## Ending
 
 cat("\nEnd of 'ReadFids' Galaxy module call: ", as.character(Sys.time()), sep = "")
 
-
 sink()
+
 
 options(stringsAsFactors = strAsFacL)
 

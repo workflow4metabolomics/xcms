@@ -1,4 +1,4 @@
-<tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="3.1.0">
+<tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="1.2.0">
 	<description> Preprocessing of 1D NMR spectra </description>
 
     <stdio>
@@ -67,23 +67,6 @@
 			FTGraph $FT.FTGraph
 		
 		
-		## Shift referencing
-			## Graphical display
-			SRGraph $SR.SRGraph
-		
-			## Definition of the search zone
-			shiftReferencingRange $SR.shiftReferencingRange.method
-			#if $SR.shiftReferencingRange.method == "nearvalue":
-				pctNearValue $SR.shiftReferencingRange.pctNearValue
-			#end if
-			#if $SR.shiftReferencingRange.method == "window":
-				#for $i in $SR.shiftReferencingRange.conditions:
-               	 	shiftReferencingRangeLeft ${i.shiftReferencingRangeLeft}
-               	 	shiftReferencingRangeRight ${i.shiftReferencingRangeRight}
-               	 #end for
-			#end if
-			shiftHandling $SR.shiftHandling
-			ppmvalue $SR.ppmvalue
 		
 		
 		## Zero order phase correction
@@ -100,14 +83,40 @@
             #end for
         #end if		
 
-
+    ## Shift referencing
+  			## Graphical display
+  			SRGraph $SR.SRGraph
+  		
+  			## Definition of the search zone
+  			shiftReferencingRange $SR.shiftReferencingRange.method
+  			#if $SR.shiftReferencingRange.method == "nearvalue":
+  				pctNearValue $SR.shiftReferencingRange.pctNearValue
+  			#end if
+  			#if $SR.shiftReferencingRange.method == "window":
+  				#for $i in $SR.shiftReferencingRange.conditions:
+                 	 	shiftReferencingRangeLeft ${i.shiftReferencingRangeLeft}
+                 	 	shiftReferencingRangeRight ${i.shiftReferencingRangeRight}
+                 	 #end for
+  			#end if
+  			shiftHandling $SR.shiftHandling
+  			ppmvalue $SR.ppmvalue 
+		
 		## Baseline correction
 		## Graphical display
 			BCGraph $BC.BCGraph
+			
 		  lambdaBc $BC.lambdaBc
 		  pBc $BC.pBc
 		  epsilon $BC.epsilon
 		
+		excludeZoneBC.choice ${BC.excludeZoneBC.choice}
+        #if str($BC.excludeZoneBC.choice) == "YES":
+            #for $i in $BC.excludeZoneBC.conditions:
+                excludeZoneBC_left ${i.excludeZoneBC_left}
+                excludeZoneBC_right ${i.excludeZoneBC_right}
+            #end for
+        #end if		
+
 		
 		## sets negative intensities to zero
 		NegativetoZero $NZ.NegativetoZero
@@ -120,8 +129,8 @@
         ## Outputs
         dataMatrix $dataMatrix
         variableMetadata $variableMetadata
-		graphOut $graphOut
-		logOut $logOut
+		    graphOut $graphOut
+		    logOut $logOut
 		
 	</command>
 		
@@ -196,7 +205,34 @@
   		</param>
   	</section>				
 
-		<section name="SR" title="Shift Referencing" expanded="true">
+		<section name="ZOPC" title="Zero Order Phase Correction" expanded="true">
+  		<param name="zeroOrderPhaseMethod" type="select" label="Zero Order Phase Correction: method" help="Method used to select the angles to rotate the spectra" >
+  					<option value="rms" selected="yes"> rms </option>
+  					<option value="max" > max </option>
+  		</param>
+  
+  		<conditional name="excludeZoneZeroPhase">
+  			<param name="choice" type="select" label="Zero Order Phase Correction: exclusion area(s)" help="Choose if you want to exclude particular zone(s)" >
+  				<option value="YES" selected="true" > YES </option>
+  				<option value="NO" > NO </option>
+  			</param>
+  			<when value="YES">
+  				<repeat name="conditions" title="Exclusion_zone" min="1">
+  					<param name="excludeZoneZeroPhase_left" label="Excusion zone: left border" type="float" value="5.1" />
+  					<param name="excludeZoneZeroPhase_right" label="Excusion zone: right border" type="float" value="4.5" />
+  				</repeat>
+  			</when>
+  			<when value="NO">
+  			</when>
+  		</conditional>		
+  
+  		<param name="ZeroOPCGraph" label="Display the spectra after the Zero Order Phase Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
+  				<option value="NO"> NO </option>
+  				<option value="YES"> YES </option>
+  		</param>
+  		</section>
+
+    	<section name="SR" title="Shift Referencing" expanded="true">
   		<conditional name="shiftReferencingRange" >
   					<param name="method" label="Shift Referencing: definition of the search zone" type="select" help="Definition of the search zone" >
   						<option value="nearvalue" />
@@ -230,38 +266,27 @@
   				<option value="YES"> YES </option>
   		</param>
     </section>
-
-		<section name="ZOPC" title="Zero Order Phase Correction" expanded="true">
-  		<param name="zeroOrderPhaseMethod" type="select" label="Zero Order Phase Correction: method" help="Method used to select the angles to rotate the spectra" >
-  					<option value="rms" selected="yes"> rms </option>
-  					<option value="max" > max </option>
-  		</param>
-  
-  		<conditional name="excludeZoneZeroPhase">
-  			<param name="choice" type="select" label="Zero Order Phase Correction: exclusion area(s)" help="Choose if you want to exclude particular zone(s)" >
-  				<option value="YES" selected="true" > YES </option>
-  				<option value="NO" > NO </option>
-  			</param>
-  			<when value="YES">
-  				<repeat name="conditions" title="Exclusion_zone" min="1">
-  					<param name="excludeZoneZeroPhase_left" label="Excusion zone: left border" type="float" value="5.1" />
-  					<param name="excludeZoneZeroPhase_right" label="Excusion zone: right border" type="float" value="4.5" />
-  				</repeat>
-  			</when>
-  			<when value="NO">
-  			</when>
-  		</conditional>		
-  
-  		<param name="ZeroOPCGraph" label="Display the spectra after the Zero Order Phase Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
-  				<option value="NO"> NO </option>
-  				<option value="YES"> YES </option>
-  		</param>
-  		</section>
-
+    
+    
 		<section name="BC" title="Baseline Correction" expanded="true">
     	<param name="lambdaBc" type="float" label="Baseline Correction: smoothing parameter" value="100000.0" help="Smoothing parameter, generally 1e5 – 1e8. Default value is 100000" />
   		<param name="pBc" type="float" label="Baseline Correction: asymmetry parameter" value="0.05" help="Asymmetry parameter. Default value is 0.05" />
   		<param name="epsilon" type="float" label="Baseline Correction: numerical precision for convergence when estimating the baseline" value="0.00000001" help="Numerical precision for convergence when estimating the 	baseline. Default value is 1e-8" />
+  		
+  		<conditional name="excludeZoneBC">
+  			<param name="choice" type="select" label="Baseline Correction: exclusion area(s)" help="Choose if you want to exclude particular zone(s)" >
+  				<option value="YES" > YES </option>
+  				<option value="NO" selected="true" > NO </option>
+  			</param>
+  			<when value="YES">
+  				<repeat name="conditions" title="Exclusion_zone" min="1">
+  					<param name="excludeZoneBC_left" label="Excusion zone: left border" type="float" value="5.1" />
+  					<param name="excludeZoneBC_right" label="Excusion zone: right border" type="float" value="4.5" />
+  				</repeat>
+  			</when>
+  			<when value="NO">
+  			</when>
+  		</conditional>
   		
   		<param name="BCGraph" label="Display the spectra after Baseline Correction?" type="select" help="Select 'YES' to display the spectra or 'NO' to not display them ">
   				<option value="NO"> NO </option>
@@ -309,14 +334,6 @@
           
           <param name="FTGraph" value="NO"/>
           
-          <conditional name="shiftReferencingRange">
-            <param name="method" value="nearvalue"/>
-            <param name="pctNearValue" value="0.02"/> 
-          </conditional>
-          <param name="shiftHandling" value= "zerofilling"/> 
-          <param name="ppmvalue" value="0" />
-          <param name="SRGraph"	value="NO"/>	
-          
           <param name="zeroOrderPhaseMethod" value="rms" />
             
           <conditional name="excludeZoneZeroPhase" >
@@ -325,6 +342,14 @@
             <param name="conditions_0|excludeZoneZeroPhase_right" value="4.5" />
           </conditional>
           <param name="ZeroOPCGraph" value="NO"/>
+          
+          <conditional name="shiftReferencingRange">
+            <param name="method" value="nearvalue"/>
+            <param name="pctNearValue" value="0.02"/> 
+          </conditional>
+          <param name="shiftHandling" value= "zerofilling"/> 
+          <param name="ppmvalue" value="0" />
+          <param name="SRGraph"	value="NO"/>	
           
           <param name="lambdaBc" value="100000.0" />
           <param name="pBc" value="0.05" />
@@ -372,8 +397,8 @@ These steps correspond to the following steps in the PEPS-NMR R library (https:/
 * Removal of solvent residuals signal from the FID
 * Apodization to increase the Signal-to-Noise ratio of the FID
 * Fourier transformation
-* Shift referencing to calibrate the spectra with internal compound referencing
 * Zero order phase correction
+* Shift referencing to calibrate the spectra with internal compound referencing
 * Baseline correction
 * Setting of negatives values to 0
 
@@ -384,19 +409,15 @@ Workflow position
 
 **Upstream tools**
 
-+---------------------------+----------------------+--------+
-| Name                      | Output file          | Format |
-+===========================+======================+========+
-|NMR_Read                   | dataMatrix           | Tabular|
-+---------------------------+----------------------+--------+
-|                           | sampleMetadata       | Tabular|
-+---------------------------+----------------------+--------+
-|                           | log                  | Tabular|
-+---------------------------+----------------------+--------+
-|                           | graph                |  PDF   |
-+---------------------------+----------------------+--------+
++---------------------------+-------------------------+--------+
+| Name                      | Output file             | Format |
++===========================+=========================+========+
+|NMR_Read                   | NMR_Read_dataMatrix     | Tabular|
++---------------------------+-------------------------+--------+
+|NMR_Read                   | NMR_Read_sampleMetadata | Tabular|
++---------------------------+-------------------------+--------+
 
-|
+
 
 **Downstream tools**
 
@@ -444,6 +465,12 @@ sample x metadata matrix with tabular separations and "." as decimal for numeric
   Steps parameters 
 ----------------------
 
+**Solvent Suppression**
+-----------------------------------
+
+**Smoothing parameter** lambda: The higher lambda is, the smoother the estimated solvent signal will be
+
+
 **Apodization**
 ----------------------
 
@@ -464,16 +491,31 @@ The **types of apodization** are:
 * hamming: The signal is multiplied by a hamming window : 0.54 + 0.46 cos.
 
 
-**Shift referencing**
+
+
+**Zero Order Phase Correction**
+-----------------------------------
+
+**Zero Order Phase correction method**:
+
+* rms: A positiveness criterion is applied on the spectrum with a quantile probability parameter to trim the values.
+
+* max: Optimization of the maximal spectral intensity.
+
+
+**Exclusion area(s) for the Zero Order Phase Correction**: enables to optimize the criterion with excluded spectral window(s), by default the water region is excluded.
+
+
+**Shift Referencing**
 ----------------------
 
 The **searching window** can be adapted:
 
-* nearvalue: the search concentrates around the 0ppm.
+* nearvalue: the search concentrates around the value of the reference peak in ppm.
 
 * all: search accross the whole ppm axis.
 
-* window: the search is operated in the windows defined by the search_zone bounds.
+* window: the search is operated in the windows defined by the Search_zone bounds.
 
 
 **shiftHandling**: spectra can be shifted differently, we can handle misalignment of the left and right of the spectrum by different ways:
@@ -487,30 +529,26 @@ The **searching window** can be adapted:
 * cut: The ppm values for which some spectra are not defined are removed.
 
 
-
-**Zero Order Phase correction**
------------------------------------
-
-**Zero Order Phase correction method**:
-
-* rms: A positiveness criterion is applied on the spectrum with a quantile probability parameter to trim the values.
-
-* manual: A vector of angles are specified wth the angle argument to manually rotate the spectra.
-
-* max: Optimization of the maximal spectral intensity.
+**value of the reference peak**: the value in ppm of the reference peak. By default the value is 0 ppm.
 
 
-**Exclusion area(s) for the Zero order phase correction**: enables to optimize the criterion with excluded spectral window(s), by default the water region is excluded.
 
-
-**Baseline computation**
+**Baseline Correction**
 ----------------------------
-**Baseline computation method**: either use ptw (YES) or an in-house R routine (NO).
 
 **Smoothing parameter**: the larger it is, the smoother the estimated baseline will be.
 
 **Asymmetry parameter**:  the smaller it is, the less the estimated baseline will try to follow peaks when it is under the spectrum and the more it will try to be under the spectrum.
 
+**numerical precision**:  numerical precision for convergence when estimating the baseline. 
+
+**Exclusion area(s) for the Baseline Correction**: enables to optimize the criterion with excluded spectral window(s), by default the water region is excluded.
+
+
+
+**Negative intensities to Zero**
+------------------------------------
+**Set negative intensities to zero**: the set of negative intensities to zero is optional.
 
 
 ------------
@@ -528,13 +566,13 @@ NMR_Preprocessing_variableMetadata
 	|
 	
 NMR_Preprocessing_log
-	| Text output
-	| Contains warnings
+	| text output
+	| Contains warnings and the input parameters
 	|
 	
 NMR_Preprocessing_graph.pdf
 	| pdf output
-	| line plots of preprocessed spectra.
+	| line plots of preprocessed spectra
 	|
 
    </help>
