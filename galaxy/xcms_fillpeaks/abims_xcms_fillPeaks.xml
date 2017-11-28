@@ -226,11 +226,11 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 
 xset.variableMetadata.tsv : tabular format
 
-    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter* modules.
+    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
 
 xset.dataMatrix.tsv : tabular format
 
-    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter* modules.
+    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
 
 ------
 
