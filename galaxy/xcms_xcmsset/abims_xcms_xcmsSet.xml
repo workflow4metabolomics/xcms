@@ -593,7 +593,7 @@ Changelog/News
 - TEST: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
