@@ -22,6 +22,10 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 Changelog/News
 --------------
 
+**Version 2.1.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 **Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".

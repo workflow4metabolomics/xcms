@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.0">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.1">
 
     <description>Integrate a sample's signal in regions where peak groups are not represented to create new peaks in missing areas</description>
 
@@ -226,11 +226,11 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 
 xset.variableMetadata.tsv : tabular format
 
-    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter* modules.
+    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
 
 xset.dataMatrix.tsv : tabular format
 
-    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter* modules.
+    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
 
 ------
 
@@ -267,6 +267,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.1.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
 
 **Version 2.1.0 - 07/02/2017**
 
