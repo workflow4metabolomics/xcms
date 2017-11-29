@@ -2,6 +2,11 @@
 Changelog/News
 --------------
 
+**Version 2.0.7 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
+
 **Version 2.0.6 - 10/02/2017**
 
 - IMPROVEMENT: Synchronize the variableMetadata export option with the other tools (xcms.group, xcms.fillpeaks, camera.annotate)
@@ -33,7 +38,7 @@ Changelog/News
 
 **Version 2.0.0 - 09/06/2015**
 
-- NEW: combinexsAnnos Check CAMERA ion species annotation due to matching with opposite ion mode 
+- NEW: combinexsAnnos Check CAMERA ion species annotation due to matching with opposite ion mode
 
 
 Test Status
