@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.0">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.1">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -423,6 +423,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.2.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
 
 **Version 2.2.0 - 28/03/2017**
 

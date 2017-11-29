@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 **Version 2.2.0 - 03/02/2017**
 
 - BUGFIX: the diffreport ids didn't convert the rt in minute as the other export
