@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.1.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 **Version 2.1.0 - 03/02/2017**
 
 - IMPROVEMENT: xcms.retcor can deal with merged individual data
@@ -34,4 +38,3 @@ Changelog/News
 - IMPROVEMENT: new datatype/dataset formats (rdata.xcms.raw, rdata.xcms.group, rdata.xcms.retcor ...) will facilitate the sequence of tools and so avoid incompatibility errors.
 
 - IMPROVEMENT: parameter labels have changed to facilitate their reading.
-
