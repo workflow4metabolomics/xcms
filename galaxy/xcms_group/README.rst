@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.1.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 **Version 2.1.0 - 07/02/2017**
 
 - IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
