@@ -15,9 +15,11 @@ def input_type(job):
     log = logging.getLogger(__name__)
     inp_data = dict( [ ( da.name, da.dataset ) for da in job.input_datasets ] )
     inp_data.update( [ ( da.name, da.dataset ) for da in job.input_library_datasets ] )
-    input_extension = inp_data[ "input" ].extension
-    log.debug("The input extension is %s" % input_extension)
-    if input_extension in ["mzxml","mzml","mzdata","netcdf"]:
-        return 'thread1-mem_free10'
-    else: # zip file
-        return 'thread4-men_free10'
+    # for the backward compatibility < 2.1.0 
+    if 'input' in inp_data:
+        input_extension = inp_data[ "input" ].extension
+        log.debug("The input extension is %s" % input_extension)
+        if input_extension in ["mzxml","mzml","mzdata","netcdf"]:
+            return 'thread1-mem_free8'
+    # zip file
+    return 'thread9-mem_free8'
