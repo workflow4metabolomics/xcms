@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.0">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.1">
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
     <macros>
@@ -557,6 +557,10 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.1.1 - 29/11/2017**
+
+- BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 **Version 2.1.0 - 22/02/2017**
 
 - NEW: The W4M tools will be able now to take as input a single file. It will allow to submit in parallel several files and merge them afterward using "xcms.xcmsSet Merger" before "xcms.group".
@@ -593,7 +597,7 @@ Changelog/News
 - TEST: refactoring to feed the new report tool
 
 
-**Version 2.0.2 - 18/01/2016
+**Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
