@@ -1,0 +1,212 @@
+<tool id="NmrAnnotation" name="NMR_Annotation" version="1.0.0">
+		
+	<description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
+
+	<command>
+        which Rscript ;
+		## Wrapper
+		Rscript '$__tool_directory__/asics_wrapper.R' standards '$__tool_directory__/Library.Rdata'
+
+		## Bruker files
+		zipfile $zip_file
+
+		## Exclusion zone
+		zone_exclusion_choices.choice ${zone_exclusion_choices.choice}
+		#if str($zone_exclusion_choices.choice) == 'yes':
+			#for $i in $zone_exclusion_choices.conditions:
+				zone_exclusion_left ${i.zone_exclusion_left}
+				zone_exclusion_right ${i.zone_exclusion_right}
+			#end for
+		#end if
+
+		## Maximal shift (spectrum alignement)
+		shift $shift
+
+		## Graphical zone
+        zone_graphical_choices.choice ${zone_graphical_choices.choice}
+        #if str($zone_graphical_choices.choice) == 'yes':
+            #for $i in $zone_graphical_choices.conditions:
+                zone_graphical_left ${i.zone_graphical_left}
+                zone_graphical_right ${i.zone_graphical_right}
+            #end for
+        #end if
+
+		## Outputs
+		logOut $logOut
+		proportionEstimation $proportionEstimation
+		graphOut $graphOut
+	</command>
+		
+	<inputs>
+		<param name="zip_file" type="data" format="no_unzip.zip" label="Zip file" />
+
+	<conditional name="zone_exclusion_choices">
+		<param name="choice" type="select" label="Exclusion zone(s)" help="Choose if you want to exclude particular zone(s)" >
+			<option value="yes" > yes </option>
+			<option value="no" selected="true"> no </option>
+		</param>
+		<when value="yes">
+			<repeat name="conditions" title="exclusion zones">
+				<param name="zone_exclusion_left" label="Left exclusion zone border" type="float" value="10.0" />
+				<param name="zone_exclusion_right" label="Right exclusion zone border" type="float" value="10.0" />
+			</repeat>
+		</when>
+	</conditional>
+	
+	<param name="shift" type="float" value="0.01" help="Maximal allowed shift for spectra alignment. Default value is 0.01 ppm" />
+
+	<conditional name="zone_graphical_choices">
+		<param name="choice" type="select" label="Graphical zone(s)" help="Choose if you want to display particular zone(s)" >
+			<option value="yes" > yes </option>
+			<option value="no" selected="true"> no </option>
+		</param>
+		<when value="yes">
+			<repeat name="conditions" title="grapical zones">
+				<param name="zone_graphical_left" label="Left graphical zone border" type="float" value="10.0" />
+				<param name="zone_graphical_right" label="Right graphical zone border" type="float" value="10.0" />
+			</repeat>
+		</when>
+		<when value="no" />
+	</conditional>
+	</inputs>
+
+	<outputs>
+		<data format="txt" name="logOut" label="${tool.name}_log" />
+		<data format="tabular" name="proportionEstimation" label="${tool.name}_proportionEstimation" />
+		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
+	</outputs>
+
+	<stdio>
+		<exit_code range="1:" level="fatal" />
+	</stdio>
+<help>
+
+.. class:: infomark
+
+**Authors** Marie Tremblay-Franco (marie.tremblay-franco@inra.fr), Patrick Tardivel (patrick.tardivel@inra.fr), Rémi Servien (remi.servien@inra.fr) and Gaelle Lefort (gaelle.lefort@inra.fr)
+
+.. class:: infomark
+
+**Please cite**
+
+Tardivel P., Servien R. and Concordet D. Non asymptotic active set properties of lasso-type estimators in small-dimension (submitted)
+Tardivel P., Servien R., Canlet C., Tremblay-Franco M., Debrauwer L. and Concordet D. ASICS: an automatic method for identification and quantification of metabolites in NMR 1D 1H spectra (in preparation)
+
+---------------------------------------------------
+
+==============
+NMR Annotation
+==============
+
+-----------
+Description
+-----------
+
+ASICS, based on a strong statistical theory, handles automatically the metabolite identification and quantification
+ 
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= ======= =========
+Name                      output file       format  parameter
+========================= ================= ======= =========
+NA                        NA                NA      NA      
+========================= ================= ======= =========
+
+
+**Downstream tools**
+
+========================= ================= ======= =========
+Name                      output file       format  parameter
+========================= ================= ======= =========
+NA                        NA                NA      NA      
+========================= ================= ======= =========
+
+
+
+-----------
+Input files
+-----------
+
++---------------------------+------------+
+| Parameter : num + label   |   Format   |
++===========================+============+
+| 1 : Choose your inputs    |   zip      |
++---------------------------+------------+
+
+**Choose your inputs**
+
+You have two methods for your inputs:
+
+    | Zip file : You can put a zip file containing one condition (sample): myinputs.zip.
+
+.. image:: ./static/images/Mth_Architecture_Repertoire_Bruker.png
+        :width: 800
+
+----------
+Parameters
+----------
+
+Exclusion zone(s)
+| Spectral regions to exclude, water, solvent or contaminant resonances
+| If YES: parameters **Lower exclusion zone** and **Upper exclusion zone** are visible,
+| If NO: no zone to exclude
+| Default value is NO
+|
+
+Left exclusion zone
+| Upper boundary of exclusion zone
+|
+
+Right exclusion zone
+| Lower boundary of exclusion zone
+
+| *Notes:* 
+| - these parameters can be used several times using the "Add new exclusion zones" button
+|
+
+Shift
+| Maximum variation of the chemical shift (due to experimental conditions) of a peak of a fixed metabolite allowed in the warping function
+|
+
+Graphical zone(s)
+    | Spectral regions to display
+    | If YES: parameters **Lower graphical zone** and **Upper graphical zone** are visible,
+    | If NO: no zone to display
+    | Default value is NO
+    |
+
+	
+------------
+Output files
+------------
+
+proportionEstimation.tsv
+| tabular output
+| Array with p rows (corresponding to the identified metabolites) and 1 column containing the estimated relative intensities
+|
+
+spectra.pdf
+| pdf output
+| Graphical chart of real and estimated spectrum (whole spectral width and zooms depending on exclusion zone(s))
+| 
+
+
+---------------------------------------------------
+
+---------------
+Example
+---------------
+
+
+See the W4M00005_mmusculus in the Shared Data/Published Histories menu
+.. image:: ./static/images/NmrAnnotation_ASICS.png
+        :width: 100
+
+
+   </help>
+    
+</tool>
