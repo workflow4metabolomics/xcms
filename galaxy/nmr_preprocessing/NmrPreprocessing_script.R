@@ -291,7 +291,7 @@ GroupDelayCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) 
     }
   }
   m <- ncol(Fid_data)
-  
+  n <- nrow(Fid_data) 
   
   # GroupDelayCorrection ----------------------------------------------
   
@@ -304,18 +304,23 @@ GroupDelayCorrection <- function(Fid_data, Fid_info = NULL, group_delay = NULL) 
   p <- ceiling(m/2)
   new_index <- c((p + 1):m, 1:p)
   Spectrum <- Spectrum[,new_index]
+  Spectrum <- matrix(data = Spectrum, ncol = m, nrow = n)
   
   Omega <- (0:(m - 1))/m
   i <- complex(real = 0, imaginary = 1)
+  
   Spectrum <- sweep(Spectrum, MARGIN = 2, exp(i * group_delay * 2 * pi * Omega), `*`)
+  
   Spectrum <- Spectrum[,new_index]
+  
+  Spectrum <- matrix(data = Spectrum, ncol = m, nrow = n)
+  
   Fid_data <- t(stats::mvfft(t(Spectrum), inverse = TRUE))/m
   
   # Data finalisation ----------------------------------------------
   
   return(endTreatment("GroupDelayCorrection", begin_info, Fid_data))
 }
-
 
 
 ## ==========================
