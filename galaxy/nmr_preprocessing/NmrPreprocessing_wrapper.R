@@ -262,7 +262,7 @@ pdf(nomGraphe, onefile = TRUE, width = 13, height = 13)
 Fid_data <- GroupDelayCorrection(Fid_data0, Fid_info = samplemetadataFid, group_delay = NULL)
 
 if (FirstOPCGraph == "YES") {
-  title = "FIDs after First Order Phase Correction"
+  title = "FIDs after Group Delay Correction"
   DrawSignal(Fid_data, subtype = "stacked",
              ReImModArg = c(TRUE, FALSE, FALSE, FALSE), vertical = T, 
              xlab = "Frequency", num.stacked = 4, 
