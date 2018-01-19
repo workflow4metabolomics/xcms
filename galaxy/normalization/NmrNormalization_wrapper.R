@@ -1,4 +1,4 @@
-#!/usr/bin/env Rscript --vanilla --slave --no-site-file
+#!/usr/bin/env Rscript
 
 ## 070115_NmrBucketing2galaxy_v1.R
 ## Marie Tremblay-Franco
