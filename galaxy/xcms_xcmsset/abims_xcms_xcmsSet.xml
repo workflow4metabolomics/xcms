@@ -40,6 +40,9 @@
                 integrate $methods.options_c.integrate
                 noise $methods.options_c.noise
                 prefilter "c($methods.options_c.prefilter)"
+                fitgauss $methods.options_c.fitgauss
+                verboseColumns $methods.options_c.verboseColumns
+                profparam "list($methods.options_c.profstep)"
             #end if
         #elif $methods.method == "matchedFilter":
             step $methods.step
@@ -115,6 +118,9 @@
                         </param>
                         <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
                         <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
+                        <param name="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak"/>
+                        <param name="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned"/>
+                        <param name="profstep" type="float" value="0.005" label="For high resolution data set profstep to lower value than the default 0.1 Da used for profile matrice generation" />
                     </when>
                     <when value="hide">
                     </when>
