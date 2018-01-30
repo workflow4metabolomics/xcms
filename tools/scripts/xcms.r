@@ -55,6 +55,14 @@ listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"),listArguments[
 
 
 #saving the commun parameters
+
+
+BPPARAM = MulticoreParam(1)
+if (!is.null(listArguments[["nSlaves"]])){
+    BPPARAM = MulticoreParam(listArguments[["nSlaves"]]); listArguments[["nSlaves"]]=NULL
+}
+register(BPPARAM)
+
 thefunction = listArguments[["xfunction"]]; listArguments[["xfunction"]]=NULL #delete from the list of arguments
 
 xsetRdataOutput = paste(thefunction,"RData",sep=".")
