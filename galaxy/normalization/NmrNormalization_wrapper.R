@@ -58,6 +58,9 @@ if(!runExampleL)
   # Inputs
 data <- read.table(argLs[["dataMatrix"]], check.names=FALSE, header=TRUE, sep="\t", row.names=1)
 names <- rownames(data)
+	## Add a test to check if all values are numercical
+if (!all(vapply(data, is.numeric, FUN.VALUE = FALSE)))
+  stop("Data are not numeric")
 	## Integer conversion to avoid stack overflow when computin the sum
 data <- as.data.frame(lapply(data, as.numeric))
 rownames(data) <- names
