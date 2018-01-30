@@ -9,7 +9,6 @@ before_install:
  - sudo apt-get install -y python-virtualenv
  - virtualenv planemo-venv
  - . planemo-venv/bin/activate
- - pip install --upgrade pip setuptools
  - pip install planemo==0.47.0
  #- planemo conda_init
 
