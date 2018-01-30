@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.1">
+<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="@WRAPPER_VERSION@.0">
     <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
 
     <macros>
