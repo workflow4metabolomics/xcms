@@ -43,8 +43,6 @@
             logOut $logOut
             dataMatrixOut $dataMatrixOut
             graphOut $graphOut
-
-
     ]]</command>
 
     <inputs>
