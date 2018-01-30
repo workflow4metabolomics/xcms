@@ -56,9 +56,11 @@ if(!runExampleL)
 ## Parameters Loading
 ##-------------------
   # Inputs
-data <- read.table(argLs[["dataMatrix"]],check.names=FALSE,header=TRUE,sep="\t")
-rownames(data) <- data[,1]
-data <- data[,-1]
+data <- read.table(argLs[["dataMatrix"]], check.names=FALSE, header=TRUE, sep="\t", row.names=1)
+names <- rownames(data)
+	## Integer conversion to avoid stack overflow when computin the sum
+data <- as.data.frame(lapply(data, as.numeric))
+rownames(data) <- names
 
 scaling <- argLs[["scalingMethod"]]
 graphique <- argLs[["graphType"]]
@@ -126,7 +128,7 @@ if (graphique != "None")
 ##-------
   # Data
 data_normalized <- cbind(rownames(data_normalized),data_normalized)
-colnames(data_normalized) <- c("Bucket",colnames(data_normalized)[-1])
+colnames(data_normalized) <- c("Variable",colnames(data_normalized)[-1])
 write.table(data_normalized,file=argLs$dataMatrixOut,quote=FALSE,row.names=FALSE,sep="\t")
 
 
