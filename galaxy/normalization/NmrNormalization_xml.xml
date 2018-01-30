@@ -43,7 +43,7 @@
             logOut $logOut
             dataMatrixOut $dataMatrixOut
             graphOut $graphOut
-    ]]</command>
+    ]]></command>
 
     <inputs>
         <param name="dataMatrix" type="data" label="Data matrix of preprocessed data" help="" format="tabular" />
