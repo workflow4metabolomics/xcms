@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="2.1.1">
+<tool id="abims_xcms_fillPeaks" name="xcms.fillPeaks" version="@WRAPPER_VERSION@.0">
 
     <description>Integrate a sample's signal in regions where peak groups are not represented to create new peaks in missing areas</description>
 
