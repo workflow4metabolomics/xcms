@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms.group" version="2.1.1">
+<tool id="abims_xcms_group" name="xcms.group" version="@WRAPPER_VERSION@.0">
 
     <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
 
@@ -143,7 +143,7 @@
                     <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8275" />
+                    <has_text text="Peak Groups: 8372" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
@@ -170,7 +170,7 @@
                     <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8275" />
+                    <has_text text="Peak Groups: 8372" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
@@ -191,7 +191,7 @@
                     <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 664" />
+                    <has_text text="Peak Groups: 611" />
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
@@ -248,7 +248,7 @@
                     <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8157" />
+                    <has_text text="Peak Groups: 8211" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
@@ -267,7 +267,7 @@
                     <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8157" />
+                    <has_text text="Peak Groups: 8211" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
