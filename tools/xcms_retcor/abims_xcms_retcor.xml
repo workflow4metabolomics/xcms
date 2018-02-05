@@ -102,16 +102,19 @@
     <tests>
         <!--<test>
             <param name="image" value="xset.group.RData"/>
-            <param name="methods|method" value="peakgroups"/>
-            <param name="methods|smooth" value="loess"/>
-            <param name="methods|extra" value="1"/>
-            <param name="methods|missing" value="1"/>
-            <param name="methods|options|option" value="show"/>
-            <param name="methods|options|span" value="0.2"/>
-            <param name="methods|options|family" value="gaussian"/>
-            <param name="methods|options|plottype" value="deviation"/>
-            <param name="zipfile_load_conditional|zipfile_load_select" value="yes" />
-            <param name="zipfile_load_conditional|zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
+            <conditional name="methods">
+                <param name="method" value="peakgroups"/>
+                <param name="smooth" value="loess"/>
+                <param name="extra" value="1"/>
+                <param name="missing" value="1"/>
+                <conditional name="options">
+                    <param name="option" value="show"/>
+                    <param name="span" value="0.2"/>
+                    <param name="family" value="gaussian"/>
+                    <param name="plottype" value="deviation"/>
+                </conditional>
+            </conditional>
+            <expand macro="test_file_load_zip_sacuri"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -125,14 +128,18 @@
         </test>-->
         <test>
             <param name="image" value="faahKO.xset.group.RData"/>
-            <param name="methods|method" value="peakgroups"/>
-            <param name="methods|smooth" value="loess"/>
-            <param name="methods|extra" value="1"/>
-            <param name="methods|missing" value="1"/>
-            <param name="methods|options|option" value="show"/>
-            <param name="methods|options|span" value="0.2"/>
-            <param name="methods|options|family" value="gaussian"/>
-            <param name="methods|options|plottype" value="deviation"/>
+            <conditional name="methods">
+                <param name="method" value="peakgroups"/>
+                <param name="smooth" value="loess"/>
+                <param name="extra" value="1"/>
+                <param name="missing" value="1"/>
+                <conditional name="options">
+                    <param name="option" value="show"/>
+                    <param name="span" value="0.2"/>
+                    <param name="family" value="gaussian"/>
+                    <param name="plottype" value="deviation"/>
+                </conditional>
+            </conditional>
             <expand macro="test_file_load_zip"/>
             <output name="log">
                 <assert_contents>
@@ -147,14 +154,18 @@
         </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.group.RData"/>
-            <param name="methods|method" value="peakgroups"/>
-            <param name="methods|smooth" value="loess"/>
-            <param name="methods|extra" value="1"/>
-            <param name="methods|missing" value="1"/>
-            <param name="methods|options|option" value="show"/>
-            <param name="methods|options|span" value="0.2"/>
-            <param name="methods|options|family" value="gaussian"/>
-            <param name="methods|options|plottype" value="deviation"/>
+            <conditional name="methods">
+                <param name="method" value="peakgroups"/>
+                <param name="smooth" value="loess"/>
+                <param name="extra" value="1"/>
+                <param name="missing" value="1"/>
+                <conditional name="options">
+                    <param name="option" value="show"/>
+                    <param name="span" value="0.2"/>
+                    <param name="family" value="gaussian"/>
+                    <param name="plottype" value="deviation"/>
+                </conditional>
+            </conditional>
             <expand macro="test_file_load_single"/>
             <output name="log">
                 <assert_contents>
