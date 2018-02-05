@@ -104,14 +104,19 @@
     </outputs>
 
     <tests>
-        <!--<test>
+        <!--
+        <test>
             <param name="image" value="xset.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -122,15 +127,20 @@
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
             </output>
-        </test>-->
+        </test>
+        -->
         <test>
             <param name="image" value="faahKO.xset.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <conditional name="peaklist">
                 <param name="convertRTMinute" value="false" />
                 <param name="peaklistBool" value="true" />
@@ -152,12 +162,16 @@
         </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <conditional name="peaklist">
                 <param name="convertRTMinute" value="false" />
                 <param name="peaklistBool" value="true" />
@@ -177,14 +191,19 @@
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
+        <!--
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -196,14 +215,19 @@
                 </assert_contents>
             </output>
         </test>
+        -->
         <test>
             <param name="image" value="MM-single.xset.merged.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 2 samples" />
@@ -217,12 +241,16 @@
         </test>
         <!--<test>
             <param name="image" value="xset.group.retcor.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -233,15 +261,21 @@
                     <has_text text="Sample classes: bio, blank" />
                 </assert_contents>
             </output>
-        </test>-->
+        </test>
+        -->
+        <!--
         <test>
             <param name="image" value="faahKO.xset.group.retcor.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -253,14 +287,19 @@
                 </assert_contents>
             </output>
         </test>
+        -->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
-            <param name="methods|method" value="density"/>
-            <param name="methods|bw" value="5"/>
-            <param name="methods|minfrac" value="0.3"/>
-            <param name="methods|mzwid" value="0.01"/>
-            <param name="methods|density_options|option" value="show"/>
-            <param name="methods|density_options|max" value="50"/>
+            <conditional name="methods">
+                <param name="method" value="density"/>
+                <param name="bw" value="5"/>
+                <param name="minfrac" value="0.3"/>
+                <param name="mzwid" value="0.01"/>
+                <conditional name="density_options">
+                    <param name="option" value="show"/>
+                    <param name="max" value="50"/>
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
