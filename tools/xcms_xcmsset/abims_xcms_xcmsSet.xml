@@ -168,15 +168,20 @@
     </outputs>
 
     <tests>
-        <!--<test>
+        <!--
+        <test>
             <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
-            <param name="methods|method" value="matchedFilter" />
-            <param name="methods|step" value="0.01" />
-            <param name="methods|fwhm" value="4" />
-            <param name="methods|options_m|option" value="show" />
-            <param name="methods|options_m|max" value="50" />
-            <param name="methods|options_m|snthresh" value="1" />
-            <param name="methods|options_m|steps" value="2" />
+            <conditional name="methods">
+                <param name="method" value="matchedFilter" />
+                <param name="step" value="0.01" />
+                <param name="fwhm" value="4" />
+                <conditional name="options_m">
+                    <param name="option" value="show" />
+                    <param name="max" value="50" />
+                    <param name="snthresh" value="1" />
+                    <param name="steps" value="2" />
+                </conditional>
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -190,9 +195,11 @@
         </test>
         <test>
             <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -206,9 +213,11 @@
         </test>-->
         <test>
             <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -223,9 +232,11 @@
         <!-- Passed but disable to save time for Travis" -->
         <!--<test>
             <param name="input" value="ko15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
@@ -239,9 +250,11 @@
         </test>
         <test>
             <param name="input" value="ko16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
@@ -255,9 +268,11 @@
         </test>
         <test>
             <param name="input" value="wt15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
@@ -270,11 +285,12 @@
             </output>
         </test>
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="wt16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <param name="input" value="wt16.CDF"  ftype="netcdf" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
@@ -288,9 +304,11 @@
         </test>-->
         <test>
             <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
@@ -304,9 +322,11 @@
         </test>
         <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="56" />
-            <param name="methods|peakwidth" value="5.275,13.5" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="56" />
+                <param name="peakwidth" value="5.275,13.5" />
+            </conditional>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 1 samples" />
