@@ -70,6 +70,15 @@
         </section>
     </xml>
 
+    <xml name="test_file_load_zip_sacuri">
+        <section name="file_load_section">
+            <conditional name="file_load_conditional">
+                <param name="file_load_select" value="yes" />
+                <param name="input" value="sacuri_dir_root.zip" ftype="zip" />
+            </conditional>
+        </section>
+    </xml>
+
     <xml name="test_file_load_single">
         <section name="file_load_section">
             <conditional name="file_load_conditional">
