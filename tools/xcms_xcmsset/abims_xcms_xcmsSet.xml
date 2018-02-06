@@ -95,7 +95,7 @@
             </param>
 
             <!-- centWave Filter options -->
-            <when value="centWave">
+            <when value="CentWave">
                 <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
                 <param name="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="[peakwidth]" />
 
@@ -120,7 +120,7 @@
             </when>
 
             <!-- matched Filter options -->
-            <when value="matchedFilter">
+            <when value="MatchedFilter">
                 <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
                 <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
                 <conditional name="options_m">
@@ -170,7 +170,7 @@
         <test>
             <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -188,7 +188,7 @@
         <test>
             <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -206,7 +206,7 @@
         <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="56" />
                 <param name="peakwidth" value="5.275,13.5" />
             </conditional>
@@ -225,7 +225,7 @@
         <test>
             <param name="input" value="ko15.CDF"  ftype="netcdf" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -245,7 +245,7 @@
         <test>
             <param name="input" value="ko16.CDF"  ftype="netcdf" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -265,7 +265,7 @@
         <test>
             <param name="input" value="wt15.CDF"  ftype="netcdf" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -285,7 +285,7 @@
         <test>
             <param name="input" value="wt16.CDF"  ftype="netcdf" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
@@ -304,7 +304,7 @@
         <test>
             <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
             <conditional name="methods">
-                <param name="method" value="matchedFilter" />
+                <param name="method" value="MatchedFilter" />
                 <param name="step" value="0.01" />
                 <param name="fwhm" value="4" />
                 <conditional name="options_m">
@@ -330,7 +330,7 @@
         <test>
             <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
             <conditional name="methods">
-                <param name="method" value="centWave" />
+                <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
