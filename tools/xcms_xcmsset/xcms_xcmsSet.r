@@ -83,8 +83,7 @@ pd <- data.frame(sample_name=s_name, sample_group=s_groups, stringsAsFactors=FAL
 raw_data <- readMSData(files=files, pdata = new("NAnnotatedDataFrame", pd), mode="onDisk")
 
 # Peak Calling
-if (method == "centWave") methodParam <- "CentWaveParam"
-findChromPeaksParam <- do.call(methodParam, listArguments)
+findChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
 xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
 # Check if there are no peaks

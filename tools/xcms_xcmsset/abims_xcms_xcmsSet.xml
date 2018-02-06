@@ -17,13 +17,16 @@
             zipfile '$input'
         #end if
 
-        #if $options_scanrange.option == "show":
-            scanrange "c($options_scanrange.scanrange)"
-        #end if
+        ##@TODO: scanrange? where? how?
+        ##if $options_scanrange.option == "show":
+        ##    scanrange "c($options_scanrange.scanrange)"
+        ##end if
 
+        ##@TODO: profmethod?
         ## profmethod $profmethod
-        BPPARAM \${GALAXY_SLOTS:-1} method $methods.method
-        #if $methods.method == "centWave":
+        BPPARAM \${GALAXY_SLOTS:-1}
+        method $methods.method
+        #if $methods.method == "CentWave":
             ppm $methods.ppm
             peakwidth "c($methods.peakwidth)"
             #if $methods.options_c.option == "show":
@@ -33,8 +36,9 @@
                 noise $methods.options_c.noise
                 prefilter "c($methods.options_c.prefilter)"
             #end if
-        #elif $methods.method == "matchedFilter":
-            step $methods.step
+        #elif $methods.method == "MatchedFilter":
+            ##@TODO: step?
+            ##step $methods.step
             fwhm $methods.fwhm
             #if $methods.options_m.option == "show":
                 ## sigma "$methods.options_m.sigma"
@@ -44,12 +48,14 @@
                 mzdiff $methods.options_m.mzdiff
             #end if
         #elif $methods.method == "MSW":
-            snthr $methods.snthr
+            snthresh $methods.snthresh
             nearbyPeak $methods.nearbyPeak
-            winSize.noise $methods.winSize_noise
-            amp.Th $methods.amp_Th
+            ##@TODO: winSize.noise?
+            ##winSize.noise $methods.winSize_noise
+            ampTh $methods.ampTh
             scales "c($methods.scales)"
-            SNR.method "$methods.SNR_method"
+            ##@TODO: SNR.method?
+            ##SNR.method "$methods.SNR_method"
         #end if
         @COMMAND_LOG_EXIT@
     ]]></command>
@@ -58,7 +64,7 @@
 
         <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
 
-        <conditional name="options_scanrange">
+        <!--<conditional name="options_scanrange">
             <param name="option" type="select" label="Scan range option " >
                 <option value="show">show</option>
                 <option value="hide" selected="true">hide</option>
@@ -70,7 +76,7 @@
             </when>
             <when value="hide">
             </when>
-        </conditional>
+        </conditional>-->
 
 
 <!--
@@ -83,8 +89,8 @@
 -->
         <conditional name="methods">
             <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
-                <option value="centWave" >centWave</option>
-                <option value="matchedFilter" selected="true">matchedFilter</option>
+                <option value="CentWave">CentWave</option>
+                <option value="MatchedFilter" selected="true">MatchedFilter</option>
                 <option value="MSW">MSW</option>
             </param>
 
@@ -140,11 +146,11 @@
                     <option value="TRUE">TRUE</option>
                     <option value="FALSE">FALSE</option>
                 </param>
-                <param name="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />
-                <param name="snthr" type="integer" value="3" label="SNR (Signal to Noise Ratio) threshold" help="[snthr]" />
-                <param name="amp_Th" type="float" value="0.002" label="Minimum required relative amplitude of the peak" help="[amp.Th] Ratio to the maximum of CWT coefficients" />
+                <!--<param name="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
+                <param name="snthresh" type="integer" value="3" label="SNR (Signal to Noise Ratio) threshold" help="[snthresh]" />
+                <param name="ampTh" type="float" value="0.002" label="Minimum required relative amplitude of the peak" help="[ampTh] Ratio to the maximum of CWT coefficients" />
                 <param name="scales" type="text" value="seq(1,22,3)" label="Scales for the Continuous Wavelet Transform (CWT)" help="[scales] Scales are linked to the width of the peaks that are to be detected. Tape as indicaded seq('n,n,n') or c(n,n) : seq(from, to, by steps), c - linear vector " />
-                <param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />
+                <!--<param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />-->
             </when>
         </conditional>
     </inputs>
