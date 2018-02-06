@@ -9,17 +9,12 @@ sink(log_file, type = "output")
 # ----- PACKAGE -----
 cat("\tSESSION INFO\n")
 
-pkgs=c("xcms","batch")
-for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
-
-sessioninfo = sessionInfo()
-cat(sessioninfo$R.version$version.string,"\n")
-cat("Main packages:\n")
-for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
-cat("Other loaded packages:\n")
-for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
-
+#Import the different functions
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local("lib.r")
+
+pkgs=c("xcms","batch")
+loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
 
@@ -28,47 +23,30 @@ cat("\tARGUMENTS INFO\n")
 listArguments <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
 write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
 
-cat("\n\n");
-
-
-# ----- ARGUMENTS PROCESSING -----
-cat("\tINFILE PROCESSING INFO\n")
-
-#Import the different functions
-source_local("lib.r")
-
-cat("\n\n")
-
-#Import the different functions
-
-# ----- PROCESSING INFILE -----
-cat("\tARGUMENTS PROCESSING INFO\n")
-
 # Save arguments to generate a report
 if (!exists("listOFlistArguments")) listOFlistArguments <- list()
 listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"), listArguments[["xfunction"]], sep="")]] = listArguments
 
+cat("\n\n");
+
+
+# ----- PROCESSING INFILE -----
+cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the commun parameters
-
-
 BPPARAM = MulticoreParam(1)
-if (!is.null(listArguments[["nSlaves"]])){
-    BPPARAM <- MulticoreParam(listArguments[["nSlaves"]]); listArguments[["nSlaves"]] <- NULL
+if (!is.null(listArguments[["BPPARAM"]])){
+    BPPARAM <- MulticoreParam(listArguments[["BPPARAM"]]); listArguments[["BPPARAM"]] <- NULL
 }
 register(BPPARAM)
 
-thefunction <- listArguments[["xfunction"]]; listArguments[["xfunction"]] <- NULL #delete from the list of arguments
-
-
-
 #saving the specific parameters
-if (!is.null(listArguments[["method"]])){
-    method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
-}
+method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
 
-ticspdf <- "TICs.pdf"
-bicspdf <- "BICs.pdf"
+cat("\n\n")
+
+# ----- INFILE PROCESSING -----
+cat("\tINFILE PROCESSING INFO\n")
 
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
@@ -86,8 +64,6 @@ checkFilesCompatibilityWithXcms(directory)
 
 
 cat("\n\n")
-
-
 
 
 # ----- MAIN PROCESSING INFO -----
@@ -110,16 +86,18 @@ if (method == "centWave") methodParam <- "CentWaveParam"
 findChromPeaksParam <- do.call(methodParam, listArguments)
 xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
-# check if there are no peaks
-if (nrow(chromPeaks(xdata)) == 0) {
-    stop("No peaks were detected. You should review your settings")
-}
+# Check if there are no peaks
+if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should review your settings")
 
-# transform the files absolute pathways into relative pathways
+# Transform the files absolute pathways into relative pathways
 xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@processingData@files)
 
-# create a sampleMetada file
-sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput=sampleMetadataOutput)
+# Create a sampleMetada file
+sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
+
+# Get the legacy xcmsSet object
+suppressWarnings(xset <- as(xdata, 'xcmsSet'))
+sampclass(xset) <- xset@phenoData$sample_group
 
 cat("\n\n")
 
@@ -127,25 +105,24 @@ cat("\n\n")
 # -- TIC --
 cat("\t\tGET TIC GRAPH\n")
 #@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
-xset <- as(xdata, 'xcmsSet')
-sampclass(xset) <- xset@phenoData$sample_group
-
-getTICs(xdata=xdata, pdfname=ticspdf, rt="raw")
-getBPCs(xdata=xdata, rt="raw", pdfname=bicspdf)
+getTICs(xcmsSet=xset, rt="raw", pdfname="TICs.pdf")
+getBPCs(xcmsSet=xset, rt="raw", pdfname="BICs.pdf")
 
 cat("\n\n")
 
 # ----- EXPORT -----
 
-cat("\tXSET OBJECT INFO\n")
+cat("\tXCMSnExp OBJECT INFO\n")
 print(xdata)
+cat("\n\n")
+
+cat("\txcmsSet OBJECT INFO\n")
+print(xset)
+cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
 objects2save <- c("xdata", "zipfile", "singlefile", "listOFlistArguments", "md5sumList", "sampleNamesList")
-xsetRdataOutput <- paste(thefunction, "RData", sep=".")
-save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
-
-cat("\n\n")
+save(list=objects2save[objects2save %in% ls()], file="xcmsSet.RData")
 
 
 cat("\tDONE\n")
