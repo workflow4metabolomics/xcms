@@ -160,49 +160,7 @@
     </outputs>
 
     <tests>
-        <!--
-        <test>
-            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
-            <conditional name="methods">
-                <param name="method" value="matchedFilter" />
-                <param name="step" value="0.01" />
-                <param name="fwhm" value="4" />
-                <conditional name="options_m">
-                    <param name="option" value="show" />
-                    <param name="max" value="50" />
-                    <param name="snthresh" value="1" />
-                    <param name="steps" value="2" />
-                </conditional>
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
-            <conditional name="methods">
-                <param name="method" value="centWave" />
-                <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 3.5-1139.2 seconds (0.1-19 minutes)" />
-                    <has_text text="Mass range: 57.9756-593.4086 m/z" />
-                    <has_text text="Peaks: 1535 (about 384 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>-->
+
         <test>
             <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
             <conditional name="methods">
@@ -221,80 +179,7 @@
                 </assert_contents>
             </output>
         </test>
-        <!-- Passed but disable to save time for Travis" -->
-        <!--<test>
-            <param name="input" value="ko15.CDF"  ftype="netcdf" />
-            <conditional name="methods">
-                <param name="method" value="centWave" />
-                <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
-                    <has_text text="Mass range: 200.2-600 m/z" />
-                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
         <test>
-            <param name="input" value="ko16.CDF"  ftype="netcdf" />
-            <conditional name="methods">
-                <param name="method" value="centWave" />
-                <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="wt15.CDF"  ftype="netcdf" />
-            <conditional name="methods">
-                <param name="method" value="centWave" />
-                <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.2-599.8 m/z" />
-                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="wt16.CDF"  ftype="netcdf" />
-            <conditional name="methods">
-                <param name="method" value="centWave" />
-                <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
-                    <has_text text="Mass range: 200.3-600 m/z" />
-                    <has_text text="Peaks: 2303 (about 2303 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>-->
-        <!--<test>
             <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="centWave" />
@@ -329,7 +214,132 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
+        </test>
+        <!-- Passed but disable to save time for Travis"
+        <test>
+            <param name="input" value="ko15.CDF"  ftype="netcdf" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
+                    <has_text text="Mass range: 200.2-600 m/z" />
+                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        -->
+        <!-- Passed but disable to save time for Travis"
+        <test>
+            <param name="input" value="ko16.CDF"  ftype="netcdf" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
+                    <has_text text="Mass range: 200.1-600 m/z" />
+                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        -->
+        <!-- Passed but disable to save time for Travis"
+        <test>
+            <param name="input" value="wt15.CDF"  ftype="netcdf" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
+                    <has_text text="Mass range: 200.2-599.8 m/z" />
+                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
+        </test>
+        -->
+        <!-- Passed but disable to save time for Travis"
+        <test>
+            <param name="input" value="wt16.CDF"  ftype="netcdf" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 1 samples" />
+                    <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
+                    <has_text text="Mass range: 200.3-600 m/z" />
+                    <has_text text="Peaks: 2303 (about 2303 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: ." />
+                </assert_contents>
+            </output>
         </test>-->
+        <!-- No more test-data/sacuri_dir_root.zip
+        <test>
+            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
+            <conditional name="methods">
+                <param name="method" value="matchedFilter" />
+                <param name="step" value="0.01" />
+                <param name="fwhm" value="4" />
+                <conditional name="options_m">
+                    <param name="option" value="show" />
+                    <param name="max" value="50" />
+                    <param name="snthresh" value="1" />
+                    <param name="steps" value="2" />
+                </conditional>
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
+                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+        </test>
+        -->
+        <!--  No more test-data/sacuri_current_root.zip
+        <test>
+            <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <output name="log">
+                <assert_contents>
+                    <has_text text="object with 4 samples" />
+                    <has_text text="Time range: 3.5-1139.2 seconds (0.1-19 minutes)" />
+                    <has_text text="Mass range: 57.9756-593.4086 m/z" />
+                    <has_text text="Peaks: 1535 (about 384 per sample)" />
+                    <has_text text="Peak Groups: 0" />
+                    <has_text text="Sample classes: bio, blank" />
+                </assert_contents>
+            </output>
+        </test>
+        -->
     </tests>
 
     <help><![CDATA[

@@ -367,7 +367,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
             }
 
             #Set the polarity attribute
-            sampleMetadata$polarity[sampleMetadata$sampleMetadata==samplename] <- polarity
+            sampleMetadata$polarity[fileIdx] <- polarity
         }
 
     }
@@ -532,7 +532,9 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
                 print(error_message); stop(error_message)
             }
 
-            file.symlink(singlefile_galaxyPath,singlefile_sampleName)
+            if (!suppressWarnings( try (file.link(singlefile_galaxyPath, singlefile_sampleName), silent=T)))
+                file.copy(singlefile_galaxyPath, singlefile_sampleName)
+
         }
         directory <- "."
 

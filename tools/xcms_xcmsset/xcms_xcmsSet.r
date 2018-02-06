@@ -72,6 +72,7 @@ cat("\tMAIN PROCESSING INFO\n")
 
 cat("\t\tCOMPUTE\n")
 files <- getMSFiles(directory)
+print(files)
 
 # PhenoData
 s_groups <- sapply(files, function(x) tail(unlist(strsplit(dirname(x),"/")), n=1))
@@ -91,7 +92,7 @@ if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should revie
 
 # Transform the files absolute pathways into relative pathways
 xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@processingData@files)
-
+save.image()
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
 
