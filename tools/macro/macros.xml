@@ -18,9 +18,7 @@
         </stdio>
     </xml>
 
-    <token name="@COMMAND_XCMS_SCRIPT@">
-        LC_ALL=C Rscript $__tool_directory__/
-    </token>
+    <token name="@COMMAND_XCMS_SCRIPT@">LC_ALL=C Rscript $__tool_directory__/</token>
 
     <token name="@COMMAND_LOG_EXIT@">
         ;

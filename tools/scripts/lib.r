@@ -13,7 +13,22 @@
 
 
 #@author G. Le Corguille
-#This function convert if it is required the Retention Time in minutes
+# This function will
+# - load the packages
+# - display the sessionInfo
+loadAndDisplayPackages <- function(pkgs) {
+    for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+
+    sessioninfo = sessionInfo()
+    cat(sessioninfo$R.version$version.string,"\n")
+    cat("Main packages:\n")
+    for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+    cat("Other loaded packages:\n")
+    for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+}
+
+#@author G. Le Corguille
+# This function convert if it is required the Retention Time in minutes
 RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
     if (convertRTMinute){
         #converting the retention times (seconds) into minutes
@@ -26,7 +41,7 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
 }
 
 #@author G. Le Corguille
-#This function format ions identifiers
+# This function format ions identifiers
 formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
     splitDeco <- strsplit(as.character(variableMetadata$name),"_")
     idsDeco <- sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_",deco)) })
@@ -70,11 +85,11 @@ getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), s
         files <- filepaths(xcmsSet)
     }
 
-    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
+    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,"class"])) #sometime phenoData have more than 1 column use first as class
 
     classnames <- vector("list",length(phenoDataClass))
     for (i in 1:length(phenoDataClass)){
-        classnames[[i]] <- which( xcmsSet@phenoData[,1]==phenoDataClass[i])
+        classnames[[i]] <- which( xcmsSet@phenoData[,"class"]==phenoDataClass[i])
     }
 
     N <- dim(phenoData(xcmsSet))[1]
@@ -188,9 +203,7 @@ getTIC <- function(file, rtcor=NULL) {
     cbind(if (is.null(rtcor)) object@scantime else rtcor, rawEIC(object, mzrange=range(object@env$mz))$intensity)
 }
 
-##
-##  overlay TIC from all files in current folder or from xcmsSet, create pdf
-##
+#overlay TIC from all files in current folder or from xcmsSet, create pdf
 #@author Y. Guitton
 getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf", rt=c("raw","corrected")) {
     cat("Creating TIC pdf...\n")
@@ -207,10 +220,10 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf", rt=c("raw","cor
         files <- filepaths(xcmsSet)
     }
 
-    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,1])) #sometime phenoData have more than 1 column use first as class
+    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,"class"])) #sometime phenoData have more than 1 column use first as class
     classnames <- vector("list",length(phenoDataClass))
     for (i in 1:length(phenoDataClass)){
-        classnames[[i]] <- which( xcmsSet@phenoData[,1]==phenoDataClass[i])
+        classnames[[i]] <- which( xcmsSet@phenoData[,"class"]==phenoDataClass[i])
     }
 
     N <- length(files)
@@ -303,8 +316,7 @@ getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf", rt=c("raw","cor
 
 
 
-##
-##  Get the polarities from all the samples of a condition
+# Get the polarities from all the samples of a condition
 #@author Misharl Monsoor misharl.monsoor@sb-roscoff.fr ABiMS TEAM
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABiMS TEAM
 getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.tsv") {
@@ -367,9 +379,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
 }
 
 
-##
-## This function check if xcms will found all the files
-##
+# This function check if xcms will found all the files
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABiMS TEAM
 checkFilesCompatibilityWithXcms <- function(directory) {
     cat("Checking files filenames compatibilities with xmcs...\n")
@@ -397,9 +407,8 @@ checkFilesCompatibilityWithXcms <- function(directory) {
 }
 
 
-##
-## This function list the compatible files within the directory as xcms did
-##
+#This function list the compatible files within the directory as xcms did
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABiMS TEAM
 getMSFiles <- function (directory) {
     filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
     filepattern <- paste(paste("\\.", filepattern, "$", sep=""),collapse="|")
@@ -411,9 +420,7 @@ getMSFiles <- function (directory) {
     return(files)
 }
 
-##
-## This function check if XML contains special caracters. It also checks integrity and completness.
-##
+# This function check if XML contains special caracters. It also checks integrity and completness.
 #@author Misharl Monsoor misharl.monsoor@sb-roscoff.fr ABiMS TEAM
 checkXmlStructure <- function (directory) {
     cat("Checking XML structure...\n")
@@ -431,9 +438,7 @@ checkXmlStructure <- function (directory) {
 }
 
 
-##
-## This function check if XML contain special characters
-##
+# This function check if XML contain special characters
 #@author Misharl Monsoor misharl.monsoor@sb-roscoff.fr ABiMS TEAM
 deleteXmlBadCharacters<- function (directory) {
     cat("Checking Non ASCII characters in the XML...\n")
@@ -456,9 +461,7 @@ deleteXmlBadCharacters<- function (directory) {
 }
 
 
-##
-## This function will compute MD5 checksum to check the data integrity
-##
+# This function will compute MD5 checksum to check the data integrity
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
 getMd5sum <- function (directory) {
     cat("Compute md5 checksum...\n")
@@ -480,6 +483,7 @@ getMd5sum <- function (directory) {
 
 
 # This function get the raw file path from the arguments
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr
 getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
     if (!is.null(listArguments[["zipfile"]]))           zipfile <- listArguments[["zipfile"]]
     if (!is.null(listArguments[["zipfilePositive"]]))   zipfile <- listArguments[["zipfilePositive"]]
@@ -518,6 +522,7 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
 # This function retrieve the raw file in the working directory
 #   - if zipfile: unzip the file with its directory tree
 #   - if singlefiles: set symlink with the good filename
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr
 retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
     if(!is.null(singlefile) && (length("singlefile")>0)) {
         for (singlefile_sampleName in names(singlefile)) {
@@ -546,11 +551,11 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
         suppressWarnings(unzip(zipfile, unzip="unzip"))
 
         #get the directory name
-        filesInZip <- unzip(zipfile, list=T);
-        directories <- unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
+        suppressWarnings(filesInZip <- unzip(zipfile, list=T))
+        directories <- unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])))
         directories <- directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
         directory <- "."
-        if (length(directories) == 1) directory=directories
+        if (length(directories) == 1) directory <- directories
 
         cat("files_root_directory\t",directory,"\n")
 
