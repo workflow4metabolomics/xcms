@@ -19,14 +19,13 @@
     </xml>
 
     <token name="@COMMAND_XCMS_SCRIPT@">
-        LC_ALL=C Rscript $__tool_directory__/xcms.r
+        LC_ALL=C Rscript $__tool_directory__/
     </token>
 
     <token name="@COMMAND_LOG_EXIT@">
         ;
         return=\$?;
-        mv log.txt '$log';
-        cat '$log';
+        cat 'log.txt';
         sh -c "exit \$return"
     </token>
 
