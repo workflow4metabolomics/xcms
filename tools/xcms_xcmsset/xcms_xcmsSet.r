@@ -23,18 +23,18 @@ cat("\tARGUMENTS INFO\n")
 listArguments <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
 write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
 
-# Save arguments to generate a report
-if (!exists("listOFlistArguments")) listOFlistArguments <- list()
-listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"), listArguments[["xfunction"]], sep="")]] = listArguments
-
-cat("\n\n");
+cat("\n\n")
 
 
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
+# Save arguments to generate a report
+if (!exists("listOFlistArguments")) listOFlistArguments <- list()
+listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"),listArguments[["xfunction"]],sep="")]] <- listArguments
+
 #saving the commun parameters
-BPPARAM = MulticoreParam(1)
+BPPARAM <- MulticoreParam(1)
 if (!is.null(listArguments[["BPPARAM"]])){
     BPPARAM <- MulticoreParam(listArguments[["BPPARAM"]]); listArguments[["BPPARAM"]] <- NULL
 }
@@ -71,19 +71,22 @@ cat("\tMAIN PROCESSING INFO\n")
 
 
 cat("\t\tCOMPUTE\n")
+
+## Get the full path to the files
 files <- getMSFiles(directory)
-print(files)
 
-# PhenoData
+cat("\t\t\tCreate a phenodata data.frame\n")
 s_groups <- sapply(files, function(x) tail(unlist(strsplit(dirname(x),"/")), n=1))
-s_name <- file_path_sans_ext(basename(files))
+s_name <- tools::file_path_sans_ext(basename(files))
 pd <- data.frame(sample_name=s_name, sample_group=s_groups, stringsAsFactors=FALSE)
+print(pd)
 
-# Reading Raw
+cat("\t\t\tLoad Raw Data\n")
 raw_data <- readMSData(files=files, pdata = new("NAnnotatedDataFrame", pd), mode="onDisk")
 
-# Peak Calling
+cat("\t\t\tChromatographic peak detection\n")
 findChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
+print(findChromPeaksParam)
 xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
 # Check if there are no peaks

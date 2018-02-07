@@ -221,7 +221,7 @@
                 </assert_contents>
             </output>
         </test>
-        <!-- Passed but disable to save time for Travis"
+        <!-- Passed but disable to save time for Travis
         <test>
             <param name="input" value="ko15.CDF"  ftype="netcdf" />
             <conditional name="methods">
@@ -241,7 +241,7 @@
             </output>
         </test>
         -->
-        <!-- Passed but disable to save time for Travis"
+        <!-- Passed but disable to save time for Travis
         <test>
             <param name="input" value="ko16.CDF"  ftype="netcdf" />
             <conditional name="methods">
@@ -261,7 +261,7 @@
             </output>
         </test>
         -->
-        <!-- Passed but disable to save time for Travis"
+        <!-- Passed but disable to save time for Travis
         <test>
             <param name="input" value="wt15.CDF"  ftype="netcdf" />
             <conditional name="methods">
@@ -281,7 +281,7 @@
             </output>
         </test>
         -->
-        <!-- Passed but disable to save time for Travis"
+        <!-- Passed but disable to save time for Travis
         <test>
             <param name="input" value="wt16.CDF"  ftype="netcdf" />
             <conditional name="methods">
@@ -299,7 +299,8 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
-        </test>-->
+        </test>
+        -->
         <!-- No more test-data/sacuri_dir_root.zip
         <test>
             <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
