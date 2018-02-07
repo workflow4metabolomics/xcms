@@ -50,20 +50,41 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
     return(variableMetadata)
 }
 
+
+#@TODO: remove this function as soon as I get an answer to this follow issue
+# https://github.com/sneumann/xcms/issues/250
+groupnamesW4M <- function(xdata, mzdec = 0, rtdec = 0) {
+    mzfmt <- paste("%.", mzdec, "f", sep = "")
+    rtfmt <- paste("%.", rtdec, "f", sep = "")
+
+    gnames <- paste("M", sprintf(mzfmt, featureDefinitions(xdata)[,"mzmed"]), "T",
+                    sprintf(rtfmt, featureDefinitions(xdata)[,"rtmed"]), sep = "")
+
+    if (any(dup <- duplicated(gnames)))
+        for (dupname in unique(gnames[dup])) {
+            dupidx <- which(gnames == dupname)
+            gnames[dupidx] <- paste(gnames[dupidx], seq(along = dupidx), sep = "_")
+        }
+
+    return (gnames)
+}
+
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
-getPeaklistW4M <- function(xset, intval="into",convertRTMinute=F,numDigitsMZ=4,numDigitsRT=0,variableMetadataOutput,dataMatrixOutput) {
-    variableMetadata_dataMatrix <- peakTable(xset, method="medret", value=intval)
-    variableMetadata_dataMatrix <- cbind(name=groupnames(xset),variableMetadata_dataMatrix)
+getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, variableMetadataOutput, dataMatrixOutput) {
+    dataMatrix <- featureValues(xdata, method="medret", value=intval)
+    colnames(dataMatrix) <- tools::file_path_sans_ext(colnames(dataMatrix))
+    dataMatrix = cbind(name=groupnamesW4M(xdata), dataMatrix)
+    variableMetadata <- featureDefinitions(xdata)
+    colnames(variableMetadata)[1] = "mz"; colnames(variableMetadata)[4] = "rt"
+    variableMetadata = data.frame(name=groupnamesW4M(xdata), variableMetadata)
 
-    dataMatrix <- variableMetadata_dataMatrix[,(make.names(colnames(variableMetadata_dataMatrix)) %in% c("name", make.names(sampnames(xset))))]
-
-    variableMetadata <- variableMetadata_dataMatrix[,!(make.names(colnames(variableMetadata_dataMatrix)) %in% c(make.names(sampnames(xset))))]
     variableMetadata <- RTSecondToMinute(variableMetadata, convertRTMinute)
     variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
 
     write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
     write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
+
 }
 
 #@author Y. Guitton
@@ -349,9 +370,9 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
 
 
     #For each sample file, the following actions are done
-    for (fileIdx in 1:length(xdata@processingData@files)){
+    for (fileIdx in 1:length(fileNames(xdata))) {
         #Check if the file is in the CDF format
-        if (!mzR:::netCDFIsFile(xdata@processingData@files[fileIdx])){
+        if (!mzR:::netCDFIsFile(fileNames(xdata))) {
 
             # If the column isn't exist, with add one filled with NA
             if (is.null(sampleMetadata$polarity)) sampleMetadata$polarity <- NA

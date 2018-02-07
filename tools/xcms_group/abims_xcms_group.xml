@@ -10,27 +10,24 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_XCMS_SCRIPT@
-        xfunction group
+        @COMMAND_XCMS_SCRIPT@/xcms_group.r
         image '$image'
 
-        xsetRdataOutput '$xsetRData'
-        rplotspdf '$rplotsPdf'
-
         method $methods.method
-        #if $methods.method == "density":
+        #if $methods.method == "PeakDensity":
             ## minsamp $methods.minsamp
-            minfrac $methods.minfrac
+            minFraction $methods.minFraction
             bw $methods.bw
-            mzwid $methods.mzwid
-            sleep 0.001
-        #if $methods.density_options.option == "show":
-            max $methods.density_options.max
-        #end if
-        #elif $methods.method == "mzClust":
+            binSize $methods.binSize
+            ##@TODO: sleep?
+            ##sleep 0.001
+            #if $methods.density_options.option == "show":
+                maxFeatures $methods.density_options.maxFeatures
+            #end if
+        #elif $methods.method == "MzClust":
             mzppm $methods.mzppm
             mzabs $methods.mzabs
-            minfrac $methods.minfrac
+            minFraction $methods.minFraction
             ## minsamp $methods.minsamp
         #else:
             mzVsRTbalance $methods.mzVsRTbalance
@@ -41,6 +38,8 @@
 
         @COMMAND_PEAKLIST@
 
+        @COMMAND_FILE_LOAD@
+
         @COMMAND_LOG_EXIT@
    ]]></command>
 
@@ -48,59 +47,55 @@
         <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for grouping" help="[method] See the help section below">
-                <option value="density" selected="true">density</option>
-                <option value="mzClust" >mzClust</option>
-                <option value="nearest" >nearest</option>
+                <option value="PeakDensity" selected="true">PeakDensity</option>
+                <option value="MzClust">MzClust</option>
+                <option value="NearestPeaks">NearestPeaks</option>
             </param>
-            <when value="density">
+            <when value="PeakDensity">
                 <param name="bw" type="float" value="30" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
-                <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
-                <param name="mzwid" type="float" value="0.25" label="Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples " />
+                <param name="minFraction" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minFraction] in at least one of the sample groups for it to be a valid group" />
+                <param name="binSize" type="float" value="0.25" label="Width of overlapping m/z slices" help="[binSize] to use for creating peak density chromatograms and grouping peaks across samples " />
 <!--
                 <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
 -->
-            <conditional name="density_options">
-            <param name="option" type="select" label="Advanced options">
-                <option value="show">show</option>
-                <option value="hide" selected="true">hide</option>
-            </param>
-            <when value="show">
-                <param name="max" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" help="[max]" />
+                <conditional name="density_options">
+                    <param name="option" type="select" label="Advanced options">
+                        <option value="show">show</option>
+                        <option value="hide" selected="true">hide</option>
+                    </param>
+                    <when value="show">
+                        <param name="maxFeatures" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" help="[maxFeatures]" />
+                    </when>
+                    <when value="hide">
+                    </when>
+                </conditional>
             </when>
-            <when value="hide">
-            </when>
-        </conditional>
-
-            </when>
-            <when value="mzClust">
+            <when value="MzClust">
                 <param name="mzppm" type="integer" value="20 " label="Relative error used for clustering/grouping in ppm" help="[mzppm]" />
                 <param name="mzabs" type="float" value="0" label="Absolute error used for clustering/grouping" help="[mzabs]" />
-                <param name="minfrac" type="float" value="0" label="Minimum fraction of each class in one bin" help="[minfrac] minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group" />
+                <param name="minFraction" type="float" value="0" label="Minimum fraction of each class in one bin" help="[minFraction] minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group" />
 <!--
                 <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
 -->
             </when>
-            <when value="nearest">
+            <when value="NearestPeaks">
                 <param name="mzVsRTbalance" type="integer" value="10 " label="Multiplicator for mz value before calculating the (euclidean) distance between two peaks." help="[mzVsRTbalance]" />
                 <param name="mzCheck" type="float" value="0.2" label="Maximum tolerated distance for mz" help="[mzCheck]" />
                 <param name="rtCheck" type="integer" value="15" label="Maximum tolerated distance for RT" help="[rtCheck]" />
                 <param name="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" help="[kNN]" />
             </when>
         </conditional>
-<!--
-        <param name="sleepy" type="float" value="0.001" label="sleep" help="seconds to pause between plotting successive steps of the peak grouping algorithm. peaks are plotted as points showing relative intensity. identified groups are flanked by dotted vertical lines">
-            <validator type="in_range" message="Must be more than 0" min="0.001" max="inf"/>
-        </param>
--->
 
         <expand macro="input_peaklist"/>
+
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData"/>
-        <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf"/>
+        <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData" from_work_dir="group.RData"/>
+        <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf" from_work_dir="Rplots.pdf"/>
         <expand macro="output_peaklist" function="group"/>
-        <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
+        <data name="log" format="txt" label="xset.log.txt" from_work_dir="log.txt" hidden="true" />
     </outputs>
 
     <tests>
@@ -108,13 +103,13 @@
         <test>
             <param name="image" value="xset.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -132,13 +127,13 @@
         <test>
             <param name="image" value="faahKO.xset.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <conditional name="peaklist">
@@ -147,6 +142,7 @@
                 <param name="numDigitsMZ" value="4" />
                 <param name="numDigitsRT" value="1" />
             </conditional>
+            <expand macro="test_file_load_zip"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
@@ -160,16 +156,17 @@
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
+<!-- xset
         <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <conditional name="peaklist">
@@ -191,17 +188,18 @@
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
+-->
         <!--
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -216,16 +214,17 @@
             </output>
         </test>
         -->
+<!-- xset
         <test>
             <param name="image" value="MM-single.xset.merged.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -239,16 +238,17 @@
                 </assert_contents>
             </output>
         </test>
+-->
         <!--<test>
             <param name="image" value="xset.group.retcor.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -267,13 +267,13 @@
         <test>
             <param name="image" value="faahKO.xset.group.retcor.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -288,16 +288,17 @@
             </output>
         </test>
         -->
+<!-- xset
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
             <conditional name="methods">
-                <param name="method" value="density"/>
+                <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
-                <param name="minfrac" value="0.3"/>
-                <param name="mzwid" value="0.01"/>
+                <param name="minFraction" value="0.3"/>
+                <param name="binSize" value="0.01"/>
                 <conditional name="density_options">
                     <param name="option" value="show"/>
-                    <param name="max" value="50"/>
+                    <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
             <output name="log">
@@ -311,6 +312,7 @@
                 </assert_contents>
             </output>
         </test>
+-->
     </tests>
 
     <help><![CDATA[
@@ -431,10 +433,10 @@ Parameters
 
     | Method -> **density**
     | bw     -> **5**
-    | minfrac -> **0.3**
-    | mzwid    -> **0.01**
+    | minFraction -> **0.3**
+    | binSize    -> **0.01**
     | Advanced options: **show**
-    | max -> **50**
+    | maxFeatures -> **50**
 
 
 Output files
