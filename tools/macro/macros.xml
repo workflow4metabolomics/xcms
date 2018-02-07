@@ -87,8 +87,6 @@
 
     <token name="@COMMAND_PEAKLIST@">
         #if $peaklist.peaklistBool
-            variableMetadataOutput '$variableMetadata'
-            dataMatrixOutput '$dataMatrix'
             convertRTMinute $peaklist.convertRTMinute
             numDigitsMZ $peaklist.numDigitsMZ
             numDigitsRT $peaklist.numDigitsRT
@@ -114,10 +112,10 @@
     </xml>
 
     <xml name="output_peaklist"  token_function="">
-        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.@FUNCTION@.variableMetadata.tsv">
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.@FUNCTION@.variableMetadata.tsv" from_work_dir="variableMetadata.tsv" >
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
-        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.@FUNCTION@.dataMatrix.tsv" >
+        <data name="dataMatrix" format="tabular" label="${image.name[:-6]}.@FUNCTION@.dataMatrix.tsv" from_work_dir="dataMatrix.tsv" >
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
     </xml>
