@@ -185,7 +185,7 @@
                 </assert_contents>
             </output>
         </test>
-        <test>
+        <!--<test>
             <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
@@ -202,7 +202,7 @@
                     <has_text text="Sample classes: ." />
                 </assert_contents>
             </output>
-        </test>
+        </test>-->
         <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
             <conditional name="methods">
