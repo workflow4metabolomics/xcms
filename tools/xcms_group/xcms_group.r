@@ -55,11 +55,6 @@ cat("\n\n")
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
-# Save arguments to generate a report
-if (!exists("listOFlistArguments")) listOFlistArguments <- list()
-listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"),listArguments[["xfunction"]],sep="")]] <- listArguments
-
-
 #saving the commun parameters
 BPPARAM <- MulticoreParam(1)
 if (!is.null(listArguments[["BPPARAM"]])){
@@ -125,7 +120,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("xdata", "zipfile", "singlefile", "listOFlistArguments", "md5sumList", "sampleNamesList")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
 save(list=objects2save[objects2save %in% ls()], file="group.RData")
 
 cat("\n\n")
