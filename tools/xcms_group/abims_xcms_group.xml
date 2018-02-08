@@ -99,7 +99,7 @@
     </outputs>
 
     <tests>
-        <test>
+<!--  <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
@@ -131,6 +131,7 @@
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
+ -->
         <!-- Passed but disable to save time for Travis
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData"/>
@@ -191,31 +192,6 @@
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
         -->
-        <!-- old xset
-        <test>
-            <param name="image" value="MM-single.xset.merged.RData"/>
-            <conditional name="methods">
-                <param name="method" value="PeakDensity"/>
-                <param name="bw" value="5"/>
-                <param name="minFraction" value="0.3"/>
-                <param name="binSize" value="0.01"/>
-                <conditional name="density_options">
-                    <param name="option" value="show"/>
-                    <param name="maxFeatures" value="50"/>
-                </conditional>
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 2 samples" />
-                    <has_text text="Time range: 19.7-307.3 seconds (0.3-5.1 minutes)" />
-                    <has_text text="Mass range: 117.0357-936.7059 m/z" />
-                    <has_text text="Peaks: 236 (about 118 per sample)" />
-                    <has_text text="Peak Groups: 236" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>
-        -->
         <!--
         <test>
             <param name="image" value="xset.RData"/>
@@ -265,7 +241,8 @@
             </output>
         </test>
         -->
-        <!--
+
+        <!-- Zip
         <test>
             <param name="image" value="faahKO.xset.group.retcor.RData"/>
             <conditional name="methods">
@@ -278,19 +255,19 @@
                     <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
+            <expand macro="test_file_load_zip"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8211" />
+                    <has_text text="Peak Groups: 8209" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
         </test>
         -->
-        <!-- old xset
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
             <conditional name="methods">
@@ -303,18 +280,19 @@
                     <param name="maxFeatures" value="50"/>
                 </conditional>
             </conditional>
+            <expand macro="test_file_load_single"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8211" />
+                    <has_text text="Peak Groups: 8209" />
                     <has_text text="Sample classes: KO, WT" />
                 </assert_contents>
             </output>
         </test>
-        -->
+
     </tests>
 
     <help><![CDATA[
