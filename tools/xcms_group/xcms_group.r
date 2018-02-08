@@ -105,7 +105,9 @@ cat("\n\n")
 
 dev.off()
 
-getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
+if (exists("intval")) {
+    getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
+}
 
 cat("\n\n")
 
