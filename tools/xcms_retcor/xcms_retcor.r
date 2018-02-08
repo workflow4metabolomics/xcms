@@ -20,7 +20,7 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+listArguments = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
 write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
 
 cat("\n\n")
@@ -29,27 +29,14 @@ cat("\n\n")
 cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the commun parameters
-BPPARAM <- MulticoreParam(1)
-if (!is.null(listArguments[["BPPARAM"]])){
-    BPPARAM <- MulticoreParam(listArguments[["BPPARAM"]]); listArguments[["BPPARAM"]] <- NULL
+BPPARAM = MulticoreParam(1)
+if (!is.null(listArguments[["nSlaves"]])){
+    BPPARAM = MulticoreParam(listArguments[["nSlaves"]]); listArguments[["nSlaves"]]=NULL
 }
 register(BPPARAM)
 
 #saving the specific parameters
 method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
-
-if (!is.null(listArguments[["convertRTMinute"]])){
-    convertRTMinute <- listArguments[["convertRTMinute"]]; listArguments[["convertRTMinute"]] <- NULL
-}
-if (!is.null(listArguments[["numDigitsMZ"]])){
-    numDigitsMZ <- listArguments[["numDigitsMZ"]]; listArguments[["numDigitsMZ"]] <- NULL
-}
-if (!is.null(listArguments[["numDigitsRT"]])){
-    numDigitsRT <- listArguments[["numDigitsRT"]]; listArguments[["numDigitsRT"]] <- NULL
-}
-if (!is.null(listArguments[["intval"]])){
-    intval <- listArguments[["intval"]]; listArguments[["intval"]] <- NULL
-}
 
 cat("\n\n")
 
@@ -87,23 +74,28 @@ cat("\t\tCOMPUTE\n")
 
 #change the default display settings
 pdf(file="Rplots.pdf", width=16, height=12)
-par(mfrow=c(2,2))
+#try to change the legend display
+#par(xpd=NA)
+#par(xpd=T, mar=par()$mar+c(0,0,0,4))
 
-cat("\t\t\tPerform the correspondence\n")
-listArguments[["sampleGroups"]] = xdata$sample_group
-groupChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
-print(groupChromPeaksParam)
-xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)
+cat("\t\t\tAlignment/Retention Time correction\n")
+adjustRtimeParam <- do.call(paste0(method,"Param"), listArguments)
+print(adjustRtimeParam)
+xdata <- adjustRtime(xdata, param=adjustRtimeParam)
 
-dev.off()
+dev.off() #dev.new(file="Rplots.pdf", width=16, height=12)# Get the legacy xcmsSet object
 
-# Get the legacy xcmsSet object
 suppressWarnings(xset <- as(xdata, 'xcmsSet'))
 sampclass(xset) <- xset@phenoData$sample_group
 
-if (exists("intval")) {
-    getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
-}
+cat("\n\n")
+
+
+# -- TIC --
+cat("\t\tGET TIC GRAPH\n")
+#@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
+getTICs(xcmsSet=xset, rt="raw", pdfname="TICs.pdf")
+getBPCs(xcmsSet=xset, rt="raw", pdfname="BICs.pdf")
 
 cat("\n\n")
 
@@ -118,8 +110,8 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
-save(list=objects2save[objects2save %in% ls()], file="group.RData")
+objects2save = c("xset","zipfile","singlefile","listOFlistArguments","md5sumList","sampleNamesList")
+save(list=objects2save[objects2save %in% ls()], file="retcor.RData")
 
 cat("\n\n")
 
