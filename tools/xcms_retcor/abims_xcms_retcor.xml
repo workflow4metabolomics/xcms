@@ -10,26 +10,20 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_XCMS_SCRIPT@
+        @COMMAND_XCMS_SCRIPT@/xcms_retcor.r
         image '$image'
-        xfunction retcor
-
-        xsetRdataOutput '$xsetRData'
-        ticspdf '$ticsCorPdf'
-        bicspdf '$bpcsCorPdf'
-        rplotspdf '$rplotsPdf'
 
         method $methods.method
-        #if $methods.method == "obiwarp":
-            profStep $methods.profStep
+        #if $methods.method == "Obiwarp":
+            binSize $methods.binSize
         #else
             smooth $methods.smooth
-            extra $methods.extra
-            missing $methods.missing
+            extraPeaks $methods.extraPeaks
+            minFraction $methods.minFraction
             #if $methods.options.option == "show":
                 span $methods.options.span
                 family $methods.options.family
-                plottype $methods.options.plottype
+                ##plottype $methods.options.plottype
             #end if
         #end if
 
@@ -42,19 +36,19 @@
         <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for retention time correction" help="[method] See the help section below" >
-                <option value="obiwarp" >obiwarp</option>
-                <option value="peakgroups" selected="true">peakgroups</option>
+                <option value="Obiwarp" >Obiwarp</option>
+                <option value="PeakGroups" selected="true">PeakGroups</option>
             </param>
-            <when value="obiwarp">
-                <param name="profStep" type="float" value="1" label="Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files" />
+            <when value="Obiwarp">
+                <param name="binSize" type="float" value="1" label="Step size (in m/z)" help="[binSize] to use for profile generation from the raw data files" />
             </when>
-            <when value="peakgroups">
+            <when value="PeakGroups">
                 <param name="smooth" type="select" label="Smooth method" help="[smooth] either 'loess’ for non-linear alignment or ‘linear’ for linear alignment" >
                     <option value="loess">loess</option>
                     <option value="linear">linear</option>
                 </param>
-                <param name="extra" type="integer" value="1" label="Number of extra peaks to allow in retention time correction correction groups" help="[extra]" />
-                <param name="missing" type="integer" value="1" label="Number of missing samples to allow in retention time correction groups" help="[missing]" />
+                <param name="extraPeaks" type="integer" value="1" label="Number of extra peaks to allow in retention time correction correction groups" help="[extraPeaks]" />
+                <param name="minFraction" type="float" value="1" label="Number of missing samples to allow in retention time correction groups" help="[minFraction]" />
 
                 <conditional name="options">
                     <param name="option" type="select" label="Advanced options">
@@ -69,11 +63,13 @@
                             <option value="symmetric">symmetric</option>
                         </param>
 
+                        <!--@TODO: plottype?
                         <param name="plottype" type="select" help="[plottype] if deviation plot retention time deviation points and regression fit, and if mdevden also plot peak overall peak density and retention time correction peak density">
                             <option value="none" selected="true">none</option>
                             <option value="deviation">deviation</option>
                             <option value="mdevden">mdevden</option>
                         </param>
+                        -->
 
                     </when>
                     <when value="hide">
@@ -87,15 +83,15 @@
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" />
-        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf">
-            <filter>(methods['method'] == 'peakgroups')</filter>
+        <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" from_work_dir="retcor.RData" />
+        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf" from_work_dir="Rplots.pdf">
+            <filter>(methods['method'] == 'PeakGroups')</filter>
             <filter>(options['option'] == 'show')</filter>
             <filter>(family == 'symmetric')</filter>
             <filter>(plottype != 'none')</filter>
         </data>
-        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" />
-        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" />
+        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" from_work_dir="TICs.pdf"/>
+        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" from_work_dir="BICs.pdf" />
         <data name="log" format="txt" label="xset.log.txt"  hidden="true" />
     </outputs>
 
@@ -103,10 +99,10 @@
         <!--<test>
             <param name="image" value="xset.group.RData"/>
             <conditional name="methods">
-                <param name="method" value="peakgroups"/>
+                <param name="method" value="PeakGroups"/>
                 <param name="smooth" value="loess"/>
-                <param name="extra" value="1"/>
-                <param name="missing" value="1"/>
+                <param name="extraPeaks" value="1"/>
+                <param name="minFraction" value="1"/>
                 <conditional name="options">
                     <param name="option" value="show"/>
                     <param name="span" value="0.2"/>
@@ -129,22 +125,22 @@
         <test>
             <param name="image" value="faahKO.xset.group.RData"/>
             <conditional name="methods">
-                <param name="method" value="peakgroups"/>
+                <param name="method" value="PeakGroups"/>
                 <param name="smooth" value="loess"/>
-                <param name="extra" value="1"/>
-                <param name="missing" value="1"/>
+                <param name="extraPeaks" value="1"/>
+                <param name="minFraction" value="1"/>
                 <conditional name="options">
                     <param name="option" value="show"/>
                     <param name="span" value="0.2"/>
                     <param name="family" value="gaussian"/>
-                    <param name="plottype" value="deviation"/>
+                    <!--<param name="plottype" value="deviation"/>-->
                 </conditional>
             </conditional>
             <expand macro="test_file_load_zip"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
                     <has_text text="Peak Groups: 0" />
@@ -155,22 +151,22 @@
         <test>
             <param name="image" value="faahKO-single-class.xset.group.RData"/>
             <conditional name="methods">
-                <param name="method" value="peakgroups"/>
+                <param name="method" value="PeakGroups"/>
                 <param name="smooth" value="loess"/>
-                <param name="extra" value="1"/>
-                <param name="missing" value="1"/>
+                <param name="extraPeaks" value="1"/>
+                <param name="minFraction" value="1"/>
                 <conditional name="options">
                     <param name="option" value="show"/>
                     <param name="span" value="0.2"/>
                     <param name="family" value="gaussian"/>
-                    <param name="plottype" value="deviation"/>
+                    <!--<param name="plottype" value="deviation"/>-->
                 </conditional>
             </conditional>
             <expand macro="test_file_load_single"/>
             <output name="log">
                 <assert_contents>
                     <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2507.7-4481.7 seconds (41.8-74.7 minutes)" />
+                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
                     <has_text text="Mass range: 200.1-600 m/z" />
                     <has_text text="Peaks: 9251 (about 2313 per sample)" />
                     <has_text text="Peak Groups: 0" />
@@ -255,15 +251,15 @@ Parameters
 Method
 ------
 
-**peakgroups**
+**PeakGroups**
 
-    | xcms ignores those groups by only considering well-behaved peak groups which are missing at most one sample and have at most one extra peak. (Those values can be changed with the **missing** and **extra** arguments.)
+    | xcms ignores those groups by only considering well-behaved peak groups which are missing at most one sample and have at most one extra peak. (Those values can be changed with the **minFraction** and **extraPeaks** arguments.)
     | For each of those well-behaved groups, the algorithm calculates a median retention time and, for every sample, a deviation from that median. Within a sample, the observed deviation generally changes over time in a nonlinear fashion. Those changes are approximated using a local polynomial regression technique implemented in the **loess** function. By default, the curve fitting is done using least-squares on all data points.
     | However, it is possible to enable outlier detection and removal by setting the **family** argument to **symmetric**.
 
-**obiwarp**
+**Obiwarp**
 
-    | Calculate retention time deviations for each sample using the obiwarp code at "http://obi-warp.sourceforge.net/". This function is able to align multiple samples by a center-star strategy. Ordered Bijective Interpolated Warping (OBI-Warp) aligns matrices along a single axis using Dynamic Time Warping (DTW) and a one-to-one (bijective) interpolated warp function. OBI-Warp harnesses the non-linear, comprehensive alignment power of DTW and builds on the discrete, non-bijective output of DTW to give natural interpolants that can be used across multiple datasets.
+    | Calculate retention time deviations for each sample using the Obiwarp code at "http://obi-warp.sourceforge.net/". This function is able to align multiple samples by a center-star strategy. Ordered Bijective Interpolated Warping (OBI-Warp) aligns matrices along a single axis using Dynamic Time Warping (DTW) and a one-to-one (bijective) interpolated warp function. OBI-Warp harnesses the non-linear, comprehensive alignment power of DTW and builds on the discrete, non-bijective output of DTW to give natural interpolants that can be used across multiple datasets.
     | For the original publication see :**Chromatographic Alignment of ESI-LC-MS Proteomics Data Sets by Ordered Bijective Interpo-lated Warping John T. Prince and, Edward M. Marcotte Analytical Chemistry 2006 78 (17), 6140-6152.**
 
 
@@ -305,10 +301,10 @@ Input files
 Parameters
 ----------
 
-    | Method: -> **peakgroups**
+    | Method: -> **PeakGroups**
     | smooth: -> **loess**
-    | extra: -> **1**
-    | missing -> **1**
+    | extraPeaks: -> **1**
+    | minFraction -> **1**
     | Advanced options: -> **show**
     | span -> **0.2**
     | family -> **gaussian**
