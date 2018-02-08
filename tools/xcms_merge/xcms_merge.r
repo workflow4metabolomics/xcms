@@ -63,7 +63,6 @@ if (!is.null(args$sampleMetadata)) {
         stop(error_message)
     }
 }
-save.image()
 
 cat("\tXCMSnExp OBJECT INFO\n")
 print(pData(xdata))
