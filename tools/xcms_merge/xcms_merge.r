@@ -62,7 +62,7 @@ if (!is.null(listArguments[["sampleMetadata"]])) {
         stop(error_message)
     }
 }
-
+save.image()
 # Get the legacy xcmsSet object
 suppressWarnings(xset <- as(xdata, "xcmsSet"))
 sampclass(xset) <- xset@phenoData$sample_group
