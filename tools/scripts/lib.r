@@ -52,7 +52,7 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
 
 #@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
-getPlotChromPeakDensity <- function(xdata) {
+getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
     pdf(file="plotChromPeakDensity.pdf", width=16, height=12)
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
@@ -62,7 +62,9 @@ getPlotChromPeakDensity <- function(xdata) {
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
-        plotChromPeakDensity(xdata, mz=c(featureDefinitions(xdata)[i,]$mzmin,featureDefinitions(xdata)[i,]$mzmax), col=group_colors, pch=16, xlim=xlim)
+        mzmin = featureDefinitions(xdata)[i,]$mzmin
+        mzmax = featureDefinitions(xdata)[i,]$mzmax
+        plotChromPeakDensity(xdata, mz=c(mzmin,mzmax), col=group_colors, pch=16, xlim=xlim, main=paste(round(mzmin,mzdigit),round(mzmax,mzdigit)))
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
 
