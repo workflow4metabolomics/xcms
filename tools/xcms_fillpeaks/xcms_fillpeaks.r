@@ -95,6 +95,7 @@ cat("\t\tCOMPUTE\n")
 cat("\t\t\tFilling missing peaks using default settings\n")
 #fillChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
 #print(fillChromPeaksParam)
+save.image()
 xdata <- fillChromPeaks(xdata)#, param=fillChromPeaksParam)
 
 suppressWarnings(xset <- as(xdata, 'xcmsSet'))
@@ -117,7 +118,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","listOFlistArguments","md5sumList","sampleNamesList")
+objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList")
 save(list=objects2save[objects2save %in% ls()], file="fillpeaks.RData")
 
 cat("\n\n")
