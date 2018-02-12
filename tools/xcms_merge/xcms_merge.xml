@@ -1,4 +1,4 @@
-<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="1.0.0">
+<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="1.1.0">
     <description>Merge xcms.xcmsSet xset in one to be used by group</description>
 
     <macros>
@@ -60,6 +60,13 @@ sampleNamesList=sampleNamesList_merged; rm(sampleNamesList_merged)
     }
 
     sampclass(xset)=sampleMetadata\$V2[match(rownames(xset@phenoData),sampleMetadata\$V1)]
+
+    if (any(is.na(sampclass(xset)))) {
+        sample_missing <- rownames(phenoData(xset))[is.na(sampclass(xset))]
+        error_message <- paste("Those samples are missing in your sampleMetadata:", paste(sample_missing, collapse=" "))
+        print(error_message)
+        stop(error_message)
+    }
 #end if
 
 
@@ -122,6 +129,14 @@ save.image("$xsetRData")
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+        </test>
+        <test expect_failure="True">
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="sampleMetadata" value="sampleMetadata_missing.tab" />
+            <expand macro="test_file_load_single"/>
+            <assert_stderr>
+                <has_text text="Those samples are missing in your sampleMetadata: ko16" />
+            </assert_stderr>
         </test>
     </tests>
 
@@ -214,6 +229,11 @@ xset.merged.RData: rdata.xcms.raw format
 
 Changelog/News
 --------------
+
+**Version 1.0.1 - 13/02/2017**
+
+- IMPROVMENT: the tool will now raise an error if a sample isn't describe in the sampleMetadata file
+
 
 **Version 1.0.0 - 03/02/2017**
 
