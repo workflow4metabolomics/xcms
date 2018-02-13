@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 1.0.4 - 13/02/2018**
+
+- UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0
+
 **Version 1.0.3 - 03/02/2017**
 
 - IMPROVEMENT: xcms.summary can deal with merged individual data
