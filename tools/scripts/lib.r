@@ -1,15 +1,5 @@
-#Authors ABiMS TEAM
-#Lib.r for Galaxy Workflow4Metabolomics xcms tools
-#
-#version 2.4: lecorguille
-#   add getPeaklistW4M
-#version 2.3: yguitton
-#   correction for empty PDF when only 1 class
-#version 2.2
-#   correct bug in Base Peak Chromatogram (BPC) option, not only TIC when scanrange used in xcmsSet
-#   Note if scanrange is used a warning is prompted in R console but do not stop PDF generation
-#version 2.1: yguitton
-#   Modifications made by Guitton Yann
+#@authors ABiMS TEAM, Y. Guitton
+# lib.r for Galaxy Workflow4Metabolomics xcms tools
 
 
 #@author G. Le Corguille
@@ -586,6 +576,21 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
     return (directory)
 }
 
+
+# This function retrieve a xset like object
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr
+getxcmsSetObject <- function(xobject) {
+    # XCMS 1.x
+    if (class(xobject) == "xcmsSet")
+        return (xobject)
+    # XCMS 3.x
+    if (class(xobject) == "XCMSnExp") {
+        # Get the legacy xcmsSet object
+        suppressWarnings(xset <- as(xobject, 'xcmsSet'))
+        sampclass(xset) <- xset@phenoData$sample_group
+        return (xset)
+    }
+}
 
 .concatenate_XCMSnExp <- function(...) {
     x <- list(...)
