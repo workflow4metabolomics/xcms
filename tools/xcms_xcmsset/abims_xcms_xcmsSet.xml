@@ -1,5 +1,5 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="@WRAPPER_VERSION@.0">
-    <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
+<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@WRAPPER_VERSION@.0">
+    <description>Chromatographic peak detection</description>
 
     <macros>
         <import>macros.xml</import>
@@ -17,45 +17,41 @@
             zipfile '$input'
         #end if
 
-        ##@TODO: scanrange? where? how?
-        ##if $options_scanrange.option == "show":
-        ##    scanrange "c($options_scanrange.scanrange)"
-        ##end if
-
-        ##@TODO: profmethod?
-        ## profmethod $profmethod
         BPPARAM \${GALAXY_SLOTS:-1}
         method $methods.method
+
         #if $methods.method == "CentWave":
             ppm $methods.ppm
             peakwidth "c($methods.peakwidth)"
-            #if $methods.options_c.option == "show":
-                mzdiff $methods.options_c.mzdiff
-                snthresh $methods.options_c.snthresh
-                integrate $methods.options_c.integrate
-                noise $methods.options_c.noise
-                prefilter "c($methods.options_c.prefilter)"
-            #end if
+            ## Advanced
+            snthresh $methods.CentWaveAdv.snthresh
+            prefilter "c($methods.CentWaveAdv.prefilter)"
+            mzCenterFun $methods.CentWaveAdv.mzCenterFun
+            integrate $methods.CentWaveAdv.integrate
+            mzdiff $methods.CentWaveAdv.mzdiff
+            fitgauss $methods.CentWaveAdv.fitgauss
+            noise $methods.CentWaveAdv.noise
+            verboseColumns $methods.CentWaveAdv.verboseColumns
         #elif $methods.method == "MatchedFilter":
-            ##@TODO: step?
-            ##step $methods.step
             fwhm $methods.fwhm
-            #if $methods.options_m.option == "show":
-                ## sigma "$methods.options_m.sigma"
-                max $methods.options_m.max
-                snthresh $methods.options_m.snthresh
-                steps $methods.options_m.steps
-                mzdiff $methods.options_m.mzdiff
+            binSize $methods.binSize
+            impute $impute_cond.impute
+            #if $impute_cond.impute == "linbase":
+                baseValue $impute_cond.baseValue
+                distance $impute_cond.distance
             #end if
+            ## Advanced
+            sigma $methods.MatchedFilterAdv.sigma
+            max $methods.MatchedFilterAdv.max
+            snthresh $methods.MatchedFilterAdv.snthresh
+            steps $methods.MatchedFilterAdv.steps
+            mzdiff $methods.MatchedFilterAdv.mzdiff
         #elif $methods.method == "MSW":
             snthresh $methods.snthresh
-            nearbyPeak $methods.nearbyPeak
-            ##@TODO: winSize.noise?
-            ##winSize.noise $methods.winSize_noise
-            ampTh $methods.ampTh
+            verboseColumns $methods.verboseColumns
             scales "c($methods.scales)"
-            ##@TODO: SNR.method?
-            ##SNR.method "$methods.SNR_method"
+            nearbyPeak $methods.nearbyPeak
+            ampTh $methods.ampTh
         #end if
         @COMMAND_LOG_EXIT@
     ]]></command>
@@ -64,93 +60,89 @@
 
         <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
 
-        <!--<conditional name="options_scanrange">
-            <param name="option" type="select" label="Scan range option " >
-                <option value="show">show</option>
-                <option value="hide" selected="true">hide</option>
-            </param>
-            <when value="show">
-                <param name="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-                    <validator type="empty_field"/>
-                </param>
-            </when>
-            <when value="hide">
-            </when>
-        </conditional>-->
+        <!--@TODO <param argument="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
+        Should be replaced by MSnBase::filterAcquisition 
+        -->
 
-
-<!--
-        <param name="profmethod" type="select" label="Method to use for profile generation (profmethod)" >
-            <option value="bin" selected="true">bin</option>
-            <option value="binlin">binlin</option>
-            <option value="binlinbase">binlinbase</option>
-            <option value="intlin">intlin</option>
-        </param>
--->
         <conditional name="methods">
             <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
-                <option value="CentWave">CentWave</option>
-                <option value="MatchedFilter" selected="true">MatchedFilter</option>
-                <option value="MSW">MSW</option>
+                <option value="MatchedFilter" selected="true">MatchedFilter - peak detection in chromatographic space</option>
+                <option value="CentWave">CentWave - chromatographic peak detection using the centWave method</option>
+                <option value="MSW">MSW - single-spectrum non-chromatography MS data peak detection</option>
             </param>
 
             <!-- centWave Filter options -->
             <when value="CentWave">
-                <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
-                <param name="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="[peakwidth]" />
+                <param argument="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
+                <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space." />
 
-                <conditional name="options_c">
-                    <param name="option" type="select" label="Advanced options" >
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
+                <section name="CentWaveAdv" title="Advanced Options" expanded="False">
+                    <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" />
+                    <param argument="prefilter" type="text" value="3,100" label="Prefilter step for for the first analysis step (ROI detection)" help="Separate by coma k, I. Mass traces are only retained if they contain at least ‘k‘ peaks with intensity ‘>= I‘." />
+                    <param argument="mzCenterFun" type="select" label="Name of the function to calculate the m/z center of the chromatographic peak" >
+                        <option value="wMean">intensity weighted mean of the peak's m/z values</option>
+                        <option value="mean">mean of the peak's m/z values</option>
+                        <option value="apex">use the m/z value at the peak apex</option>
+                        <option value="wMeanApex3">ntensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
+                        <option value="meanApex3">mean of the m/z value of the peak apex and the m/z values left and right of it</option>
                     </param>
-                    <when value="show">
-                        <param name="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="[snthresh] Signal to noise ratio cutoff" />
-                        <param name="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap" />
-                        <param name="integrate" type="select" label="peak limits method" help="[integrate]" >
-                            <option value="1">peak limits based on smoothed 2nd derivative (less precise)</option>
-                            <option value="2">peak limits based on real data (more sensitive to noise)</option>
-                        </param>
-                        <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
-                        <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
-                    </when>
-                    <when value="hide">
-                    </when>
-                </conditional>
+                    <param argument="integrate" type="select" label="Integration method" >
+                        <option value="1">peak limits are found through descent on the mexican hat filtered data (more robust, but less exact)</option>
+                        <option value="2">peak limits based on real data (more accurate but prone to noise)</option>
+                    </param>
+                    <param argument="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="can be negative to allow overlap" />
+                    <param argument="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
+                    <param argument="noise" type="integer" value="0" label="Noise filter" help="allowing to set a minimum intensity required for centroids to be considered in the first analysis step (centroids with intensity lower than ‘noise’ are omitted from ROI detection)." />
+                    <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
+                    <!-- roiList -->
+                    <!-- firstBaselineCheck -->
+                    <!-- roiScales -->
+                </section>
             </when>
 
             <!-- matched Filter options -->
             <when value="MatchedFilter">
-                <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
-                <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
-                <conditional name="options_m">
-                    <param name="option" type="select" label="Advanced options" >
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
+                <param argument="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="Only used to calculate the actual sigma" />
+                <param argument="binSize" type="float" value="0.1" label="Step size to use for profile generation" help="The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size. (Previously step)" />
+                <conditional name="impute_cond">
+                    <param argument="impute" type="select" label="Method to be used for missing value imputation" help="(previously profmethod)">
+                        <option value="none">none - no linear interpolation</option>
+                        <option value="lin">lin - linear interpolation</option>
+                        <option value="linbase">linbase - linear interpolation within a certain bin-neighborhood</option>
+                        <option value="intlin">intlin - integral of the linearly interpolated data from plus to minus half the step size</option>
                     </param>
-                    <when value="show">
-                        <!--<param name="sigma" type="float" value="12.739935451" label="Standard deviation (width) of matched filtration model peak" help="[sigma] By default: fwhm/2.3548" />-->
-                        <param name="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" help="[max]" />
-                        <param name="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" help="[snthresh]" />
-                        <param name="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="[steps] The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
-                        <param name="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps " />
+                    <when value="none" />
+                    <when value="lin" />
+                    <when value="linbase">
+                        <param argument="baseValue" type="float" value="" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
+                        <param argument="distance" type="integer" value="0" label="Number of non-empty neighboring element of an empty element that should be considered for linear interpolation." />
                     </when>
-                    <when value="hide">
-                    </when>
+                    <when value="intlin" />
                 </conditional>
+                <section name="MatchedFilterAdv" title="Advanced Options" expanded="False">
+                    <param argument="sigma" type="float" value="-1" label="Standard deviation (width) of matched filtration model peak" help="Leave it to -1 to calculate it using fwhm by default at fwhm/2.3548" />
+                    <param argument="max" type="integer" value="5" label="Maximum number of peaks that are expected/will be identified per slice" />
+                    <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
+                    <param argument="steps" type="integer" value="2" label="Number of bins to be merged before filtration" help="(i.e. the number of neighboring bins that will be joined to the slice in which filtration and peak detection will be performed)" />
+                    <param argument="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-step*steps " />
+                    <!-- index -->
+                </section>
             </when>
 
             <!-- MSW Filter options -->
             <when value="MSW">
-                <param name="nearbyPeak" type="select" label="Determine whether to include the nearby small peaks of major peaks" help="[nearbyPeak]" >
-                    <option value="TRUE">TRUE</option>
-                    <option value="FALSE">FALSE</option>
-                </param>
-                <!--<param name="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
-                <param name="snthresh" type="integer" value="3" label="SNR (Signal to Noise Ratio) threshold" help="[snthresh]" />
-                <param name="ampTh" type="float" value="0.002" label="Minimum required relative amplitude of the peak" help="[ampTh] Ratio to the maximum of CWT coefficients" />
-                <param name="scales" type="text" value="seq(1,22,3)" label="Scales for the Continuous Wavelet Transform (CWT)" help="[scales] Scales are linked to the width of the peaks that are to be detected. Tape as indicaded seq('n,n,n') or c(n,n) : seq(from, to, by steps), c - linear vector " />
-                <!--<param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />-->
+                <!---@TODO <param argument="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
+                <param argument="snthresh" type="integer" value="3" label="Signal to Noise ratio cutoff" help="" />
+                <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
+                <param argument="scales" type="text" value="1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,36,40,44,48,52,56,60,64" label="Scales of the Continuous Wavelet Transform (CWT)" help="Scales are linked to the width of the peaks that are to be detected." />
+                <param argument="nearbyPeak" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Determine whether to include the nearby small peaks of major peaks" />
+                <!-- peakScaleRange -->
+                <param argument="ampTh" type="float" value="0.01" label="Minimum required relative amplitude of the peak" help="Ratio to the maximum of CWT coefficients" />
+                <!-- minNoiseLevel -->
+                <!-- ridgeLength -->
+                <!-- peakThr -->
+                <!-- tuneIn -->
+                <!---@TODO <param argument="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />-->
             </when>
         </conditional>
     </inputs>
@@ -361,9 +353,10 @@ Xcms.xcmsSet
 Description
 -----------
 
-This tool is used for preprocessing analyte data from multiple LC/MS files (formats NetCDF, mzXML and mzData). It extracts ion from each sample independently and using a statistic model, peaks are filtered and integrated.
+This tool is used for preprocessing data from multiple LC/MS files (formats NetCDF, mzXML and mzData) using the xcms_ R package. It extracts ion from each sample independently and using a statistic model, peaks are filtered and integrated.
 You can read a tutorial on how to perform xcms preprocessing which is available here_.
 
+.. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
 .. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
 
 
@@ -433,7 +426,9 @@ Zip file: Steps for creating the zip file
 **Step1: Creating your directory and hierarchize the subdirectories**
 
 
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip_ software, otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+
+.. _7Zip: http://www.7-zip.org/
 
 Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
 arabidopsis/wild/01.raw
@@ -447,7 +442,9 @@ Create your zip file (e.g.: arabidopsis.zip).
 
 If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
 
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
+Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO_ on workflow4metabolomics.org.
+
+.. _HOWTO: http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf
 
 For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
 
@@ -480,24 +477,31 @@ Parameters
 Extraction method for peaks detection
 -------------------------------------
 
-**Matched Filter**
+**CentWave**
 
-    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
-    | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
-
-
-**cent Wave**
-
-    | This algorithm is most suitable for high resolution LC/{TOF,OrbiTrap,FTICR}-MS data in centroid mode.
+    | The centWave algorithm perform peak density and wavelet based chromatographic peak detection for high resolution LC/MS data in centroid mode [Tautenhahn 2008].
     | Due to the fact that peak centroids are used, a binning step is not necessary.
     | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
+    | See the CentWave_manual_
+
+**MatchedFilter**
+
+    | The _matchedFilter_ algorithm identifies peaks in the chromatographic time domain as described in [Smith 2006]. The intensity values are binned by cutting The LC/MS data into slices (bins) of a mass unit (‘binSize’ m/z) wide. Within each bin the maximal intensity is selected. The chromatographic peak detection is then performed in each bin by extending it based on the ‘steps’ parameter to generate slices comprising bins ‘current_bin - steps +1’ to ‘current_bin + steps - 1’. Each of these slices is then filtered with matched filtration using a second-derative Gaussian as the model peak shape. After filtration peaks are detected using a signal-to-ratio cut-off. For more details and illustrations see [Smith 2006].
+    | See the MatchedFilter_manual_
 
 **MSW**
 
     | Wavelet based, used for direct infusion data. Continuous wavelet transform (CWT) can be used to locate chromatographic peaks on different scales.
-    | If you wish to have more details about the other parameters, you can read the following documents:
-    | -Example of preprocessing data with XCMS : http://www.bioconductor.org/packages/2.12/bioc/vignettes/xcms/inst/doc/xcmsPreprocess.pdf
-    | -Details and explanations for all the parameters of XCMS package: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
+    | See the MSW_manual_
+
+For details and explanations for all the parameters of xcms_ package, see its manuals_ and this example_
+
+.. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
+.. _MatchedFilter_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-matchedFilter.html#heading-2
+.. _MSW_manual: https://rdrr.io/bioc/xcms/man/findPeaks-MSW.html#heading-2
+
+.. _manuals: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
+.. _example: https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html
 
 
 ------------
@@ -586,6 +590,14 @@ Output files
 Changelog/News
 --------------
 
+**Version 3.0.0.0 - 14/02/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+
+- NEW: a bunch of new options: CentWave.mzCenterFun, CentWave.fitgauss, CentWave.verboseColumns, MatchedFilter.sigma
+
+- UPDATE: since xcms 3.0.0, some options are no more available: scanrange, profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
+
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
@@ -612,7 +624,6 @@ Changelog/News
 
 - TEST: refactoring to pass planemo test using conda dependencies
 
-
 **Version 2.0.7 - 10/02/2016**
 
 - BUGFIX: better management of errors. Datasets remained green although the process failed
@@ -625,16 +636,13 @@ Changelog/News
 
 - TEST: refactoring to feed the new report tool
 
-
 **Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
-
 **Version 2.0.2 - 09/10/2015**
 
 - BUGFIX: Some users reported a bug in xcms.xcmsSet. The preprocessing stops itself and doesn't import the whole dataset contained in the zip file without warning. But meanwhile, please check your samplemetadata dataset and the number of rows.
-
 
 **Version 2.0.2 - 02/06/2015**
 

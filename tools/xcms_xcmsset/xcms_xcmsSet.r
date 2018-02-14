@@ -20,8 +20,8 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n")
 
@@ -31,13 +31,29 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the commun parameters
 BPPARAM <- MulticoreParam(1)
-if (!is.null(listArguments[["BPPARAM"]])){
-    BPPARAM <- MulticoreParam(listArguments[["BPPARAM"]]); listArguments[["BPPARAM"]] <- NULL
+if (!is.null(args$BPPARAM)){
+    BPPARAM <- MulticoreParam(args$BPPARAM); args$BPPARAM <- NULL
 }
 register(BPPARAM)
 
 #saving the specific parameters
-method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
+method <- args$method; args$method <- NULL
+
+if (method == "CentWave") {
+    # solve an issue with batch if arguments are logical TRUE/FALSE
+    if (args$fitgauss) args$fitgauss <- T else args$fitgauss <- F
+    if (args$verboseColumns) args$verboseColumns <- T else args$verboseColumns <- F
+}
+
+if (method == "MatchedFilter") {
+    if (args$sigma == -1) args$sigma <- NULL
+}
+
+if (method == "MSW") {
+    # solve an issue with batch if arguments are logical TRUE/FALSE
+    if (args$nearbyPeak) args$nearbyPeak <- T else args$nearbyPeak <- F
+    if (args$verboseColumns) args$verboseColumns <- T else args$verboseColumns <- F
+}
 
 cat("\n\n")
 
@@ -47,10 +63,10 @@ cat("\tINFILE PROCESSING INFO\n")
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-listArguments <- rawFilePath$listArguments
+args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 # Check some character issues
@@ -81,7 +97,7 @@ cat("\t\t\tLoad Raw Data\n")
 raw_data <- readMSData(files=files, pdata = new("NAnnotatedDataFrame", pd), mode="onDisk")
 
 cat("\t\t\tChromatographic peak detection\n")
-findChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
+findChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(findChromPeaksParam)
 xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
