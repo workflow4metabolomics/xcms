@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.3">
+<tool id="abims_xcms_summary" name="xcms.summary" version="@WRAPPER_VERSION@.0">
 
     <description>Create a summary of XCMS analysis</description>
 
@@ -6,10 +6,9 @@
         <import>macros.xml</import>
     </macros>
 
-    <requirements>
+    <expand macro="requirements">
         <requirement type="package" version="1.32.0">bioconductor-camera</requirement>
-        <requirement type="package" version="1.1_4">r-batch</requirement>
-    </requirements>
+    </expand>
 
     <expand macro="stdio"/>
 
@@ -84,6 +83,10 @@ CAMERA.annotate           xset.RData        rdata.camera.*        RData file
 
 Changelog/News
 --------------
+
+**Version 1.0.4 - 13/02/2018**
+
+- UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0
 
 **Version 1.0.3 - 03/02/2017**
 
