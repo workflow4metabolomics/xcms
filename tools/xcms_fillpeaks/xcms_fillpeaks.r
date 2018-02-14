@@ -13,7 +13,7 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs=c("xcms","batch")
+pkgs <- c("xcms","batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -98,9 +98,6 @@ cat("\t\t\tFilling missing peaks using default settings\n")
 save.image()
 xdata <- fillChromPeaks(xdata)#, param=fillChromPeaksParam)
 
-suppressWarnings(xset <- as(xdata, 'xcmsSet'))
-sampclass(xset) <- xset@phenoData$sample_group
-
 if (exists("intval")) {
     getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
 }
@@ -114,6 +111,8 @@ print(xdata)
 cat("\n\n")
 
 cat("\txcmsSet OBJECT INFO\n")
+# Get the legacy xcmsSet object
+xset <- getxcmsSetObject(xdata)
 print(xset)
 cat("\n\n")
 

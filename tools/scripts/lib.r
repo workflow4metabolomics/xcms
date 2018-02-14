@@ -41,23 +41,6 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
 }
 
 
-#@TODO: remove this function as soon as I get an answer to this follow issue
-# https://github.com/sneumann/xcms/issues/250
-groupnamesW4M <- function(xdata, mzdec = 0, rtdec = 0) {
-    mzfmt <- paste("%.", mzdec, "f", sep = "")
-    rtfmt <- paste("%.", rtdec, "f", sep = "")
-
-    gnames <- paste("M", sprintf(mzfmt, featureDefinitions(xdata)[,"mzmed"]), "T",
-                    sprintf(rtfmt, featureDefinitions(xdata)[,"rtmed"]), sep = "")
-
-    if (any(dup <- duplicated(gnames)))
-        for (dupname in unique(gnames[dup])) {
-            dupidx <- which(gnames == dupname)
-            gnames[dupidx] <- paste(gnames[dupidx], seq(along = dupidx), sep = "_")
-        }
-
-    return (gnames)
-}
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
@@ -592,6 +575,27 @@ getxcmsSetObject <- function(xobject) {
     }
 }
 
+
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/sneumann/xcms/issues/250
+groupnamesW4M <- function(xdata, mzdec = 0, rtdec = 0) {
+    mzfmt <- paste("%.", mzdec, "f", sep = "")
+    rtfmt <- paste("%.", rtdec, "f", sep = "")
+
+    gnames <- paste("M", sprintf(mzfmt, featureDefinitions(xdata)[,"mzmed"]), "T",
+                    sprintf(rtfmt, featureDefinitions(xdata)[,"rtmed"]), sep = "")
+
+    if (any(dup <- duplicated(gnames)))
+        for (dupname in unique(gnames[dup])) {
+            dupidx <- which(gnames == dupname)
+            gnames[dupidx] <- paste(gnames[dupidx], seq(along = dupidx), sep = "_")
+        }
+
+    return (gnames)
+}
+
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/sneumann/xcms/issues/247
 .concatenate_XCMSnExp <- function(...) {
     x <- list(...)
     if (length(x) == 0)
@@ -634,6 +638,8 @@ getxcmsSetObject <- function(xobject) {
         new_x
 }
 
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/sneumann/xcms/issues/247
 .concatenate_OnDiskMSnExp <- function(...) {
     x <- list(...)
     if (length(x) == 0)
@@ -709,6 +715,8 @@ getxcmsSetObject <- function(xobject) {
         res
 }
 
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/sneumann/xcms/issues/247
 c.XCMSnExp <- function(...) {
     .concatenate_XCMSnExp(...)
 }

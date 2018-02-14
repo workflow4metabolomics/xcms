@@ -13,7 +13,7 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs=c("xcms","batch")
+pkgs <- c("xcms","batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -95,8 +95,7 @@ save.image()
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
 
 # Get the legacy xcmsSet object
-suppressWarnings(xset <- as(xdata, 'xcmsSet'))
-sampclass(xset) <- xset@phenoData$sample_group
+xset <- getxcmsSetObject(xdata)
 
 cat("\n\n")
 
