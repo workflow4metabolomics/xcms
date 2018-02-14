@@ -17,79 +17,126 @@ ul li { margin-bottom:10px; }
 <h2>Samples used:</h2>
 <div><table>
 <tr><th>sample</th><th>filename</th><th>md5sum<sup>*</sup></th></tr>
-<tr> <td> ko15 </td> <td> ./ko15.CDF </td> <td> 4698c36c0b3af007faf70975c04ccf2a </td> </tr><tr> <td> ko16 </td> <td> ./ko16.CDF </td> <td> afaeed94ced3140bc042d5ab6aeb16c1 </td> </tr><tr> <td> wt15 </td> <td> ./wt15.CDF </td> <td> d58a27fad7c04ddddb0359ddc2b7ba68 </td> </tr><tr> <td> wt16 </td> <td> ./wt16.CDF </td> <td> 29654e9f8ad48c1fbe2a41b9ba578f6e </td> </tr>
+<tr><td>ko15</td><td>ko15.CDF</td><td>4698c36c0b3af007faf70975c04ccf2a</td></tr><tr><td>ko16</td><td>ko16.CDF</td><td>afaeed94ced3140bc042d5ab6aeb16c1</td></tr><tr><td>wt15</td><td>wt15.CDF</td><td>d58a27fad7c04ddddb0359ddc2b7ba68</td></tr><tr><td>wt16</td><td>wt16.CDF</td><td>29654e9f8ad48c1fbe2a41b9ba578f6e</td></tr>
 </table>
 <br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.
 </div>
 <h2>Function launched:</h2>
 <div><table>
 <tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
-<tr><td rowspan='4'>170203-11:04:42</td><td rowspan='4'>xcmsSet</td>
-<td>nSlaves</td><td>1</td></tr>
-<tr><td>method</td><td>centWave</td></tr>
-<tr><td>ppm</td><td>25</td></tr>
-<tr><td>peakwidth</td><td>2050</td></tr>
-<tr><td rowspan='4'>170203-11:05:21</td><td rowspan='4'>xcmsSet</td>
-<td>nSlaves</td><td>1</td></tr>
-<tr><td>method</td><td>centWave</td></tr>
-<tr><td>ppm</td><td>25</td></tr>
-<tr><td>peakwidth</td><td>2050</td></tr>
-<tr><td rowspan='4'>170203-11:06:21</td><td rowspan='4'>xcmsSet</td>
-<td>nSlaves</td><td>1</td></tr>
-<tr><td>method</td><td>centWave</td></tr>
-<tr><td>ppm</td><td>25</td></tr>
-<tr><td>peakwidth</td><td>2050</td></tr>
-<tr><td rowspan='4'>170203-11:06:59</td><td rowspan='4'>xcmsSet</td>
-<td>nSlaves</td><td>1</td></tr>
-<tr><td>method</td><td>centWave</td></tr>
-<tr><td>ppm</td><td>25</td></tr>
-<tr><td>peakwidth</td><td>2050</td></tr>
-<tr><td rowspan='6'>170203-14:38:53</td><td rowspan='6'>group</td>
-<td>method</td><td>density</td></tr>
-<tr><td>sleep</td><td>0.001</td></tr>
-<tr><td>minfrac</td><td>0.3</td></tr>
-<tr><td>bw</td><td>5</td></tr>
-<tr><td>mzwid</td><td>0.01</td></tr>
-<tr><td>max</td><td>50</td></tr>
-<tr><td rowspan='7'>170203-14:51:16</td><td rowspan='7'>retcor</td>
-<td>method</td><td>peakgroups</td></tr>
-<tr><td>smooth</td><td>loess</td></tr>
-<tr><td>extra</td><td>1</td></tr>
-<tr><td>missing</td><td>1</td></tr>
-<tr><td>span</td><td>0.2</td></tr>
-<tr><td>family</td><td>gaussian</td></tr>
-<tr><td>plottype</td><td>deviation</td></tr>
-<tr><td rowspan='6'>170203-15:27:58</td><td rowspan='6'>group</td>
-<td>method</td><td>density</td></tr>
-<tr><td>sleep</td><td>0.001</td></tr>
-<tr><td>minfrac</td><td>0.3</td></tr>
-<tr><td>bw</td><td>5</td></tr>
-<tr><td>mzwid</td><td>0.01</td></tr>
-<tr><td>max</td><td>50</td></tr>
-<tr><td rowspan='5'>170203-15:44:50</td><td rowspan='5'>fillPeaks</td>
-<td>method</td><td>chrom</td></tr>
-<tr><td>convertRTMinute</td><td>FALSE</td></tr>
-<tr><td>numDigitsMZ</td><td>4</td></tr>
-<tr><td>numDigitsRT</td><td>1</td></tr>
-<tr><td>intval</td><td>into</td></tr>
+<tr><td>Wed Feb  7 11:15:25 2018</td><td>Peak detection</td><td colspan='2'><pre>
+Object of class:  CentWaveParam 
+Parameters:
+ ppm: 25 
+ peakwidth: 20, 50 
+ snthresh: 10 
+ prefilter: 3, 100 
+ mzCenterFun: wMean 
+ integrate: 1 
+ mzdiff: -0.001 
+ fitgauss: FALSE 
+ noise: 0 
+ verboseColumns: FALSE 
+ roiList length: 0 
+ firstBaselineCheck TRUE 
+ roiScales length: 0 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:11 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+Object of class:  PeakDensityParam 
+Parameters:
+ sampleGroups: character of length 4 
+ bw: 30 
+ minFraction: 0.8 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:19 2018</td><td>Retention time correction</td><td colspan='2'><pre>
+Object of class:  PeakGroupsParam 
+Parameters:
+ minFraction: 0.85 
+ extraPeaks: 1 
+ smooth: loess 
+ span: 0.2 
+ family: gaussian 
+ number of peak groups: 125 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:27 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+Object of class:  PeakDensityParam 
+Parameters:
+ sampleGroups: character of length 4 
+ bw: 20 
+ minFraction: 0.4 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
+</pre></td></tr>
+<tr><td>Wed Feb 14 09:55:13 2018</td><td>Missing peak filling</td><td colspan='2'><pre>
+Object of class:  FillChromPeaksParam 
+Parameters:
+ expandMz: 0 
+ expandRt: 0 
+ ppm: 0 
+</pre></td></tr>
 </table>
-<br/><sup>***</sup>timestamp format: yymmdd-hh:mm:ss
+<br/><sup>***</sup>timestamp format: DD MM dd hh:mm:ss YYYY or yymmdd-hh:mm:ss
 </div>
+<h2>Informations about the XCMSnExp object:</h2>
+<div><pre>
+MSn experiment data ("XCMSnExp")
+Object size in memory: 1.36 Mb
+- - - Spectra data - - -
+ MS level(s): 1 
+ Number of spectra: 5112 
+ MSn retention times: 41:33 - 75:0 minutes
+- - - Processing information - - -
+Concatenated [Thu Feb  8 15:36:09 2018] 
+ MSnbase version: 2.4.2 
+- - - Meta data  - - -
+phenoData
+  rowNames: ./ko15.CDF ./ko16.CDF ./wt15.CDF ./wt16.CDF
+  varLabels: sample_name sample_group
+  varMetadata: labelDescription
+Loaded from:
+  [1] ko15.CDF...  [4] wt16.CDF
+  Use 'fileNames(.)' to see all files.
+protocolData: none
+featureData
+  featureNames: F1.S0001 F1.S0002 ... F4.S1278 (5112 total)
+  fvarLabels: fileIdx spIdx ... spectrum (27 total)
+  fvarMetadata: labelDescription
+experimentData: use 'experimentData(object)'
+- - - xcms preprocessing - - -
+Chromatographic peak detection:
+ method: centWave 
+ 15230 peaks identified in 4 samples.
+ On average 3808 chromatographic peaks per sample.
+Alignment/retention time adjustment:
+ method: peak groups 
+Correspondence:
+ method: chromatographic peak density 
+ 6332 features identified.
+ Median mz range of features: 0
+ Median rt range of features: 0
+ 5979 filled peaks (on average 1494.75 per sample).
+</pre></div>
 <h2>Informations about the xcmsSet object:</h2>
 <div><pre>
 An "xcmsSet" object with 4 samples
 
-Time range: 2506-4484 seconds (41.8-74.7 minutes)
+Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)
 Mass range: 200.1-600 m/z
-Peaks: 32720 (about 8180 per sample)
-Peak Groups: 8157 
+Peaks: 15230 (about 3808 per sample)
+Peak Groups: 6332 
 Sample classes: KO, WT 
 
-Peak picking was performed on MS1.
+Feature detection:
+ o Peak picking performed on MS1.
+ o Scan range limited to  1 - 1278 
 Profile settings: method = bin
                   step = 0.1
 
-Memory usage: 4.25 MB
+Memory usage: 2.98 MB
 </pre></div>
 <h2>Citations:</h2>
 <div><ul>
