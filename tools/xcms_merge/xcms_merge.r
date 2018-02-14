@@ -4,8 +4,9 @@
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-suppressPackageStartupMessages(library(xcms, quietly=TRUE))
-suppressPackageStartupMessages(library(batch, quietly=TRUE))
+pkgs <- c("xcms","batch")
+loadAndDisplayPackages(pkgs)
+cat("\n\n");
 
 listArguments <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
 
@@ -63,9 +64,6 @@ if (!is.null(listArguments[["sampleMetadata"]])) {
     }
 }
 save.image()
-# Get the legacy xcmsSet object
-suppressWarnings(xset <- as(xdata, "xcmsSet"))
-sampclass(xset) <- xset@phenoData$sample_group
 
 cat("\tXCMSnExp OBJECT INFO\n")
 print(pData(xdata))
@@ -73,6 +71,8 @@ print(xdata)
 cat("\n\n")
 
 cat("\txcmsSet OBJECT INFO\n")
+# Get the legacy xcmsSet object
+xset <- getxcmsSetObject(xdata)
 print(xset@phenoData)
 print(xset)
 cat("\n\n")
