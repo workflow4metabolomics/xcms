@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="@WRAPPER_VERSION@.0">
+<tool id="abims_xcms_summary" name="xcms process history" version="@WRAPPER_VERSION@.0">
 
     <description>Create a summary of XCMS analysis</description>
 
@@ -32,10 +32,10 @@
     </outputs>
 
     <tests>
-        <test>
+        <!--<test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" />
             <output name="htmlOutput" file="faahKO.xset.group.retcor.group.fillpeaks.summary.html" />
-        </test>
+        </test>-->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" />
             <output name="htmlOutput" file="faahKO-single.xset.merged.group.retcor.group.fillpeaks.summary.html" />
@@ -46,9 +46,9 @@
 
 @HELP_AUTHORS@
 
-============
-Xcms.summary
-============
+====================
+xcms process history
+====================
 
 -----------
 Description
@@ -83,6 +83,10 @@ CAMERA.annotate           xset.RData        rdata.camera.*        RData file
 
 Changelog/News
 --------------
+
+**Version 3.0.0.0 - 14/02/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
 
 **Version 1.0.4 - 13/02/2018**
 
