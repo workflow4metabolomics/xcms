@@ -131,6 +131,15 @@
 
     </token>
 
+    <token name="@HELP_XCMS_MANUAL@">
+
+For details and explanations for all the parameters and the workflow of xcms_ package, see its manual_ and this example_
+
+.. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
+.. _manual: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
+.. _example: https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html
+
+    </token>
 
     <xml name="citation">
         <citations>

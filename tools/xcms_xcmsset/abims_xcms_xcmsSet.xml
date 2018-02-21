@@ -61,7 +61,7 @@
         <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
 
         <!--@TODO <param argument="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-        Should be replaced by MSnBase::filterAcquisition 
+        Should be replaced by MSnBase::filterAcquisition
         -->
 
         <conditional name="methods">
@@ -345,9 +345,9 @@
 
 @HELP_AUTHORS@
 
-============
-Xcms.xcmsSet
-============
+===================
+xcms findChromPeaks
+===================
 
 -----------
 Description
@@ -494,15 +494,11 @@ Extraction method for peaks detection
     | Wavelet based, used for direct infusion data. Continuous wavelet transform (CWT) can be used to locate chromatographic peaks on different scales.
     | See the MSW_manual_
 
-For details and explanations for all the parameters of xcms_ package, see its manuals_ and this example_
-
 .. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
 .. _MatchedFilter_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-matchedFilter.html#heading-2
 .. _MSW_manual: https://rdrr.io/bioc/xcms/man/findPeaks-MSW.html#heading-2
 
-.. _manuals: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
-.. _example: https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html
-
+@HELP_XCMS_MANUAL@
 
 ------------
 Output files

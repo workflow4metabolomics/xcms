@@ -1,6 +1,6 @@
-<tool id="abims_xcms_group" name="xcms.group" version="@WRAPPER_VERSION@.0">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.0">
 
-    <description>Group peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.</description>
+    <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
     <macros>
         <import>macros.xml</import>
@@ -15,24 +15,21 @@
 
         method $methods.method
         #if $methods.method == "PeakDensity":
-            ## minsamp $methods.minsamp
-            minFraction $methods.minFraction
             bw $methods.bw
-            binSize $methods.binSize
-            ##@TODO: sleep?
-            ##sleep 0.001
-            #if $methods.density_options.option == "show":
-                maxFeatures $methods.density_options.maxFeatures
-            #end if
-        #elif $methods.method == "MzClust":
-            mzppm $methods.mzppm
-            mzabs $methods.mzabs
             minFraction $methods.minFraction
-            ## minsamp $methods.minsamp
+            minSamples $methods.minSamples
+            binSize $methods.binSize
+            ## Advanced
+            maxFeatures $methods.PeakDensityAdv.maxFeatures
+        #elif $methods.method == "MzClust":
+            ppm $methods.ppm
+            absMz $methods.absMz
+            minFraction $methods.minFraction
+            minSamples $methods.minSamples
         #else:
             mzVsRTbalance $methods.mzVsRTbalance
-            mzCheck $methods.mzCheck
-            rtCheck $methods.rtCheck
+            absMz $methods.absMz
+            absRt $methods.absRt
             kNN $methods.kNN
         #end if
 
@@ -46,43 +43,32 @@
     <inputs>
         <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
         <conditional name="methods">
-            <param name="method" type="select" label="Method to use for grouping" help="[method] See the help section below">
-                <option value="PeakDensity" selected="true">PeakDensity</option>
-                <option value="MzClust">MzClust</option>
-                <option value="NearestPeaks">NearestPeaks</option>
+            <param name="method" type="select" label="Method to use for grouping" help="See the help section below">
+                <option value="PeakDensity" selected="true">PeakDensity - peak grouping based on time dimension peak densities</option>
+                <option value="MzClust">MzClust - high resolution peak grouping for single spectra (direct infusion) MS data</option>
+                <option value="NearestPeaks">NearestPeaks - chromatographic peak grouping based on their proximity in the mz-rt space</option>
             </param>
             <when value="PeakDensity">
-                <param name="bw" type="float" value="30" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
-                <param name="minFraction" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minFraction] in at least one of the sample groups for it to be a valid group" />
-                <param name="binSize" type="float" value="0.25" label="Width of overlapping m/z slices" help="[binSize] to use for creating peak density chromatograms and grouping peaks across samples " />
-<!--
-                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
--->
-                <conditional name="density_options">
-                    <param name="option" type="select" label="Advanced options">
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
-                    </param>
-                    <when value="show">
-                        <param name="maxFeatures" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" help="[maxFeatures]" />
-                    </when>
-                    <when value="hide">
-                    </when>
-                </conditional>
+                <param argument="bw" type="float" value="30" label="Bandwidth" help="bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
+                <param argument="minFraction" type="float" value="0.5" label="Minimum fraction of samples" help="in at least one sample group in which the peaks have to be present to be considered as a peak group (feature)" />
+                <param argument="minSamples" type="integer" value="1" label="Minimum number of samples" help="in at least one sample group in which the peaks have to be detected to be considered a peak group (feature)" />
+                <param argument="binSize" type="float" value="0.25" label="Width of overlapping m/z slices" help="to use for creating peak density chromatograms and grouping peaks across samples (previously mzdiff)" />
+
+                <section name="PeakDensityAdv" title="Advanced Options" expanded="False">
+                    <param argument="maxFeatures" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" />
+                </section>
             </when>
             <when value="MzClust">
-                <param name="mzppm" type="integer" value="20 " label="Relative error used for clustering/grouping in ppm" help="[mzppm]" />
-                <param name="mzabs" type="float" value="0" label="Absolute error used for clustering/grouping" help="[mzabs]" />
-                <param name="minFraction" type="float" value="0" label="Minimum fraction of each class in one bin" help="[minFraction] minimum fraction of samples necessary in at least one of the sample groups for it to be a valid group" />
-<!--
-                <param name="minsamp" type="hidden" value="1" label="minsamp" help="minimum number of samples necessary in at least one of the sample groups for it to be a valid group " />
--->
+                <param argument="ppm" type="integer" value="20" label="Relative mz error for clustering/grouping in ppm" />
+                <param argument="absMz" type="float" value="0" label="Absolute mz error for clustering/grouping" />
+                <param argument="minFraction" type="float" value="0.5" label="Minimum fraction of samples" help="in at least one sample group in which the peaks have to be present to be considered as a peak group (feature)" />
+                <param argument="minSamples" type="integer" value="1" label="Minimum number of samples" help="in at least one sample group in which the peaks have to be detected to be considered a peak group (feature)" />
             </when>
             <when value="NearestPeaks">
-                <param name="mzVsRTbalance" type="integer" value="10 " label="Multiplicator for mz value before calculating the (euclidean) distance between two peaks." help="[mzVsRTbalance]" />
-                <param name="mzCheck" type="float" value="0.2" label="Maximum tolerated distance for mz" help="[mzCheck]" />
-                <param name="rtCheck" type="integer" value="15" label="Maximum tolerated distance for RT" help="[rtCheck]" />
-                <param name="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" help="[kNN]" />
+                <param argument="mzVsRTbalance" type="integer" value="10" label="Factor by which mz values are multiplied before calculating the (euclician) distance between two peaks" />
+                <param argument="absMz" type="float" value="0.2" label="Maximum tolerated distance for mz values" />
+                <param argument="absRt" type="integer" value="15" label="Maximum tolerated distance for RT values" />
+                <param argument="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" />
             </when>
         </conditional>
 
@@ -275,10 +261,9 @@
                 <param name="bw" value="5"/>
                 <param name="minFraction" value="0.3"/>
                 <param name="binSize" value="0.01"/>
-                <conditional name="density_options">
-                    <param name="option" value="show"/>
+                <section name="PeakDensityAdv">
                     <param name="maxFeatures" value="50"/>
-                </conditional>
+                </section>
             </conditional>
             <expand macro="test_file_load_single"/>
             <output name="log">
@@ -299,17 +284,15 @@
 
 @HELP_AUTHORS@
 
-==========
-Xcms.Group
-==========
+====================
+xcms groupChromPeaks
+====================
 
 -----------
 Description
 -----------
 
 After peak identification with xcmsSet, this tool groups the peaks which represent the same analyte across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time. Allows rejection of features, which are only partially detected within the replicates of a sample class.
-
-
 
 -----------------
 Workflow position
@@ -365,18 +348,26 @@ Parameters
 Method to use for grouping
 --------------------------
 
-**mzClust**
+**MzClust**
 
-    | Runs high resolution alignment on single spectra samples stored in the RData file generated by the **xcmsSet tool**.
+    | This method performs high resolution correspondence for single spectra samples.
+    | See the MzClust_manual_
 
-**density**
+**PeakDensity**
 
-    | Groups peaks together across samples using overlapping m/z bins and calculation of smoothed peak distributions in chromatographic time.
+    | This method performs performs correspondence (chromatographic peak grouping) based on the density (distribution) of identified peaks along the retention time axis within slices of overlapping mz ranges.  All peaks (from the same or from different samples) being close on the retention time axis are grouped into a feature (peak group).
+    | See the PeakDensity_manual_
 
-**nearest**
+**NearestPeaks**
 
-    | Groups peaks together across samples by creating a master peak list and assigning corresponding peaks from all samples. It is inspired by the alignment algorithm of mzMine.
+    | This method is inspired by the grouping algorithm of mzMine [Katajamaa 2006] and performs correspondence based on proximity of peaks in the space spanned by retention time and mz values.  The method creates first a master peak list consisting of all chromatographic peaks from the sample in which most peaks were identified, and starting from that, calculates distances to peaks from the sample with the next most number of peaks. If peaks are closer than the defined threshold they are grouped together.
+    | See the NearestPeaks_manual_
 
+.. _MzClust_manual: https://rdrr.io/bioc/xcms/man/groupChromPeaks-mzClust.html#heading-2
+.. _PeakDensity_manual: https://rdrr.io/bioc/xcms/man/groupChromPeaks-density.html#heading-2
+.. _NearestPeaks_manual: https://rdrr.io/bioc/xcms/man/groupChromPeaks-nearest.html#heading-2
+
+@HELP_XCMS_MANUAL@
 
 ------------
 Output files
@@ -434,6 +425,9 @@ Output files
 
 Changelog/News
 --------------
+**Version 3.0.0.0 - 14/02/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
 
 **Version 2.1.1 - 29/11/2017**
 

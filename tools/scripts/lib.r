@@ -478,22 +478,22 @@ getMd5sum <- function (directory) {
 
 # This function get the raw file path from the arguments
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
-getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
-    if (!is.null(listArguments[["zipfile"]]))           zipfile <- listArguments[["zipfile"]]
-    if (!is.null(listArguments[["zipfilePositive"]]))   zipfile <- listArguments[["zipfilePositive"]]
-    if (!is.null(listArguments[["zipfileNegative"]]))   zipfile <- listArguments[["zipfileNegative"]]
+getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
+    if (!is.null(args$zipfile))           zipfile <- args$zipfile
+    if (!is.null(args$zipfilePositive))   zipfile <- args$zipfilePositive
+    if (!is.null(args$zipfileNegative))   zipfile <- args$zipfileNegative
 
-    if (!is.null(listArguments[["singlefile_galaxyPath"]])) {
-        singlefile_galaxyPaths <- listArguments[["singlefile_galaxyPath"]];
-        singlefile_sampleNames <- listArguments[["singlefile_sampleName"]]
+    if (!is.null(args$singlefile_galaxyPath)) {
+        singlefile_galaxyPaths <- args$singlefile_galaxyPath;
+        singlefile_sampleNames <- args$singlefile_sampleName
     }
-    if (!is.null(listArguments[["singlefile_galaxyPathPositive"]])) {
-        singlefile_galaxyPaths <- listArguments[["singlefile_galaxyPathPositive"]];
-        singlefile_sampleNames <- listArguments[["singlefile_sampleNamePositive"]]
+    if (!is.null(args$singlefile_galaxyPathPositive)) {
+        singlefile_galaxyPaths <- args$singlefile_galaxyPathPositive;
+        singlefile_sampleNames <- args$singlefile_sampleNamePositive
     }
-    if (!is.null(listArguments[["singlefile_galaxyPathNegative"]])) {
-        singlefile_galaxyPaths <- listArguments[["singlefile_galaxyPathNegative"]];
-        singlefile_sampleNames <- listArguments[["singlefile_sampleNameNegative"]]
+    if (!is.null(args$singlefile_galaxyPathNegative)) {
+        singlefile_galaxyPaths <- args$singlefile_galaxyPathNegative;
+        singlefile_sampleNames <- args$singlefile_sampleNameNegative
     }
     if (exists("singlefile_galaxyPaths")){
         singlefile_galaxyPaths <- unlist(strsplit(singlefile_galaxyPaths,","))
@@ -507,9 +507,9 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
         }
     }
     for (argument in c("zipfile","zipfilePositive","zipfileNegative","singlefile_galaxyPath","singlefile_sampleName","singlefile_galaxyPathPositive","singlefile_sampleNamePositive","singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
-        listArguments[[argument]] <- NULL
+        args[[argument]] <- NULL
     }
-    return(list(zipfile=zipfile, singlefile=singlefile, listArguments=listArguments))
+    return(list(zipfile=zipfile, singlefile=singlefile, args=args))
 }
 
 
