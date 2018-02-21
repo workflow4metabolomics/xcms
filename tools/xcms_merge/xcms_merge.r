@@ -16,7 +16,7 @@ if (!exists("zipfile")) zipfile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, listArguments)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-listArguments <- rawFilePath$listArguments
+listArguments <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 cat("\tXSET MERGING...\n")

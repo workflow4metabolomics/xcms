@@ -20,35 +20,28 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n")
 
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
-#saving the commun parameters
-BPPARAM <- MulticoreParam(1)
-if (!is.null(listArguments[["BPPARAM"]])){
-    BPPARAM <- MulticoreParam(listArguments[["BPPARAM"]]); listArguments[["BPPARAM"]] <- NULL
-}
-register(BPPARAM)
-
 #saving the specific parameters
-method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
+method <- args$method; args$method <- NULL
 
-if (!is.null(listArguments[["convertRTMinute"]])){
-    convertRTMinute <- listArguments[["convertRTMinute"]]; listArguments[["convertRTMinute"]] <- NULL
+if (!is.null(args$convertRTMinute)){
+    convertRTMinute <- args$convertRTMinute; args$convertRTMinute <- NULL
 }
-if (!is.null(listArguments[["numDigitsMZ"]])){
-    numDigitsMZ <- listArguments[["numDigitsMZ"]]; listArguments[["numDigitsMZ"]] <- NULL
+if (!is.null(args$numDigitsMZ)){
+    numDigitsMZ <- args$numDigitsMZ; args$numDigitsMZ <- NULL
 }
-if (!is.null(listArguments[["numDigitsRT"]])){
-    numDigitsRT <- listArguments[["numDigitsRT"]]; listArguments[["numDigitsRT"]] <- NULL
+if (!is.null(args$numDigitsRT)){
+    numDigitsRT <- args$numDigitsRT; args$numDigitsRT <- NULL
 }
-if (!is.null(listArguments[["intval"]])){
-    intval <- listArguments[["intval"]]; listArguments[["intval"]] <- NULL
+if (!is.null(args$intval)){
+    intval <- args$intval; args$intval <- NULL
 }
 
 cat("\n\n")
@@ -58,16 +51,16 @@ cat("\n\n")
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(listArguments[["image"]]); listArguments[["image"]]=NULL
+load(args$image); args$image=NULL
 if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
 
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-listArguments <- rawFilePath$listArguments
+args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 # Check some character issues
@@ -90,8 +83,8 @@ pdf(file="Rplots.pdf", width=16, height=12)
 par(mfrow=c(2,2))
 
 cat("\t\t\tPerform the correspondence\n")
-listArguments[["sampleGroups"]] = xdata$sample_group
-groupChromPeaksParam <- do.call(paste0(method,"Param"), listArguments)
+args$sampleGroups = xdata$sample_group
+groupChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(groupChromPeaksParam)
 xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)
 
