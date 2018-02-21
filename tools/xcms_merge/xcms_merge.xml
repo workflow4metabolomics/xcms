@@ -1,5 +1,5 @@
-<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="@WRAPPER_VERSION@.0">
-    <description>Merge xcms.xcmsSet xset in one to be used by group</description>
+<tool id="xcms_merge" name="xcms findChromPeaks Merger" version="@WRAPPER_VERSION@.0">
+    <description>Merge xcms findChromPeaks RData in one to be used by group</description>
 
     <macros>
         <import>macros.xml</import>
@@ -75,16 +75,16 @@
 
 @HELP_AUTHORS@
 
-===================
-Xcms.xcmsSet Merger
-===================
+==========================
+xcms findChromPeaks Merger
+==========================
 
 -----------
 Description
 -----------
 
-This tool will allow you to run one xcms.xcmsSet process per sample in parallel and then to merge all RData images in one.
-The result is then suitable for xcms.group.
+This tool will allow you to run one xcms findChromPeaks process per sample in parallel and then to merge all RData images in one.
+The result is then suitable for xcms groupChromPeaks.
 
 You can provide a sampleMetadata table to attribute phenotypic value to your samples.
 
@@ -160,6 +160,10 @@ xset.merged.RData: rdata.xcms.raw format
 
 Changelog/News
 --------------
+
+**Version 3.0.0.0 - 14/02/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
 
 **Version 1.0.0 - 03/02/2017**
 

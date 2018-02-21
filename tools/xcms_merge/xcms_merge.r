@@ -8,20 +8,20 @@ pkgs <- c("xcms","batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
-listArguments <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+args <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
 
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-listArguments <- rawFilePath$args
+args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 cat("\tXSET MERGING...\n")
 
-for(image in listArguments[["images"]]) {
+for(image in args$images) {
     load(image)
     cat(sampleNamesList$sampleNamesOrigin,"\n")
     if (!exists("xdata_merged")) {
@@ -43,9 +43,9 @@ singlefile <- singlefile_merged; rm(singlefile_merged)
 md5sumList <- md5sumList_merged; rm(md5sumList_merged)
 sampleNamesList <- sampleNamesList_merged; rm(sampleNamesList_merged)
 
-if (!is.null(listArguments[["sampleMetadata"]])) {
+if (!is.null(args$sampleMetadata)) {
     cat("\tXSET PHENODATA SETTING...\n")
-    sampleMetadataFile <- listArguments[["sampleMetadata"]]
+    sampleMetadataFile <- args$sampleMetadata
     sampleMetadata <- read.table(sampleMetadataFile, h=F, sep=";", stringsAsFactors=F)
     if (ncol(sampleMetadata) < 2) sampleMetadata <- read.table(sampleMetadataFile, h=F, sep="\t", stringsAsFactors=F)
     if (ncol(sampleMetadata) < 2) sampleMetadata <- read.table(sampleMetadataFile, h=F, sep=",", stringsAsFactors=F)
