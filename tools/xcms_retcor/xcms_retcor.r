@@ -20,23 +20,16 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n")
 
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
-#saving the commun parameters
-BPPARAM = MulticoreParam(1)
-if (!is.null(listArguments[["nSlaves"]])){
-    BPPARAM = MulticoreParam(listArguments[["nSlaves"]]); listArguments[["nSlaves"]]=NULL
-}
-register(BPPARAM)
-
 #saving the specific parameters
-method <- listArguments[["method"]]; listArguments[["method"]] <- NULL
+method <- args$method; args$method <- NULL
 
 cat("\n\n")
 
@@ -45,16 +38,16 @@ cat("\n\n")
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(listArguments[["image"]]); listArguments[["image"]]=NULL
+load(args$image); args$image=NULL
 if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
 
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-listArguments <- rawFilePath$args
+args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 # Check some character issues
@@ -79,7 +72,7 @@ pdf(file="Rplots.pdf", width=16, height=12)
 #par(xpd=T, mar=par()$mar+c(0,0,0,4))
 
 cat("\t\t\tAlignment/Retention Time correction\n")
-adjustRtimeParam <- do.call(paste0(method,"Param"), listArguments)
+adjustRtimeParam <- do.call(paste0(method,"Param"), args)
 print(adjustRtimeParam)
 xdata <- adjustRtime(xdata, param=adjustRtimeParam)
 
