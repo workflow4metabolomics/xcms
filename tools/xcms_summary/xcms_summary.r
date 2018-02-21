@@ -52,19 +52,19 @@ equalParams <- function(param1, param2) {
 
 # ----- ARGUMENTS -----
 
-listArguments <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+args <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
 
 
 # ----- ARGUMENTS PROCESSING -----
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(listArguments[["image"]]);
+load(args$image);
 
 htmlOutput <- "summary.html"
-if (!is.null(listArguments[["htmlOutput"]])) htmlOutput = listArguments[["htmlOutput"]];
+if (!is.null(args$htmlOutput)) htmlOutput = args$htmlOutput;
 
 user_email <- NULL
-if (!is.null(listArguments[["user_email"]])) user_email = listArguments[["user_email"]];
+if (!is.null(args$user_email)) user_email = args$user_email;
 
 # if the RData come from XCMS 1.x
 if (exists("xset")) xobject <- xset
