@@ -45,10 +45,6 @@ if (method == "CentWave") {
     if (args$verboseColumns) args$verboseColumns <- T else args$verboseColumns <- F
 }
 
-if (method == "MatchedFilter") {
-    if (args$sigma == -1) args$sigma <- NULL
-}
-
 if (method == "MSW") {
     # solve an issue with batch if arguments are logical TRUE/FALSE
     if (args$nearbyPeak) args$nearbyPeak <- T else args$nearbyPeak <- F
