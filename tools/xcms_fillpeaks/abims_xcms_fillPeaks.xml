@@ -14,6 +14,11 @@
 
         image '$image'
 
+        ## Advanced
+        expandMz $Adv.expandMz
+        expandRt $Adv.expandRt
+        ppm $Adv.ppm
+
         @COMMAND_PEAKLIST@
 
         @COMMAND_FILE_LOAD@
@@ -24,17 +29,12 @@
 
     <inputs>
         <param name="image" type="data" format="rdata.xcms.group,rdata" label="xset RData file" help="output file from another xcms function (group)" />
-        <!--@TODO
-        <param name="method" type="select" label="Filling method" help="[method] See the help section below">
-            <option value="chrom" selected="true">chrom</option>
-            <option value="MSW" >MSW</option>
-        </param>
-        -->
 
-        <!-- expandMz: 0 -->
-        <!-- expandRt: 0 -->
-        <!-- ppm: 0 -->
-
+        <section name="Adv" title="Advanced Options" expanded="False">
+            <param argument="expandMz" type="integer" value="0" label="Value by which the mz width of peaks should be expanded" help="Each peak is expanded in mz direction by ‘expandMz *’ their original mz width. A value of ‘0’ means no expansion, a value of ‘1’ grows each peak by 1 * the mz width of the peak resulting in peakswith twice their original size in mz direction (expansion by half mz width to both sides)." />
+            <param argument="expandRt" type="integer" value="0" label="Value by which the RT width of peaks should be expanded" help="Each peak is expanded in RT direction by ‘expandRt *’ their original RT width. A value of ‘0’ means no expansion, a value of ‘1’ grows each peak by 1 * the RT width of the peak resulting in peakswith twice their original size in RT direction (expansion by half RT width to both sides)."/>
+            <param argument="ppm" type="integer" value="0" label="Specifying a ppm by which the mz width of the peak region should be expanded" help="For peaks with an mz width smaller than ‘mean(c(mzmin, mzmax)) * ppm / 1e6’, the ‘mzmin’ will be replaced by ‘mean(c(mzmin, mzmax)) - (mean(c(mzmin, mzmax)) * ppm / 2 / 1e6)’ and ‘mzmax’ by ‘mean(c(mzmin, mzmax)) + (mean(c(mzmin, mzmax)) * ppm / 2 / 1e6)’. This is applied before eventually expanding the mz width using the ‘expandMz’ parameter." />
+        </section>
 
         <expand macro="input_peaklist"/>
 
@@ -265,6 +265,10 @@ Changelog/News
 **Version 3.0.0.0 - 14/02/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+
+- UPDATE: since xcms 3.0.0, the selection of a method is no more needed (chrom or MSW)
+
+- UPDATE: since xcms 3.0.0, new parameters are available: expandMz, expandRt and ppm
 
 **Version 2.1.1 - 29/11/2017**
 
