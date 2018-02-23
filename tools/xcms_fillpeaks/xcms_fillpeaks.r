@@ -82,9 +82,9 @@ cat("\tMAIN PROCESSING INFO\n")
 cat("\t\tCOMPUTE\n")
 
 cat("\t\t\tFilling missing peaks using default settings\n")
-#fillChromPeaksParam <- do.call(paste0(method,"Param"), args)
-#print(fillChromPeaksParam)
-xdata <- fillChromPeaks(xdata)#, param=fillChromPeaksParam)
+fillChromPeaksParam <- do.call(paste0(method,"Param"), args)
+print(fillChromPeaksParam)
+xdata <- fillChromPeaks(xdata, param=fillChromPeaksParam)
 
 if (exists("intval")) {
     getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
