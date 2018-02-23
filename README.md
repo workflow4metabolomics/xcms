@@ -10,7 +10,6 @@ The [Workflow4Metabolomics](http://workflow4metabolomics.org), W4M in short, is 
 
 NMR Annotation
 --------------
-
 Annotation of complex mixture NMR spectra and metabolite proportion estimation
 
 
@@ -30,12 +29,8 @@ Dependencies using Conda
 ```
 #To install miniconda2
 #http://conda.pydata.org/miniconda.html
-#To install the needed R library using conda:
-conda install r-batch
-conda install r-ASICS
 #To set an environment:
-conda create -n nmr_annotation r-batch`
-conda create -n nmr_annotation r-ASICS`
+conda create -n nmr_annotation r-batch r-asics`
 #To activate the environment:
 . activate nmr_annotation
 ```

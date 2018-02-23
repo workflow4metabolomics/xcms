@@ -1,7 +1,12 @@
 <tool id="NmrAnnotation" name="NMR_Annotation" version="1.0.0">
 		
 	<description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
-
+        
+        <requirements>
+            <requirement type="package" version="1.1_4">r-batch</requirement>
+            <requirement type="package" version="1.0.1">r-asics</requirement>
+        </requirements>
+        
 	<command>
         which Rscript ;
 		## Wrapper
