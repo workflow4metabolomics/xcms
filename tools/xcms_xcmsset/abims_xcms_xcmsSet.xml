@@ -41,7 +41,9 @@
                 distance $impute_cond.distance
             #end if
             ## Advanced
-            sigma $methods.MatchedFilterAdv.sigma
+            #if $methods.MatchedFilterAdv.sigma != "":
+                sigma $methods.MatchedFilterAdv.sigma
+            #end if
             max $methods.MatchedFilterAdv.max
             snthresh $methods.MatchedFilterAdv.snthresh
             steps $methods.MatchedFilterAdv.steps
@@ -114,13 +116,13 @@
                     <when value="none" />
                     <when value="lin" />
                     <when value="linbase">
-                        <param argument="baseValue" type="float" value="" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
+                        <param argument="baseValue" type="float" value="" optional="true" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
                         <param argument="distance" type="integer" value="0" label="Number of non-empty neighboring element of an empty element that should be considered for linear interpolation." />
                     </when>
                     <when value="intlin" />
                 </conditional>
                 <section name="MatchedFilterAdv" title="Advanced Options" expanded="False">
-                    <param argument="sigma" type="float" value="-1" label="Standard deviation (width) of matched filtration model peak" help="Leave it to -1 to calculate it using fwhm by default at fwhm/2.3548" />
+                    <param argument="sigma" type="float" value="" optional="true" label="Standard deviation (width) of matched filtration model peak" help="Leave it to empty to calculate it using fwhm by default at fwhm/2.3548" />
                     <param argument="max" type="integer" value="5" label="Maximum number of peaks that are expected/will be identified per slice" />
                     <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
                     <param argument="steps" type="integer" value="2" label="Number of bins to be merged before filtration" help="(i.e. the number of neighboring bins that will be joined to the slice in which filtration and peak detection will be performed)" />

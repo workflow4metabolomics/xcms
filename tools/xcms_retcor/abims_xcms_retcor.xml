@@ -23,6 +23,18 @@
             family $methods.smooth_cond.PeakGroupsSmoothLoessAdv.family
         #else
             binSize $methods.binSize
+            ## Advanced
+            #if $methods.ObiwarpAdv.centerSample != "":
+                centerSample $methods.ObiwarpAdv.centerSample
+            #end if
+            response $methods.ObiwarpAdv.response
+            distFun $methods.ObiwarpAdv.distFunCond.distFun
+            gapInit $methods.ObiwarpAdv.distFunCond.gapInit
+            gapExtend $methods.ObiwarpAdv.distFunCond.gapExtend
+            factorDiag $methods.ObiwarpAdv.factorDiag
+            factorGap $methods.ObiwarpAdv.factorGap
+            localAlignment $methods.ObiwarpAdv.localAlignmentCond.localAlignment
+            initPenalty $methods.ObiwarpAdv.localAlignmentCond.initPenalty
         #end if
 
         @COMMAND_FILE_LOAD@
@@ -59,15 +71,53 @@
             </when>
             <when value="Obiwarp">
                 <param argument="binSize" type="float" value="1" label="Bin size (in mz dimension) to be used for the profile matrix generation" help="See ‘step’ parameter in ‘profile-matrix’ documentation for more details. (previously profStep)" />
-                <!-- centerSample: -->
-                <!-- response: 1 -->
-                <!-- distFun: cor_opt -->
-                <!-- gapInit: 0.3 -->
-                <!-- gapExtend: 2.4 -->
-                <!-- factorDiag: 2 -->
-                <!-- factorGap: 1 -->
-                <!-- localAlignment: FALSE -->
-                <!-- initPenalty: 0 -->
+                <section name="ObiwarpAdv" title="Advanced Options" expanded="False">
+                    <param argument="centerSample" type="integer" value="" optional="true" label="Index of the center sample in the experiment" help="It defaults to ‘floor(median(1:length(fileNames(object))))’" />
+                    <param argument="response" type="integer" value="1" label="Defining the responsiveness of warping" help="with ‘response = 0’ giving linear warping on start and end points and ‘response = 100’ warping using all bijective anchors." />
+                    <conditional name="distFunCond">
+                        <param argument="distFun" type="select" label="Distance function to be used">
+                            <option value="cor_opt" selected="true">cor_opt - calculate only 10% diagonal band of distance matrix; better runtime</option>
+                            <option value="cor">cor - Pearson's correlation</option>
+                            <option value="cov">cov - covariance</option>
+                            <option value="prd">prd - product</option>
+                            <option value="euc">euc - Euclidian distance</option>
+                        </param>
+                        <when value="cor_opt">
+                            <param argument="gapInit" type="float" value="0.3" label="Penalty for gap opening" />
+                            <param argument="gapExtend" type="float" value="2.4" label="Penalty for gap enlargement" />
+                        </when>
+                        <when value="cor">
+                            <param argument="gapInit" type="float" value="0.3" label="Penalty for gap opening" />
+                            <param argument="gapExtend" type="float" value="2.4" label="Penalty for gap enlargement" />
+                        </when>
+                        <when value="cov">
+                            <param argument="gapInit" type="float" value="0.0" label="Penalty for gap opening" />
+                            <param argument="gapExtend" type="float" value="11.7" label="Penalty for gap enlargement" />
+                        </when>
+                        <when value="prd">
+                            <param argument="gapInit" type="float" value="0.0" label="Penalty for gap opening" />
+                            <param argument="gapExtend" type="float" value="7.8" label="Penalty for gap enlargement" />
+                        </when>
+                        <when value="euc">
+                            <param argument="gapInit" type="float" value="0.9" label="Penalty for gap opening" />
+                            <param argument="gapExtend" type="float" value="1.8" label="Penalty for gap enlargement" />
+                        </when>
+                    </conditional>
+                    <param argument="factorDiag" type="float" value="2" label="Local weight applied to diagonal moves in the alignment" />
+                    <param argument="factorGap" type="float" value="1" label="local weight for gap moves in the alignment" />
+                    <conditional name="localAlignmentCond">
+                        <param argument="localAlignment" type="select" label="Whether a local alignment should be performed instead of the default global alignment">
+                            <option value="FALSE" selected="true">FALSE</option>
+                            <option value="TRUE">TRUE</option>
+                        </param>
+                        <when value="FALSE">
+                            <param argument="initPenalty" type="hidden" value="0" label="Penalty for initiating an alignment" />
+                        </when>
+                        <when value="TRUE">
+                            <param argument="initPenalty" type="float" value="0"  label="Penalty for initiating an alignment" />
+                        </when>
+                    </conditional>
+                </section>
             </when>
         </conditional>
 
