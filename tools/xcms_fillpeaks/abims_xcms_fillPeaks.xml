@@ -45,7 +45,6 @@
     <outputs>
         <data name="xsetRData" format="rdata.xcms.fillpeaks" label="${image.name[:-6]}.fillPeaks.RData" from_work_dir="fillpeaks.RData" />
         <expand macro="output_peaklist" function="fillpeaks" />
-        <data name="log" format="txt" label="xset.log.txt" from_work_dir="log.txt" hidden="true" />
     </outputs>
 
     <tests>
@@ -53,16 +52,14 @@
             <param name="image" value="xset.group.retcor.group.RData"/>
             <param name="method" value="chrom"/>
             <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 199718 (about 49930 per sample)" />
-                    <has_text text="Peak Groups: 48958" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
+                <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                <has_text text="Peaks: 199718 (about 49930 per sample)" />
+                <has_text text="Peak Groups: 48958" />
+                <has_text text="Sample classes: bio, blank" />
+            </assert_stdout>
         </test>-->
         <!-- Issue with fillpeaks because it seems that there are too many NA
         <test>
@@ -75,16 +72,14 @@
                 <param name="numDigitsRT" value="1" />
             </conditional>
             <expand macro="test_file_load_zip"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 32720 (about 8180 per sample)" />
-                    <has_text text="Peak Groups: 8209" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 32720 (about 8180 per sample)" />
+                <has_text text="Peak Groups: 8209" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>
@@ -98,16 +93,14 @@
                 <param name="numDigitsRT" value="1" />
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 32720 (about 8180 per sample)" />
-                    <has_text text="Peak Groups: 8209" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 32720 (about 8180 per sample)" />
+                <has_text text="Peak Groups: 8209" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>-->
@@ -120,16 +113,16 @@
                 <param name="numDigitsRT" value="1" />
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 15230 (about 3808 per sample)" />
-                    <has_text text="Peak Groups: 6332" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="expandMz: 0" />
+                <has_text text="expandRt: 0" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 15230 (about 3808 per sample)" />
+                <has_text text="Peak Groups: 6332" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.dataMatrix.tsv" />
         </test>

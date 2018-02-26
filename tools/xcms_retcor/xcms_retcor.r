@@ -31,11 +31,6 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 #saving the specific parameters
 method <- args$method; args$method <- NULL
 
-if (method == "Obiwarp") {
-    # solve an issue with batch if arguments are logical TRUE/FALSE
-    if (args$localAlignment) args$localAlignment <- T else args$localAlignment <- F
-}
-
 cat("\n\n")
 
 
