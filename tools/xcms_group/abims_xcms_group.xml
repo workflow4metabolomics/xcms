@@ -27,7 +27,7 @@
             minFraction $methods.minFraction
             minSamples $methods.minSamples
         #else:
-            mzVsRTbalance $methods.mzVsRTbalance
+            mzVsRtBalance $methods.mzVsRtBalance
             absMz $methods.absMz
             absRt $methods.absRt
             kNN $methods.kNN
@@ -65,7 +65,7 @@
                 <param argument="minSamples" type="integer" value="1" label="Minimum number of samples" help="in at least one sample group in which the peaks have to be detected to be considered a peak group (feature)" />
             </when>
             <when value="NearestPeaks">
-                <param argument="mzVsRTbalance" type="integer" value="10" label="Factor by which mz values are multiplied before calculating the (euclician) distance between two peaks" />
+                <param argument="mzVsRtBalance" type="integer" value="10" label="Factor by which mz values are multiplied before calculating the (euclician) distance between two peaks" />
                 <param argument="absMz" type="float" value="0.2" label="Maximum tolerated distance for mz values" />
                 <param argument="absRt" type="integer" value="15" label="Maximum tolerated distance for RT values" />
                 <param argument="kNN" type="integer" value="10" label="Number of nearest Neighbours to check" />
@@ -81,21 +81,20 @@
         <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData" from_work_dir="group.RData"/>
         <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf" from_work_dir="Rplots.pdf"/>
         <expand macro="output_peaklist" function="group"/>
-        <data name="log" format="txt" label="xset.log.txt" from_work_dir="log.txt" hidden="true" />
     </outputs>
 
     <tests>
-<!--  <test>
+        <!-- from xcmsSet -->
+        <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
                 <param name="minFraction" value="0.3"/>
                 <param name="binSize" value="0.01"/>
-                <conditional name="density_options">
-                    <param name="option" value="show"/>
+                <section name="PeakDensityAdv">
                     <param name="maxFeatures" value="50"/>
-                </conditional>
+                </section>
             </conditional>
             <conditional name="peaklist">
                 <param name="peaklistBool" value="true" />
@@ -104,21 +103,21 @@
                 <param name="numDigitsRT" value="1" />
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8372" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="bw: 5" />
+                <has_text text="minFraction: 0.3" />
+                <has_text text="maxFeatures: 50" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 8372" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
- -->
-        <!-- Passed but disable to save time for Travis
+        <!-- DISABLE FOR TRAVIS
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData"/>
             <conditional name="methods">
@@ -132,19 +131,17 @@
                 </conditional>
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 611" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 611" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
         </test>
         -->
-        <!-- Zip
+        <!-- DISABLE FOR TRAVIS Zip from xcmsSet
         <test>
             <param name="image" value="faahKO.xset.RData"/>
             <conditional name="methods">
@@ -164,71 +161,20 @@
                 <param name="numDigitsRT" value="1" />
             </conditional>
             <expand macro="test_file_load_zip"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8372" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 8372" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
         </test>
         -->
-        <!--
-        <test>
-            <param name="image" value="xset.RData"/>
-            <conditional name="methods">
-                <param name="method" value="PeakDensity"/>
-                <param name="bw" value="5"/>
-                <param name="minFraction" value="0.3"/>
-                <param name="binSize" value="0.01"/>
-                <conditional name="density_options">
-                    <param name="option" value="show"/>
-                    <param name="maxFeatures" value="50"/>
-                </conditional>
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 48998" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
-        -->
-        <!--<test>
-            <param name="image" value="xset.group.retcor.RData"/>
-            <conditional name="methods">
-                <param name="method" value="PeakDensity"/>
-                <param name="bw" value="5"/>
-                <param name="minFraction" value="0.3"/>
-                <param name="binSize" value="0.01"/>
-                <conditional name="density_options">
-                    <param name="option" value="show"/>
-                    <param name="maxFeatures" value="50"/>
-                </conditional>
-            </conditional>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 48958" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
-        -->
 
-        <!-- Zip
+        <!-- DISABLE FOR TRAVIS Zip from retcor
         <test>
             <param name="image" value="faahKO.xset.group.retcor.RData"/>
             <conditional name="methods">
@@ -242,18 +188,17 @@
                 </conditional>
             </conditional>
             <expand macro="test_file_load_zip"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8209" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 8209" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
         </test>
         -->
+        <!-- from retcor -->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
             <conditional name="methods">
@@ -266,18 +211,48 @@
                 </section>
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 8209" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="bw: 5" />
+                <has_text text="minFraction: 0.3" />
+                <has_text text="binSize: 0.01"/>
+                <has_text text="maxFeatures: 50" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 8209" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
         </test>
-
+        <!-- DISABLE FOR TRAVIS
+        Test to test the different methods parameters
+        <test expect_failure="True">
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <conditional name="methods">
+                <param name="method" value="MzClust"/>
+                <param name="ppm" value="21"/>
+                <param name="absMz" value="0.1"/>
+            </conditional>
+            <expand macro="test_file_load_single"/>
+            <assert_stdout>
+                <has_text text="ppm: 21" />
+                <has_text text="absMz: 0.1" />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <conditional name="methods">
+                <param name="method" value="NearestPeaks"/>
+                <param name="mzVsRtBalance" value="11"/>
+                <param name="absMz" value="0.1"/>
+            </conditional>
+            <expand macro="test_file_load_single"/>
+            <assert_stdout>
+                <has_text text="mzVsRtBalance: 11" />
+                <has_text text="absMz: 0.1" />
+            </assert_stdout>
+        </test>
+        -->
     </tests>
 
     <help><![CDATA[
