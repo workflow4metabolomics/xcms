@@ -1,6 +1,16 @@
 #@authors ABiMS TEAM, Y. Guitton
 # lib.r for Galaxy Workflow4Metabolomics xcms tools
 
+#@author G. Le Corguille
+# solve an issue with batch if arguments are logical TRUE/FALSE
+parseCommandArgs <- function(...) {
+    args <- batch::parseCommandArgs(...)
+    for (key in names(args)) {
+        if (args[key] %in% c("TRUE","FALSE"))
+            args[key] = as.logical(args[key])
+    }
+    return(args)
+}
 
 #@author G. Le Corguille
 # This function will

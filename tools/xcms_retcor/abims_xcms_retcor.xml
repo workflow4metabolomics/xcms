@@ -134,62 +134,9 @@
         </data>
         <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" from_work_dir="TICs.pdf"/>
         <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" from_work_dir="BICs.pdf" />
-        <data name="log" format="txt" label="xset.log.txt" from_work_dir="log.txt" hidden="true" />
     </outputs>
 
     <tests>
-        <!--<test>
-            <param name="image" value="xset.group.RData"/>
-            <conditional name="methods">
-                <param name="method" value="PeakGroups"/>
-                <param name="extraPeaks" value="1"/>
-                <param name="minFraction" value="1"/>
-                <conditional name="smooth_cond">
-                    <param name="smooth" value="loess"/>
-                    <section name="PeakGroupsSmoothLoessAdv">
-                        <param name="span" value="0.2"/>
-                        <param name="family" value="gaussian"/>
-                    </section>
-                </conditional>
-            </conditional>
-            <expand macro="test_file_load_zip_sacuri"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.2-1140.1 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>-->
-        <test>
-            <param name="image" value="faahKO.xset.group.RData"/>
-            <conditional name="methods">
-                <param name="method" value="PeakGroups"/>
-                <param name="extraPeaks" value="1"/>
-                <param name="minFraction" value="1"/>
-                <conditional name="smooth_cond">
-                    <param name="smooth" value="loess"/>
-                    <section name="PeakGroupsSmoothLoessAdv">
-                        <param name="span" value="0.2"/>
-                        <param name="family" value="gaussian"/>
-                    </section>
-                </conditional>
-            </conditional>
-            <expand macro="test_file_load_zip"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
-        </test>
         <test>
             <param name="image" value="faahKO-single-class.xset.group.RData"/>
             <conditional name="methods">
@@ -205,17 +152,69 @@
                 </conditional>
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <assert_stdout>
+                <has_text text="extraPeaks: 1" />
+                <has_text text="minFraction: 1" />
+                <has_text text="span: 0.2" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
         </test>
+        <!-- DISABLE FOR TRAVIS : Zip
+        <test>
+            <param name="image" value="faahKO.xset.group.RData"/>
+            <conditional name="methods">
+                <param name="method" value="PeakGroups"/>
+                <param name="extraPeaks" value="1"/>
+                <param name="minFraction" value="1"/>
+                <conditional name="smooth_cond">
+                    <param name="smooth" value="loess"/>
+                    <section name="PeakGroupsSmoothLoessAdv">
+                        <param name="span" value="0.2"/>
+                        <param name="family" value="gaussian"/>
+                    </section>
+                </conditional>
+            </conditional>
+            <expand macro="test_file_load_zip"/>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
+        </test>
+        -->
+        <!-- DISABLE FOR TRAVIS
+        Test to test the different methods parameters
+        <test>
+            <param name="image" value="faahKO-single-class.xset.group.RData"/>
+            <conditional name="methods">
+                <param name="method" value="Obiwarp"/>
+                <section name="ObiwarpAdv">
+                    <param name="centerSample" value="1"/>
+                    <param name="response" value="0"/>
+                    <conditional name="distFunCond">
+                        <param name="distFun" value="cov"/>
+                        <param name="gapInit" value="0.1" />
+                    </conditional>
+                </section>
+            </conditional>
+            <expand macro="test_file_load_single"/>
+            <assert_stdout>
+                <has_text text="centerSample: 1" />
+                <has_text text="response: 0" />
+                <has_text text="distFun: cov" />
+                <has_text text="gapInit: 0.1" />
+                <has_text text="gapExtend: 11.7" />
+            </assert_stdout>
+        </test>
+        -->
     </tests>
 
     <help><![CDATA[

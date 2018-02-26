@@ -39,18 +39,6 @@ register(BPPARAM)
 #saving the specific parameters
 method <- args$method; args$method <- NULL
 
-if (method == "CentWave") {
-    # solve an issue with batch if arguments are logical TRUE/FALSE
-    if (args$fitgauss) args$fitgauss <- T else args$fitgauss <- F
-    if (args$verboseColumns) args$verboseColumns <- T else args$verboseColumns <- F
-}
-
-if (method == "MSW") {
-    # solve an issue with batch if arguments are logical TRUE/FALSE
-    if (args$nearbyPeak) args$nearbyPeak <- T else args$nearbyPeak <- F
-    if (args$verboseColumns) args$verboseColumns <- T else args$verboseColumns <- F
-}
-
 cat("\n\n")
 
 # ----- INFILE PROCESSING -----
