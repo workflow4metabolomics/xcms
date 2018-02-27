@@ -5,6 +5,7 @@
         <requirements>
             <requirement type="package" version="@WRAPPER_VERSION@">bioconductor-xcms</requirement>
             <requirement type="package" version="1.1_4">r-batch</requirement>
+            <requirement type="package" version="1.1_2">r-rcolorbrewer</requirement>
             <yield />
         </requirements>
     </xml>
@@ -142,7 +143,7 @@ For details and explanations for all the parameters and the workflow of xcms_ pa
     </token>
 
     <token name="@HELP_PEAKLIST@">
-        
+
 Get a Peak List
 ---------------
 
