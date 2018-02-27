@@ -127,11 +127,7 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" from_work_dir="retcor.RData" />
-        <data name="rplotsPdf" format="pdf"  label="${image.name[:-6]}.retcor.Rplots.pdf" from_work_dir="Rplots.pdf">
-            <filter>(methods['method'] == 'PeakGroups')</filter>
-            <filter>(options['option'] == 'show')</filter>
-            <filter>(family == 'symmetric')</filter>
-        </data>
+        <data name="rawVSadjustedPdf" format="pdf"  label="${image.name[:-6]}_rawVSadjusted.retcor.Rplots.pdf" from_work_dir="raw_vs_adjusted_rt.pdf" />
         <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_corrected.pdf" from_work_dir="TICs.pdf"/>
         <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_corrected.pdf" from_work_dir="BICs.pdf" />
     </outputs>
