@@ -1,6 +1,15 @@
 <tool id="NmrAnnotation" name="NMR_Annotation" version="1.0.0">
 		
 	<description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
+        
+        <requirements>
+            <requirement type="package" version="1.1_4">r-batch</requirement>
+            <requirement type="package" version="1.0.1">r-asics</requirement>
+        </requirements>
+       
+        <stdio>
+            <exit_code range="1:" level="fatal" />
+        </stdio> 
 
 	<command>
         which Rscript ;
@@ -51,6 +60,7 @@
 				<param name="zone_exclusion_right" label="Right exclusion zone border" type="float" value="10.0" />
 			</repeat>
 		</when>
+		<when value="no" />
 	</conditional>
 	
 	<param name="shift" type="float" value="0.01" help="Maximal allowed shift for spectra alignment. Default value is 0.01 ppm" />
@@ -76,9 +86,6 @@
 		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
 	</outputs>
 
-	<stdio>
-		<exit_code range="1:" level="fatal" />
-	</stdio>
 <help>
 
 .. class:: infomark
@@ -141,10 +148,9 @@ Input files
 
 You have two methods for your inputs:
 
-    | Zip file : You can put a zip file containing one condition (sample): myinputs.zip.
+| Zip file : You can put a zip file containing one condition (sample): myinputs.zip.
 
 .. image:: ./static/images/Mth_Architecture_Repertoire_Bruker.png
-        :width: 800
 
 ----------
 Parameters
@@ -159,27 +165,26 @@ Exclusion zone(s)
 
 Left exclusion zone
 | Upper boundary of exclusion zone
-|
+
 
 Right exclusion zone
 | Lower boundary of exclusion zone
 
 | *Notes:* 
 | - these parameters can be used several times using the "Add new exclusion zones" button
-|
+
 
 Shift
 | Maximum variation of the chemical shift (due to experimental conditions) of a peak of a fixed metabolite allowed in the warping function
-|
+
 
 Graphical zone(s)
-    | Spectral regions to display
-    | If YES: parameters **Lower graphical zone** and **Upper graphical zone** are visible,
-    | If NO: no zone to display
-    | Default value is NO
-    |
+| Spectral regions to display
+| If YES: parameters **Lower graphical zone** and **Upper graphical zone** are visible,
+| If NO: no zone to display
+| Default value is NO
 
-	
+
 ------------
 Output files
 ------------
@@ -187,26 +192,30 @@ Output files
 proportionEstimation.tsv
 | tabular output
 | Array with p rows (corresponding to the identified metabolites) and 1 column containing the estimated relative intensities
-|
+
 
 spectra.pdf
 | pdf output
 | Graphical chart of real and estimated spectrum (whole spectral width and zooms depending on exclusion zone(s))
-| 
+ 
 
 
 ---------------------------------------------------
 
----------------
+-------
 Example
----------------
+-------
 
 
 See the W4M00005_mmusculus in the Shared Data/Published Histories menu
 .. image:: ./static/images/NmrAnnotation_ASICS.png
-        :width: 100
 
 
    </help>
+
+   <citations>
+       <citation type="doi">10.1007/s11306-017-1244-5</citation>
+       <citation type="doi">10.1093/bioinformatics/btu813</citation>
+   </citations>
     
 </tool>

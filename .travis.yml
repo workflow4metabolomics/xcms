@@ -11,10 +11,7 @@ before_install:
  - . planemo-venv/bin/activate
  - pip install --upgrade pip setuptools
  - pip install planemo
- - planemo conda_init
-
-install:
- - planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/nmr_annotation/
 
 script:
- - planemo test --install_galaxy --no_cache_galaxy --conda_dependency_resolution ${TRAVIS_BUILD_DIR}/galaxy/nmr_annotation/
+ - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/nmr_annotation/
+ - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_17.05 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/galaxy/nmr_annotation/
