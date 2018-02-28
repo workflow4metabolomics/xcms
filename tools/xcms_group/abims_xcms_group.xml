@@ -79,7 +79,7 @@
 
     <outputs>
         <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData" from_work_dir="group.RData"/>
-        <data name="rplotsPdf" format="pdf" label="${image.name[:-6]}.group.Rplots.pdf" from_work_dir="Rplots.pdf"/>
+        <data name="plotChromPeakDensity" format="pdf" label="${image.name[:-6]}.group.plotChromPeakDensity.pdf" from_work_dir="plotChromPeakDensity.pdf"/>
         <expand macro="output_peaklist" function="group"/>
     </outputs>
 

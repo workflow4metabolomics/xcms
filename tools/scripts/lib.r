@@ -50,7 +50,39 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
     return(variableMetadata)
 }
 
+#@author G. Le Corguille
+# Draw the plotChromPeakDensity 3 per page in a pdf file
+getPlotChromPeakDensity <- function(xdata) {
+    pdf(file="plotChromPeakDensity.pdf", width=16, height=12)
 
+    par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
+
+    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    names(group_colors) <- unique(xdata$sample_group)
+
+    xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
+    for (i in 1:nrow(featureDefinitions(xdata))) {
+        plotChromPeakDensity(xdata, mz=c(featureDefinitions(xdata)[i,]$mzmin,featureDefinitions(xdata)[i,]$mzmax), col=group_colors, pch=16, xlim=xlim)
+        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    }
+
+    dev.off()
+}
+
+#@author G. Le Corguille
+# Draw the plotChromPeakDensity 3 per page in a pdf file
+getPlotAdjustedRtime <- function(xdata) {
+    pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
+    # Color by group
+    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    names(group_colors) <- unique(xdata$sample_group)
+    plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
+    legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    # Color by sample
+    plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
+    legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+    dev.off()
+}
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
