@@ -13,7 +13,7 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("xcms","batch")
+pkgs <- c("xcms","batch","RColorBrewer")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -78,9 +78,6 @@ cat("\tMAIN PROCESSING INFO\n")
 
 cat("\t\tCOMPUTE\n")
 
-#change the default display settings
-pdf(file="Rplots.pdf", width=16, height=12)
-par(mfrow=c(2,2))
 
 cat("\t\t\tPerform the correspondence\n")
 args$sampleGroups = xdata$sample_group
@@ -88,7 +85,9 @@ groupChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(groupChromPeaksParam)
 xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)
 
-dev.off()
+
+cat("\t\tDRAW GRAPHICS\n")
+getPlotChromPeakDensity(xdata)
 
 if (exists("intval")) {
     getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, "variableMetadata.tsv", "dataMatrix.tsv")
