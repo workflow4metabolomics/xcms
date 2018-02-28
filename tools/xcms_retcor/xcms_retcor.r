@@ -78,17 +78,7 @@ cat("\n\n")
 
 # -- TIC --
 cat("\t\tDRAW GRAPHICS\n")
-
-pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
-# Color by group
-group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
-names(group_colors) <- unique(xdata$sample_group)
-plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
-legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
-# Color by sample
-plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
-legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
-dev.off()
+getPlotAdjustedRtime(xdata)
 
 #@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
 getTICs(xcmsSet=xset, rt="raw", pdfname="TICs.pdf")
