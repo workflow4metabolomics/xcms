@@ -540,8 +540,8 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
         singlefile_sampleNames <- args$singlefile_sampleNameNegative
     }
     if (exists("singlefile_galaxyPaths")){
-        singlefile_galaxyPaths <- unlist(strsplit(singlefile_galaxyPaths,","))
-        singlefile_sampleNames <- unlist(strsplit(singlefile_sampleNames,","))
+        singlefile_galaxyPaths <- unlist(strsplit(singlefile_galaxyPaths,"\\|"))
+        singlefile_sampleNames <- unlist(strsplit(singlefile_sampleNames,"\\|"))
 
         singlefile <- NULL
         for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {

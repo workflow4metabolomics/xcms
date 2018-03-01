@@ -23,6 +23,7 @@ cat("\tXSET MERGING...\n")
 
 for(image in args$images) {
     load(image)
+    if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
     cat(sampleNamesList$sampleNamesOrigin,"\n")
     if (!exists("xdata_merged")) {
         xdata_merged <- xdata
