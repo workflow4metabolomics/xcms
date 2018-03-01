@@ -18,6 +18,17 @@
         #end if
 
         BPPARAM \${GALAXY_SLOTS:-1}
+
+        #if $filterSection.filterAcquisitionNum != "":
+            filterAcquisitionNum "c($filterSection.filterAcquisitionNum)"
+        #end if
+        #if $filterSection.filterRt != "":
+            filterRt "c($filterSection.filterRt)"
+        #end if
+        #if $filterSection.filterMz != "":
+            filterMz "c($filterSection.filterMz)"
+        #end if
+
         method $methods.method
 
         #if $methods.method == "CentWave":
@@ -64,12 +75,20 @@
 
         <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
 
-        <!--@TODO <param argument="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-        Should be replaced by MSnBase::filterAcquisition
-        -->
+        <section name="filterSection" title="Spectra Filters" expanded="False">
+            <param argument="filterAcquisitionNum" type="text" value="" optional="true" label="Filter on Acquisition Numbers" help="min,max">
+                <expand macro="input_validator_range_integer"/>
+            </param>
+            <param argument="filterRt" type="text" value="" optional="true" label="Filter on Retention Time" help="min,max">
+                <expand macro="input_validator_range_integer"/>
+            </param>
+            <param argument="filterMz" type="text" value="" optional="true" label="Filter on Mz" help="min,max">
+                <expand macro="input_validator_range_integer"/>
+            </param>
+        </section>
 
         <conditional name="methods">
-            <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
+            <param name="method" type="select" label="Extraction method for peaks detection" help="See the help section below">
                 <option value="MatchedFilter" selected="true">MatchedFilter - peak detection in chromatographic space</option>
                 <option value="CentWave">CentWave - chromatographic peak detection using the centWave method</option>
                 <option value="MSW">MSW - single-spectrum non-chromatography MS data peak detection</option>
@@ -78,11 +97,15 @@
             <!-- centWave Filter options -->
             <when value="CentWave">
                 <param argument="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
-                <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space." />
+                <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space.">
+                    <expand macro="input_validator_range_float"/>
+                </param>
 
                 <section name="CentWaveAdv" title="Advanced Options" expanded="False">
                     <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" />
-                    <param argument="prefilter" type="text" value="3,100" label="Prefilter step for for the first analysis step (ROI detection)" help="Separate by coma k, I. Mass traces are only retained if they contain at least ‘k‘ peaks with intensity ‘>= I‘." />
+                    <param argument="prefilter" type="text" value="3,100" label="Prefilter step for for the first analysis step (ROI detection)" help="Separate by coma k, I. Mass traces are only retained if they contain at least ‘k‘ peaks with intensity ‘>= I‘.">
+                        <expand macro="input_validator_range_integer"/>
+                    </param>
                     <param argument="mzCenterFun" type="select" label="Name of the function to calculate the m/z center of the chromatographic peak" >
                         <option value="wMean">intensity weighted mean of the peak's m/z values</option>
                         <option value="mean">mean of the peak's m/z values</option>
@@ -138,7 +161,9 @@
                 <!---@TODO <param argument="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
                 <param argument="snthresh" type="integer" value="3" label="Signal to Noise ratio cutoff" help="" />
                 <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
-                <param argument="scales" type="text" value="1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,36,40,44,48,52,56,60,64" label="Scales of the Continuous Wavelet Transform (CWT)" help="Scales are linked to the width of the peaks that are to be detected." />
+                <param argument="scales" type="text" value="1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,36,40,44,48,52,56,60,64" label="Scales of the Continuous Wavelet Transform (CWT)" help="Scales are linked to the width of the peaks that are to be detected." >
+                    <expand macro="input_validator_list_integer"/>
+                </param>
                 <param argument="nearbyPeak" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Determine whether to include the nearby small peaks of major peaks" />
                 <!-- peakScaleRange -->
                 <param argument="ampTh" type="float" value="0.01" label="Minimum required relative amplitude of the peak" help="Ratio to the maximum of CWT coefficients" />
@@ -165,6 +190,11 @@
 
         <test>
             <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
+            <section name="filterSection">
+                <param name="filterAcquisitionNum" value="100,5000" />
+                <param name="filterRt" value="3000,4000" />
+                <param name="filterMz" value="300,400" />
+            </section>
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -174,9 +204,9 @@
                 <has_text text="ppm: 25" />
                 <has_text text="peakwidth: 20, 50" />
                 <has_text text="object with 4 samples" />
-                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
-                <has_text text="Mass range: 200.1-600 m/z" />
-                <has_text text="Peaks: 9251 (about 2313 per sample)" />
+                <has_text text="Time range: 3006.9-3978.7 seconds (50.1-66.3 minutes)" />
+                <has_text text="Mass range: 300-400 m/z" />
+                <has_text text="Peaks: 1311 (about 328 per sample)" />
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
@@ -594,7 +624,7 @@ Changelog/News
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
 
-- NEW: a bunch of new options: CentWave.mzCenterFun, CentWave.fitgauss, CentWave.verboseColumns, MatchedFilter.sigma
+- NEW: a bunch of new options: Spectra Filters, CentWave.mzCenterFun, CentWave.fitgauss, CentWave.verboseColumns, MatchedFilter.sigma
 
 - UPDATE: since xcms 3.0.0, some options are no more available: scanrange, profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
 

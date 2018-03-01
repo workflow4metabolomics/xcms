@@ -37,6 +37,16 @@ if (!is.null(args$BPPARAM)){
 register(BPPARAM)
 
 #saving the specific parameters
+if (!is.null(args$filterAcquisitionNum)){
+    filterAcquisitionNumParam <- args$filterAcquisitionNum; args$filterAcquisitionNum <- NULL
+}
+if (!is.null(args$filterRt)){
+    filterRtParam <- args$filterRt; args$filterRt <- NULL
+}
+if (!is.null(args$filterMz)){
+    filterMzParam <- args$filterMz; args$filterMz <- NULL
+}
+
 method <- args$method; args$method <- NULL
 
 cat("\n\n")
@@ -80,6 +90,17 @@ print(pd)
 cat("\t\t\tLoad Raw Data\n")
 raw_data <- readMSData(files=files, pdata = new("NAnnotatedDataFrame", pd), mode="onDisk")
 
+cat("\t\t\tApply filter[s] (if asked)\n")
+if (exists("filterAcquisitionNumParam")) {
+    raw_data <- filterAcquisitionNum(raw_data, filterAcquisitionNumParam[1]:filterAcquisitionNumParam[2])
+}
+if (exists("filterRtParam")) {
+    raw_data <- filterRt(raw_data, filterRtParam)
+}
+if (exists("filterMzParam")) {
+    raw_data <- filterMz(raw_data, filterMzParam)
+}
+
 cat("\t\t\tChromatographic peak detection\n")
 findChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(findChromPeaksParam)
@@ -90,7 +111,7 @@ if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should revie
 
 # Transform the files absolute pathways into relative pathways
 xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@processingData@files)
-save.image()
+
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
 

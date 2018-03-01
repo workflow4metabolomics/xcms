@@ -24,6 +24,18 @@
         sh -c "exit \$return"
     </token>
 
+    <xml name="input_validator_range_integer">
+        <validator type="regex" message="The format is 'min,max'" >[0-9]+ *, *[0-9]+</validator>
+    </xml>
+
+    <xml name="input_validator_range_float">
+        <validator type="regex" message="The format is 'min,max'" >[0-9]+\.?[0-9]* *, *[0-9]+\.?[0-9]*</validator>
+    </xml>
+
+    <xml name="input_validator_list_integer">
+        <validator type="regex" message="The format is '1,2,4,6'" >[0-9, ]+</validator>
+    </xml>
+
     <!-- zipfile load for planemo test -->
 
     <token name="@COMMAND_FILE_LOAD@">
