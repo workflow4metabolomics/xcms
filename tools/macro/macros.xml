@@ -41,8 +41,8 @@
     <token name="@COMMAND_FILE_LOAD@">
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
             #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
-                #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
-                #set singlefile_sampleName = ','.join( [ str( $single_file.name ) for $single_file in $file_load_section.file_load_conditional.input ] )
+                #set singlefile_galaxyPath = '|'.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
+                #set singlefile_sampleName = '|'.join( [ str( $single_file.name ) for $single_file in $file_load_section.file_load_conditional.input ] )
 
                 singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #else
