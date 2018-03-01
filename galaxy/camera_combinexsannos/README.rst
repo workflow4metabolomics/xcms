@@ -2,6 +2,11 @@
 Changelog/News
 --------------
 
+**Version 2.2.2 - 01/03/2018**
+
+- UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0
+
+
 **Version 2.0.7 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
