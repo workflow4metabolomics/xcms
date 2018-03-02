@@ -104,6 +104,20 @@ getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=
 
 }
 
+#@author G. Le Corguille
+# It allow different of field separators
+getDataFrameFromFile <- function(filename, header=T) {
+    myDataFrame <- read.table(filename, header=header, sep=";", stringsAsFactors=F)
+    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep="\t", stringsAsFactors=F)
+    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep=",", stringsAsFactors=F)
+    if (ncol(myDataFrame) < 2) {
+        error_message="Your tabular file seems not well formatted. The column separators accepted are ; , and tabulation"
+        print(error_message)
+        stop(error_message)
+    }
+    return(myDataFrame)
+}
+
 #@author Y. Guitton
 getBPC <- function(file,rtcor=NULL, ...) {
     object <- xcmsRaw(file)

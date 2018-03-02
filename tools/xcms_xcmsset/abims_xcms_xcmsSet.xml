@@ -43,6 +43,14 @@
             fitgauss $methods.CentWaveAdv.fitgauss
             noise $methods.CentWaveAdv.noise
             verboseColumns $methods.CentWaveAdv.verboseColumns
+            ## List of regions-of-interest (ROI)
+            #if $methods.CentWaveAdv.CentWaveAdvROI.roiList:
+                roiList '$methods.CentWaveAdv.CentWaveAdvROI.roiList'
+                firstBaselineCheck $methods.CentWaveAdv.CentWaveAdvROI.firstBaselineCheck
+                #if $methods.CentWaveAdv.CentWaveAdvROI.roiScales != "":
+                    roiScales "c($methods.CentWaveAdv.CentWaveAdvROI.roiScales)"
+                #end if
+            #end if
         #elif $methods.method == "MatchedFilter":
             fwhm $methods.fwhm
             binSize $methods.binSize
@@ -121,9 +129,13 @@
                     <param argument="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
                     <param argument="noise" type="integer" value="0" label="Noise filter" help="allowing to set a minimum intensity required for centroids to be considered in the first analysis step (centroids with intensity lower than ‘noise’ are omitted from ROI detection)." />
                     <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
-                    <!-- roiList -->
-                    <!-- firstBaselineCheck -->
-                    <!-- roiScales -->
+                    <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="False">
+                        <param argument="roiList" type="data" optional="true" label="List of regions-of-interest (ROI) representing detected mass traces" help="If ROIs are submitted the first analysis step is omitted and chromatographic peak detection is performed on the submitted ROIs. Each ROI is expected to have the following elements specified: ‘scmin’ (start scan index), ‘scmax’ (end scan index), ‘mzmin’ (minimum m/z), ‘mzmax’ (maximum m/z), ‘length’ (number of scans), ‘intensity’ (summed intensity)." />
+                        <param argument="firstBaselineCheck" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Is continuous data within regions of interest is checked to be above the first baseline." />
+                        <param argument="roiScales" type="text" value="" optional="true" label="Numeric vector defining the scale for each region of interest in ‘roiList’" help="Length equal to ‘roiList’ - Should be used for the centWave-wavelets (format 0.9,1,0.2)">
+                            <expand macro="input_validator_range_float"/>
+                        </param>
+                    </section>
                 </section>
             </when>
 
@@ -199,6 +211,11 @@
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
+                <!--<section name="CentWaveAdv">
+                    <section name="CentWaveAdvROI">
+                        <param name="roiList" value="roiList.txt" />
+                    </section>
+                </section>-->
             </conditional>
             <assert_stdout>
                 <has_text text="ppm: 25" />
