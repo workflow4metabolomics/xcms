@@ -47,14 +47,7 @@ sampleNamesList <- sampleNamesList_merged; rm(sampleNamesList_merged)
 if (!is.null(args$sampleMetadata)) {
     cat("\tXSET PHENODATA SETTING...\n")
     sampleMetadataFile <- args$sampleMetadata
-    sampleMetadata <- read.table(sampleMetadataFile, h=F, sep=";", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) sampleMetadata <- read.table(sampleMetadataFile, h=F, sep="\t", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) sampleMetadata <- read.table(sampleMetadataFile, h=F, sep=",", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) {
-        error_message="Your sampleMetadata file seems not well formatted. The column separators accepted are ; , and tabulation"
-        print(error_message)
-        stop(error_message)
-    }
+    sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header=F)
     xdata@phenoData@data$sample_group=sampleMetadata$V2[match(xdata@phenoData@data$sample_name,sampleMetadata$V1)]
 
     if (any(is.na(pData(xdata)$sample_group))) {
