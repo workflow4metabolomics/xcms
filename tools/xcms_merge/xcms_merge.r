@@ -65,6 +65,23 @@ if (!is.null(args$sampleMetadata)) {
     }
 }
 
+# Create a sampleMetada file
+sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
+
+# Get the legacy xcmsSet object
+xset <- getxcmsSetObject(xdata)
+
+cat("\n\n")
+
+
+# -- TIC --
+cat("\t\tGET TIC GRAPH\n")
+#@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
+getTICs(xcmsSet=xset, rt="raw", pdfname="TICs.pdf")
+getBPCs(xcmsSet=xset, rt="raw", pdfname="BICs.pdf")
+
+cat("\n\n")
+
 cat("\tXCMSnExp OBJECT INFO\n")
 print(pData(xdata))
 print(xdata)
