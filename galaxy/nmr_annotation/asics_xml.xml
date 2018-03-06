@@ -1,37 +1,36 @@
 <tool id="NmrAnnotation" name="NMR_Annotation" version="1.0.0">
-		
-	<description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
-        
-        <requirements>
-            <requirement type="package" version="1.1_4">r-batch</requirement>
-            <requirement type="package" version="1.0.1">r-asics</requirement>
-        </requirements>
-       
-        <stdio>
-            <exit_code range="1:" level="fatal" />
-        </stdio> 
 
-	<command>
-        which Rscript ;
-		## Wrapper
-		Rscript '$__tool_directory__/asics_wrapper.R' standards '$__tool_directory__/Library.Rdata'
+    <description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
 
-		## Bruker files
-		zipfile $zip_file
+    <requirements>
+        <requirement type="package" version="1.1_4">r-batch</requirement>
+        <requirement type="package" version="1.0.1">r-asics</requirement>
+    </requirements>
 
-		## Exclusion zone
-		zone_exclusion_choices.choice ${zone_exclusion_choices.choice}
-		#if str($zone_exclusion_choices.choice) == 'yes':
-			#for $i in $zone_exclusion_choices.conditions:
-				zone_exclusion_left ${i.zone_exclusion_left}
-				zone_exclusion_right ${i.zone_exclusion_right}
-			#end for
-		#end if
+    <stdio>
+        <exit_code range="1:" level="fatal" />
+    </stdio>
 
-		## Maximal shift (spectrum alignement)
-		shift $shift
+    <command><![CDATA[
+        ## Wrapper
+        Rscript '$__tool_directory__/asics_wrapper.R' standards '$__tool_directory__/Library.Rdata'
 
-		## Graphical zone
+        ## Bruker files
+        zipfile '$zip_file'
+
+        ## Exclusion zone
+        zone_exclusion_choices.choice ${zone_exclusion_choices.choice}
+        #if str($zone_exclusion_choices.choice) == 'yes':
+            #for $i in $zone_exclusion_choices.conditions:
+                zone_exclusion_left ${i.zone_exclusion_left}
+                zone_exclusion_right ${i.zone_exclusion_right}
+            #end for
+        #end if
+
+        ## Maximal shift (spectrum alignement)
+        shift $shift
+
+        ## Graphical zone
         zone_graphical_choices.choice ${zone_graphical_choices.choice}
         #if str($zone_graphical_choices.choice) == 'yes':
             #for $i in $zone_graphical_choices.conditions:
@@ -40,53 +39,61 @@
             #end for
         #end if
 
-		## Outputs
-		logOut $logOut
-		proportionEstimation $proportionEstimation
-		graphOut $graphOut
-	</command>
-		
-	<inputs>
-		<param name="zip_file" type="data" format="no_unzip.zip" label="Zip file" />
+        ## Outputs
+        logOut '$logOut'
+        proportionEstimation '$proportionEstimation'
+        graphOut '$graphOut'
+    ]]></command>
 
-	<conditional name="zone_exclusion_choices">
-		<param name="choice" type="select" label="Exclusion zone(s)" help="Choose if you want to exclude particular zone(s)" >
-			<option value="yes" > yes </option>
-			<option value="no" selected="true"> no </option>
-		</param>
-		<when value="yes">
-			<repeat name="conditions" title="exclusion zones">
-				<param name="zone_exclusion_left" label="Left exclusion zone border" type="float" value="10.0" />
-				<param name="zone_exclusion_right" label="Right exclusion zone border" type="float" value="10.0" />
-			</repeat>
-		</when>
-		<when value="no" />
-	</conditional>
-	
-	<param name="shift" type="float" value="0.01" help="Maximal allowed shift for spectra alignment. Default value is 0.01 ppm" />
+    <inputs>
+        <param name="zip_file" type="data" format="no_unzip.zip, zip" label="Zip file" />
 
-	<conditional name="zone_graphical_choices">
-		<param name="choice" type="select" label="Graphical zone(s)" help="Choose if you want to display particular zone(s)" >
-			<option value="yes" > yes </option>
-			<option value="no" selected="true"> no </option>
-		</param>
-		<when value="yes">
-			<repeat name="conditions" title="grapical zones">
-				<param name="zone_graphical_left" label="Left graphical zone border" type="float" value="10.0" />
-				<param name="zone_graphical_right" label="Right graphical zone border" type="float" value="10.0" />
-			</repeat>
-		</when>
-		<when value="no" />
-	</conditional>
-	</inputs>
+    <conditional name="zone_exclusion_choices">
+        <param name="choice" type="select" label="Exclusion zone(s)" help="Choose if you want to exclude particular zone(s)" >
+            <option value="yes" > yes </option>
+            <option value="no" selected="true"> no </option>
+        </param>
+        <when value="yes">
+            <repeat name="conditions" title="exclusion zones">
+                <param name="zone_exclusion_left" label="Left exclusion zone border" type="float" value="10.0" />
+                <param name="zone_exclusion_right" label="Right exclusion zone border" type="float" value="10.0" />
+            </repeat>
+        </when>
+        <when value="no" />
+    </conditional>
 
-	<outputs>
-		<data format="txt" name="logOut" label="${tool.name}_log" />
-		<data format="tabular" name="proportionEstimation" label="${tool.name}_proportionEstimation" />
-		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
-	</outputs>
+    <param name="shift" type="float" value="0.01" help="Maximal allowed shift for spectra alignment. Default value is 0.01 ppm" />
 
-<help>
+    <conditional name="zone_graphical_choices">
+        <param name="choice" type="select" label="Graphical zone(s)" help="Choose if you want to display particular zone(s)" >
+            <option value="yes" > yes </option>
+            <option value="no" selected="true"> no </option>
+        </param>
+        <when value="yes">
+            <repeat name="conditions" title="grapical zones">
+                <param name="zone_graphical_left" label="Left graphical zone border" type="float" value="10.0" />
+                <param name="zone_graphical_right" label="Right graphical zone border" type="float" value="10.0" />
+            </repeat>
+        </when>
+        <when value="no" />
+    </conditional>
+    </inputs>
+
+    <outputs>
+        <data format="txt" name="logOut" label="${tool.name}_log" />
+        <data format="tabular" name="proportionEstimation" label="${tool.name}_proportionEstimation" />
+        <data format="pdf" name="graphOut" label="${tool.name}_graph" />
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="zip_file" value="ADG_007.zip" ftype="zip" />
+            <output name="proportionEstimation" value="MTBLS1_177_NMR_Annotation_proportionEstimation.tabular" />
+            <output name="graphOut"  value="MTBLS1_177_NMR_Annotation.pdf" compare="sim_size" delta="300" />
+        </test>
+    </tests>
+
+    <help><![CDATA[
 
 .. class:: infomark
 
@@ -110,7 +117,7 @@ Description
 -----------
 
 ASICS, based on a strong statistical theory, handles automatically the metabolite identification and quantification
- 
+
 -----------------
 Workflow position
 -----------------
@@ -120,7 +127,7 @@ Workflow position
 ========================= ================= ======= =========
 Name                      output file       format  parameter
 ========================= ================= ======= =========
-NA                        NA                NA      NA      
+NA                        NA                NA      NA
 ========================= ================= ======= =========
 
 
@@ -129,7 +136,7 @@ NA                        NA                NA      NA
 ========================= ================= ======= =========
 Name                      output file       format  parameter
 ========================= ================= ======= =========
-NA                        NA                NA      NA      
+NA                        NA                NA      NA
 ========================= ================= ======= =========
 
 
@@ -170,7 +177,7 @@ Left exclusion zone
 Right exclusion zone
 | Lower boundary of exclusion zone
 
-| *Notes:* 
+| *Notes:*
 | - these parameters can be used several times using the "Add new exclusion zones" button
 
 
@@ -197,7 +204,7 @@ proportionEstimation.tsv
 spectra.pdf
 | pdf output
 | Graphical chart of real and estimated spectrum (whole spectral width and zooms depending on exclusion zone(s))
- 
+
 
 
 ---------------------------------------------------
@@ -209,11 +216,11 @@ Example
 .. image:: ./static/images/NmrAnnotation_ASICS.png
 
 
-   </help>
+   ]]></help>
 
    <citations>
        <citation type="doi">10.1007/s11306-017-1244-5</citation>
        <citation type="doi">10.1093/bioinformatics/btu813</citation>
    </citations>
-    
+
 </tool>
