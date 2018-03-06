@@ -81,8 +81,8 @@ cat("\t\tDRAW GRAPHICS\n")
 getPlotAdjustedRtime(xdata)
 
 #@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
-getTICs(xcmsSet=xset, rt="raw", pdfname="TICs.pdf")
-getBPCs(xcmsSet=xset, rt="raw", pdfname="BICs.pdf")
+getTICs(xcmsSet=xset, rt="corrected", pdfname="TICs.pdf")
+getBPCs(xcmsSet=xset, rt="corrected", pdfname="BICs.pdf")
 
 cat("\n\n")
 
