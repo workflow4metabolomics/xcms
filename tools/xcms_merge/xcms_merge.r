@@ -15,14 +15,13 @@ cat("\tXSET MERGING...\n")
 
 for(image in args$images) {
     load(image)
-
+    print(args)
     # Handle infiles
     if (!exists("singlefile")) singlefile <- NULL
     if (!exists("zipfile")) zipfile <- NULL
     rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
     zipfile <- rawFilePath$zipfile
     singlefile <- rawFilePath$singlefile
-    args <- rawFilePath$args
     directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
     if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
