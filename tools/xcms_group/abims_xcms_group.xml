@@ -41,7 +41,7 @@
    ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for grouping" help="See the help section below">
                 <option value="PeakDensity" selected="true">PeakDensity - peak grouping based on time dimension peak densities</option>

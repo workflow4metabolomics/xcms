@@ -28,7 +28,7 @@
     ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.group,rdata" label="xset RData file" help="output file from another xcms function (group)" />
+        <param name="image" type="data" format="rdata.xcms.group,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from groupChromPeaks" />
 
         <section name="Adv" title="Advanced Options" expanded="False">
             <param argument="expandMz" type="integer" value="0" label="Value by which the mz width of peaks should be expanded" help="Each peak is expanded in mz direction by ‘expandMz *’ their original mz width. A value of ‘0’ means no expansion, a value of ‘1’ grows each peak by 1 * the mz width of the peak resulting in peakswith twice their original size in mz direction (expansion by half mz width to both sides)." />

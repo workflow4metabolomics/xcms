@@ -21,7 +21,7 @@
     ]]></command>
 
     <inputs>
-        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="xset RData / xcms.xcmsSet file" help="output file from another xcms.xcmsSet" multiple="true" />
+        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from multiple findChromPeaks" multiple="true" />
         <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
 
         <expand macro="input_file_load"/>

@@ -43,7 +43,7 @@
     ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, retcor etc.)" />
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for retention time correction" help="See the help section below" >
                 <option value="PeakGroups" selected="true">PeakGroups - retention time correction based on aligment of features (peak groups) present in most/all samples.</option>
