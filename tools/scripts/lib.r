@@ -74,15 +74,19 @@ getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
 #@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
 getPlotAdjustedRtime <- function(xdata) {
+
     pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
+
     # Color by group
     group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
     names(group_colors) <- unique(xdata$sample_group)
     plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
     legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+
     # Color by sample
     plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
     legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+
     dev.off()
 }
 
@@ -102,6 +106,46 @@ getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=
     write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
     write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
 
+}
+
+#@author G. Le Corguille
+getPlotChromatogram <- function(xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
+
+    chrom <- chromatogram(xdata, aggregationFun = aggregationFun)
+    if (aggregationFun == "sum")
+        type="Total Ion Chromatograms"
+    else
+        type="Base Peak Intensity Chromatograms"
+
+    adjusted="Raw"
+    if (hasAdjustedRtime(xdata))
+        adjusted="Adjusted"
+
+    main <- paste(type,":",adjusted,"data")
+
+    pdf(pdfname, width=16, height=10)
+
+    # Color by group
+    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    names(group_colors) <- unique(xdata$sample_group)
+    plot(chrom, col = group_colors[chrom$sample_group], main=main)
+    legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+
+    # Color by sample
+    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main)
+    legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+
+    dev.off()
+}
+
+#@author G. Le Corguille
+getPlotTICs <- function(xdata, pdfname="TICs.pdf") {
+    getPlotChromatogram(xdata, pdfname, aggregationFun = "sum")
+}
+
+#@author G. Le Corguille
+getPlotBPIs <- function(xdata, pdfname="BPIs.pdf") {
+    getPlotChromatogram(xdata, pdfname, aggregationFun = "max")
 }
 
 #@author Y. Guitton
