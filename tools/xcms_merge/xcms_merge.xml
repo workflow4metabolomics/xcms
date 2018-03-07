@@ -32,8 +32,6 @@
         <data name="sampleMetadataOutput" format="tabular" label="xset.merged.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv">
             <filter>not sampleMetadata</filter>
         </data>
-        <data name="ticsRawPdf" format="pdf" label="xset.merged.xset.TICs_raw.pdf" from_work_dir="TICs.pdf"  />
-        <data name="bpcsRawPdf" format="pdf" label="xset.merged.xset.BPCs_raw.pdf" from_work_dir="BICs.pdf" />
     </outputs>
 
     <tests>

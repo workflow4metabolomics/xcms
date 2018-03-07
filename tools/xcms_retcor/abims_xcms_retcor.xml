@@ -128,8 +128,6 @@
     <outputs>
         <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" from_work_dir="retcor.RData" />
         <data name="rawVSadjustedPdf" format="pdf"  label="${image.name[:-6]}_rawVSadjusted.retcor.Rplots.pdf" from_work_dir="raw_vs_adjusted_rt.pdf" />
-        <data name="ticsCorPdf"   format="pdf"  label="${image.name[:-6]}.retcor.TICs_adjusted.pdf" from_work_dir="TICs.pdf"/>
-        <data name="bpcsCorPdf"   format="pdf" label="${image.name[:-6]}.retcor.BPCs_adjusted.pdf" from_work_dir="BICs.pdf" />
     </outputs>
 
     <tests>
@@ -369,6 +367,8 @@ Changelog/News
 **Version 3.0.0.0 - 14/02/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+
+- CHANGE: removing of the TIC and BPC plots. You can new use the dedicated tool "xcms plot chromatogram"
 
 **Version 2.1.1 - 29/11/2017**
 
