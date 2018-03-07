@@ -58,26 +58,11 @@ cat("\n\n")
 cat("\tMAIN PROCESSING INFO\n")
 
 
-cat("\t\tCOMPUTE\n")
-
-cat("\t\t\tAlignment/Retention Time correction\n")
-adjustRtimeParam <- do.call(paste0(method,"Param"), args)
-print(adjustRtimeParam)
-xdata <- adjustRtime(xdata, param=adjustRtimeParam)
-
-# Get the legacy xcmsSet object
-xset <- getxcmsSetObject(xdata)
-
-cat("\n\n")
-
-
-# -- TIC --
 cat("\t\tDRAW GRAPHICS\n")
-getPlotAdjustedRtime(xdata)
 
 #@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
-getTICs(xcmsSet=xset, rt="corrected", pdfname="TICs.pdf")
-getBPCs(xcmsSet=xset, rt="corrected", pdfname="BICs.pdf")
+getPlotTICs(xdata, pdfname="TICs.pdf")
+getPlotBPIs(xdata, pdfname="BPIs.pdf")
 
 cat("\n\n")
 
@@ -88,13 +73,9 @@ print(xdata)
 cat("\n\n")
 
 cat("\txcmsSet OBJECT INFO\n")
+# Get the legacy xcmsSet object
+xset <- getxcmsSetObject(xdata)
 print(xset)
-cat("\n\n")
-
-#saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList")
-save(list=objects2save[objects2save %in% ls()], file="retcor.RData")
-
 cat("\n\n")
 
 

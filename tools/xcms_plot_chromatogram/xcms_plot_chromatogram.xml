@@ -1,0 +1,93 @@
+<tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@WRAPPER_VERSION@.0">
+    <description>Plot base peak intensity chromatogram (BPI) and total ion chromatogram (TIC) from xcms experience</description>
+
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+
+    <command><![CDATA[
+        @COMMAND_XCMS_SCRIPT@/xcms_plot_chromatogram.r
+
+        image '$image'
+
+        @COMMAND_FILE_LOAD@
+    ]]></command>
+
+    <inputs>
+        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
+
+        <expand macro="input_file_load"/>
+    </inputs>
+
+    <outputs>
+        <data name="ticsPdf" format="pdf"  label="${image.name[:-6]}.TICs.pdf" from_work_dir="TICs.pdf"/>
+        <data name="bpisPdf" format="pdf" label="${image.name[:-6]}.BPIs.pdf" from_work_dir="BPIs.pdf" />
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <expand macro="test_file_load_single"/>
+            <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="600" />
+            <output name="bpisPdf" value="BPIs.pdf" ftype="pdf" compare="sim_size" delta="600" />
+        </test>
+    </tests>
+
+    <help><![CDATA[
+
+@HELP_AUTHORS@
+
+======================
+xcms plot chromatogram
+======================
+
+-----------
+Description
+-----------
+
+This tool will plot base peak intensity chromatogram (BPI) and total ion chromatogram (TIC) from xcms experience
+
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= =================== ==========
+Name                      output file       format              parameter
+========================= ================= =================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
+------------------------- ----------------- ------------------- ----------
+xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
+========================= ================= =================== ==========
+
+.. image:: xcms_plot_chromatogram_workflow.png
+
+
+------------
+Output files
+------------
+
+**Total Ion Current (TIC) chromatogram**
+    | Sum of intensity (Y) of all ions detected at each retention time(X)
+
+**Base Peak Intensity Chromatogram (BPI)**
+    | Sum of intensity (Y) of the most intense peaks at each retention time(X)
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+**Version 3.0.0.0 - 07/03/2018**
+
+- NEW: This new tool will plot base peak intensity chromatogram (BPI) and total ion chromatogram (TIC) from xcms experience. It will replace the one created by xcmsSet and retcor tools.
+
+    ]]></help>
+
+    <expand macro="citation" />
+</tool>
