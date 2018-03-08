@@ -402,13 +402,22 @@ Output files
 
 Changelog/News
 --------------
-**Version 3.0.0.0 - 14/02/2018**
 
-- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+**Version 3.0.0.0 - 08/03/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- NEW: a bunch of new options: PeakDensity.minSamples), MzClust.minSamples)
+
+- NEW: a new density plot
+
+- IMPROVEMENT: the advanced options are now in sections. It will allow you to access to all the parameters and to know their default values.
+
 
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 07/02/2017**
 
@@ -418,9 +427,11 @@ Changelog/News
 
 - BUGFIX: the default value of "density" -> "Maximum number of groups to identify in a single m/z slice" which was of 5 have been changed to fix with the XMCS default values to 50
 
+
 **Version 2.0.6 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+
 
 **Version 2.0.5 - 04/04/2016**
 
