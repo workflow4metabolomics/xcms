@@ -77,7 +77,7 @@ if (!is.null(argLs$zone_exclusion_left))
 }
 if (is.null(argLs$zone_exclusion_left))
 {
-  exclusionZonesBorders <- matrix(c(10,0), byrow=T, ncol=2)
+  exclusionZonesBorders <- matrix(c(0,0), byrow=T, ncol=2)
 }
 ## Maximal allowed shift
 shift <- argLs[["shift"]]
