@@ -73,8 +73,12 @@ if (!is.null(argLs$zone_exclusion_left))
 #     exclusionZonesBorders <- c(exclusionZonesBorders,list(c(argLs[[i]],argLs[[i+1]])))
      exclusionZonesBorders <- c(exclusionZonesBorders,argLs[[i]],argLs[[i+1]])
    }
+  exclusionZonesBorders <- matrix(exclusionZonesBorders, byrow=T, ncol=2)
 }
-
+if (is.null(argLs$zone_exclusion_left))
+{
+  exclusionZonesBorders <- matrix(c(10,0), byrow=T, ncol=2)
+}
 ## Maximal allowed shift
 shift <- argLs[["shift"]]
 
@@ -114,9 +118,12 @@ if(length(error.stock) > 1)
   
 ## Computation
 ##------------
-annotation.Asics <- ASICS(directory, exclusion.areas=matrix(exclusionZonesBorders, byrow=T, ncol=2), 
-                           max.shift=shift, which.spectra="last", library.metabolites=NULL, 
-                           threshold.noise=0.02, seed=1234, nb.iter.signif=400)
+# annotation.Asics <- ASICS(directory, exclusion.areas=matrix(exclusionZonesBorders, byrow=T, ncol=2), 
+#                            max.shift=shift, which.spectra="last", library.metabolites=NULL, 
+#                            threshold.noise=0.02, seed=1234, nb.iter.signif=400)
+annotation.Asics <- ASICS(directory, exclusion.areas=exclusionZonesBorders, 
+                          max.shift=shift, which.spectra="last", library.metabolites=NULL, 
+                          threshold.noise=0.02, seed=1234, nb.iter.signif=400)
 
 
 ## Saving
