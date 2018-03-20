@@ -1,9 +1,13 @@
-<tool id="NMR_Read" name="NMR_Read" version="3.2.0">
+<tool id="NMR_Read" name="NMR_Read" version="@WRAPPER_VERSION@">
     <description> Read Bruker NMR raw files</description>
 
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+
+    <expand macro="requirements" />
+
+    <expand macro="stdio"/>
 
     <command>
         ## Wrapper
@@ -65,11 +69,7 @@
 
     <help>
 
-.. class:: infomark
-
-**Authors** Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
-
-.. class:: infomark
+@HELP_AUTHORS@
 
 
 =============
@@ -202,37 +202,10 @@ Must contain at least the following files for every sample: fid, acqu and acqus
 (4) don't use title file and no sub-directories: subdirectories = FALSE,  dirs_names = TRUE
 
 
-Changelog/News
---------------
-**Version 3.2.0**
-
-* Updated R scripts and the help section of NMR_ReadFids and NMR_preprocessing
-* Added sections
-* Created a variableMetadata file in output of the NMR_preprocessing module
-* Homogenised the input-output file names with the other modules
-* Suppressed the option ptw for the baseline correction, set to TRUE all the time now
-* Shift referencing: other values than 0 are admitted
-* The log file recovers the input/output parameters
-* Added an exclusion zone for the computation of the Baseline Correction criterion
-* Switched Internal Referencing (goes second) and Zero Order Phase Correction (goes first)
-
-**Version 3.1.0**
-
-* Implementation of NMR_ReadFids and NMR_preprocessing
+@HELP_CHANGELOG@
 
     </help>
 
-
-    <citations>
-
-        <citation type="bibtex">@PhDThesis{Rousseau2011,
-        title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
-        author = {Rousseau, R.},
-        school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
-        year = {2011}}
-        </citation>
-
-    </citations>
-
+    <expand macro="citation" />
 
 </tool>

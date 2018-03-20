@@ -1,9 +1,16 @@
-<tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="3.2.0">
+<tool id="NMR_Preprocessing" name="NMR_Preprocessing" version="@WRAPPER_VERSION@">
     <description> Preprocessing of 1D NMR spectra </description>
 
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
+    <macros>
+        <import>macros.xml</import>
+    </macros>
+
+    <expand macro="requirements">
+        <requirement type="package" version="1.9_12">r-ptw</requirement>
+        <requirement type="package" version="1.2_12">r-matrix</requirement>
+    </expand>
+
+    <expand macro="stdio"/>
 
     <command>
         ## Wrapper
@@ -347,13 +354,7 @@
 
     <help>
 
-.. class:: infomark
-
-**Authors**
-
-Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
-
-.. class:: infomark
+@HELP_AUTHORS@
 
 
 =====================
@@ -415,7 +416,6 @@ Workflow position
 Input files
 -----------
 
-
 +--------------------------------+-----------------+
 | File                           |   Format        |
 +================================+=================+
@@ -425,10 +425,12 @@ Input files
 +--------------------------------+-----------------+
 
 **dataMatrix file**
+
 sample x variable matrix with tabular separations and "." as decimal; the table must not contain metadata apart from row and column names; the row names must be identical to the rownames of the sample metadata.
 
 
 **sampleMetadata file**
+
 sample x metadata matrix with tabular separations and "." as decimal for numeric metadata and NA for missing values.
 
 
@@ -519,6 +521,7 @@ The **searching window** can be adapted:
 
 **Negative intensities to Zero**
 ------------------------------------
+
 **Set negative intensities to zero**: the set of negative intensities to zero is optional.
 
 
@@ -546,17 +549,11 @@ NMR_Preprocessing_graph.pdf
     | line plots of preprocessed spectra
     |
 
+
+@HELP_CHANGELOG@
+
     </help>
 
-    <citations>
-
-        <citation type="bibtex">@PhDThesis{Rousseau2011,
-        title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
-        author = {Rousseau, R.},
-        school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
-        year = {2011}}
-        </citation>
-
-    </citations>
+    <expand macro="citation" />
 
 </tool>

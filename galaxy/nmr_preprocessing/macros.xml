@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<macros>
+    <token name="@WRAPPER_VERSION@">3.2.0</token>
+
+    <xml name="requirements">
+        <requirements>
+            <requirement type="package" version="1.1_4">r-batch</requirement>
+            <requirement type="package" version="2.2.1">r-ggplot2</requirement>
+            <requirement type="package" version="2.3">r-gridextra</requirement>
+            <requirement type="package" version="1.4.3">r-reshape2</requirement>
+            <yield />
+        </requirements>
+    </xml>
+
+    <xml name="stdio">
+        <stdio>
+            <exit_code range="1" level="fatal" />
+        </stdio>
+    </xml>
+
+
+    <token name="@HELP_AUTHORS@">
+.. class:: infomark
+
+**Authors** Manon Martin (manon.martin@uclouvain.be) and Marie Tremblay-Franco (marie.tremblay-franco@inra.fr; Galaxy integration)
+
+.. class:: infomark
+
+| Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+---------------------------------------------------
+
+    </token>
+
+    <token name="@HELP_CHANGELOG@">
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+**Version 3.2.0**
+
+* Updated R scripts and the help section of NMR_ReadFids and NMR_preprocessing
+* Added sections
+* Created a variableMetadata file in output of the NMR_preprocessing module
+* Homogenised the input-output file names with the other modules
+* Suppressed the option ptw for the baseline correction, set to TRUE all the time now
+* Shift referencing: other values than 0 are admitted
+* The log file recovers the input/output parameters
+* Added an exclusion zone for the computation of the Baseline Correction criterion
+* Switched Internal Referencing (goes second) and Zero Order Phase Correction (goes first)
+
+**Version 3.1.0**
+
+* Implementation of NMR_ReadFids and NMR_preprocessing
+
+    </token>
+
+    <xml name="citation">
+        <citations>
+            <citation type="bibtex">@PhDThesis{Rousseau2011,
+            title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
+            author = {Rousseau, R.},
+            school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
+            year = {2011}}
+            </citation>
+            <citation type="doi">10.1093/bioinformatics/btu813</citation>
+        </citations>
+    </xml>
+
+</macros>
