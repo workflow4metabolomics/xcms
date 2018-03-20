@@ -1,7 +1,7 @@
 
 Changelog/News
 --------------
-**Version 2017-11-28 - 28/11/2017**
+**Version 3.2.0**
 
 * Updated R scripts and the help section of NMR_ReadFids and NMR_preprocessing
 * Added sections
@@ -14,10 +14,6 @@ Changelog/News
 * Switched Internal Referencing (goes second) and Zero Order Phase Correction (goes first)
 
 
+**Version 3.1.0**
 
-**Version 2017-02-13 - 13/02/2017**
 * Implementation of NMR_ReadFids and NMR_preprocessing
-
-
-Test Status
------------

@@ -1,75 +1,69 @@
-<tool id="NMR_Read" name="NMR_Read" version="1.2.0">
-	<description> Read Bruker NMR raw files</description>
-	
+<tool id="NMR_Read" name="NMR_Read" version="3.2.0">
+    <description> Read Bruker NMR raw files</description>
+
     <stdio>
         <exit_code range="1:" level="fatal" />
     </stdio>
-	
-  	<command>
-  	    ## Wrapper
+
+    <command>
+        ## Wrapper
         Rscript $__tool_directory__/ReadFids_wrapper.R
 
-		## File input
+        ## File input
         fidzipfile $fidzipfile
-		
-		## Title line
-		title_line $title_line
-		
-		## Subdirectories
-		subdirectories $subdirectories
-		
-		## Use subdirectories names as FID names?
-		dirs_names $dirs_names
+
+        ## Title line
+        title_line $title_line
+
+        ## Subdirectories
+        subdirectories $subdirectories
+
+        ## Use subdirectories names as FID names?
+        dirs_names $dirs_names
 
         ## Outputs
         dataMatrix $dataMatrix
         sampleMetadata $sampleMetadata
         logOut $logOut
         graphOut $graphOut
-		
-	</command>
-		
-  	<inputs>
-		<param name="fidzipfile" type="data" format="no_unzip.zip" label="Bruker FID file" />
-        
-		<param name="title_line" label="Specify the line in the title file to recover the FID names (usually in pdata/1/title)" type="integer" value="1" size="100" help="Default value is line 1"/>
+
+    </command>
+
+    <inputs>
+        <param name="fidzipfile" type="data" format="no_unzip.zip" label="Bruker FID file" />
+        <param name="title_line" label="Specify the line in the title file to recover the FID names (usually in pdata/1/title)" type="integer" value="1" size="100" help="Default value is line 1"/>
 
         <param name="subdirectories" label="Presence of subdirectories?" type="select" help="Select 'FALSE' when there is no subdirectories, 'TRUE' if there are subdirectories">
             <option value="FALSE"> FALSE </option>
             <option value="TRUE"> TRUE </option>
         </param>
-        
+
         <param name="dirs_names" label="Use (sub)directories names as FID names?" type="select" help="Select 'TRUE' to use the subdirectories names as the FID names (instead of looking in the title file)">
             <option value="FALSE"> FALSE </option>
             <option value="TRUE"> TRUE </option>
         </param>
-	</inputs>	
+    </inputs>
 
-	
-	
-	<outputs>
-		<data format="tabular" name="dataMatrix" label="${tool.name}_dataMatrix" />
-		<data format="tabular" name="sampleMetadata" label="${tool.name}_sampleMetadata" />
-		<data format="txt" name="logOut" label="${tool.name}_log" />
-		<data format="pdf" name="graphOut" label="${tool.name}_graph" />
-	</outputs>
+    <outputs>
+        <data format="tabular" name="dataMatrix" label="${tool.name}_dataMatrix" />
+        <data format="tabular" name="sampleMetadata" label="${tool.name}_sampleMetadata" />
+        <data format="txt" name="logOut" label="${tool.name}_log" />
+        <data format="pdf" name="graphOut" label="${tool.name}_graph" />
+    </outputs>
 
 
-	<tests>
+    <tests>
         <test>
           <param name="fidzipfile" value="MTBLS1.zip" ftype="zip" />
           <param name="title_line" value="1" />
           <param name="subdirectories" value="TRUE" />
           <param name="dirs_names" value="TRUE" />
-           
-          <output name="dataMatrix" value="NMR_ReadFids_dataMatrix.tabular" />
-  
-        </test>
-  </tests>
 
-  
-  
-	<help>
+          <output name="dataMatrix" value="NMR_ReadFids_dataMatrix.tabular" />
+        </test>
+    </tests>
+
+    <help>
 
 .. class:: infomark
 
@@ -149,43 +143,43 @@ Parameters
 ----------
 
 FID Title line
-	| Line in the acqus file to find the FID title (name)
-	|
+    | Line in the acqus file to find the FID title (name)
+    |
 
 subdirectories
-	| Organization of individual's files
-	| TRUE: will search inside subdirectories for FIDs and will merge them to have unique FID and info matrices.
-	|
-	
+    | Organization of individual's files
+    | TRUE: will search inside subdirectories for FIDs and will merge them to have unique FID and info matrices.
+    |
+
 dirs_names
-	| Use the (sub)directories names as FID names?
-	|
-	
-	
+    | Use the (sub)directories names as FID names?
+    |
+
+
 ------------
 Output files
 ------------
 
 NMR_Read_dataMatrix
-	| tabular output
-	| Data matrix with n rows (samples) and p columns (time) containing the raw FIDs.
-	|
+    | tabular output
+    | Data matrix with n rows (samples) and p columns (time) containing the raw FIDs.
+    |
 
 NMR_Read_sampleMetadata
-	| tabular output
-	| Data matrix with n rows (samples) containing the acquisition parameters for each sample.
-	|
-	
-NMR_Read_log
-	| Text output
-	| Contains warnings
-	|
+    | tabular output
+    | Data matrix with n rows (samples) containing the acquisition parameters for each sample.
+    |
 
-	
+NMR_Read_log
+    | Text output
+    | Contains warnings
+    |
+
+
 NMR_Read_graph
-	| pdf output
-	| line plots of FID
-	|
+    | pdf output
+    | line plots of FID
+    |
 
 
 Creating the zip file
@@ -195,8 +189,7 @@ Creating the zip file
 
 Must contain at least the following files for every sample: fid, acqu and acqus
 
-.. image:: ./static/images/ReadFids.png 
-    :height: 400 
+.. image:: ./static/images/ReadFids.png
 
 
 
@@ -209,20 +202,37 @@ Must contain at least the following files for every sample: fid, acqu and acqus
 (4) don't use title file and no sub-directories: subdirectories = FALSE,  dirs_names = TRUE
 
 
+Changelog/News
+--------------
+**Version 3.2.0**
 
-   </help>
-   
-   
-   <citations>
-     
-      <citation type="bibtex">@PhDThesis{Rousseau2011,
-      title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
-      author = {Rousseau, R.},
-      school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
-      year = {2011}}
-      </citation>
-      
-   </citations> 
-   
-   
+* Updated R scripts and the help section of NMR_ReadFids and NMR_preprocessing
+* Added sections
+* Created a variableMetadata file in output of the NMR_preprocessing module
+* Homogenised the input-output file names with the other modules
+* Suppressed the option ptw for the baseline correction, set to TRUE all the time now
+* Shift referencing: other values than 0 are admitted
+* The log file recovers the input/output parameters
+* Added an exclusion zone for the computation of the Baseline Correction criterion
+* Switched Internal Referencing (goes second) and Zero Order Phase Correction (goes first)
+
+**Version 3.1.0**
+
+* Implementation of NMR_ReadFids and NMR_preprocessing
+
+    </help>
+
+
+    <citations>
+
+        <citation type="bibtex">@PhDThesis{Rousseau2011,
+        title = {Statistical contribution to the analysis of metabonomics data in $^1$H NMR spectroscopy},
+        author = {Rousseau, R.},
+        school = {Institut de Statistique, Biostatistique et Sciences Actuarielles, Universit{\'e} catholique de Louvain},
+        year = {2011}}
+        </citation>
+
+    </citations>
+
+
 </tool>
