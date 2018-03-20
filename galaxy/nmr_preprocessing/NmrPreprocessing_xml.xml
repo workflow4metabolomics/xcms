@@ -319,34 +319,50 @@
         <test>
             <param name="dataMatrixFid" value="NMR_ReadFids_dataMatrix.tabular"/>
             <param name="sampleMetadataFid" value="sampleMetadata.tabular"/>
-            <param name="FirstOPCGraph" value="NO"/>
-            <param name="lambda" value="1000000" />
-            <param name="SSGraph" value="NO"/>
-            <conditional name="apodizationMethod">
-                <param name="method" value="exp" />
-                <param name="expLB" value="1"  />
-            </conditional>
-            <param name="ApodGraph" value="NO"/>
-            <param name="FTGraph" value="NO"/>
-            <param name="zeroOrderPhaseMethod" value="rms" />
-            <conditional name="excludeZoneZeroPhase" >
-                <param name="choice" value="YES" />
-                <param name="conditions_0|excludeZoneZeroPhase_left" value="5.1" />
-                <param name="conditions_0|excludeZoneZeroPhase_right" value="4.5" />
-            </conditional>
-            <param name="ZeroOPCGraph" value="NO"/>
-            <conditional name="shiftReferencingRange">
-                <param name="method" value="nearvalue"/>
-                <param name="pctNearValue" value="0.02"/>
-            </conditional>
-            <param name="shiftHandling" value= "zerofilling"/>
-            <param name="ppmvalue" value="0" />
-            <param name="SRGraph"    value="NO"/>
-            <param name="lambdaBc" value="100000.0" />
-            <param name="pBc" value="0.05" />
-            <param name="epsilon" value="0.00000001"/>
-            <param name="BCGraph" value="NO"/>
-            <param name="NegativetoZero" value="YES" />
+            <section name="GDC">
+                <param name="FirstOPCGraph" value="NO"/>
+            </section>
+            <section name="SS">
+                <param name="lambda" value="1000000" />
+                <param name="SSGraph" value="NO"/>
+            </section>
+            <section name="Apod">
+                <conditional name="apodizationMethod">
+                    <param name="method" value="exp" />
+                    <param name="expLB" value="1"  />
+                </conditional>
+                <param name="ApodGraph" value="NO"/>
+            </section>
+            <section name="FT">
+                <param name="FTGraph" value="NO"/>
+            </section>
+            <section name="ZOPC">
+                <param name="zeroOrderPhaseMethod" value="rms" />
+                <conditional name="excludeZoneZeroPhase" >
+                    <param name="choice" value="YES" />
+                    <param name="conditions_0|excludeZoneZeroPhase_left" value="5.1" />
+                    <param name="conditions_0|excludeZoneZeroPhase_right" value="4.5" />
+                </conditional>
+                <param name="ZeroOPCGraph" value="NO"/>
+            </section>
+            <section name="SR">
+                <conditional name="shiftReferencingRange">
+                    <param name="method" value="nearvalue"/>
+                    <param name="pctNearValue" value="0.02"/>
+                </conditional>
+                <param name="shiftHandling" value= "zerofilling"/>
+                <param name="ppmvalue" value="0" />
+                <param name="SRGraph" value="NO"/>
+            </section>
+            <section name="BC">
+                <param name="lambdaBc" value="100000.0" />
+                <param name="pBc" value="0.05" />
+                <param name="epsilon" value="0.00000001"/>
+                <param name="BCGraph" value="NO"/>
+            </section>
+            <section name="NZ">
+                <param name="NegativetoZero" value="YES" />
+            </section>
             <param name="FinalGraph" value="YES" />
             <output name="dataMatrix" value="NMR_Preprocessing_dataMatrix.tabular" />
         </test>
