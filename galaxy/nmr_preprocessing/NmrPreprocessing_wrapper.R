@@ -386,7 +386,7 @@ data_variable[1,] <- colnames(data_variable)
 ##======================================================
 
 # Data Matrix
-write.table(t(Re(Spectrum_data)),file=argLs$dataMatrix, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
+write.table(round(t(Re(Spectrum_data)),6), file=argLs$dataMatrix, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
 
 # Variable metadata
 write.table(data_variable,file=argLs$variableMetadata, quote=FALSE, row.names=TRUE, sep="\t", col.names=TRUE)
