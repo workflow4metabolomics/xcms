@@ -21,7 +21,7 @@
     ]]></command>
 
     <inputs>
-        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="xset RData / xcms.xcmsSet file" help="output file from another xcms.xcmsSet" multiple="true" />
+        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from multiple findChromPeaks" multiple="true" />
         <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
 
         <expand macro="input_file_load"/>
@@ -32,8 +32,6 @@
         <data name="sampleMetadataOutput" format="tabular" label="xset.merged.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv">
             <filter>not sampleMetadata</filter>
         </data>
-        <data name="ticsRawPdf" format="pdf" label="xset.merged.xset.TICs_raw.pdf" from_work_dir="TICs.pdf"  />
-        <data name="bpcsRawPdf" format="pdf" label="xset.merged.xset.BPCs_raw.pdf" from_work_dir="BICs.pdf" />
     </outputs>
 
     <tests>
@@ -169,9 +167,13 @@ xset.merged.RData: rdata.xcms.raw format
 Changelog/News
 --------------
 
-**Version 3.0.0.0 - 14/02/2018**
+**Version 3.0.0.0 - 08/03/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+
+- IMPROVMENT: a new dedicated tool "xcms plot chromatogram" will allow you to get TIC and BPI of your raw data.
+
+- IMPROVMENT: the tool will now generate a sampleMetadata file if any was provided. It will be useful to add some further information for the normalization and statistics steps.
 
 **Version 1.0.1 - 13/02/2017**
 

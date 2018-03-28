@@ -183,8 +183,6 @@
         <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv" >
             <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
         </data>
-        <data name="ticsRawPdf" format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf" from_work_dir="TICs.pdf"  />
-        <data name="bpcsRawPdf" format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf" from_work_dir="BICs.pdf" />
         <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" from_work_dir="log.txt" />
     </outputs>
 
@@ -657,21 +655,30 @@ Output files
 Changelog/News
 --------------
 
-**Version 3.0.0.0 - 02/03/2018**
 
-- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+**Version 3.0.0.0 - 08/03/2018**
 
-- NEW: a bunch of new options in the existing methods: CentWave.mzCenterFun, CentWave.fitgauss, CentWave.verboseColumns, MatchedFilter.sigma
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- NEW: a bunch of new options: Spectra Filters (previously scanrange), CentWave.(mzCenterFun, fitgauss, verboseColumns), MatchedFilter.(sigma, impute, baseValue, max), MSW.(verboseColumns), ...
 
 - NEW: new Filters for Spectra
 
 - NEW: new methods: CentWaveWithPredIsoROIs
 
-- UPDATE: since xcms 3.0.0, some options are no more available: scanrange, profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
+- UPDATE: since xcms 3.0.0, some options are no more available: scanrange (replace by filters), profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
+
+- IMPROVEMENT: the advanced options are now in sections. It will allow you to access to all the parameters and to know their default values.
+
+- IMPROVEMENT: the tool "should" be now more flexible in term of file naming: it "should" accept space and comma. But don't be too imaginative :)
+
+- CHANGE: removing of the TIC and BPC plots. You can new use the dedicated tool "xcms plot chromatogram"
+
 
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 22/02/2017**
 
@@ -679,21 +686,26 @@ Changelog/News
 
 - BUGFIX: the default value of "matchedFilter" -> "Step size to use for profile generation" which was of 0.01 have been changed to fix with the XMCS default values to 0.1
 
+
 **Version 2.0.11 - 22/12/2016**
 
 - BUGFIX: propose scanrange for all methods
+
 
 **Version 2.0.10 - 22/12/2016**
 
 - BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
 
+
 **Version 2.0.9 - 06/07/2016**
 
 - UPGRADE: upgrade the xcms version from 1.44.0 to 1.46.0
 
+
 **Version 2.0.8 - 06/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
+
 
 **Version 2.0.7 - 10/02/2016**
 
@@ -707,13 +719,16 @@ Changelog/News
 
 - TEST: refactoring to feed the new report tool
 
+
 **Version 2.0.2 - 18/01/2016**
 
 - BUGFIX: Some zip files were tag as "corrupt" by R. We have changed the extraction mode to deal with thoses cases.
 
+
 **Version 2.0.2 - 09/10/2015**
 
 - BUGFIX: Some users reported a bug in xcms.xcmsSet. The preprocessing stops itself and doesn't import the whole dataset contained in the zip file without warning. But meanwhile, please check your samplemetadata dataset and the number of rows.
+
 
 **Version 2.0.2 - 02/06/2015**
 

@@ -15,6 +15,9 @@ ROOTPATH=$(dirname $(realpath "$0"))
 cd $ROOTPATH/xcms_xcmsset
 planemo shed_update -t $TARGET
 
+cd $ROOTPATH/xcms_plot_chromatogram
+planemo shed_update -t $TARGET
+
 cd $ROOTPATH/xcms_merge
 planemo shed_update -t $TARGET
 
