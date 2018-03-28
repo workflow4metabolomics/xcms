@@ -134,17 +134,18 @@
 
     <!-- CENTWAVE -->
     <token name="@COMMAND_CENTWAVE@">
-ppm $methods.ppm
-peakwidth "c($methods.peakwidth)"
-## Advanced
-snthresh $methods.CentWaveAdv.snthresh
-prefilter "c($methods.CentWaveAdv.prefilter)"
-mzCenterFun $methods.CentWaveAdv.mzCenterFun
-integrate $methods.CentWaveAdv.integrate
-mzdiff $methods.CentWaveAdv.mzdiff
-fitgauss $methods.CentWaveAdv.fitgauss
-noise $methods.CentWaveAdv.noise
-verboseColumns $methods.CentWaveAdv.verboseColumns
+            ppm $methods.ppm
+            peakwidth "c($methods.peakwidth)"
+            
+            ## Advanced
+            snthresh $methods.CentWaveAdv.snthresh
+            prefilter "c($methods.CentWaveAdv.prefilter)"
+            mzCenterFun $methods.CentWaveAdv.mzCenterFun
+            integrate $methods.CentWaveAdv.integrate
+            mzdiff $methods.CentWaveAdv.mzdiff
+            fitgauss $methods.CentWaveAdv.fitgauss
+            noise $methods.CentWaveAdv.noise
+            verboseColumns $methods.CentWaveAdv.verboseColumns
     </token>
 
     <xml name="input_centwave">
@@ -176,8 +177,18 @@ verboseColumns $methods.CentWaveAdv.verboseColumns
         <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
     </xml>
 
-    <xml name="input_centwaveAdvROI">
-        <param argument="roiList" type="data" format="tabular" optional="true" label="List of regions-of-interest (ROI) representing detected mass traces" help="If ROIs are submitted the first analysis step is omitted and chromatographic peak detection is performed on the submitted ROIs. Each ROI is expected to have the following elements specified: ‘scmin’ (start scan index), ‘scmax’ (end scan index), ‘mzmin’ (minimum m/z), ‘mzmax’ (maximum m/z), ‘length’ (number of scans), ‘intensity’ (summed intensity)." />
+    <token name="@COMMAND_CENTWAVEADVROI@">
+            #if $sectionROI.roiList:
+                roiList '$sectionROI.roiList'
+                firstBaselineCheck $sectionROI.firstBaselineCheck
+                #if $sectionROI.roiScales != "":
+                    roiScales "c($sectionROI.roiScales)"
+                #end if
+            #end if
+    </token>
+
+    <xml name="input_centwaveAdvROI" token_optional="true">
+        <param argument="roiList" type="data" format="tabular" optional="@OPTIONAL@" label="List of regions-of-interest (ROI) representing detected mass traces" help="If ROIs are submitted the first analysis step is omitted and chromatographic peak detection is performed on the submitted ROIs. Each ROI is expected to have the following elements specified: ‘scmin’ (start scan index), ‘scmax’ (end scan index), ‘mzmin’ (minimum m/z), ‘mzmax’ (maximum m/z), ‘length’ (number of scans), ‘intensity’ (summed intensity)." />
         <param argument="firstBaselineCheck" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Is continuous data within regions of interest is checked to be above the first baseline." />
         <param argument="roiScales" type="text" value="" optional="true" label="Numeric vector defining the scale for each region of interest in ‘roiList’" help="Length equal to ‘roiList’ - Should be used for the centWave-wavelets (format 0.9,1,0.2)">
             <expand macro="input_validator_range_float"/>
