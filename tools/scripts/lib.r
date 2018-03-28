@@ -74,15 +74,19 @@ getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
 #@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
 getPlotAdjustedRtime <- function(xdata) {
+
     pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
+
     # Color by group
     group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
     names(group_colors) <- unique(xdata$sample_group)
     plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
     legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+
     # Color by sample
     plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
     legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+
     dev.off()
 }
 
@@ -118,254 +122,44 @@ getDataFrameFromFile <- function(filename, header=T) {
     return(myDataFrame)
 }
 
-#@author Y. Guitton
-getBPC <- function(file,rtcor=NULL, ...) {
-    object <- xcmsRaw(file)
-    sel <- profRange(object, ...)
-    cbind(if (is.null(rtcor)) object@scantime[sel$scanidx] else rtcor ,xcms:::colMax(object@env$profile[sel$massidx,sel$scanidx,drop=FALSE]))
-    #plotChrom(xcmsRaw(file), base=T)
+getPlotChromatogram <- function(xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
+
+    chrom <- chromatogram(xdata, aggregationFun = aggregationFun)
+    if (aggregationFun == "sum")
+        type="Total Ion Chromatograms"
+    else
+        type="Base Peak Intensity Chromatograms"
+
+    adjusted="Raw"
+    if (hasAdjustedRtime(xdata))
+        adjusted="Adjusted"
+
+    main <- paste(type,":",adjusted,"data")
+
+    pdf(pdfname, width=16, height=10)
+
+    # Color by group
+    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    names(group_colors) <- unique(xdata$sample_group)
+    plot(chrom, col = group_colors[chrom$sample_group], main=main)
+    legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+
+    # Color by sample
+    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main)
+    legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+
+    dev.off()
 }
 
-#@author Y. Guitton
-getBPCs <- function (xcmsSet=NULL, pdfname="BPCs.pdf",rt=c("raw","corrected"), scanrange=NULL) {
-    cat("Creating BIC pdf...\n")
-
-    if (is.null(xcmsSet)) {
-        cat("Enter an xcmsSet \n")
-        stop()
-    } else {
-        files <- filepaths(xcmsSet)
-    }
-
-    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,"class"])) #sometime phenoData have more than 1 column use first as class
-
-    classnames <- vector("list",length(phenoDataClass))
-    for (i in 1:length(phenoDataClass)){
-        classnames[[i]] <- which( xcmsSet@phenoData[,"class"]==phenoDataClass[i])
-    }
-
-    N <- dim(phenoData(xcmsSet))[1]
-
-    TIC <- vector("list",N)
-
-
-    for (j in 1:N) {
-
-        TIC[[j]] <- getBPC(files[j])
-        #good for raw
-        # seems strange for corrected
-        #errors if scanrange used in xcmsSetgeneration
-        if (!is.null(xcmsSet) && rt == "corrected")
-            rtcor <- xcmsSet@rt$corrected[[j]]
-        else
-            rtcor <- NULL
-
-        TIC[[j]] <- getBPC(files[j],rtcor=rtcor)
-        # TIC[[j]][,1]<-rtcor
-    }
-
-
-
-    pdf(pdfname,w=16,h=10)
-    cols <- rainbow(N)
-    lty <- 1:N
-    pch <- 1:N
-    #search for max x and max y in BPCs
-    xlim <- range(sapply(TIC, function(x) range(x[,1])))
-    ylim <- range(sapply(TIC, function(x) range(x[,2])))
-    ylim <- c(-ylim[2], ylim[2])
-
-
-    ##plot start
-
-    if (length(phenoDataClass)>2){
-        for (k in 1:(length(phenoDataClass)-1)){
-            for (l in (k+1):length(phenoDataClass)){
-                #print(paste(phenoDataClass[k],"vs",phenoDataClass[l],sep=" "))
-                plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k]," vs ",phenoDataClass[l], sep=""), xlab="Retention Time (min)", ylab="BPC")
-                colvect <- NULL
-                for (j in 1:length(classnames[[k]])) {
-                    tic <- TIC[[classnames[[k]][j]]]
-                    # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-                    points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-                    colvect <- append(colvect,cols[classnames[[k]][j]])
-                }
-                for (j in 1:length(classnames[[l]])) {
-                    # i <- class2names[j]
-                    tic <- TIC[[classnames[[l]][j]]]
-                    points(tic[,1]/60, -tic[,2], col=cols[classnames[[l]][j]], pch=pch[classnames[[l]][j]], type="l")
-                    colvect <- append(colvect,cols[classnames[[l]][j]])
-                }
-                legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col=colvect, lty=lty, pch=pch)
-            }
-        }
-    }#end if length >2
-
-    if (length(phenoDataClass)==2){
-        k <- 1
-        l <- 2
-        colvect <- NULL
-        plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k],"vs",phenoDataClass[l], sep=""), xlab="Retention Time (min)", ylab="BPC")
-
-        for (j in 1:length(classnames[[k]])) {
-
-            tic <- TIC[[classnames[[k]][j]]]
-            # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-            points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-            colvect<-append(colvect,cols[classnames[[k]][j]])
-        }
-        for (j in 1:length(classnames[[l]])) {
-            # i <- class2names[j]
-            tic <- TIC[[classnames[[l]][j]]]
-            points(tic[,1]/60, -tic[,2], col=cols[classnames[[l]][j]], pch=pch[classnames[[l]][j]], type="l")
-            colvect <- append(colvect,cols[classnames[[l]][j]])
-        }
-        legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col=colvect, lty=lty, pch=pch)
-
-    }#end length ==2
-
-    #case where only one class
-    if (length(phenoDataClass)==1){
-        k <- 1
-        ylim <- range(sapply(TIC, function(x) range(x[,2])))
-        colvect <- NULL
-        plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Base Peak Chromatograms \n","BPCs_",phenoDataClass[k], sep=""), xlab="Retention Time (min)", ylab="BPC")
-
-        for (j in 1:length(classnames[[k]])) {
-            tic <- TIC[[classnames[[k]][j]]]
-            # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-            points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-            colvect <- append(colvect,cols[classnames[[k]][j]])
-        }
-
-        legend("topright",paste(basename(files[c(classnames[[k]])])), col=colvect, lty=lty, pch=pch)
-
-    }#end length ==1
-
-    dev.off() #pdf(pdfname,w=16,h=10)
-
-    invisible(TIC)
+#@author G. Le Corguille
+getPlotTICs <- function(xdata, pdfname="TICs.pdf") {
+    getPlotChromatogram(xdata, pdfname, aggregationFun = "sum")
 }
 
-
-
-#@author Y. Guitton
-getTIC <- function(file, rtcor=NULL) {
-    object <- xcmsRaw(file)
-    cbind(if (is.null(rtcor)) object@scantime else rtcor, rawEIC(object, mzrange=range(object@env$mz))$intensity)
+#@author G. Le Corguille
+getPlotBPIs <- function(xdata, pdfname="BPIs.pdf") {
+    getPlotChromatogram(xdata, pdfname, aggregationFun = "max")
 }
-
-#overlay TIC from all files in current folder or from xcmsSet, create pdf
-#@author Y. Guitton
-getTICs <- function(xcmsSet=NULL,files=NULL, pdfname="TICs.pdf", rt=c("raw","corrected")) {
-    cat("Creating TIC pdf...\n")
-
-    if (is.null(xcmsSet)) {
-        filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]", "[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
-        filepattern <- paste(paste("\\.", filepattern, "$", sep=""), collapse="|")
-        if (is.null(files))
-            files <- getwd()
-        info <- file.info(files)
-        listed <- list.files(files[info$isdir], pattern=filepattern, recursive=TRUE, full.names=TRUE)
-        files <- c(files[!info$isdir], listed)
-    } else {
-        files <- filepaths(xcmsSet)
-    }
-
-    phenoDataClass <- as.vector(levels(xcmsSet@phenoData[,"class"])) #sometime phenoData have more than 1 column use first as class
-    classnames <- vector("list",length(phenoDataClass))
-    for (i in 1:length(phenoDataClass)){
-        classnames[[i]] <- which( xcmsSet@phenoData[,"class"]==phenoDataClass[i])
-    }
-
-    N <- length(files)
-    TIC <- vector("list",N)
-
-    for (i in 1:N) {
-        if (!is.null(xcmsSet) && rt == "corrected")
-            rtcor <- xcmsSet@rt$corrected[[i]] else
-        rtcor <- NULL
-        TIC[[i]] <- getTIC(files[i], rtcor=rtcor)
-    }
-
-    pdf(pdfname, w=16, h=10)
-    cols <- rainbow(N)
-    lty <- 1:N
-    pch <- 1:N
-    #search for max x and max y in TICs
-    xlim <- range(sapply(TIC, function(x) range(x[,1])))
-    ylim <- range(sapply(TIC, function(x) range(x[,2])))
-    ylim <- c(-ylim[2], ylim[2])
-
-
-    ##plot start
-    if (length(phenoDataClass)>2){
-        for (k in 1:(length(phenoDataClass)-1)){
-            for (l in (k+1):length(phenoDataClass)){
-                #print(paste(phenoDataClass[k],"vs",phenoDataClass[l],sep=" "))
-                plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k]," vs ",phenoDataClass[l], sep=""), xlab="Retention Time (min)", ylab="TIC")
-                colvect <- NULL
-                for (j in 1:length(classnames[[k]])) {
-                    tic <- TIC[[classnames[[k]][j]]]
-                    # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-                    points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-                    colvect <- append(colvect,cols[classnames[[k]][j]])
-                }
-                for (j in 1:length(classnames[[l]])) {
-                    # i=class2names[j]
-                    tic <- TIC[[classnames[[l]][j]]]
-                    points(tic[,1]/60, -tic[,2], col=cols[classnames[[l]][j]], pch=pch[classnames[[l]][j]], type="l")
-                    colvect <- append(colvect,cols[classnames[[l]][j]])
-                }
-                legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col=colvect, lty=lty, pch=pch)
-            }
-        }
-    }#end if length >2
-    if (length(phenoDataClass)==2){
-        k <- 1
-        l <- 2
-
-        plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k],"vs",phenoDataClass[l], sep=""), xlab="Retention Time (min)", ylab="TIC")
-        colvect <- NULL
-        for (j in 1:length(classnames[[k]])) {
-            tic <- TIC[[classnames[[k]][j]]]
-            # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-            points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-            colvect <- append(colvect,cols[classnames[[k]][j]])
-        }
-        for (j in 1:length(classnames[[l]])) {
-            # i <- class2names[j]
-            tic <- TIC[[classnames[[l]][j]]]
-            points(tic[,1]/60, -tic[,2], col=cols[classnames[[l]][j]], pch=pch[classnames[[l]][j]], type="l")
-            colvect <- append(colvect,cols[classnames[[l]][j]])
-        }
-        legend("topright",paste(basename(files[c(classnames[[k]],classnames[[l]])])), col=colvect, lty=lty, pch=pch)
-
-    }#end length ==2
-
-    #case where only one class
-    if (length(phenoDataClass)==1){
-        k <- 1
-        ylim <- range(sapply(TIC, function(x) range(x[,2])))
-
-        plot(0, 0, type="n", xlim=xlim/60, ylim=ylim, main=paste("Total Ion Chromatograms \n","TICs_",phenoDataClass[k], sep=""), xlab="Retention Time (min)", ylab="TIC")
-        colvect <- NULL
-        for (j in 1:length(classnames[[k]])) {
-            tic <- TIC[[classnames[[k]][j]]]
-            # points(tic[,1]/60, tic[,2], col=cols[i], pch=pch[i], type="l")
-            points(tic[,1]/60, tic[,2], col=cols[classnames[[k]][j]], pch=pch[classnames[[k]][j]], type="l")
-            colvect <- append(colvect,cols[classnames[[k]][j]])
-        }
-
-        legend("topright",paste(basename(files[c(classnames[[k]])])), col=colvect, lty=lty, pch=pch)
-
-    }#end length ==1
-
-    dev.off() #pdf(pdfname,w=16,h=10)
-
-    invisible(TIC)
-}
-
 
 
 # Get the polarities from all the samples of a condition

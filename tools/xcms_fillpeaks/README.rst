@@ -2,9 +2,19 @@
 Changelog/News
 --------------
 
+**Version 3.0.0.0 - 08/03/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- UPDATE: since xcms 3.0.0, the selection of a method is no more needed (chrom or MSW). xcms will detect from the data the peak picking method used in findChromPeaks
+
+- UPDATE: since xcms 3.0.0, new parameters are available: expandMz, expandRt and ppm
+
+
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 07/02/2017**
 
@@ -12,13 +22,16 @@ Changelog/News
 
 - IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
 
+
 **Version 2.0.8 - 22/12/2016**
 
-- IMPROVEMENT: Add an option to export the peak list at this step without have to wait camara.annotate
+- IMPROVEMENT: Add an option to export the peak list at this step without having to wait for CAMERA.annotate
+
 
 **Version 2.0.7 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+
 
 **Version 2.0.6 - 04/04/2016**
 

@@ -22,9 +22,25 @@ The [Dynamic Destination Mapping](https://galaxyproject.org/admin/config/jobs/#d
 Changelog/News
 --------------
 
+**Version 3.0.0.0 - 08/03/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- NEW: a bunch of new options: Spectra Filters (previously scanrange), CentWave.(mzCenterFun, fitgauss, verboseColumns), MatchedFilter.(sigma, impute, baseValue, max), MSW.(verboseColumns), ...
+
+- UPDATE: since xcms 3.0.0, some options are no more available: scanrange (replace by filters), profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
+
+- IMPROVEMENT: the advanced options are now in sections. It will allow you to access to all the parameters and to know their default values.
+
+- IMPROVEMENT: the tool "should" be now more flexible in term of file naming: it "should" accept space and comma. But don't be too imaginative :)
+
+- CHANGE: removing of the TIC and BPC plots. You can new use the dedicated tool "xcms plot chromatogram"
+
+
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 22/02/2017**
 
@@ -32,17 +48,21 @@ Changelog/News
 
 - BUGFIX: the default value of "matchedFilter" -> "Step size to use for profile generation" which was of 0.01 have been changed to fix with the XMCS default values to 0.1
 
+
 **Version 2.0.11 - 22/12/2016**
 
 - BUGFIX: propose scanrange for all methods
+
 
 **Version 2.0.10 - 22/12/2016**
 
 - BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
 
+
 **Version 2.0.9 - 06/07/2016**
 
-- UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+- UPGRADE: upgrade the xcms version from 1.44.0 to 1.46.0
+
 
 **Version 2.0.8 - 06/04/2016**
 
@@ -59,7 +79,7 @@ Changelog/News
 
 - UPDATE: refactoring of internal management of inputs/outputs
 
-- UPDATE: refactoring to feed the new report tool
+- TEST: refactoring to feed the new report tool
 
 
 **Version 2.0.2 - 18/01/2016**

@@ -28,7 +28,7 @@
     ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.group,rdata" label="xset RData file" help="output file from another xcms function (group)" />
+        <param name="image" type="data" format="rdata.xcms.group,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from groupChromPeaks" />
 
         <section name="Adv" title="Advanced Options" expanded="False">
             <param argument="expandMz" type="integer" value="0" label="Value by which the mz width of peaks should be expanded" help="Each peak is expanded in mz direction by ‘expandMz *’ their original mz width. A value of ‘0’ means no expansion, a value of ‘1’ grows each peak by 1 * the mz width of the peak resulting in peakswith twice their original size in mz direction (expansion by half mz width to both sides)." />
@@ -255,17 +255,19 @@ Output files
 Changelog/News
 --------------
 
-**Version 3.0.0.0 - 14/02/2018**
+**Version 3.0.0.0 - 08/03/2018**
 
-- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
 
-- UPDATE: since xcms 3.0.0, the selection of a method is no more needed (chrom or MSW)
+- UPDATE: since xcms 3.0.0, the selection of a method is no more needed (chrom or MSW). xcms will detect from the data the peak picking method used in findChromPeaks
 
 - UPDATE: since xcms 3.0.0, new parameters are available: expandMz, expandRt and ppm
+
 
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 07/02/2017**
 
@@ -273,17 +275,21 @@ Changelog/News
 
 - IMPROVEMENT: xcms.fillpeaks can deal with merged individual data
 
+
 **Version 2.0.8 - 22/12/2016**
 
 - IMPROVEMENT: Add an option to export the peak list at this step without having to wait for CAMERA.annotate
+
 
 **Version 2.0.7 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
 
+
 **Version 2.0.6 - 04/04/2016**
 
 - TEST: refactoring to pass planemo test using conda dependencies
+
 
 **Version 2.0.5 - 10/02/2016**
 

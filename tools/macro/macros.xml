@@ -39,6 +39,10 @@
         <validator type="regex" message="The format is '1,2,4,6'" >[0-9, ]+</validator>
     </xml>
 
+
+    <token name="@INPUT_IMAGE_LABEL@">RData file</token>
+    <token name="@INPUT_IMAGE_HELP@">It contain a xcms3::XCMSnExp object (named xdata)</token>
+
     <!-- FILE_LOAD for planemo test -->
     <token name="@COMMAND_FILE_LOAD@">
         #if $file_load_section.file_load_conditional.file_load_select == "yes":

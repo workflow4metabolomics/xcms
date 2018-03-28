@@ -22,5 +22,4 @@ def input_type(job):
         if input_extension in ["mzxml","mzml","mzdata","netcdf"]:
             return 'thread1-mem_free8'
     # zip file
-    return 'thread9-mem_free8'
-
+    return 'thread8-mem_free16'
