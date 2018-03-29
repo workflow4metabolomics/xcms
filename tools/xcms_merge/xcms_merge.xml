@@ -38,7 +38,7 @@
     <tests>
         <!-- DISABLE FOR TRAVIS
         <test>
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
             <assert_stdout>
                 <has_text text="object with 4 samples" />
@@ -52,7 +52,7 @@
         </test>
         -->
         <test>
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
             <param name="sampleMetadata" value="sampleMetadata.tab" />
             <assert_stdout>
@@ -69,7 +69,7 @@
             </assert_stdout>
         </test>
         <!--<test expect_failure="True">
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
             <param name="sampleMetadata" value="sampleMetadata_missing.tab" />
             <expand macro="test_file_load_single"/>
             <assert_stderr>
