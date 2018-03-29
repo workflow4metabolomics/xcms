@@ -42,7 +42,7 @@
    ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
+        <param name="image" type="data" format="rdata.xcms.findchrompeaks,rdata.xcms.group,rdata.xcms.retcor,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for grouping" help="See the help section below">
                 <option value="PeakDensity" selected="true">PeakDensity - peak grouping based on time dimension peak densities</option>
@@ -276,15 +276,15 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= =================== ==========
-Name                      output file       format              parameter
-========================= ================= =================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.xcmsSet Merger       xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
-========================= ================= =================== ==========
+========================= ================= ============================== ==========
+Name                      output file       format                         parameter
+========================= ================= ============================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.xcmsSet Merger       xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
+========================= ================= ============================== ==========
 
 
 **Downstream tools**
@@ -308,13 +308,13 @@ The output file is an xcmsSet.RData file. You can continue your analysis using i
 Input files
 -----------
 
-+---------------------------+-----------------------+
-| Parameter : num + label   |   Format              |
-+===========================+=======================+
-| Or : RData file            |   rdata.xcms.raw     |
-+---------------------------+-----------------------+
-| Or : RData file            |   rdata.xcms.retcor  |
-+---------------------------+-----------------------+
++---------------------------+----------------------------------+
+| Parameter : num + label   |   Format                         |
++===========================+==================================+
+| Or : RData file           |   rdata.xcms.findchrompeaks      |
++---------------------------+----------------------------------+
+| Or : RData file           |   rdata.xcms.retcor              |
++---------------------------+----------------------------------+
 
 
 ----------

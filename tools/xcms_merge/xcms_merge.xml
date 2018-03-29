@@ -22,14 +22,14 @@
     ]]></command>
 
     <inputs>
-        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from multiple findChromPeaks" multiple="true" />
+        <param name="images" type="data" format="rdata.xcms.findchrompeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from multiple findChromPeaks" multiple="true" />
         <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
 
         <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="xset.merged.RData" from_work_dir="merged.RData" />
+        <data name="xsetRData" format="rdata.xcms.findchrompeaks" label="xset.merged.RData" from_work_dir="merged.RData" />
         <data name="sampleMetadataOutput" format="tabular" label="xset.merged.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv">
             <filter>not sampleMetadata</filter>
         </data>
@@ -102,26 +102,26 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= =================== ==========
-Name                      output file       format              parameter
-========================= ================= =================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-...                       ...               ...                 ...
-========================= ================= =================== ==========
+========================= ================= ============================== ==========
+Name                      output file       format                         parameter
+========================= ================= ============================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+...                       ...               ...                            ...
+========================= ================= ============================== ==========
 
 
 **Downstream tools**
 
-+---------------------------+--------------------+-----------------+
-| Name                      | Output file        | Format          |
-+===========================+====================+=================+
-|xcms.group                 | xset.RData         | rdata.xcms.raw  |
-+---------------------------+--------------------+-----------------+
++---------------------------+--------------------+----------------------------+
+| Name                      | Output file        | Format                     |
++===========================+====================+============================+
+|xcms.group                 | xset.RData         | rdata.xcms.findchrompeaks  |
++---------------------------+--------------------+----------------------------+
 
 .. image:: xcms_merge_workflow.png
 
@@ -129,17 +129,17 @@ xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
 Input files
 -----------
 
-+---------------------------+-----------------------+
-| Parameter : num + label   |   Format              |
-+===========================+=======================+
-| 1 : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| 2 : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| N : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| Optional : sampleMetadata |   tsv or csv          |
-+---------------------------+-----------------------+
++---------------------------+----------------------------------+
+| Parameter : num + label   |   Format                         |
++===========================+==================================+
+| 1 : RData file            |   rdata.xcms.findchrompeaks      |
++---------------------------+----------------------------------+
+| 2 : RData file            |   rdata.xcms.findchrompeaks      |
++---------------------------+----------------------------------+
+| N : RData file            |   rdata.xcms.findchrompeaks      |
++---------------------------+----------------------------------+
+| Optional : sampleMetadata |   tsv or csv                     |
++---------------------------+----------------------------------+
 
 Example of a sampleMetadata:
 
@@ -159,7 +159,7 @@ Example of a sampleMetadata:
 Output files
 ------------
 
-xset.merged.RData: rdata.xcms.raw format
+xset.merged.RData: rdata.xcms.findchrompeaks format
 
     | Rdata file that is necessary in the next step of the workflow "xcms.group".
 

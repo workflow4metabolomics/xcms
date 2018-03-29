@@ -18,7 +18,7 @@
     ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
+        <param name="image" type="data" format="rdata.msnbase.raw,rdata.xcms.findchrompeaks,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" />
 
         <expand macro="input_file_load"/>
     </inputs>
@@ -58,13 +58,13 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= =================== ==========
-Name                      output file       format              parameter
-========================= ================= =================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor   RData file
-========================= ================= =================== ==========
+========================= ================= ============================== ==========
+Name                      output file       format                         parameter
+========================= ================= ============================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
+========================= ================= ============================== ==========
 
 .. image:: xcms_plot_chromatogram_workflow.png
 

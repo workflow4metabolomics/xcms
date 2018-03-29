@@ -44,7 +44,7 @@
     ]]></command>
 
     <inputs>
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks" />
+        <param name="image" type="data" format="rdata.xcms.findchrompeaks,rdata.xcms.group,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks" />
         <conditional name="methods">
             <param name="method" type="select" label="Method to use for retention time correction" help="See the help section below" >
                 <option value="PeakGroups" selected="true">PeakGroups - retention time correction based on aligment of features (peak groups) present in most/all samples.</option>
@@ -246,11 +246,13 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= ==========
-Name                      output file       format  parameter
-========================= ================= ======= ==========
-xcms.group                xset.group.RData  RData   RData file
-========================= ================= ======= ==========
+========================= ================= ============================== ==========
+Name                      output file       format                         parameter
+========================= ================= ============================== ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
+------------------------- ----------------- ------------------------------ ----------
+xcms.group                xset.group.RData  RData                          RData file
+========================= ================= ============================== ==========
 
 
 **Downstream tools**
@@ -273,11 +275,13 @@ The output file **xset.retcor.RData** is an RData file. You can continue your an
 Input files
 -----------
 
-+---------------------------+----------------------+
-| Parameter : num + label   |   Format             |
-+===========================+======================+
-| 1 : RData file            |   rdata.xcms.group   |
-+---------------------------+----------------------+
++---------------------------+----------------------------------+
+| Parameter : num + label   |   Format                         |
++===========================+==================================+
+| Or : RData file           |   rdata.xcms.findchrompeaks      |
++---------------------------+----------------------------------+
+| Or : RData file            |   rdata.xcms.group              |
++---------------------------+----------------------------------+
 
 
 ----------
