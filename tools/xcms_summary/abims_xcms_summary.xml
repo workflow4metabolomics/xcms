@@ -4,6 +4,7 @@
 
     <macros>
         <import>macros.xml</import>
+        <import>macros_xcms.xml</import>
     </macros>
 
     <expand macro="requirements">
@@ -13,7 +14,7 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        $__tool_directory__/xcms_summary.r
+        @COMMAND_RSCRIPT@/xcms_summary.r
 
         image '$image'
         htmlOutput '$htmlOutput'
