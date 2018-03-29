@@ -218,7 +218,7 @@
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
         </test>
-        <!--<test>
+        <test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
@@ -235,7 +235,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
-        </test>-->
+        </test>
         <!-- DISABLE FOR TRAVIS
         Useful to generate test-data for the further steps
         <test>
