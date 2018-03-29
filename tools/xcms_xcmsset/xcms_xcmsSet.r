@@ -60,6 +60,10 @@ cat("\n\n")
 # ----- INFILE PROCESSING -----
 cat("\tINFILE PROCESSING INFO\n")
 
+#image is an .RData file necessary to use xset variable given by previous tools
+load(args$image); args$image=NULL
+if (!exists("raw_data")) stop("\n\nERROR: The RData doesn't contain any object called 'raw_data' which is provided by the tool: MSnbase readMSData")
+
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
@@ -68,11 +72,6 @@ zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
 args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
-
-# Check some character issues
-md5sumList <- list("origin" = getMd5sum(directory))
-checkXmlStructure(directory)
-checkFilesCompatibilityWithXcms(directory)
 
 
 cat("\n\n")
@@ -86,15 +85,6 @@ cat("\t\tCOMPUTE\n")
 
 ## Get the full path to the files
 files <- getMSFiles(directory)
-
-cat("\t\t\tCreate a phenodata data.frame\n")
-s_groups <- sapply(files, function(x) tail(unlist(strsplit(dirname(x),"/")), n=1))
-s_name <- tools::file_path_sans_ext(basename(files))
-pd <- data.frame(sample_name=s_name, sample_group=s_groups, stringsAsFactors=FALSE)
-print(pd)
-
-cat("\t\t\tLoad Raw Data\n")
-raw_data <- readMSData(files=files, pdata = new("NAnnotatedDataFrame", pd), mode="onDisk")
 
 cat("\t\t\tApply filter[s] (if asked)\n")
 if (exists("filterAcquisitionNumParam")) {

@@ -12,11 +12,7 @@
     <command><![CDATA[
         @COMMAND_RSCRIPT@/xcms_xcmsSet.r
 
-        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
-        #else
-            zipfile '$input'
-        #end if
+        image '$image'
 
         BPPARAM \${GALAXY_SLOTS:-1}
 
@@ -72,12 +68,15 @@
             nearbyPeak $methods.nearbyPeak
             ampTh $methods.ampTh
         #end if
+
+        @COMMAND_FILE_LOAD@
+        
         @COMMAND_LOG_EXIT@
     ]]></command>
 
     <inputs>
 
-        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+        <param name="image" type="data" format="rdata.msnbase.raw,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from MSnbase readMSData" />
 
         <section name="filterSection" title="Spectra Filters" expanded="False">
             <param argument="filterAcquisitionNum" type="text" value="" optional="true" label="Filter on Acquisition Numbers" help="min,max">
@@ -177,20 +176,19 @@
                 <!---@TODO <param argument="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />-->
             </when>
         </conditional>
+
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" from_work_dir="xcmsSet.RData" />
-        <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv" >
-            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-        </data>
-        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" from_work_dir="log.txt" />
+        <data name="xsetRData" format="rdata.xcms.findchrompeaks" label="${image.name.rsplit('.',1)[0]}.xset.RData" from_work_dir="xcmsSet.RData" />
+        <data name="log" format="txt" label="${image.name.rsplit('.',1)[0]}.xset.log.txt" from_work_dir="log.txt" />
     </outputs>
 
     <tests>
 
         <test>
-            <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="image" value="faahKO.raw.Rdata" ftype="rdata" />
             <section name="filterSection">
                 <param name="filterAcquisitionNum" value="100,5000" />
                 <param name="filterRt" value="3000,4000" />
@@ -207,6 +205,7 @@
                     </section>
                 </section>-->
             </conditional>
+            <expand macro="test_file_load_zip"/>
             <assert_stdout>
                 <has_text text="ppm: 25" />
                 <has_text text="peakwidth: 20, 50" />
@@ -219,33 +218,16 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="MM14.mzML"  ftype="mzxml" />
-            <conditional name="methods">
-                <param name="method" value="CentWave" />
-                <param name="ppm" value="56" />
-                <param name="peakwidth" value="5.275,13.5" />
-            </conditional>
-            <assert_stdout>
-                <has_text text="ppm: 56" />
-                <has_text text="peakwidth: 5.275, 13.5" />
-                <has_text text="object with 1 samples" />
-                <has_text text="Time range: 271-307.3 seconds (4.5-5.1 minutes)" />
-                <has_text text="Mass range: 117.0357-936.7059 m/z" />
-                <has_text text="Peaks: 222 (about 222 per sample)" />
-                <has_text text="Peak Groups: 0" />
-                <has_text text="Sample classes: ." />
-            </assert_stdout>
-        </test>
-        <!-- DISABLE FOR TRAVIS
-        Useful to generate test-data for the further steps
-        <test>
-            <param name="input" value="ko15.CDF"  ftype="netcdf" />
+            <param name="image" value="ko15.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
+            <expand macro="test_file_load_single_ko15"/>
             <assert_stdout>
+                <has_text text="ppm: 25" />
+                <has_text text="peakwidth: 20, 50" />
                 <has_text text="object with 1 samples" />
                 <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
                 <has_text text="Mass range: 200.2-600 m/z" />
@@ -254,8 +236,10 @@
                 <has_text text="Sample classes: ." />
             </assert_stdout>
         </test>
+        <!-- DISABLE FOR TRAVIS
+        Useful to generate test-data for the further steps
         <test>
-            <param name="input" value="ko16.CDF"  ftype="netcdf" />
+            <param name="image" value="ko16.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -271,7 +255,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="wt15.CDF"  ftype="netcdf" />
+            <param name="image" value="wt15.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -287,7 +271,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="wt16.CDF"  ftype="netcdf" />
+            <param name="image" value="wt16.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -306,7 +290,7 @@
         <!-- DISABLE FOR TRAVIS
         Test to test the different methods parameters
         <test>
-            <param name="input" value="MM14.mzML" ftype="mzxml" />
+            <param name="image" value="ko15.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="MatchedFilter" />
                 <param name="fwhm" value="35" />
@@ -324,7 +308,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="MM14.mzML"  ftype="mzxml" />
+            <param name="image" value="ko15.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWavePredIso" />
                 <param name="ppm" value="56" />
@@ -336,18 +320,10 @@
             <assert_stdout>
                 <has_text text="  scmin scmax mzmin mzmax length intensity" />
                 <has_text text="1   200   300   300   350    100      5000" />
-                <has_text text="ppm: 56" />
-                <has_text text="peakwidth: 5.275, 13.5" />
-                <has_text text="object with 1 samples" />
-                <has_text text="Time range: 271-307.3 seconds (4.5-5.1 minutes)" />
-                <has_text text="Mass range: 117.0357-936.7059 m/z" />
-                <has_text text="Peaks: 222 (about 222 per sample)" />
-                <has_text text="Peak Groups: 0" />
-                <has_text text="Sample classes: ." />
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="MM14.mzML" ftype="mzxml" />
+            <param name="image" value="ko15.raw.Rdata" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="MSW" />
                 <param name="snthresh" value="4" />
@@ -362,7 +338,7 @@
         <!-- DISABLE FOR TRAVIS
         No more test-data/sacuri_dir_root.zip
         <test>
-            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
+            <param name="image" value="sacuri_dir_root.zip"  ftype="zip" />
             <conditional name="methods">
                 <param name="method" value="MatchedFilter" />
                 <param name="step" value="0.01" />
@@ -387,7 +363,7 @@
         <!--  DISABLE FOR TRAVIS
         No more test-data/sacuri_current_root.zip
         <test>
-            <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
+            <param name="image" value="sacuri_current_root.zip"  ftype="zip" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -430,109 +406,31 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
+========================= ================= ============================== ==========
+Name                      output file       format                         parameter
+========================= ================= ============================== ==========
+MSnbase readMSData        raw.RData         rdata.msnbase.raw              RData file
+========================= ================= ============================== ==========
 
 
 **Downstream tools**
 
-+---------------------------+--------------------+-----------------+
-| Name                      | Output file        | Format          |
-+===========================+====================+=================+
-|xcms.group                 | xset.RData         | rdata.xcms.raw  |
-+---------------------------+--------------------+-----------------+
-|PCA ellipsoid by factors   | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
-|Anova                      | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
+=========================== ==================== =================
+Name                        Output file          Format
+=========================== ==================== =================
+xcms.group                  xset.RData           rdata.xcms.raw
+--------------------------- -------------------- -----------------
+PCA ellipsoid by factors    sampleMetadata.tsv   Tabular
+--------------------------- -------------------- -----------------
+Anova                       sampleMetadata.tsv   Tabular
+=========================== ==================== =================
 
 
 **Example of a metabolomic workflow**
 
 .. image:: xcms_xcmsset_workflow.png
 
-
-------
-
-.. class:: infomark
-
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
-
 ---------------------------------------------------
-
-
-
------------
-Input files
------------
-
-+---------------------------+----------------------------------+
-| Parameter : num + label   |   Format                         |
-+===========================+==================================+
-| OR : Zip file             |   zip                            |
-+---------------------------+----------------------------------+
-| OR : Single file          |   mzXML, mzML, mzData, netCDF    |
-+---------------------------+----------------------------------+
-
-**Choose your inputs**
-
-You have two methods for your inputs:
-
-    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
-    | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-
-Zip file: Steps for creating the zip file
------------------------------------------
-
-**Step1: Creating your directory and hierarchize the subdirectories**
-
-
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip_ software, otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
-
-.. _7Zip: http://www.7-zip.org/
-
-Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
-arabidopsis/wild/01.raw
-arabidopsis/mutant/01.raw
-
-**Step2: Creating a zip file**
-
-Create your zip file (e.g.: arabidopsis.zip).
-
-**Step 3 : Uploading it to our Galaxy server**
-
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
-
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO_ on workflow4metabolomics.org.
-
-.. _HOWTO: http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf
-
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
-
-Advices for converting your files for the XCMS input
-----------------------------------------------------
-
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
-
-**We recommend you the following parameters:**
-
-Use Filtering: **True**
-
-Use Peak Picking: **True**
-
-Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
-
-Use zlib: **64**
-
-Binary Encoding: **64**
-
-m/z Encoding: **64**
-
-Intensity Encoding: **64**
-
 
 ----------
 Parameters
@@ -574,82 +472,14 @@ Extraction method for peaks detection
 Output files
 ------------
 
-xset.TICs_raw.pdf
-
-    | "Total Ion Chromatograms" graph in pdf format.
-
-xset.BPCs_raw.pdf
-
-    | "Base Peak Chromatograms" graph in pdf format with each class samples opposed.
-
 sampleMetadata.tsv
 
     | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
     | This file is necessary in the Anova and PCA step of the workflow.
 
-xset.RData: rdata.xcms.raw format
+xset.RData: rdata.xcms.findchrompeaks format
 
     | Rdata file that is necessary in the second step of the workflow "xcms.group".
-
-------
-
-.. class:: infomark
-
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
-
----------------------------------------------------
-
----------------
-Working example
----------------
-
-Input files
------------
-
-    | zip_file -> **sacuri.zip**
-
-Parameters
-----------
-
-    | Method -> **matchedFilter**
-    | step   -> **0.01**
-    | fwhm   -> **4**
-    | Advanced option -> **show**
-    | max: -> **50**
-    | snthresh -> **1**
-    | steps -> **2**
-
-
-Output files
-------------
-
-    | **1) xset.RData: RData file**
-
-    | **2) Example of a sampleMetadata.tsv  :**
-
-
-+---------------------------+------------+---------+
-| sampleMetadata            |   class    | polarity|
-+===========================+============+=========+
-|HU_neg_017                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_028                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_034                 |   bio      |negative |
-+---------------------------+------------+---------+
-|Blanc04                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc06                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc09                    |   blank    |negative |
-+---------------------------+------------+---------+
-
-
-
-    | **3) Example of xset.TICs_raw.pdf (Total Ion Chromatograms) :**
-
-.. image:: xcms_tics.png
-
 
 ---------------------------------------------------
 
@@ -660,6 +490,8 @@ Changelog/News
 **Version 3.0.0.0 - 08/03/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- CHANGE: xcms.findChromPeaks no longer read the raw data. You have to run MSnbase readMSData first.
 
 - NEW: a bunch of new options: Spectra Filters (previously scanrange), CentWave.(mzCenterFun, fitgauss, verboseColumns), MatchedFilter.(sigma, impute, baseValue, max), MSW.(verboseColumns), ...
 

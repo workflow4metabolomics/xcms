@@ -69,6 +69,15 @@
         </section>
     </xml>
 
+    <xml name="test_file_load_single_ko15">
+        <section name="file_load_section">
+            <conditional name="file_load_conditional">
+                <param name="file_load_select" value="yes" />
+                <param name="input" value="ko15.CDF" ftype="netcdf" />
+            </conditional>
+        </section>
+    </xml>
+
     <!-- PEAKLIST for planemo test -->
     <token name="@COMMAND_PEAKLIST@">
         #if $peaklist.peaklistBool
