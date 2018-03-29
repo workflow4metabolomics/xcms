@@ -1,0 +1,216 @@
+<tool id="mnsbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.0">
+    <description>Imports mass-spectrometry raw data files</description>
+
+    <macros>
+        <import>macros.xml</import>
+        <import>macros_msnbase.xml</import>
+    </macros>
+
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+
+    <command><![CDATA[
+        @COMMAND_RSCRIPT@/msnbase_readmsdata.r
+
+        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+        #else
+            zipfile '$input'
+        #end if
+
+        @COMMAND_LOG_EXIT@
+    ]]></command>
+
+    <inputs>
+
+        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+
+    </inputs>
+
+    <outputs>
+        <data name="xsetRData" format="rdata.msnbase.raw" label="${input.name.rsplit('.',1)[0]}.raw.RData" from_work_dir="readmsdata.RData" />
+        <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv" >
+            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
+        </data>
+    </outputs>
+
+    <tests>
+
+        <test>
+            <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
+            <assert_stdout>
+                <has_text text="rowNames: faahKO_reduce/KO/ko15.CDF faahKO_reduce/KO/ko16.CDF" />
+                <has_text text="faahKO_reduce/WT/wt15.CDF faahKO_reduce/WT/wt16.CDF" />
+                <has_text text="featureNames: F1.S0001 F1.S0002 ... F4.S1278 (5112 total)" />
+                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (27 total)" />
+                <has_text text="faahKO_reduce/KO/ko15.CDF        ko15           KO" />
+                <has_text text="faahKO_reduce/KO/ko16.CDF        ko16           KO" />
+                <has_text text="faahKO_reduce/WT/wt15.CDF        wt15           WT" />
+                <has_text text="faahKO_reduce/WT/wt16.CDF        wt16           WT" />
+            </assert_stdout>
+            <output name="sampleMetadata" value="sampleMetadata.tsv" />
+        </test>
+        <test>
+            <param name="input" value="ko15.CDF"  ftype="netcdf" />
+            <assert_stdout>
+                <has_text text="rowNames: ./ko15.CDF" />
+                <has_text text="ko15.CDF" />
+                <has_text text="featureNames: F1.S0001 F1.S0002 ... F1.S1278 (1278 total)" />
+                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (27 total)" />
+                <has_text text="./ko15.CDF        ko15            ." />
+            </assert_stdout>
+        </test>
+    </tests>
+
+    <help><![CDATA[
+
+@HELP_AUTHORS@
+
+==================
+MSnbase readMSData
+==================
+
+-----------
+Description
+-----------
+
+Reads as set of XML-based mass-spectrometry data files and
+generates an MSnExp object. This function uses the functionality
+provided by the ‘mzR’ package to access data and meta data in
+‘mzData’, ‘mzXML’ and ‘mzML’.
+
+.. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
+.. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
+
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= ======= =========
+Name                      output file       format  parameter
+========================= ================= ======= =========
+NA                        NA                zip     NA
+========================= ================= ======= =========
+
+
+**Downstream tools**
+
+=========================== ==================== ====================
+Name                        Output file          Format
+=========================== ==================== ====================
+xcms.findChromPeaks         xset.RData           rdata.msnbase.raw
+--------------------------- -------------------- --------------------
+PCA ellipsoid by factors    sampleMetadata.tsv   Tabular
+--------------------------- -------------------- --------------------
+Anova                       sampleMetadata.tsv   Tabular
+=========================== ==================== ====================
+
+
+
+**Example of a metabolomic workflow**
+
+.. image:: mnsbase_readmsdata.png
+
+---------------------------------------------------
+
+
+
+-----------
+Input files
+-----------
+
+=========================== ==================================
+Parameter : num + label     Format
+=========================== ==================================
+OR : Zip file               zip
+--------------------------- ----------------------------------
+OR : Single file            mzXML, mzML, mzData, netCDF
+=========================== ==================================
+
+**Choose your inputs**
+
+You have two methods for your inputs:
+
+    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
+    | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
+
+Zip file: Steps for creating the zip file
+-----------------------------------------
+
+**Step1: Creating your directory and hierarchize the subdirectories**
+
+
+VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip_ software, otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+
+.. _7Zip: http://www.7-zip.org/
+
+Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
+arabidopsis/wild/01.raw
+arabidopsis/mutant/01.raw
+
+**Step2: Creating a zip file**
+
+Create your zip file (e.g.: arabidopsis.zip).
+
+**Step 3 : Uploading it to our Galaxy server**
+
+If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
+
+Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO_ on workflow4metabolomics.org.
+
+.. _HOWTO: http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf
+
+For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
+
+Advices for converting your files for the XCMS input
+----------------------------------------------------
+
+We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
+
+**We recommend you the following parameters:**
+
+Use Filtering: **True**
+
+Use Peak Picking: **True**
+
+Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
+
+Use zlib: **64**
+
+Binary Encoding: **64**
+
+m/z Encoding: **64**
+
+Intensity Encoding: **64**
+
+
+------------
+Output files
+------------
+
+sampleMetadata.tsv
+
+    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
+    | This file is necessary in the Anova and PCA step of the workflow.
+
+xset.RData: rdata.msnbase.raw format
+
+    | Rdata file that is necessary in the second step of the workflow "xcms.findChromPeaks".
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+
+**Version 2.4.0.0 - 29/03/2018**
+
+- NEW: a new dedicated tool to read the raw data. This function was previously included in xcms.findChromPeaks. This way, you will now be able to display TICs and BPCs before xcms.findChromPeaks.
+
+    ]]></help>
+
+    <expand macro="citation" />
+</tool>
