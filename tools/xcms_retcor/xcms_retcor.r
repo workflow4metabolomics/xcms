@@ -29,7 +29,7 @@ cat("\n\n")
 cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the specific parameters
-method <- args$method; args$method <- NULL
+method <- args$method
 
 cat("\n\n")
 
@@ -47,7 +47,6 @@ if (!exists("zipfile")) zipfile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 
@@ -61,6 +60,9 @@ cat("\tMAIN PROCESSING INFO\n")
 cat("\t\tCOMPUTE\n")
 
 cat("\t\t\tAlignment/Retention Time correction\n")
+# clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
+args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
+
 adjustRtimeParam <- do.call(paste0(method,"Param"), args)
 print(adjustRtimeParam)
 xdata <- adjustRtime(xdata, param=adjustRtimeParam)
