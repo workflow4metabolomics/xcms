@@ -24,7 +24,7 @@
 
     <inputs>
 
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
+        <param name="image" type="data" format="rdata.xcms.findchrompeaks,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
 
     </inputs>
 
@@ -63,19 +63,19 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ===================== ==========
-Name                      output file       format                parameter
-========================= ================= ===================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw        RData file
-------------------------- ----------------- --------------------- ----------
-xcms.group                xset.RData        rdata.xcms.group      RData file
-------------------------- ----------------- --------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor     RData file
-------------------------- ----------------- --------------------- ----------
-xcms.fillpeaks            xset.RData        rdata.xcms.fillpeaks  RData file
-------------------------- ----------------- --------------------- ----------
-CAMERA.annotate           xset.RData        rdata.camera.*        RData file
-========================= ================= ===================== ==========
+========================= ================= ================================ ==========
+Name                      output file       format                           parameter
+========================= ================= ================================ ==========
+xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks        RData file
+------------------------- ----------------- -------------------------------- ----------
+xcms.group                xset.RData        rdata.xcms.group                 RData file
+------------------------- ----------------- -------------------------------- ----------
+xcms.retcor               xset.RData        rdata.xcms.retcor                RData file
+------------------------- ----------------- -------------------------------- ----------
+xcms.fillpeaks            xset.RData        rdata.xcms.fillpeaks             RData file
+------------------------- ----------------- -------------------------------- ----------
+CAMERA.annotate           xset.RData        rdata.camera.*                   RData file
+========================= ================= ================================ ==========
 
 
 .. image:: xcms_summary_workflow.png
