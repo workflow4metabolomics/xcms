@@ -50,7 +50,7 @@
 
     <tests>
         <!--<test>
-            <param name="image" value="xset.group.retcor.group.RData"/>
+            <param name="image" value="xset.group.retcor.group.RData" ftype="rdata"/>
             <param name="method" value="chrom"/>
             <param name="zip_file" value="sacuri_dir_root.zip"  ftype="zip" />
             <assert_stdout>
@@ -64,7 +64,7 @@
         </test>-->
         <!-- Issue with fillpeaks because it seems that there are too many NA
         <test>
-            <param name="image" value="faahKO.xset.group.retcor.group.RData"/>
+            <param name="image" value="faahKO.xset.group.retcor.group.RData" ftype="rdata"/>
             <param name="method" value="chrom"/>
             <conditional name="peaklist">
                 <param name="peaklistBool" value="true" />
@@ -85,7 +85,7 @@
             <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.RData" ftype="rdata"/>
             <param name="method" value="chrom"/>
             <conditional name="peaklist">
                 <param name="peaklistBool" value="true" />
@@ -106,7 +106,7 @@
             <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>-->
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group2.retcor2.group2.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group2.retcor2.group2.RData" ftype="rdata"/>
             <conditional name="peaklist">
                 <param name="peaklistBool" value="true" />
                 <param name="convertRTMinute" value="false" />

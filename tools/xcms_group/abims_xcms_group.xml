@@ -87,7 +87,7 @@
     <tests>
         <!-- from xcmsSet -->
         <test>
-            <param name="image" value="faahKO-single-class.xset.merged.RData"/>
+            <param name="image" value="faahKO-single-class.xset.merged.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
@@ -120,7 +120,7 @@
         </test>
         <!-- DISABLE FOR TRAVIS
         <test>
-            <param name="image" value="faahKO-single.xset.merged.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
@@ -144,7 +144,7 @@
         -->
         <!-- DISABLE FOR TRAVIS Zip from xcmsSet
         <test>
-            <param name="image" value="faahKO.xset.RData"/>
+            <param name="image" value="faahKO.xset.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
@@ -177,7 +177,7 @@
 
         <!-- DISABLE FOR TRAVIS Zip from retcor
         <test>
-            <param name="image" value="faahKO.xset.group.retcor.RData"/>
+            <param name="image" value="faahKO.xset.group.retcor.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
@@ -201,7 +201,7 @@
         -->
         <!-- from retcor -->
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakDensity"/>
                 <param name="bw" value="5"/>
@@ -228,7 +228,7 @@
         <!-- DISABLE FOR TRAVIS
         Test to test the different methods parameters
         <test expect_failure="True">
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="MzClust"/>
                 <param name="ppm" value="21"/>
@@ -241,7 +241,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="NearestPeaks"/>
                 <param name="mzVsRtBalance" value="11"/>

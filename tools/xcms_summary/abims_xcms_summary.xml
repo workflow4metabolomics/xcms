@@ -34,11 +34,11 @@
 
     <tests>
         <!--<test>
-            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" />
+            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" ftype="rdata"/>
             <output name="htmlOutput" file="faahKO.xset.group.retcor.group.fillpeaks.summary.html" />
         </test>-->
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" />
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" ftype="rdata"/>
             <output name="htmlOutput" file="faahKO-single.xset.merged.group.retcor.group.fillpeaks.summary.html" />
         </test>
     </tests>

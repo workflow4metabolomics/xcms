@@ -133,7 +133,7 @@
 
     <tests>
         <test>
-            <param name="image" value="faahKO-single-class.xset.group.RData"/>
+            <param name="image" value="faahKO-single-class.xset.group.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakGroups"/>
                 <param name="extraPeaks" value="1"/>
@@ -161,7 +161,7 @@
         </test>
         <!-- DISABLE FOR TRAVIS : Zip
         <test>
-            <param name="image" value="faahKO.xset.group.RData"/>
+            <param name="image" value="faahKO.xset.group.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakGroups"/>
                 <param name="extraPeaks" value="1"/>
@@ -188,7 +188,7 @@
         <!-- DISABLE FOR TRAVIS
         Test to test the different methods parameters
         <test>
-            <param name="image" value="faahKO-single-class.xset.group.RData"/>
+            <param name="image" value="faahKO-single-class.xset.group.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="Obiwarp"/>
                 <section name="ObiwarpAdv">
