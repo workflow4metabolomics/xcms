@@ -30,7 +30,7 @@
 
     <tests>
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData"/>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
             <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="600" />
             <output name="bpisPdf" value="BPIs.pdf" ftype="pdf" compare="sim_size" delta="600" />
