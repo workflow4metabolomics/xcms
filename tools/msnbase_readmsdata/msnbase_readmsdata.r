@@ -41,7 +41,6 @@ if (!exists("zipfile")) zipfile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 # Check some character issues

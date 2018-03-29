@@ -32,22 +32,16 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 #saving the commun parameters
 BPPARAM <- MulticoreParam(1)
 if (!is.null(args$BPPARAM)){
-    BPPARAM <- MulticoreParam(args$BPPARAM); args$BPPARAM <- NULL
+    BPPARAM <- MulticoreParam(args$BPPARAM)
 }
 register(BPPARAM)
 
 #saving the specific parameters
-if (!is.null(args$filterAcquisitionNum)){
-    filterAcquisitionNumParam <- args$filterAcquisitionNum; args$filterAcquisitionNum <- NULL
-}
-if (!is.null(args$filterRt)){
-    filterRtParam <- args$filterRt; args$filterRt <- NULL
-}
-if (!is.null(args$filterMz)){
-    filterMzParam <- args$filterMz; args$filterMz <- NULL
-}
+if (!is.null(args$filterAcquisitionNum)) filterAcquisitionNumParam <- args$filterAcquisitionNum
+if (!is.null(args$filterRt)) filterRtParam <- args$filterRt
+if (!is.null(args$filterMz)) filterMzParam <- args$filterMz
 
-method <- args$method; args$method <- NULL
+method <- args$method
 
 if (!is.null(args$roiList)){
     cat("\t\troiList provided\n")
@@ -61,7 +55,7 @@ cat("\n\n")
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(args$image); args$image=NULL
+load(args$image)
 if (!exists("raw_data")) stop("\n\nERROR: The RData doesn't contain any object called 'raw_data' which is provided by the tool: MSnbase readMSData")
 
 # Handle infiles
@@ -70,7 +64,6 @@ if (!exists("zipfile")) zipfile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 
@@ -87,17 +80,14 @@ cat("\t\tCOMPUTE\n")
 files <- getMSFiles(directory)
 
 cat("\t\t\tApply filter[s] (if asked)\n")
-if (exists("filterAcquisitionNumParam")) {
-    raw_data <- filterAcquisitionNum(raw_data, filterAcquisitionNumParam[1]:filterAcquisitionNumParam[2])
-}
-if (exists("filterRtParam")) {
-    raw_data <- filterRt(raw_data, filterRtParam)
-}
-if (exists("filterMzParam")) {
-    raw_data <- filterMz(raw_data, filterMzParam)
-}
+if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_data, filterAcquisitionNumParam[1]:filterAcquisitionNumParam[2])
+if (exists("filterRtParam")) raw_data <- filterRt(raw_data, filterRtParam)
+if (exists("filterMzParam")) raw_data <- filterMz(raw_data, filterMzParam)
 
 cat("\t\t\tChromatographic peak detection\n")
+# clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
+args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
+
 findChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(findChromPeaksParam)
 xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
