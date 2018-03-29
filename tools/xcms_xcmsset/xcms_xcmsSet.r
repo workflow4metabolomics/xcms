@@ -49,6 +49,12 @@ if (!is.null(args$filterMz)){
 
 method <- args$method; args$method <- NULL
 
+if (!is.null(args$roiList)){
+    cat("\t\troiList provided\n")
+    args$roiList <- list(getDataFrameFromFile(args$roiList))
+    print(args$roiList)
+}
+
 cat("\n\n")
 
 # ----- INFILE PROCESSING -----

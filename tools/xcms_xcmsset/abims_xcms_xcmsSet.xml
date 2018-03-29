@@ -32,17 +32,20 @@
         method $methods.method
 
         #if $methods.method == "CentWave":
-            ppm $methods.ppm
-            peakwidth "c($methods.peakwidth)"
-            ## Advanced
-            snthresh $methods.CentWaveAdv.snthresh
-            prefilter "c($methods.CentWaveAdv.prefilter)"
-            mzCenterFun $methods.CentWaveAdv.mzCenterFun
-            integrate $methods.CentWaveAdv.integrate
-            mzdiff $methods.CentWaveAdv.mzdiff
-            fitgauss $methods.CentWaveAdv.fitgauss
-            noise $methods.CentWaveAdv.noise
-            verboseColumns $methods.CentWaveAdv.verboseColumns
+            @COMMAND_CENTWAVE@
+            ## List of regions-of-interest (ROI)
+            #set $sectionROI = $methods.CentWaveAdv.CentWaveAdvROI
+            @COMMAND_CENTWAVEADVROI@
+        #elif $methods.method == "CentWavePredIso":
+            @COMMAND_CENTWAVE@
+            ## List of regions-of-interest (ROI)
+            #set $sectionROI = $methods.CentWaveAdvROI
+            @COMMAND_CENTWAVEADVROI@
+            snthreshIsoROIs $sectionROI.snthreshIsoROIs
+            maxCharge $sectionROI.maxCharge
+            maxIso $sectionROI.maxIso
+            mzIntervalExtension $sectionROI.mzIntervalExtension
+            polarity $sectionROI.polarity
         #elif $methods.method == "MatchedFilter":
             fwhm $methods.fwhm
             binSize $methods.binSize
@@ -91,43 +94,22 @@
             <param name="method" type="select" label="Extraction method for peaks detection" help="See the help section below">
                 <option value="MatchedFilter" selected="true">MatchedFilter - peak detection in chromatographic space</option>
                 <option value="CentWave">CentWave - chromatographic peak detection using the centWave method</option>
+                <option value="CentWavePredIso">CentWaveWithPredIsoROIs - performs a two-step centWave-based chromatographic peak detection</option>
                 <option value="MSW">MSW - single-spectrum non-chromatography MS data peak detection</option>
             </param>
 
-            <!-- centWave Filter options -->
+            <!-- CentWave -->
             <when value="CentWave">
-                <param argument="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
-                <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space.">
-                    <expand macro="input_validator_range_float"/>
-                </param>
-
+                <expand macro="input_centwave"/>
                 <section name="CentWaveAdv" title="Advanced Options" expanded="False">
-                    <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" />
-                    <param argument="prefilter" type="text" value="3,100" label="Prefilter step for for the first analysis step (ROI detection)" help="Separate by coma k, I. Mass traces are only retained if they contain at least ‘k‘ peaks with intensity ‘>= I‘.">
-                        <expand macro="input_validator_range_integer"/>
-                    </param>
-                    <param argument="mzCenterFun" type="select" label="Name of the function to calculate the m/z center of the chromatographic peak" >
-                        <option value="wMean">intensity weighted mean of the peak's m/z values</option>
-                        <option value="mean">mean of the peak's m/z values</option>
-                        <option value="apex">use the m/z value at the peak apex</option>
-                        <option value="wMeanApex3">ntensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
-                        <option value="meanApex3">mean of the m/z value of the peak apex and the m/z values left and right of it</option>
-                    </param>
-                    <param argument="integrate" type="select" label="Integration method" >
-                        <option value="1">peak limits are found through descent on the mexican hat filtered data (more robust, but less exact)</option>
-                        <option value="2">peak limits based on real data (more accurate but prone to noise)</option>
-                    </param>
-                    <param argument="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="can be negative to allow overlap" />
-                    <param argument="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
-                    <param argument="noise" type="integer" value="0" label="Noise filter" help="allowing to set a minimum intensity required for centroids to be considered in the first analysis step (centroids with intensity lower than ‘noise’ are omitted from ROI detection)." />
-                    <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
-                    <!-- roiList -->
-                    <!-- firstBaselineCheck -->
-                    <!-- roiScales -->
+                    <expand macro="input_centwaveAdv"/>
+                    <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="False">
+                        <expand macro="input_centwaveAdvROI"  optional="true"/>
+                    </section>
                 </section>
             </when>
 
-            <!-- matched Filter options -->
+            <!-- MatchedFilter -->
             <when value="MatchedFilter">
                 <param argument="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="Only used to calculate the actual sigma" />
                 <param argument="binSize" type="float" value="0.1" label="Step size to use for profile generation" help="The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size. (Previously step)" />
@@ -156,7 +138,27 @@
                 </section>
             </when>
 
-            <!-- MSW Filter options -->
+            <!-- CentWaveWithPredIsoROIs -->
+            <when value="CentWavePredIso">
+                <expand macro="input_centwave"/>
+                <section name="CentWaveAdv" title="Advanced Options" expanded="False">
+                    <expand macro="input_centwaveAdv"/>
+                </section>
+                <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="True">
+                    <expand macro="input_centwaveAdvROI" optional="false" />
+                    <param argument="snthreshIsoROIs" type="float" value="6.25" label="Signal to noise ratio cutoff" help="used in the second centWave run to identify peaks for predicted isotope ROIs." />
+                    <param argument="maxCharge" type="integer" value="3" label="Maximal isotope charge" help="Isotopes will be defined for charges ‘1:maxCharge’." />
+                    <param argument="maxIso" type="integer" value="5" label="Number of isotope peaks that should be predicted for each peak identified in the first centWave run" />
+                    <param argument="mzIntervalExtension" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Is the mz range for the predicted isotope ROIs should be extended to increase detection of low intensity peaks" />
+                    <param argument="polarity" type="select" label="Polarity of the data">
+                        <option value="unknown">unknown</option>
+                        <option value="positive">positive</option>
+                        <option value="negative">negative</option>
+                    </param>
+                </section>
+            </when>
+
+            <!-- MSW -->
             <when value="MSW">
                 <!---@TODO <param argument="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
                 <param argument="snthresh" type="integer" value="3" label="Signal to Noise ratio cutoff" help="" />
@@ -197,6 +199,12 @@
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
+                <!-- DISABLE: just for testing the arguments
+                <section name="CentWaveAdv">
+                    <section name="CentWaveAdvROI">
+                        <param name="roiList" value="roiList.txt" ftype="tabular" />
+                    </section>
+                </section>-->
             </conditional>
             <assert_stdout>
                 <has_text text="ppm: 25" />
@@ -209,7 +217,7 @@
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
         </test>
-        <test>
+        <!--<test>
             <param name="input" value="MM14.mzML"  ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
@@ -226,7 +234,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
-        </test>
+        </test>-->
         <!-- DISABLE FOR TRAVIS
         Useful to generate test-data for the further steps
         <test>
@@ -297,7 +305,7 @@
         <!-- DISABLE FOR TRAVIS
         Test to test the different methods parameters
         <test>
-            <param name="input" value="MM8.mzML" ftype="mzxml" />
+            <param name="input" value="MM14.mzML" ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="MatchedFilter" />
                 <param name="fwhm" value="35" />
@@ -315,7 +323,30 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="input" value="MM8.mzML" ftype="mzxml" />
+            <param name="input" value="MM14.mzML"  ftype="mzxml" />
+            <conditional name="methods">
+                <param name="method" value="CentWavePredIso" />
+                <param name="ppm" value="56" />
+                <param name="peakwidth" value="5.275,13.5" />
+                <section name="CentWaveAdvROI">
+                    <param name="roiList" value="roiList.txt" ftype="tabular" />
+                </section>
+            </conditional>
+            <assert_stdout>
+                <has_text text="  scmin scmax mzmin mzmax length intensity" />
+                <has_text text="1   200   300   300   350    100      5000" />
+                <has_text text="ppm: 56" />
+                <has_text text="peakwidth: 5.275, 13.5" />
+                <has_text text="object with 1 samples" />
+                <has_text text="Time range: 271-307.3 seconds (4.5-5.1 minutes)" />
+                <has_text text="Mass range: 117.0357-936.7059 m/z" />
+                <has_text text="Peaks: 222 (about 222 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="MM14.mzML" ftype="mzxml" />
             <conditional name="methods">
                 <param name="method" value="MSW" />
                 <param name="snthresh" value="4" />
@@ -509,6 +540,11 @@ Parameters
 Extraction method for peaks detection
 -------------------------------------
 
+**MatchedFilter**
+
+    | The matchedFilter algorithm identifies peaks in the chromatographic time domain as described in [Smith 2006]. The intensity values are binned by cutting The LC/MS data into slices (bins) of a mass unit (‘binSize’ m/z) wide. Within each bin the maximal intensity is selected. The chromatographic peak detection is then performed in each bin by extending it based on the ‘steps’ parameter to generate slices comprising bins ‘current_bin - steps +1’ to ‘current_bin + steps - 1’. Each of these slices is then filtered with matched filtration using a second-derative Gaussian as the model peak shape. After filtration peaks are detected using a signal-to-ratio cut-off. For more details and illustrations see [Smith 2006].
+    | See the MatchedFilter_manual_
+
 **CentWave**
 
     | The centWave algorithm perform peak density and wavelet based chromatographic peak detection for high resolution LC/MS data in centroid mode [Tautenhahn 2008].
@@ -516,18 +552,19 @@ Extraction method for peaks detection
     | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
     | See the CentWave_manual_
 
-**MatchedFilter**
+**CentWaveWithPredIsoROIs**
 
-    | The _matchedFilter_ algorithm identifies peaks in the chromatographic time domain as described in [Smith 2006]. The intensity values are binned by cutting The LC/MS data into slices (bins) of a mass unit (‘binSize’ m/z) wide. Within each bin the maximal intensity is selected. The chromatographic peak detection is then performed in each bin by extending it based on the ‘steps’ parameter to generate slices comprising bins ‘current_bin - steps +1’ to ‘current_bin + steps - 1’. Each of these slices is then filtered with matched filtration using a second-derative Gaussian as the model peak shape. After filtration peaks are detected using a signal-to-ratio cut-off. For more details and illustrations see [Smith 2006].
-    | See the MatchedFilter_manual_
+    | This method performs a two-step centWave-based chromatographic peak detection: in a first centWave run peaks are identified for which then the location of their potential isotopes in the mz-retention time is predicted. A second centWave run is then performed on these regions of interest (ROIs). The final list of chromatographic peaks comprises all non-overlapping peaks from both centWave runs.
+    | See the CentWaveWithPredIsoROIs_manual_
 
 **MSW**
 
     | Wavelet based, used for direct infusion data. Continuous wavelet transform (CWT) can be used to locate chromatographic peaks on different scales.
     | See the MSW_manual_
 
-.. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
 .. _MatchedFilter_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-matchedFilter.html#heading-2
+.. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
+.. _CentWaveWithPredIsoROIs_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWaveWithPredIsoROIs.html#heading-2
 .. _MSW_manual: https://rdrr.io/bioc/xcms/man/findPeaks-MSW.html#heading-2
 
 @HELP_XCMS_MANUAL@
@@ -618,11 +655,16 @@ Output files
 Changelog/News
 --------------
 
+
 **Version 3.0.0.0 - 08/03/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
 
 - NEW: a bunch of new options: Spectra Filters (previously scanrange), CentWave.(mzCenterFun, fitgauss, verboseColumns), MatchedFilter.(sigma, impute, baseValue, max), MSW.(verboseColumns), ...
+
+- NEW: new Filters for Spectra
+
+- NEW: new methods: CentWaveWithPredIsoROIs
 
 - UPDATE: since xcms 3.0.0, some options are no more available: scanrange (replace by filters), profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
 

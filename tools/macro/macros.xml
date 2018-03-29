@@ -16,6 +16,7 @@
         </stdio>
     </xml>
 
+    <!-- COMMAND -->
     <token name="@COMMAND_XCMS_SCRIPT@">LC_ALL=C Rscript $__tool_directory__/</token>
 
     <token name="@COMMAND_LOG_EXIT@">
@@ -25,6 +26,7 @@
         sh -c "exit \$return"
     </token>
 
+    <!-- INPUT_VALIDATORS -->
     <xml name="input_validator_range_integer">
         <validator type="regex" message="The format is 'min,max'" >[0-9]+ *, *[0-9]+</validator>
     </xml>
@@ -37,11 +39,11 @@
         <validator type="regex" message="The format is '1,2,4,6'" >[0-9, ]+</validator>
     </xml>
 
+
     <token name="@INPUT_IMAGE_LABEL@">RData file</token>
     <token name="@INPUT_IMAGE_HELP@">It contain a xcms3::XCMSnExp object (named xdata)</token>
 
-    <!-- zipfile load for planemo test -->
-
+    <!-- FILE_LOAD for planemo test -->
     <token name="@COMMAND_FILE_LOAD@">
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
             #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
@@ -98,6 +100,7 @@
         </section>
     </xml>
 
+    <!-- PEAKLIST for planemo test -->
     <token name="@COMMAND_PEAKLIST@">
         #if $peaklist.peaklistBool
             convertRTMinute $peaklist.convertRTMinute
@@ -133,6 +136,70 @@
         </data>
     </xml>
 
+    <!-- CENTWAVE -->
+    <token name="@COMMAND_CENTWAVE@">
+            ppm $methods.ppm
+            peakwidth "c($methods.peakwidth)"
+            
+            ## Advanced
+            snthresh $methods.CentWaveAdv.snthresh
+            prefilter "c($methods.CentWaveAdv.prefilter)"
+            mzCenterFun $methods.CentWaveAdv.mzCenterFun
+            integrate $methods.CentWaveAdv.integrate
+            mzdiff $methods.CentWaveAdv.mzdiff
+            fitgauss $methods.CentWaveAdv.fitgauss
+            noise $methods.CentWaveAdv.noise
+            verboseColumns $methods.CentWaveAdv.verboseColumns
+    </token>
+
+    <xml name="input_centwave">
+        <param argument="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
+        <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space.">
+            <expand macro="input_validator_range_float"/>
+        </param>
+    </xml>
+
+    <xml name="input_centwaveAdv">
+        <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" />
+        <param argument="prefilter" type="text" value="3,100" label="Prefilter step for for the first analysis step (ROI detection)" help="Separate by coma k, I. Mass traces are only retained if they contain at least ‘k‘ peaks with intensity ‘>= I‘.">
+            <expand macro="input_validator_range_integer"/>
+        </param>
+        <param argument="mzCenterFun" type="select" label="Name of the function to calculate the m/z center of the chromatographic peak" >
+            <option value="wMean">intensity weighted mean of the peak's m/z values</option>
+            <option value="mean">mean of the peak's m/z values</option>
+            <option value="apex">use the m/z value at the peak apex</option>
+            <option value="wMeanApex3">ntensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
+            <option value="meanApex3">mean of the m/z value of the peak apex and the m/z values left and right of it</option>
+        </param>
+        <param argument="integrate" type="select" label="Integration method" >
+            <option value="1">peak limits are found through descent on the mexican hat filtered data (more robust, but less exact)</option>
+            <option value="2">peak limits based on real data (more accurate but prone to noise)</option>
+        </param>
+        <param argument="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="can be negative to allow overlap" />
+        <param argument="fitgauss" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="fitgauss" help="whether or not a Gaussian should be fitted to each peak" />
+        <param argument="noise" type="integer" value="0" label="Noise filter" help="allowing to set a minimum intensity required for centroids to be considered in the first analysis step (centroids with intensity lower than ‘noise’ are omitted from ROI detection)." />
+        <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
+    </xml>
+
+    <token name="@COMMAND_CENTWAVEADVROI@">
+            #if $sectionROI.roiList:
+                roiList '$sectionROI.roiList'
+                firstBaselineCheck $sectionROI.firstBaselineCheck
+                #if $sectionROI.roiScales != "":
+                    roiScales "c($sectionROI.roiScales)"
+                #end if
+            #end if
+    </token>
+
+    <xml name="input_centwaveAdvROI" token_optional="true">
+        <param argument="roiList" type="data" format="tabular" optional="@OPTIONAL@" label="List of regions-of-interest (ROI) representing detected mass traces" help="If ROIs are submitted the first analysis step is omitted and chromatographic peak detection is performed on the submitted ROIs. Each ROI is expected to have the following elements specified: ‘scmin’ (start scan index), ‘scmax’ (end scan index), ‘mzmin’ (minimum m/z), ‘mzmax’ (maximum m/z), ‘length’ (number of scans), ‘intensity’ (summed intensity)." />
+        <param argument="firstBaselineCheck" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Is continuous data within regions of interest is checked to be above the first baseline." />
+        <param argument="roiScales" type="text" value="" optional="true" label="Numeric vector defining the scale for each region of interest in ‘roiList’" help="Length equal to ‘roiList’ - Should be used for the centWave-wavelets (format 0.9,1,0.2)">
+            <expand macro="input_validator_range_float"/>
+        </param>
+    </xml>
+
+    <!-- MISC -->
     <token name="@HELP_AUTHORS@">
 .. class:: infomark
 
