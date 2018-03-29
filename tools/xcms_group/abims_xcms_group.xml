@@ -289,33 +289,19 @@ xcms.retcor               xset.RData        rdata.xcms.retcor              RData
 
 **Downstream tools**
 
-+---------------------------+--------------------------------------+
-| Name                      | Output file     | Format             |
-+===========================+=================+====================+
-|xcms.retcor                | xset.RData      | rdata.xcms.group   |
-+---------------------------+--------------------------------------+
-|xcms.fillPeaks             | xset.RData      | rdata.xcms.group   |
-+---------------------------+--------------------------------------+
-
-The output file is an xcmsSet.RData file. You can continue your analysis using it in **xcms.retcor** tool as an next step and then **xcms.fillPeaks**.
+=========================== ================= ====================
+Name                        Output file       Format
+=========================== ================= ====================
+xcms.retcor                 xset.RData        rdata.xcms.group
+--------------------------- ----------------- --------------------
+xcms.fillPeaks              xset.RData        rdata.xcms.group
+=========================== ================= ====================
 
 **General schema of the metabolomic workflow**
 
 .. image:: xcms_group_workflow.png
 
-
------------
-Input files
------------
-
-+---------------------------+----------------------------------+
-| Parameter : num + label   |   Format                         |
-+===========================+==================================+
-| Or : RData file           |   rdata.xcms.findchrompeaks      |
-+---------------------------+----------------------------------+
-| Or : RData file           |   rdata.xcms.retcor              |
-+---------------------------+----------------------------------+
-
+---------------------------------------------------
 
 ----------
 Parameters
@@ -351,52 +337,15 @@ Method to use for grouping
 Output files
 ------------
 
-xset.group.Rplots.pdf
-
 xset.group.RData: rdata.xcms.group format
 
     | Rdata file that will be necessary in the third and fourth step of the workflow (xcms.retcor and xcms.fillpeaks).
 
+xset.group.plotChromPeakDensity.pdf
 
-------
+    | Density plot
 
-.. class:: infomark
-
-The output file is an xset.group.RData file. You can continue your analysis using it in **xcms.retcor** tool.
-
-
----------------------------------------------------
-
-
----------------
-Working example
----------------
-
-Input files
------------
-
-    | RData file -> **xset.RData**
-
-Parameters
-----------
-
-    | Method -> **density**
-    | bw     -> **5**
-    | minFraction -> **0.3**
-    | binSize    -> **0.01**
-    | Advanced options: **show**
-    | maxFeatures -> **50**
-
-
-Output files
-------------
-
-    | **1) xset.RData: RData file**
-
-    | **2) Example of an xset.group.Rplots pdf file**
-
-.. image:: xcms_group.png
-        :width: 700
+@HELP_PEAKLIST_OUTPUT@
 
 
 ---------------------------------------------------

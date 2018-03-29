@@ -164,33 +164,20 @@ xcms.group                xset.group.RData  rdata.xcms.group   RData file
 
 **Downstream tools**
 
-+---------------------------+------------------+-----------------------+
-| Name                      | Output file      | Format                |
-+===========================+==================+=======================+
-|CAMERA.annotate            | xset.retcor.RData| rdata.xcms.fillpeaks  |
-+---------------------------+------------------+-----------------------+
-|xcms.summary               | xset.retcor.RData| rdata.xcms.fillpeaks  |
-+---------------------------+------------------+-----------------------+
-
-The output file **xset.fillpeaks** is a RData file. You can continue your analysis using it in **CAMERA.annotate** or **xcms.summary** tool as a following step of your workflow.
+=========================== ================== =======================
+Name                        Output file        Format
+=========================== ================== =======================
+CAMERA.annotate             xset.retcor.RData  rdata.xcms.fillpeaks
+--------------------------- ------------------ -----------------------
+xcms.summary                xset.retcor.RData  rdata.xcms.fillpeaks
+=========================== ================== =======================
 
 
 **General schema of the metabolomic workflow**
 
 .. image:: xcms_fillpeaks_workflow.png
 
-
-
------------
-Input files
------------
-
-+---------------------------+-----------------------+
-| Parameter : num + label   |   Format              |
-+===========================+=======================+
-| 1 : RData file            |   rdata.xcms.group    |
-+---------------------------+-----------------------+
-
+---------------------------------------------------
 
 ----------
 Parameters
@@ -212,43 +199,7 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 
     | Rdata file that will be used in the **CAMERA.annotate** or **xcms.summary** step of the workflow.
 
-xset.variableMetadata.tsv : tabular format
-
-    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
-
-xset.dataMatrix.tsv : tabular format
-
-    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
-
-------
-
-.. class:: infomark
-
-The output file is a xset.fillPeaks.RData file. You can continue your analysis using it in **CAMERA.annotate** or **xcms.summary** tool.
-
-
----------------------------------------------------
-
----------------
-Working example
----------------
-
-Input files
------------
-
-    | RData file -> **xset.retcor.RData**
-
-Parameters
-----------
-
-    | method -> **chrom**
-    | Get a Peak List -> **false**
-
-
-Output files
-------------
-
-    | **xset.fillPeaks.RData: RData file**
+@HELP_PEAKLIST_OUTPUT@
 
 
 ---------------------------------------------------
