@@ -78,7 +78,7 @@
         </section>
     </xml>
 
-    <!-- PEAKLIST for planemo test -->
+    <!-- PEAKLIST -->
     <token name="@COMMAND_PEAKLIST@">
         #if $peaklist.peaklistBool
             convertRTMinute $peaklist.convertRTMinute
@@ -113,6 +113,40 @@
             <filter>(peaklist['peaklistBool'])</filter>
         </data>
     </xml>
+
+    <token name="@HELP_PEAKLIST@">
+
+Get a Peak List
+---------------
+
+If 'true', the module generates two additional files corresponding to the peak list:
+- the variable metadata file (corresponding to information about extracted ions such as mass or retention time)
+- the data matrix (corresponding to related intensities)
+
+**decimal places for [mass or retention time] values in identifiers**
+
+    | Ions' identifiers are constructed as MxxxTyyy where 'xxx' is the ion median mass and 'yyy' the ion median retention time.
+    | Two parameters are used to adjust the number of decimal places wanted in identifiers for mass and retention time respectively.
+    | Theses parameters do not affect decimal places in columns other than the identifier one.
+
+**Reported intensity values**
+
+    | This parameter determines which values should be reported as intensities in the dataMatrix table; it correspond to xcms 'intval' parameter:
+    | - into: integrated area of original (raw) peak
+    | - maxo: maximum intensity of original (raw) peak
+    | - intb: baseline corrected integrated peak area (only available if peak detection was done by ‘findPeaks.centWave’)
+
+    </token>
+
+    <token name="@HELP_PEAKLIST_OUTPUT@">
+xset.variableMetadata.tsv : tabular format
+
+    | Table containing information about ions; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
+
+xset.dataMatrix.tsv : tabular format
+
+    | Table containing ions' intensities; can be used as one input of **Quality_Metrics** or **Generic_filter** modules.
+    </token>
 
     <!-- CENTWAVE -->
     <token name="@COMMAND_CENTWAVE@">
@@ -196,30 +230,6 @@ For details and explanations for all the parameters and the workflow of xcms_ pa
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
 .. _manual: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
 .. _example: https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html
-
-    </token>
-
-    <token name="@HELP_PEAKLIST@">
-
-Get a Peak List
----------------
-
-If 'true', the module generates two additional files corresponding to the peak list:
-- the variable metadata file (corresponding to information about extracted ions such as mass or retention time)
-- the data matrix (corresponding to related intensities)
-
-**decimal places for [mass or retention time] values in identifiers**
-
-    | Ions' identifiers are constructed as MxxxTyyy where 'xxx' is the ion median mass and 'yyy' the ion median retention time.
-    | Two parameters are used to adjust the number of decimal places wanted in identifiers for mass and retention time respectively.
-    | Theses parameters do not affect decimal places in columns other than the identifier one.
-
-**Reported intensity values**
-
-    | This parameter determines which values should be reported as intensities in the dataMatrix table; it correspond to xcms 'intval' parameter:
-    | - into: integrated area of original (raw) peak
-    | - maxo: maximum intensity of original (raw) peak
-    | - intb: baseline corrected integrated peak area (only available if peak detection was done by ‘findPeaks.centWave’)
 
     </token>
 
