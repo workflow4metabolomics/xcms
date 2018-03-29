@@ -358,10 +358,7 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
             singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
         }
     }
-    for (argument in c("zipfile","zipfilePositive","zipfileNegative","singlefile_galaxyPath","singlefile_sampleName","singlefile_galaxyPathPositive","singlefile_sampleNamePositive","singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
-        args[[argument]] <- NULL
-    }
-    return(list(zipfile=zipfile, singlefile=singlefile, args=args))
+    return(list(zipfile=zipfile, singlefile=singlefile))
 }
 
 
