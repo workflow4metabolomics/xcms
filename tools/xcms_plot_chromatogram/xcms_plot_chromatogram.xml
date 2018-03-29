@@ -61,6 +61,8 @@ Workflow position
 ========================= ================= ============================== ==========
 Name                      output file       format                         parameter
 ========================= ================= ============================== ==========
+MSnbase readMSData        raw.RData         rdata.msnbase.raw              RData file
+------------------------- ----------------- ------------------------------ ----------
 xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
 ------------------------- ----------------- ------------------------------ ----------
 xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
@@ -68,6 +70,7 @@ xcms.retcor               xset.RData        rdata.xcms.retcor              RData
 
 .. image:: xcms_plot_chromatogram_workflow.png
 
+---------------------------------------------------
 
 ------------
 Output files
