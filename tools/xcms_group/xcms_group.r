@@ -29,20 +29,12 @@ cat("\n\n")
 cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the specific parameters
-method <- args$method; args$method <- NULL
+method <- args$method
 
-if (!is.null(args$convertRTMinute)){
-    convertRTMinute <- args$convertRTMinute; args$convertRTMinute <- NULL
-}
-if (!is.null(args$numDigitsMZ)){
-    numDigitsMZ <- args$numDigitsMZ; args$numDigitsMZ <- NULL
-}
-if (!is.null(args$numDigitsRT)){
-    numDigitsRT <- args$numDigitsRT; args$numDigitsRT <- NULL
-}
-if (!is.null(args$intval)){
-    intval <- args$intval; args$intval <- NULL
-}
+if (!is.null(args$convertRTMinute)) convertRTMinute <- args$convertRTMinute
+if (!is.null(args$numDigitsMZ)) numDigitsMZ <- args$numDigitsMZ
+if (!is.null(args$numDigitsRT)) numDigitsRT <- args$numDigitsRT
+if (!is.null(args$intval)) intval <- args$intval
 
 cat("\n\n")
 
@@ -51,7 +43,7 @@ cat("\n\n")
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(args$image); args$image=NULL
+load(args$image)
 if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
 
 # Handle infiles
@@ -60,7 +52,6 @@ if (!exists("zipfile")) zipfile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-args <- rawFilePath$args
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 # Check some character issues
@@ -80,6 +71,9 @@ cat("\t\tCOMPUTE\n")
 
 
 cat("\t\t\tPerform the correspondence\n")
+# clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
+args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
+
 args$sampleGroups = xdata$sample_group
 groupChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(groupChromPeaksParam)
