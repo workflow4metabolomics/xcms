@@ -28,7 +28,7 @@ loadAndDisplayPackages <- function(pkgs) {
 }
 
 #@author G. Le Corguille
-# This function merge several xdata into one. 
+# This function merge several xdata into one.
 mergeXData <- function(args) {
     for(image in args$images) {
         load(image)
@@ -39,7 +39,7 @@ mergeXData <- function(args) {
         zipfile <- rawFilePath$zipfile
         singlefile <- rawFilePath$singlefile
         retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
-
+        if (exists("raw_data")) xdata <- raw_data
         if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
         cat(sampleNamesList$sampleNamesOrigin,"\n")
         if (!exists("xdata_merged")) {
@@ -48,7 +48,9 @@ mergeXData <- function(args) {
             md5sumList_merged <- md5sumList
             sampleNamesList_merged <- sampleNamesList
         } else {
-            xdata_merged <- c(xdata_merged,xdata)
+            if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
+            else if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
+            else stop("\n\nERROR: The RData either a OnDiskMSnExp object called raw_data or a XCMSnExp object called xdata")
             singlefile_merged <- c(singlefile_merged,singlefile)
             md5sumList_merged$origin <- rbind(md5sumList_merged$origin,md5sumList$origin)
             sampleNamesList_merged$sampleNamesOrigin <- c(sampleNamesList_merged$sampleNamesOrigin,sampleNamesList$sampleNamesOrigin)
@@ -129,9 +131,11 @@ getPlotAdjustedRtime <- function(xdata) {
 
     # Color by group
     group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
-    names(group_colors) <- unique(xdata$sample_group)
-    plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
-    legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    if (length(group_colors) > 1) {
+        names(group_colors) <- unique(xdata$sample_group)
+        plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
+        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    }
 
     # Color by sample
     plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
@@ -190,9 +194,11 @@ getPlotChromatogram <- function(xdata, pdfname="Chromatogram.pdf", aggregationFu
 
     # Color by group
     group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
-    names(group_colors) <- unique(xdata$sample_group)
-    plot(chrom, col = group_colors[chrom$sample_group], main=main)
-    legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    if (length(group_colors) > 1) {
+        names(group_colors) <- unique(xdata$sample_group)
+        plot(chrom, col = group_colors[chrom$sample_group], main=main)
+        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+    }
 
     # Color by sample
     plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main)
@@ -618,4 +624,10 @@ groupnamesW4M <- function(xdata, mzdec = 0, rtdec = 0) {
 # https://github.com/sneumann/xcms/issues/247
 c.XCMSnExp <- function(...) {
     .concatenate_XCMSnExp(...)
+}
+
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/sneumann/xcms/issues/247
+c.MSnbase <- function(...) {
+    .concatenate_OnDiskMSnExp(...)
 }

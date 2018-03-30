@@ -28,27 +28,17 @@ cat("\n\n")
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
-#saving the specific parameters
-method <- args$method; args$method <- NULL
-
 cat("\n\n")
 
 
 # ----- ARGUMENTS PROCESSING -----
 cat("\tINFILE PROCESSING INFO\n")
 
-#image is an .RData file necessary to use xset variable given by previous tools
-load(args$image); args$image=NULL
-if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
-
-# Handle infiles
-if (!exists("singlefile")) singlefile <- NULL
-if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
-zipfile <- rawFilePath$zipfile
-singlefile <- rawFilePath$singlefile
-directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
-
+mergeXDataReturn <- mergeXData(args)
+xdata <- mergeXDataReturn$xdata
+singlefile <- mergeXDataReturn$singlefile
+md5sumList <- mergeXDataReturn$md5sumList
+sampleNamesList <- mergeXDataReturn$sampleNamesList
 
 cat("\n\n")
 
@@ -59,7 +49,6 @@ cat("\tMAIN PROCESSING INFO\n")
 
 cat("\t\tDRAW GRAPHICS\n")
 
-#@TODO: one day, use xdata instead of xset to draw the TICs and BPC or a complete other method
 getPlotTICs(xdata, pdfname="TICs.pdf")
 getPlotBPIs(xdata, pdfname="BPIs.pdf")
 
