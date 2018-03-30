@@ -48,8 +48,8 @@ mergeXData <- function(args) {
             md5sumList_merged <- md5sumList
             sampleNamesList_merged <- sampleNamesList
         } else {
-            if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
-            else if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
+            if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
+            else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
             else stop("\n\nERROR: The RData either a OnDiskMSnExp object called raw_data or a XCMSnExp object called xdata")
             singlefile_merged <- c(singlefile_merged,singlefile)
             md5sumList_merged$origin <- rbind(md5sumList_merged$origin,md5sumList$origin)
