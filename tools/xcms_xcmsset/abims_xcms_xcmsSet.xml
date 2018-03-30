@@ -187,7 +187,7 @@
 
     <tests>
 
-        <test>
+        <!--<test>
             <param name="image" value="faahKO.raw.Rdata" ftype="rdata" />
             <section name="filterSection">
                 <param name="filterAcquisitionNum" value="100,5000" />
@@ -197,14 +197,14 @@
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
-                <param name="peakwidth" value="20,50" />
+                <param name="peakwidth" value="20,50" />-->
                 <!-- DISABLE: just for testing the arguments
                 <section name="CentWaveAdv">
                     <section name="CentWaveAdvROI">
                         <param name="roiList" value="roiList.txt" ftype="tabular" />
                     </section>
                 </section>-->
-            </conditional>
+            <!--</conditional>
             <expand macro="test_file_load_zip"/>
             <assert_stdout>
                 <has_text text="ppm: 25" />
@@ -216,7 +216,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
-        </test>
+        </test>-->
         <test>
             <param name="image" value="ko15-raw.Rdata" ftype="rdata" />
             <conditional name="methods">

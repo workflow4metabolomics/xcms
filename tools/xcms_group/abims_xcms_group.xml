@@ -85,7 +85,7 @@
     </outputs>
 
     <tests>
-        <!-- from xcmsSet -->
+        <!-- from xcmsSet
         <test>
             <param name="image" value="faahKO-single-class.xset.merged.RData" ftype="rdata"/>
             <conditional name="methods">
@@ -117,7 +117,7 @@
             </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.dataMatrix.tsv" />
-        </test>
+        </test>-->
         <!-- DISABLE FOR TRAVIS
         <test>
             <param name="image" value="faahKO-single.xset.merged.RData" ftype="rdata"/>
