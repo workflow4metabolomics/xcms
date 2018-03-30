@@ -71,10 +71,11 @@ cat("\t\tCOMPUTE\n")
 
 
 cat("\t\t\tPerform the correspondence\n")
-# clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
-args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
-
 args$sampleGroups = xdata$sample_group
+
+# clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
+args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list(sampleGroups=c(1,2))))]
+
 groupChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(groupChromPeaksParam)
 xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)

@@ -120,7 +120,7 @@ xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData
 =========================== ==================== ============================
 Name                        Output file          Format
 =========================== ==================== ============================
-|xcms.group                 xset.RData           rdata.xcms.findchrompeaks
+xcms.group                  xset.RData           rdata.xcms.findchrompeaks
 =========================== ==================== ============================
 
 .. image:: xcms_merge_workflow.png
