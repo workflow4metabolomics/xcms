@@ -60,6 +60,33 @@
                 <has_text text="./ko15.CDF        ko15            ." />
             </assert_stdout>
         </test>
+        <!-- DISABLE FOR TRAVIS
+        Useful to generate test-data for the further steps
+        <test>
+            <param name="input" value="ko16.CDF"  ftype="netcdf" />
+            <assert_stdout>
+                <has_text text="rowNames: ./ko16.CDF" />
+                <has_text text="ko16.CDF" />
+                <has_text text="./ko16.CDF        ko16            ." />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="wt15.CDF"  ftype="netcdf" />
+            <assert_stdout>
+                <has_text text="rowNames: ./wt15.CDF" />
+                <has_text text="wt15.CDF" />
+                <has_text text="./wt15.CDF        wt15            ." />
+            </assert_stdout>
+        </test>
+        <test>
+            <param name="input" value="wt16.CDF"  ftype="netcdf" />
+            <assert_stdout>
+                <has_text text="rowNames: ./wt16.CDF" />
+                <has_text text="wt16.CDF" />
+                <has_text text="./wt16.CDF        wt16            ." />
+            </assert_stdout>
+        </test>
+        -->
     </tests>
 
     <help><![CDATA[
