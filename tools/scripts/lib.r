@@ -28,8 +28,18 @@ loadAndDisplayPackages <- function(pkgs) {
 }
 
 #@author G. Le Corguille
+# This function merge several chromBPI or chromTIC into one.
+mergeChrom <- function(chromTIC_merged, chromTIC, xdata_merged) {
+    if (is.null(chromTIC_merged)) return(NULL)
+    chromTIC_merged@.Data <- cbind(chromTIC_merged@.Data, chromTIC@.Data)
+    chromTIC_merged@phenoData <- xdata_merged@phenoData
+    return(chromTIC_merged)
+}
+
+#@author G. Le Corguille
 # This function merge several xdata into one.
 mergeXData <- function(args) {
+    chromTIC <- NULL; chromBPI <- NULL
     for(image in args$images) {
         load(image)
         # Handle infiles
@@ -47,6 +57,8 @@ mergeXData <- function(args) {
             singlefile_merged <- singlefile
             md5sumList_merged <- md5sumList
             sampleNamesList_merged <- sampleNamesList
+            chromTIC_merged <- chromTIC
+            chromBPI_merged <- chromBPI
         } else {
             if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
             else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
@@ -55,6 +67,8 @@ mergeXData <- function(args) {
             md5sumList_merged$origin <- rbind(md5sumList_merged$origin,md5sumList$origin)
             sampleNamesList_merged$sampleNamesOrigin <- c(sampleNamesList_merged$sampleNamesOrigin,sampleNamesList$sampleNamesOrigin)
             sampleNamesList_merged$sampleNamesMakeNames <- c(sampleNamesList_merged$sampleNamesMakeNames,sampleNamesList$sampleNamesMakeNames)
+            chromTIC_merged <- mergeChrom(chromTIC_merged, chromTIC, xdata_merged)
+            chromBPI_merged <- mergeChrom(chromBPI_merged, chromBPI, xdata_merged)
         }
     }
     rm(image)
@@ -62,6 +76,8 @@ mergeXData <- function(args) {
     singlefile <- singlefile_merged; rm(singlefile_merged)
     md5sumList <- md5sumList_merged; rm(md5sumList_merged)
     sampleNamesList <- sampleNamesList_merged; rm(sampleNamesList_merged)
+    chromTIC <- chromTIC_merged; rm(chromTIC_merged)
+    chromBPI <- chromBPI_merged; rm(chromBPI_merged)
 
     if (!is.null(args$sampleMetadata)) {
         cat("\tXSET PHENODATA SETTING...\n")
@@ -76,7 +92,7 @@ mergeXData <- function(args) {
             stop(error_message)
         }
     }
-    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList,"sampleNamesList"=sampleNamesList))
+    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList,"sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI))
 }
 
 #@author G. Le Corguille
@@ -176,9 +192,8 @@ getDataFrameFromFile <- function(filename, header=T) {
     return(myDataFrame)
 }
 
-getPlotChromatogram <- function(xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
+getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
 
-    chrom <- chromatogram(xdata, aggregationFun = aggregationFun)
     if (aggregationFun == "sum")
         type="Total Ion Chromatograms"
     else
@@ -205,16 +220,6 @@ getPlotChromatogram <- function(xdata, pdfname="Chromatogram.pdf", aggregationFu
     legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
 
     dev.off()
-}
-
-#@author G. Le Corguille
-getPlotTICs <- function(xdata, pdfname="TICs.pdf") {
-    getPlotChromatogram(xdata, pdfname, aggregationFun = "sum")
-}
-
-#@author G. Le Corguille
-getPlotBPIs <- function(xdata, pdfname="BPIs.pdf") {
-    getPlotChromatogram(xdata, pdfname, aggregationFun = "max")
 }
 
 

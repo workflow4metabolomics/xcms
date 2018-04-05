@@ -101,6 +101,10 @@ xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@proces
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
 
+cat("\t\t\tCompute and Store TIC and BPI\n")
+chromTIC = chromatogram(xdata, aggregationFun = "sum")
+chromBPI = chromatogram(xdata, aggregationFun = "max")
+
 cat("\n\n")
 
 # ----- EXPORT -----
@@ -116,7 +120,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList", "chromTIC", "chromBPI")
 save(list=objects2save[objects2save %in% ls()], file="xcmsSet.RData")
 
 

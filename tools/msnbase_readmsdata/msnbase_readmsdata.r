@@ -76,6 +76,10 @@ raw_data@processingData@files <- sub(paste(getwd(), "/", sep="") , "", raw_data@
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=raw_data, sampleMetadataOutput="sampleMetadata.tsv")
 
+cat("\t\t\tCompute and Store TIC and BPI\n")
+chromTIC <- chromatogram(raw_data, aggregationFun = "sum")
+chromBPI <- chromatogram(raw_data, aggregationFun = "max")
+
 cat("\n\n")
 
 # ----- EXPORT -----
@@ -87,7 +91,7 @@ print(raw_data@phenoData@data)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("raw_data", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
+objects2save <- c("raw_data", "zipfile", "singlefile", "md5sumList", "sampleNamesList", "chromTIC", "chromBPI")
 save(list=objects2save[objects2save %in% ls()], file="readmsdata.RData")
 
 

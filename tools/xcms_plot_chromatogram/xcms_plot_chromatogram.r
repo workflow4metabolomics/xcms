@@ -39,6 +39,8 @@ xdata <- mergeXDataReturn$xdata
 singlefile <- mergeXDataReturn$singlefile
 md5sumList <- mergeXDataReturn$md5sumList
 sampleNamesList <- mergeXDataReturn$sampleNamesList
+chromTIC <- mergeXDataReturn$chromTIC
+chromBPI <- mergeXDataReturn$chromBPI
 
 cat("\n\n")
 
@@ -49,8 +51,14 @@ cat("\tMAIN PROCESSING INFO\n")
 
 cat("\t\tDRAW GRAPHICS\n")
 
-getPlotTICs(xdata, pdfname="TICs.pdf")
-getPlotBPIs(xdata, pdfname="BPIs.pdf")
+if (!exists("chromTIC") || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
+if (!exists("chromBPI") || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
+
+if (exists("chromTIC_adjusted")) chromTIC <- chromTIC_adjusted
+if (exists("chromBPI_adjusted")) chromBPI <- chromBPI_adjusted
+
+getPlotChromatogram(chromTIC, xdata, pdfname="TICs.pdf", aggregationFun = "sum")
+getPlotChromatogram(chromBPI, xdata, pdfname="BPIs.pdf", aggregationFun = "max")
 
 cat("\n\n")
 

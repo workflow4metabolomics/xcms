@@ -61,7 +61,7 @@
             </assert_stdout>
         </test>
         <!-- DISABLE FOR TRAVIS
-        Useful to generate test-data for the further steps
+        Useful to generate test-data for the further steps-->
         <test>
             <param name="input" value="ko16.CDF"  ftype="netcdf" />
             <assert_stdout>
@@ -86,7 +86,7 @@
                 <has_text text="./wt16.CDF        wt16            ." />
             </assert_stdout>
         </test>
-        -->
+        <!-- -->
     </tests>
 
     <help><![CDATA[

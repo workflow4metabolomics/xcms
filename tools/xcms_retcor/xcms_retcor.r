@@ -49,7 +49,6 @@ zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
-
 cat("\n\n")
 
 
@@ -66,6 +65,10 @@ args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))
 adjustRtimeParam <- do.call(paste0(method,"Param"), args)
 print(adjustRtimeParam)
 xdata <- adjustRtime(xdata, param=adjustRtimeParam)
+
+cat("\t\t\tCompute and Store TIC and BPI\n")
+chromTIC_adjusted = chromatogram(xdata, aggregationFun = "sum")
+chromBPI_adjusted = chromatogram(xdata, aggregationFun = "max")
 
 cat("\n\n")
 
@@ -89,7 +92,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList")
+objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList", "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list=objects2save[objects2save %in% ls()], file="retcor.RData")
 
 cat("\n\n")
