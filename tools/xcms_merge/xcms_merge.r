@@ -18,6 +18,8 @@ xdata <- mergeXDataReturn$xdata
 singlefile <- mergeXDataReturn$singlefile
 md5sumList <- mergeXDataReturn$md5sumList
 sampleNamesList <- mergeXDataReturn$sampleNamesList
+chromTIC <- mergeXDataReturn$chromTIC
+chromBPI <- mergeXDataReturn$chromBPI
 
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
@@ -38,5 +40,5 @@ cat("\n\n")
 
 cat("\tSAVE RData\n")
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList", "chromTIC", "chromBPI")
 save(list=objects2save[objects2save %in% ls()], file="merged.RData")
