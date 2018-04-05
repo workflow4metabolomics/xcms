@@ -218,7 +218,7 @@
             </assert_stdout>
         </test>-->
         <test>
-            <param name="image" value="ko15-raw.Rdata" ftype="rdata" />
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -239,7 +239,7 @@
         <!-- DISABLE FOR TRAVIS
         Useful to generate test-data for the further steps
         <test>
-            <param name="image" value="ko16-raw.Rdata" ftype="rdata" />
+            <param name="image" value="ko16-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -255,7 +255,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="image" value="wt15-raw.Rdata" ftype="rdata" />
+            <param name="image" value="wt15-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -271,7 +271,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="image" value="wt16-raw.Rdata" ftype="rdata" />
+            <param name="image" value="wt16-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWave" />
                 <param name="ppm" value="25" />
@@ -290,7 +290,7 @@
         <!-- DISABLE FOR TRAVIS
         Test to test the different methods parameters
         <test>
-            <param name="image" value="ko15-raw.Rdata" ftype="rdata" />
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="MatchedFilter" />
                 <param name="fwhm" value="35" />
@@ -308,7 +308,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="image" value="ko15-raw.Rdata" ftype="rdata" />
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="CentWavePredIso" />
                 <param name="ppm" value="56" />
@@ -323,7 +323,7 @@
             </assert_stdout>
         </test>
         <test>
-            <param name="image" value="ko15-raw.Rdata" ftype="rdata" />
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
             <conditional name="methods">
                 <param name="method" value="MSW" />
                 <param name="snthresh" value="4" />
@@ -479,7 +479,7 @@ sampleMetadata.tsv
 
 xset.RData: rdata.xcms.findchrompeaks format
 
-    | Rdata file that is necessary in the second step of the workflow "xcms.group".
+    | RData file that is necessary in the second step of the workflow "xcms.group".
 
 ---------------------------------------------------
 
