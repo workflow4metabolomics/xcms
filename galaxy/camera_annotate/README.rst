@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.3 - 30/04/2018**
+
+- NEW: support the new xcms 3.0.0 wrapper
+
 **Version 2.2.2 - 01/03/2018**
 
 - UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0
