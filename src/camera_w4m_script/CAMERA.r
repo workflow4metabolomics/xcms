@@ -105,9 +105,13 @@ if (thefunction %in% c("annotatediff"))  {
     directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 }
 
+# Because so far CAMERA isn't compatible with the new XCMSnExp object
+if (exists("xdata")){
+    xset <- getxcmsSetObject(xdata)
+}
 
-#addition of xset object to the list of arguments in the first position
-if (exists("xset") != 0){
+# addition of xset object to the list of arguments in the first position
+if (exists("xset")){
     listArguments=append(list(xset), listArguments)
 }
 
