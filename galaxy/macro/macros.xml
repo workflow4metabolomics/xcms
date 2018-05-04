@@ -3,6 +3,7 @@
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="0.4_2">r-snow</requirement>
+            <requirement type="package" version="3.0.0">bioconductor-xcms</requirement>
             <requirement type="package" version="1.32.0">bioconductor-camera</requirement>
             <requirement type="package" version="2.28.0">bioconductor-multtest</requirement>
             <requirement type="package" version="1.1_4">r-batch</requirement>
