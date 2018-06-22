@@ -139,53 +139,6 @@ if (apodization=='exp'){
   # Inputs
 
 
-# Internal referencering ----------------------------------
-  # Inputs
-shiftTreshold = 2 # c
-ppm = TRUE
-shiftReferencingRangeList = NULL  # fromto.RC
-pctNearValue = 0.02 # pc 
-rowindex_graph = NULL
-ppm_ref = 0 # ppm.ref
-
-# 
-# shiftReferencing <- argLs[["shiftReferencing"]]
-# print(shiftReferencing)
-# 
-# if (shiftReferencing=="YES")
-# {
-#   
-	# shiftReferencingMethod <- argLs[["shiftReferencingMethod"]]
-	# 
-	# if (shiftReferencingMethod == "thres")	{
-	# 	shiftTreshold <- argLs[["shiftTreshold"]]
-	# }
-	
-	shiftReferencingRange <- argLs[["shiftReferencingRange"]]
-	
-	if (shiftReferencingRange == "near0"){
-	  pctNearValue <- argLs[["pctNearValue"]]
-	}
-	
-	if (shiftReferencingRange == "window"){
-	  shiftReferencingRangeList <- list()
-	  for(i in which(names(argLs)=="shiftReferencingRangeLeft")) 
-	  {
-  		shiftReferencingRangeLeft <- argLs[[i]]
-  		shiftReferencingRangeRight <- argLs[[i+1]]
-  		shiftReferencingRangeList <- c(shiftReferencingRangeList,list(c(shiftReferencingRangeLeft,shiftReferencingRangeRight)))
-	  }
-	}
-	
-	shiftHandling <- argLs[["shiftHandling"]]
-	
-	ppmvalue <- argLs[["ppmvalue"]]
-	
-
-	
-# }
-
-
 # Zero Order Phase Correction -------------------------------
   # Inputs
 
@@ -209,6 +162,53 @@ if (excludeZoneZeroPhase == 'YES') {
   }
   excludeZOPC <- excludeZoneZeroPhaseList
 }
+
+
+# Internal referencering ----------------------------------
+# Inputs
+shiftTreshold = 2 # c
+ppm = TRUE
+shiftReferencingRangeList = NULL  # fromto.RC
+pctNearValue = 0.02 # pc 
+rowindex_graph = NULL
+ppm_ref = 0 # ppm.ref
+
+# 
+# shiftReferencing <- argLs[["shiftReferencing"]]
+# print(shiftReferencing)
+# 
+# if (shiftReferencing=="YES")
+# {
+#   
+# shiftReferencingMethod <- argLs[["shiftReferencingMethod"]]
+# 
+# if (shiftReferencingMethod == "thres")	{
+# 	shiftTreshold <- argLs[["shiftTreshold"]]
+# }
+
+shiftReferencingRange <- argLs[["shiftReferencingRange"]]
+
+if (shiftReferencingRange == "near0"){
+  pctNearValue <- argLs[["pctNearValue"]]
+}
+
+if (shiftReferencingRange == "window"){
+  shiftReferencingRangeList <- list()
+  for(i in which(names(argLs)=="shiftReferencingRangeLeft")) 
+  {
+    shiftReferencingRangeLeft <- argLs[[i]]
+    shiftReferencingRangeRight <- argLs[[i+1]]
+    shiftReferencingRangeList <- c(shiftReferencingRangeList,list(c(shiftReferencingRangeLeft,shiftReferencingRangeRight)))
+  }
+}
+
+shiftHandling <- argLs[["shiftHandling"]]
+
+ppmvalue <- argLs[["ppmvalue"]]
+
+
+
+# }
 
 
 # Baseline Correction -------------------------------
