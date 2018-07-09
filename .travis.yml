@@ -10,7 +10,7 @@ before_install:
  - virtualenv planemo-venv
  - . planemo-venv/bin/activate
  - pip install --upgrade pip setuptools
- - pip install planemo==0.47.0
+ - pip install planemo
 
 script:
  - planemo lint ${TRAVIS_BUILD_DIR}/galaxy/camera_suite
