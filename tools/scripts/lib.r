@@ -386,35 +386,27 @@ getMd5sum <- function (directory) {
 
 # This function get the raw file path from the arguments
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
-getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
-    if (!is.null(args$zipfile))           zipfile <- args$zipfile
-    if (!is.null(args$zipfilePositive))   zipfile <- args$zipfilePositive
-    if (!is.null(args$zipfileNegative))   zipfile <- args$zipfileNegative
+getRawfilePathFromArguments <- function(singlefile, zipfile, args, prefix="") {
+  if (!(prefix %in% c("","Positive","Negative","MS1","MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
 
-    if (!is.null(args$singlefile_galaxyPath)) {
-        singlefile_galaxyPaths <- args$singlefile_galaxyPath;
-        singlefile_sampleNames <- args$singlefile_sampleName
-    }
-    if (!is.null(args$singlefile_galaxyPathPositive)) {
-        singlefile_galaxyPaths <- args$singlefile_galaxyPathPositive;
-        singlefile_sampleNames <- args$singlefile_sampleNamePositive
-    }
-    if (!is.null(args$singlefile_galaxyPathNegative)) {
-        singlefile_galaxyPaths <- args$singlefile_galaxyPathNegative;
-        singlefile_sampleNames <- args$singlefile_sampleNameNegative
-    }
-    if (exists("singlefile_galaxyPaths")){
-        singlefile_galaxyPaths <- unlist(strsplit(singlefile_galaxyPaths,"\\|"))
-        singlefile_sampleNames <- unlist(strsplit(singlefile_sampleNames,"\\|"))
+  if (!is.null(args[[paste0("zipfile",prefix)]])) zipfile <- args[[paste0("zipfile",prefix)]]
 
-        singlefile <- NULL
-        for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
-            singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
-            singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
-            singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
-        }
+  if (!is.null(args[[paste0("singlefile_galaxyPath",prefix)]])) {
+    singlefile_galaxyPaths <- args[[paste0("singlefile_galaxyPath",prefix)]]
+    singlefile_sampleNames <- args[[paste0("singlefile_sampleName",prefix)]]
+  }
+  if (exists("singlefile_galaxyPaths")){
+    singlefile_galaxyPaths <- unlist(strsplit(singlefile_galaxyPaths,"\\|"))
+    singlefile_sampleNames <- unlist(strsplit(singlefile_sampleNames,"\\|"))
+
+    singlefile <- NULL
+    for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
+      singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
+      singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
+      singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
     }
-    return(list(zipfile=zipfile, singlefile=singlefile))
+  }
+  return(list(zipfile=zipfile, singlefile=singlefile))
 }
 
 
