@@ -480,17 +480,10 @@ getxcmsSetObject <- function(xobject) {
     if (class(xobject) == "XCMSnExp") {
         # Get the legacy xcmsSet object
         suppressWarnings(xset <- as(xobject, 'xcmsSet'))
-<<<<<<< HEAD
         if (!is.null(xset@phenoData$sample_group))
             sampclass(xset) <- xset@phenoData$sample_group
         else
             sampclass(xset) <- "."
-=======
-        if (is.null(xset@phenoData$sample_group))
-            sampclass(xset) = "."
-        else
-            sampclass(xset) <- xset@phenoData$sample_group
->>>>>>> fix test extension for RData ; enhance getxcmsSetObject function ; add a toy R script with all the commands
         return (xset)
     }
 }
