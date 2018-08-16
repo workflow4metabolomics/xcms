@@ -46,14 +46,14 @@
         #elif $methods.method == "MatchedFilter":
             fwhm $methods.fwhm
             binSize $methods.binSize
-            impute $methods.impute_cond.impute
-            #if $methods.impute_cond.impute == "linbase":
-                #if $methods.impute_cond.baseValue != "":
-                    baseValue $methods.impute_cond.baseValue
-                #end if
-                distance $methods.impute_cond.distance
-            #end if
             ## Advanced
+            impute $methods.MatchedFilterAdv.impute_cond.impute
+            #if $methods.MatchedFilterAdv.impute_cond.impute == "linbase":
+                #if $methods.MatchedFilterAdv.impute_cond.baseValue != "":
+                    baseValue $methods.MatchedFilterAdv.impute_cond.baseValue
+                #end if
+                distance $methods.MatchedFilterAdv.impute_cond.distance
+            #end if
             #if $methods.MatchedFilterAdv.sigma != "":
                 sigma $methods.MatchedFilterAdv.sigma
             #end if
@@ -113,22 +113,22 @@
             <when value="MatchedFilter">
                 <param argument="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="Only used to calculate the actual sigma" />
                 <param argument="binSize" type="float" value="0.1" label="Step size to use for profile generation" help="The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size. (Previously step)" />
-                <conditional name="impute_cond">
-                    <param argument="impute" type="select" label="Method to be used for missing value imputation" help="(previously profmethod)">
-                        <option value="none">none - no linear interpolation</option>
-                        <option value="lin">lin - linear interpolation</option>
-                        <option value="linbase">linbase - linear interpolation within a certain bin-neighborhood</option>
-                        <option value="intlin">intlin - integral of the linearly interpolated data from plus to minus half the step size</option>
-                    </param>
-                    <when value="none" />
-                    <when value="lin" />
-                    <when value="linbase">
-                        <param argument="baseValue" type="float" value="" optional="true" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
-                        <param argument="distance" type="integer" value="0" label="Number of non-empty neighboring element of an empty element that should be considered for linear interpolation." />
-                    </when>
-                    <when value="intlin" />
-                </conditional>
                 <section name="MatchedFilterAdv" title="Advanced Options" expanded="False">
+                    <conditional name="impute_cond">
+                        <param argument="impute" type="select" label="Method to be used for missing value imputation" help="(previously profmethod)">
+                            <option value="none">none - no linear interpolation</option>
+                            <option value="lin">lin - linear interpolation</option>
+                            <option value="linbase">linbase - linear interpolation within a certain bin-neighborhood</option>
+                            <option value="intlin">intlin - integral of the linearly interpolated data from plus to minus half the step size</option>
+                        </param>
+                        <when value="none" />
+                        <when value="lin" />
+                        <when value="linbase">
+                            <param argument="baseValue" type="float" value="" optional="true" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
+                            <param argument="distance" type="integer" value="0" label="Number of non-empty neighboring element of an empty element that should be considered for linear interpolation." />
+                        </when>
+                        <when value="intlin" />
+                    </conditional>
                     <param argument="sigma" type="float" value="" optional="true" label="Standard deviation (width) of matched filtration model peak" help="Leave it to empty to calculate it using fwhm by default at fwhm/2.3548" />
                     <param argument="max" type="integer" value="5" label="Maximum number of peaks that are expected/will be identified per slice" />
                     <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
@@ -294,11 +294,13 @@
             <conditional name="methods">
                 <param name="method" value="MatchedFilter" />
                 <param name="fwhm" value="35" />
-                <conditional name="impute_cond">
-                    <param name="impute" value="linbase" />
-                    <param name="baseValue" value="0.1" />
-                    <param name="distance" value="1" />
-                </conditional>
+                <section name="MatchedFilterAdv"
+                    <conditional name="impute_cond">
+                        <param name="impute" value="linbase" />
+                        <param name="baseValue" value="0.1" />
+                        <param name="distance" value="1" />
+                    </conditional>
+                </section>
             </conditional>
             <assert_stdout>
                 <has_text text="fwhm: 35" />
