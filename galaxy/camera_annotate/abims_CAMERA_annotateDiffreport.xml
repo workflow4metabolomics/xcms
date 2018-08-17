@@ -212,8 +212,8 @@
             <expand macro="test_annotate_diffreport"/>
             <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_single"/>
-            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
-            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata-xcms3.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix-xcms3.tsv" />
         </test>
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
