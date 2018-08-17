@@ -4,16 +4,18 @@
 
 
 # ----- PACKAGE -----
-cat("\tPACKAGE INFO\n")
+cat("\tSESSION INFO\n")
 
-setRepositories(graphics=F, ind=31)
+pkgs=c("CAMERA","multtest","batch")
+for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
 
-#pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","snow","igraph","CAMERA","multtest","batch")
-for(p in pkgs) {
-    suppressPackageStartupMessages(suppressWarnings(library(p, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
-    cat(p,"\t",as.character(packageVersion(p)),"\n",sep="")
-}
+sessioninfo = sessionInfo()
+cat(sessioninfo$R.version$version.string,"\n")
+cat("Main packages:\n")
+for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+cat("Other loaded packages:\n")
+for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+
 source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 
 cat("\n\n");
@@ -105,9 +107,13 @@ if (thefunction %in% c("annotatediff"))  {
     directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 }
 
+# Because so far CAMERA isn't compatible with the new XCMSnExp object
+if (exists("xdata")){
+    xset <- getxcmsSetObject(xdata)
+}
 
-#addition of xset object to the list of arguments in the first position
-if (exists("xset") != 0){
+# addition of xset object to the list of arguments in the first position
+if (exists("xset")){
     listArguments=append(list(xset), listArguments)
 }
 
@@ -121,7 +127,6 @@ cat("\tMAIN PROCESSING INFO\n")
 
 #change the default display settings
 pdf(file=rplotspdf, width=16, height=12)
-
 
 if (thefunction %in% c("annotatediff")) {
     results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput)
