@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.2">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.3">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -191,14 +191,14 @@
     </outputs>
 
     <tests>
-        <test>
+        <!--<test>
             <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
             <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_zip"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
-        </test>
+        </test>-->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
@@ -206,6 +206,14 @@
             <expand macro="test_file_load_single"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
             <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+        </test>
+        <test>
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks-xcms3.RData"/>
+            <expand macro="test_annotate_diffreport"/>
+            <expand macro="test_annotate_quick_true"/>
+            <expand macro="test_file_load_single"/>
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata-xcms3.tsv" />
+            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix-xcms3.tsv" />
         </test>
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
@@ -423,6 +431,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.2.3 - 30/04/2018**
+
+- NEW: support the new xcms 3.0.0 wrapper
 
 **Version 2.2.2 - 01/03/2018**
 
