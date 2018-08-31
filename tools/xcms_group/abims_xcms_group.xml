@@ -79,8 +79,8 @@
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.group.RData" from_work_dir="group.RData"/>
-        <data name="plotChromPeakDensity" format="pdf" label="${image.name[:-6]}.group.plotChromPeakDensity.pdf" from_work_dir="plotChromPeakDensity.pdf"/>
+        <data name="xsetRData" format="rdata.xcms.group" label="${image.name[:-6]}.groupChromPeaks.RData" from_work_dir="group.RData"/>
+        <data name="plotChromPeakDensity" format="pdf" label="${image.name[:-6]}.groupChromPeaks.plotChromPeakDensity.pdf" from_work_dir="plotChromPeakDensity.pdf"/>
         <expand macro="output_peaklist" function="group"/>
     </outputs>
 
@@ -276,26 +276,26 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.xcmsSet Merger       xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
-========================= ================= ============================== ==========
+==================================== ==================== ==============================
+Name                                 Output file          Format
+==================================== ==================== ==============================
+xcms.findChromPeaks Merger (single)  xset.merged.RData    rdata.xcms.findchrompeaks
+------------------------------------ -------------------- ------------------------------
+xcms.findChromPeaks (zip)            *.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ -------------------- ------------------------------
+xcms.adjustRtime                     *.adjustRtime.RData  rdata.xcms.retcor
+==================================== ==================== ==============================
 
 
 **Downstream tools**
 
-=========================== ================= ====================
-Name                        Output file       Format
-=========================== ================= ====================
-xcms.retcor                 xset.RData        rdata.xcms.group
---------------------------- ----------------- --------------------
-xcms.fillPeaks              xset.RData        rdata.xcms.group
-=========================== ================= ====================
+=========================== =========================== ====================
+Name                        Output file                 Format
+=========================== =========================== ====================
+xcms.adjustRtime            *.groupChromPeaks.RData     rdata.xcms.group
+--------------------------- --------------------------- --------------------
+xcms.fillChromPeaks         *.groupChromPeaks.RData     rdata.xcms.group
+=========================== =========================== ====================
 
 **General schema of the metabolomic workflow**
 
@@ -337,11 +337,11 @@ Method to use for grouping
 Output files
 ------------
 
-xset.group.RData: rdata.xcms.group format
+xset.groupChromPeaks.RData: rdata.xcms.group format
 
-    | Rdata file that will be necessary in the third and fourth step of the workflow (xcms.retcor and xcms.fillpeaks).
+    | RData file that will be necessary in the third and fourth step of the workflow (xcms.adjustRtime and xcms.fillChromPeaks).
 
-xset.group.plotChromPeakDensity.pdf
+xset.groupChromPeaks.plotChromPeakDensity.pdf
 
     | Density plot
 

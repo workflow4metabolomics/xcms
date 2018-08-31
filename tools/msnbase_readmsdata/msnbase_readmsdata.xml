@@ -116,23 +116,20 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
+========================= ==========================================
+Name                      Format
+========================= ==========================================
+Upload File               mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip
+========================= ==========================================
 
+The easier way to process is to create a Dataset Collection of the type List
 
 **Downstream tools**
 
 =========================== ==================== ====================
 Name                        Output file          Format
 =========================== ==================== ====================
-xcms.findChromPeaks         xset.RData           rdata.msnbase.raw
---------------------------- -------------------- --------------------
-PCA ellipsoid by factors    sampleMetadata.tsv   Tabular
---------------------------- -------------------- --------------------
-Anova                       sampleMetadata.tsv   Tabular
+xcms.findChromPeaks         *.raw.RData          rdata.msnbase.raw
 =========================== ==================== ====================
 
 
@@ -218,14 +215,15 @@ Intensity Encoding: **64**
 Output files
 ------------
 
-sampleMetadata.tsv
+xset.RData: rdata.msnbase.raw format
+
+| Rdata file that is necessary in the second step of the workflow "xcms.findChromPeaks".
+
+sampleMetadata.tsv (only when a zip is used)
 
     | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
     | This file is necessary in the Anova and PCA step of the workflow.
-
-xset.RData: rdata.msnbase.raw format
-
-    | Rdata file that is necessary in the second step of the workflow "xcms.findChromPeaks".
+    | You get a sampleMetadata.tsv only if you use a zip. Otherwise, you have to provide one for the findChromPeaks Merger step
 
 ---------------------------------------------------
 

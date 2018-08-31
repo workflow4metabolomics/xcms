@@ -127,8 +127,8 @@
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.retcor.RData" from_work_dir="retcor.RData" />
-        <data name="rawVSadjustedPdf" format="pdf"  label="${image.name[:-6]}_rawVSadjusted.retcor.Rplots.pdf" from_work_dir="raw_vs_adjusted_rt.pdf" />
+        <data name="xsetRData" format="rdata.xcms.retcor" label="${image.name[:-6]}.adjustRtime.RData" from_work_dir="retcor.RData" />
+        <data name="rawVSadjustedPdf" format="pdf"  label="${image.name[:-6]}_rawVSadjusted.adjustRtime.Rplots.pdf" from_work_dir="raw_vs_adjusted_rt.pdf" />
     </outputs>
 
     <tests>
@@ -246,22 +246,22 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.group                xset.group.RData  RData                          RData file
-========================= ================= ============================== ==========
+========================= ======================== ==============================
+Name                      Output file              Format
+========================= ======================== ==============================
+xcms.findChromPeaks       raw.xset.RData           rdata.xcms.findchrompeaks
+------------------------- ------------------------ ------------------------------
+xcms.groupChromPeaks      *.groupChromPeaks.RData  rdata.xcms.group
+========================= ======================== ==============================
 
 
 **Downstream tools**
 
-=========================== ================== ========
-Name                        Output file        Format
-=========================== ================== ========
-xcms.group                  xset.retcor.RData  RData
-=========================== ================== ========
+=========================== ======================== ================
+Name                        Output file              Format
+=========================== ======================== ================
+xcms.groupChromPeaks        *.groupChromPeaks.RData  rdata.xcms.group
+=========================== ======================== ================
 
 
 **General schema of the metabolomic workflow**
@@ -296,9 +296,9 @@ Method
 Output files
 ------------
 
-xset.group.retcor.RData: rdata.xcms.retcor format
+xset.groupChromPeaks.adjustRtime.RData: rdata.xcms.retcor format
 
-    | Rdata file that will be necessary in the **xcms.group** step of the workflow.
+    | Rdata file that will be necessary in the **xcms.groupChromPeaks** step of the workflow.
 
 
 ---------------------------------------------------
