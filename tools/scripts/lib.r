@@ -408,6 +408,8 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, args, prefix="") {
     for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
       singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
       singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
+      # In case, an url is used to import data within Galaxy 
+      singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName,"/")), n=1)
       singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
     }
   }
