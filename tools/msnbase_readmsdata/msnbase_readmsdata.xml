@@ -129,7 +129,7 @@ The easier way to process is to create a Dataset Collection of the type List
 =========================== ==================== ====================
 Name                        Output file          Format
 =========================== ==================== ====================
-xcms.findChromPeaks         *.raw.RData          rdata.msnbase.raw
+xcms.findChromPeaks         ``*``.raw.RData      rdata.msnbase.raw
 =========================== ==================== ====================
 
 

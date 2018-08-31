@@ -411,19 +411,19 @@ Workflow position
 ========================= ================= ==============================
 Name                      Output file       Format
 ========================= ================= ==============================
-MSnbase.readMSData        *.raw.RData       rdata.msnbase.raw
+MSnbase.readMSData        ``*``.raw.RData   rdata.msnbase.raw
 ========================= ================= ==============================
 
 
 **Downstream tools**
 
-==================================== ==================== =========================
-Name                                 Output file          Format
-==================================== ==================== =========================
-xcms.findChromPeaks Merger (single)  *.raw.xset.RData     rdata.xcms.findchrompeaks
------------------------------------- -------------------- -------------------------
-xcms.groupChromPeaks (zip)           *.raw.xset.RData     rdata.xcms.findchrompeaks
-==================================== ==================== =========================
+==================================== ======================== =========================
+Name                                 Output file              Format
+==================================== ======================== =========================
+xcms.findChromPeaks Merger (single)  ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ -------------------------
+xcms.groupChromPeaks (zip)           ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+==================================== ======================== =========================
 
 
 **Example of a metabolomic workflow**
