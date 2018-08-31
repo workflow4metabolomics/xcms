@@ -84,7 +84,6 @@ if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_d
 if (exists("filterRtParam")) raw_data <- filterRt(raw_data, filterRtParam)
 if (exists("filterMzParam")) raw_data <- filterMz(raw_data, filterMzParam)
 raw_data <- filterMsLevel(raw_data,msLevel=1)
-print(raw_data)
 
 cat("\t\t\tChromatographic peak detection\n")
 # clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
@@ -92,7 +91,7 @@ args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))
 
 findChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(findChromPeaksParam)
-xdata <- findChromPeaks(raw_data, param=findChromPeaksParam, msLevel=1)
+xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
 # Check if there are no peaks
 if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should review your settings")
