@@ -83,6 +83,10 @@ cat("\t\t\tApply filter[s] (if asked)\n")
 if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_data, filterAcquisitionNumParam[1]:filterAcquisitionNumParam[2])
 if (exists("filterRtParam")) raw_data <- filterRt(raw_data, filterRtParam)
 if (exists("filterMzParam")) raw_data <- filterMz(raw_data, filterMzParam)
+#Apply this filter only if file contain MS and MSn
+if(length(unique(msLevel(raw_data)))!= 1){
+	raw_data <- filterMsLevel(raw_data,msLevel=1)
+}
 
 cat("\t\t\tChromatographic peak detection\n")
 # clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
