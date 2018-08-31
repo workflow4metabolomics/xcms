@@ -276,15 +276,15 @@ Workflow position
 
 **Upstream tools**
 
-==================================== ==================== ==============================
-Name                                 Output file          Format
-==================================== ==================== ==============================
-xcms.findChromPeaks Merger (single)  xset.merged.RData    rdata.xcms.findchrompeaks
------------------------------------- -------------------- ------------------------------
-xcms.findChromPeaks (zip)            *.raw.xset.RData     rdata.xcms.findchrompeaks
------------------------------------- -------------------- ------------------------------
-xcms.adjustRtime                     *.adjustRtime.RData  rdata.xcms.retcor
-==================================== ==================== ==============================
+==================================== ======================== ==============================
+Name                                 Output file              Format
+==================================== ======================== ==============================
+xcms.findChromPeaks Merger (single)  xset.merged.RData        rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ ------------------------------
+xcms.findChromPeaks (zip)            ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ ------------------------------
+xcms.adjustRtime                     ``*``.adjustRtime.RData  rdata.xcms.retcor
+==================================== ======================== ==============================
 
 
 **Downstream tools**
@@ -292,9 +292,9 @@ xcms.adjustRtime                     *.adjustRtime.RData  rdata.xcms.retcor
 =========================== =========================== ====================
 Name                        Output file                 Format
 =========================== =========================== ====================
-xcms.adjustRtime            *.groupChromPeaks.RData     rdata.xcms.group
+xcms.adjustRtime            ``*``.groupChromPeaks.RData rdata.xcms.group
 --------------------------- --------------------------- --------------------
-xcms.fillChromPeaks         *.groupChromPeaks.RData     rdata.xcms.group
+xcms.fillChromPeaks         ``*``.groupChromPeaks.RData rdata.xcms.group
 =========================== =========================== ====================
 
 **General schema of the metabolomic workflow**

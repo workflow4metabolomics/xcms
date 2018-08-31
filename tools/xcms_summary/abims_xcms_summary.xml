@@ -63,19 +63,19 @@ Workflow position
 
 **Upstream tools**
 
-========================= ======================= ================================
-Name                      Output file             Format                          
-========================= ======================= ================================
-xcms.findChromPeaks       xset.RData              rdata.xcms.findchrompeaks
-------------------------- ----------------------- --------------------------------
-xcms.groupChromPeaks      *.groupChromPeaks.RData rdata.xcms.group
-------------------------- ----------------------- --------------------------------
-xcms.adjustRtime          *.adjustRtime.RData     rdata.xcms.retcor
-------------------------- ----------------------- --------------------------------
-xcms.fillChromPeaks       *.fillChromPeaks.RData  rdata.xcms.fillpeaks
-------------------------- ----------------------- --------------------------------
-CAMERA.annotate           *.annotate.*.RData      rdata.camera.*
-========================= ======================= ================================
+========================= =========================== ================================
+Name                      Output file                 Format
+========================= =========================== ================================
+xcms.findChromPeaks       xset.RData                  rdata.xcms.findchrompeaks
+------------------------- --------------------------- --------------------------------
+xcms.groupChromPeaks      ``*``.groupChromPeaks.RData rdata.xcms.group
+------------------------- --------------------------- --------------------------------
+xcms.adjustRtime          ``*``.adjustRtime.RData     rdata.xcms.retcor
+------------------------- --------------------------- --------------------------------
+xcms.fillChromPeaks       ``*``.fillChromPeaks.RData  rdata.xcms.fillpeaks
+------------------------- --------------------------- --------------------------------
+CAMERA.annotate           ``*``.annotate.*.RData      rdata.camera.``*``
+========================= =========================== ================================
 
 
 .. image:: xcms_summary_workflow.png
