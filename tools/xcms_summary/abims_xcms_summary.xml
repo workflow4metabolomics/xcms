@@ -63,19 +63,19 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ================================ ==========
-Name                      output file       format                           parameter
-========================= ================= ================================ ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks        RData file
-------------------------- ----------------- -------------------------------- ----------
-xcms.group                xset.RData        rdata.xcms.group                 RData file
-------------------------- ----------------- -------------------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor                RData file
-------------------------- ----------------- -------------------------------- ----------
-xcms.fillpeaks            xset.RData        rdata.xcms.fillpeaks             RData file
-------------------------- ----------------- -------------------------------- ----------
-CAMERA.annotate           xset.RData        rdata.camera.*                   RData file
-========================= ================= ================================ ==========
+========================= ======================= ================================
+Name                      Output file             Format                          
+========================= ======================= ================================
+xcms.findChromPeaks       xset.RData              rdata.xcms.findchrompeaks
+------------------------- ----------------------- --------------------------------
+xcms.groupChromPeaks      *.groupChromPeaks.RData rdata.xcms.group
+------------------------- ----------------------- --------------------------------
+xcms.adjustRtime          *.adjustRtime.RData     rdata.xcms.retcor
+------------------------- ----------------------- --------------------------------
+xcms.fillChromPeaks       *.fillChromPeaks.RData  rdata.xcms.fillpeaks
+------------------------- ----------------------- --------------------------------
+CAMERA.annotate           *.annotate.*.RData      rdata.camera.*
+========================= ======================= ================================
 
 
 .. image:: xcms_summary_workflow.png

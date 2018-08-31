@@ -102,17 +102,19 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-...                       ...               ...                            ...
-========================= ================= ============================== ==========
+========================= ================= ==============================
+Name                      Output file       Format
+========================= ================= ==============================
+xcms.findChromPeaks       *.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- ----------------- ------------------------------
+xcms.findChromPeaks       *.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- ----------------- ------------------------------
+xcms.findChromPeaks       *.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- ----------------- ------------------------------
+...                       ...               ...
+------------------------- ----------------- ------------------------------
+Upload file [optional]    sampleMetadata    tabular
+========================= ================= ==============================
 
 
 **Downstream tools**
@@ -120,7 +122,7 @@ xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData
 =========================== ==================== ============================
 Name                        Output file          Format
 =========================== ==================== ============================
-xcms.group                  xset.RData           rdata.xcms.findchrompeaks
+xcms.groupChromPeaks        xset.merged.RData    rdata.xcms.findchrompeaks
 =========================== ==================== ============================
 
 .. image:: xcms_merge_workflow.png
@@ -161,7 +163,7 @@ Output files
 
 xset.merged.RData: rdata.xcms.findchrompeaks format
 
-    | Rdata file that is necessary in the next step of the workflow "xcms.group".
+    | Rdata file that is necessary in the next step of the workflow "xcms.groupChromPeaks".
 
 ---------------------------------------------------
 

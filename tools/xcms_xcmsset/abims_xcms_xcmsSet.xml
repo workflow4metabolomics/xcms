@@ -408,24 +408,22 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-MSnbase readMSData        raw.RData         rdata.msnbase.raw              RData file
-========================= ================= ============================== ==========
+========================= ================= ==============================
+Name                      Output file       Format
+========================= ================= ==============================
+MSnbase.readMSData        *.raw.RData       rdata.msnbase.raw
+========================= ================= ==============================
 
 
 **Downstream tools**
 
-=========================== ==================== =================
-Name                        Output file          Format
-=========================== ==================== =================
-xcms.group                  xset.RData           rdata.xcms.raw
---------------------------- -------------------- -----------------
-PCA ellipsoid by factors    sampleMetadata.tsv   Tabular
---------------------------- -------------------- -----------------
-Anova                       sampleMetadata.tsv   Tabular
-=========================== ==================== =================
+==================================== ==================== =========================
+Name                                 Output file          Format
+==================================== ==================== =========================
+xcms.findChromPeaks Merger (single)  *.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ -------------------- -------------------------
+xcms.groupChromPeaks (zip)           *.raw.xset.RData     rdata.xcms.findchrompeaks
+==================================== ==================== =========================
 
 
 **Example of a metabolomic workflow**
@@ -474,14 +472,10 @@ Extraction method for peaks detection
 Output files
 ------------
 
-sampleMetadata.tsv
-
-    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
-    | This file is necessary in the Anova and PCA step of the workflow.
-
 xset.RData: rdata.xcms.findchrompeaks format
 
-    | RData file that is necessary in the second step of the workflow "xcms.group".
+    | (single) RData files that is necessary in the second step of the workflow "xcms.groupChromPeaks" must to be merged using "xcms.findChromPeaks Merger"
+    | (zip) RData file that is necessary in the second step of the workflow "xcms.groupChromPeaks".
 
 ---------------------------------------------------
 

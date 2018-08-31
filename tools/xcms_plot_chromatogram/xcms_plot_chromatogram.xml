@@ -71,15 +71,17 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-MSnbase readMSData        raw.RData         rdata.msnbase.raw              RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
-========================= ================= ============================== ==========
+=========================== ==================== ==============================
+Name                        Output file          Format
+=========================== ==================== ==============================
+MSnbase.readMSData          *.raw.RData          rdata.msnbase.raw
+--------------------------- -------------------- ------------------------------
+xcms.findChromPeaks         *.raw.xset.RData     rdata.xcms.findchrompeaks
+--------------------------- -------------------- ------------------------------
+xcms.findChromPeaks Merger  xset.merged.RData    rdata.xcms.retcor
+--------------------------- -------------------- ------------------------------
+xcms.adjustRtime            *.adjustRtime.RData  rdata.xcms.retcor
+=========================== ==================== ==============================
 
 .. image:: xcms_plot_chromatogram_workflow.png
 
