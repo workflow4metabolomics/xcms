@@ -1,10 +1,5 @@
 #!/usr/bin/env Rscript
 
-# ----- LOG FILE -----
-log_file=file("log.txt", open = "wt")
-sink(log_file)
-sink(log_file, type = "output")
-
 
 # ----- PACKAGE -----
 cat("\tSESSION INFO\n")
@@ -41,6 +36,8 @@ md5sumList <- mergeXDataReturn$md5sumList
 sampleNamesList <- mergeXDataReturn$sampleNamesList
 chromTIC <- mergeXDataReturn$chromTIC
 chromBPI <- mergeXDataReturn$chromBPI
+chromTIC_adjusted <- mergeXDataReturn$chromTIC_adjusted
+chromBPI_adjusted <- mergeXDataReturn$chromBPI_adjusted
 
 cat("\n\n")
 
@@ -51,11 +48,11 @@ cat("\tMAIN PROCESSING INFO\n")
 
 cat("\t\tDRAW GRAPHICS\n")
 
-if (!exists("chromTIC") || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
-if (!exists("chromBPI") || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
+if (!is.null(chromTIC) || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
+if (!is.null(chromBPI) || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
 
-if (exists("chromTIC_adjusted")) chromTIC <- chromTIC_adjusted
-if (exists("chromBPI_adjusted")) chromBPI <- chromBPI_adjusted
+if (!is.null(chromTIC_adjusted)) chromTIC <- chromTIC_adjusted
+if (!is.null(chromBPI_adjusted)) chromBPI <- chromBPI_adjusted
 
 getPlotChromatogram(chromTIC, xdata, pdfname="TICs.pdf", aggregationFun = "sum")
 getPlotChromatogram(chromBPI, xdata, pdfname="BPIs.pdf", aggregationFun = "max")
