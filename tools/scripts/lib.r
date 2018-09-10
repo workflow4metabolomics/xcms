@@ -29,18 +29,21 @@ loadAndDisplayPackages <- function(pkgs) {
 
 #@author G. Le Corguille
 # This function merge several chromBPI or chromTIC into one.
-mergeChrom <- function(chromTIC_merged, chromTIC, xdata_merged) {
-    if (is.null(chromTIC_merged)) return(NULL)
-    chromTIC_merged@.Data <- cbind(chromTIC_merged@.Data, chromTIC@.Data)
-    chromTIC_merged@phenoData <- xdata_merged@phenoData
-    return(chromTIC_merged)
+mergeChrom <- function(chrom_merged, chrom) {
+    if (is.null(chrom_merged)) return(NULL)
+    chrom_merged@.Data <- cbind(chrom_merged@.Data, chrom@.Data)
+    return(chrom_merged)
 }
 
 #@author G. Le Corguille
 # This function merge several xdata into one.
 mergeXData <- function(args) {
-    chromTIC <- NULL; chromBPI <- NULL
+    chromTIC <- NULL
+    chromBPI <- NULL
+    chromTIC_adjusted <- NULL
+    chromBPI_adjusted <- NULL
     for(image in args$images) {
+
         load(image)
         # Handle infiles
         if (!exists("singlefile")) singlefile <- NULL
@@ -49,9 +52,12 @@ mergeXData <- function(args) {
         zipfile <- rawFilePath$zipfile
         singlefile <- rawFilePath$singlefile
         retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
+
         if (exists("raw_data")) xdata <- raw_data
         if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
+
         cat(sampleNamesList$sampleNamesOrigin,"\n")
+
         if (!exists("xdata_merged")) {
             xdata_merged <- xdata
             singlefile_merged <- singlefile
@@ -59,16 +65,21 @@ mergeXData <- function(args) {
             sampleNamesList_merged <- sampleNamesList
             chromTIC_merged <- chromTIC
             chromBPI_merged <- chromBPI
+            chromTIC_adjusted_merged <- chromTIC_adjusted
+            chromBPI_adjusted_merged <- chromBPI_adjusted
         } else {
             if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
             else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
             else stop("\n\nERROR: The RData either a OnDiskMSnExp object called raw_data or a XCMSnExp object called xdata")
+
             singlefile_merged <- c(singlefile_merged,singlefile)
             md5sumList_merged$origin <- rbind(md5sumList_merged$origin,md5sumList$origin)
             sampleNamesList_merged$sampleNamesOrigin <- c(sampleNamesList_merged$sampleNamesOrigin,sampleNamesList$sampleNamesOrigin)
             sampleNamesList_merged$sampleNamesMakeNames <- c(sampleNamesList_merged$sampleNamesMakeNames,sampleNamesList$sampleNamesMakeNames)
-            chromTIC_merged <- mergeChrom(chromTIC_merged, chromTIC, xdata_merged)
-            chromBPI_merged <- mergeChrom(chromBPI_merged, chromBPI, xdata_merged)
+            chromTIC_merged <- mergeChrom(chromTIC_merged, chromTIC)
+            chromBPI_merged <- mergeChrom(chromBPI_merged, chromBPI)
+            chromTIC_adjusted_merged <- mergeChrom(chromTIC_adjusted_merged, chromTIC_adjusted)
+            chromBPI_adjusted_merged <- mergeChrom(chromBPI_adjusted_merged, chromBPI_adjusted)
         }
     }
     rm(image)
@@ -76,8 +87,6 @@ mergeXData <- function(args) {
     singlefile <- singlefile_merged; rm(singlefile_merged)
     md5sumList <- md5sumList_merged; rm(md5sumList_merged)
     sampleNamesList <- sampleNamesList_merged; rm(sampleNamesList_merged)
-    chromTIC <- chromTIC_merged; rm(chromTIC_merged)
-    chromBPI <- chromBPI_merged; rm(chromBPI_merged)
 
     if (!is.null(args$sampleMetadata)) {
         cat("\tXSET PHENODATA SETTING...\n")
@@ -92,7 +101,13 @@ mergeXData <- function(args) {
             stop(error_message)
         }
     }
-    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList,"sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI))
+
+    if (!is.null(chromTIC_merged)) { chromTIC <- chromTIC_merged; chromTIC@phenoData <- xdata@phenoData }
+    if (!is.null(chromBPI_merged)) { chromBPI <- chromBPI_merged; chromBPI@phenoData <- xdata@phenoData }
+    if (!is.null(chromTIC_adjusted_merged)) { chromTIC_adjusted <- chromTIC_adjusted_merged; chromTIC_adjusted@phenoData <- xdata@phenoData }
+    if (!is.null(chromBPI_adjusted_merged)) { chromBPI_adjusted <- chromBPI_adjusted_merged; chromBPI_adjusted@phenoData <- xdata@phenoData }
+
+    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList,"sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI, "chromTIC_adjusted"=chromTIC_adjusted, "chromBPI_adjusted"=chromBPI_adjusted))
 }
 
 #@author G. Le Corguille
@@ -192,6 +207,9 @@ getDataFrameFromFile <- function(filename, header=T) {
     return(myDataFrame)
 }
 
+#@author G. Le Corguille
+# Draw the BPI and TIC graphics
+# colored by sample names or class names
 getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
 
     if (aggregationFun == "sum")
@@ -408,7 +426,7 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, args, prefix="") {
     for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
       singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
       singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
-      # In case, an url is used to import data within Galaxy 
+      # In case, an url is used to import data within Galaxy
       singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName,"/")), n=1)
       singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
     }

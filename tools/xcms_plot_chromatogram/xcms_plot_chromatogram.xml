@@ -37,6 +37,7 @@
         <test>
             <param name="images" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
+            <param name="sampleMetadata" value="sampleMetadata.tab" ftype="tabular"/>
             <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="600" />
             <output name="bpisPdf" value="BPIs.pdf" ftype="pdf" compare="sim_size" delta="600" />
         </test>
@@ -71,15 +72,17 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ============================== ==========
-Name                      output file       format                         parameter
-========================= ================= ============================== ==========
-MSnbase readMSData        raw.RData         rdata.msnbase.raw              RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.findchrompeaks      RData file
-------------------------- ----------------- ------------------------------ ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor              RData file
-========================= ================= ============================== ==========
+=========================== ======================== ==============================
+Name                        Output file              Format
+=========================== ======================== ==============================
+MSnbase.readMSData          ``*``.raw.RData          rdata.msnbase.raw
+--------------------------- ------------------------ ------------------------------
+xcms.findChromPeaks         ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+--------------------------- ------------------------ ------------------------------
+xcms.findChromPeaks Merger  xset.merged.RData        rdata.xcms.retcor
+--------------------------- ------------------------ ------------------------------
+xcms.adjustRtime            ``*``.adjustRtime.RData  rdata.xcms.retcor
+=========================== ======================== ==============================
 
 .. image:: xcms_plot_chromatogram_workflow.png
 
