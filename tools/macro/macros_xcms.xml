@@ -29,7 +29,7 @@
     <xml name="input_file_load">
         <section name="file_load_section" title="Resubmit your raw dataset or your zip file">
             <conditional name="file_load_conditional">
-                <param name="file_load_select" type="select" label="Resubmit your dataset or your zip file" help="Use only if you get a message which say that your original dataset or zip file have been deleted on the server." >
+                <param name="file_load_select" type="select" label="Resubmit your dataset or your zip file" help="Use only if you get a message saying that your original dataset or zip file have been deleted on the server." >
                     <option value="no" >no need</option>
                     <option value="yes" >yes</option>
                 </param>
@@ -225,7 +225,7 @@ xset.dataMatrix.tsv : tabular format
 
     <token name="@HELP_XCMS_MANUAL@">
 
-For details and explanations for all the parameters and the workflow of xcms_ package, see its manual_ and this example_
+For details and explanations concerning all the parameters and workflow of xcms_ package, see its manual_ and this example_
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
 .. _manual: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
