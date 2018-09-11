@@ -133,7 +133,7 @@
                     <param argument="max" type="integer" value="5" label="Maximum number of peaks that are expected/will be identified per slice" />
                     <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
                     <param argument="steps" type="integer" value="2" label="Number of bins to be merged before filtration" help="(i.e. the number of neighboring bins that will be joined to the slice in which filtration and peak detection will be performed)" />
-                    <param argument="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-step*steps " />
+                    <param argument="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-binSize*steps " />
                     <!-- index -->
                 </section>
             </when>
@@ -395,8 +395,8 @@ xcms findChromPeaks
 Description
 -----------
 
-This tool is used for preprocessing data from multiple LC/MS files (formats NetCDF, mzXML and mzData) using the xcms_ R package. It extracts ion from each sample independently and using a statistic model, peaks are filtered and integrated.
-You can read a tutorial on how to perform xcms preprocessing which is available here_.
+This tool is used for preprocessing data from multiple LC/MS files (NetCDF, mzXML and mzData formats) using the xcms_ R package. It extracts ions from each sample independently, and using a statistical model, peaks are filtered and integrated.
+A tutorial on how to perform xcms preprocessing is available here_.
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
 .. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
@@ -474,7 +474,7 @@ Output files
 
 xset.RData: rdata.xcms.findchrompeaks format
 
-    | (single) RData files that is necessary in the second step of the workflow "xcms.groupChromPeaks" must to be merged using "xcms.findChromPeaks Merger"
+    | (single) RData files that are necessary in the second step of the workflow "xcms.groupChromPeaks" - must be merged first using "xcms.findChromPeaks Merger"
     | (zip) RData file that is necessary in the second step of the workflow "xcms.groupChromPeaks".
 
 ---------------------------------------------------
