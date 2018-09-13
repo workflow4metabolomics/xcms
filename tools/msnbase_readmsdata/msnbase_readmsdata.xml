@@ -23,7 +23,7 @@
 
     <inputs>
 
-        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the following formats: mzxml, mzml, mzdata and netcdf. Zip file mode for the following formats: no_unzip.zip, zip. See the help section below." />
 
     </inputs>
 
@@ -132,7 +132,7 @@ Name                        Output file          Format
 xcms.findChromPeaks         ``*``.raw.RData      rdata.msnbase.raw
 =========================== ==================== ====================
 
-
+ 
 
 **Example of a metabolomic workflow**
 
@@ -158,7 +158,7 @@ OR : Single file            mzXML, mzML, mzData, netCDF
 
 You have two methods for your inputs:
 
-    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
+    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several readMSData and findChromPeaks in parallel and use "findChromPeaks Merger" before groupChromPeaks. 
     | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
 
 Zip file: Steps for creating the zip file
@@ -167,7 +167,7 @@ Zip file: Steps for creating the zip file
 **Step1: Creating your directory and hierarchize the subdirectories**
 
 
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip_ software, otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip_ software, otherwise your zip will not be well unzipped on the W4M platform (corrupted zip bug).
 
 .. _7Zip: http://www.7-zip.org/
 
@@ -177,22 +177,22 @@ arabidopsis/mutant/01.raw
 
 **Step2: Creating a zip file**
 
-Create your zip file (e.g.: arabidopsis.zip).
+Create your zip file (*e.g.* arabidopsis.zip).
 
 **Step 3 : Uploading it to our Galaxy server**
 
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
+If your zip file is less than 2Gb, you can use the Get Data tool to upload it.
 
 Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO_ on workflow4metabolomics.org.
 
 .. _HOWTO: http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf
 
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
+For more information, do not hesitate to send us an email at supportATworkflow4metabolomics.org.
 
-Advices for converting your files for the XCMS input
-----------------------------------------------------
+Advices for converting your files into mzXML format (XCMS input)
+----------------------------------------------------------------
 
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
+We recommend you to convert your raw files into **mzXML** in centroid mode (smaller files); this way the files will be compatible with the xmcs centWave algorithm.
 
 **We recommend you the following parameters:**
 
@@ -217,13 +217,13 @@ Output files
 
 xset.RData: rdata.msnbase.raw format
 
-| Rdata file that is necessary in the second step of the workflow "xcms.findChromPeaks".
+    | Rdata file that is necessary in the second step of the workflow "xcms.findChromPeaks".
 
 sampleMetadata.tsv (only when a zip is used)
 
-    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
-    | This file is necessary in the Anova and PCA step of the workflow.
-    | You get a sampleMetadata.tsv only if you use a zip. Otherwise, you have to provide one for the findChromPeaks Merger step
+    | Tabular file that contains for each sample its associated class and polarity (positive,negative and mixed).
+    | This file is necessary in further steps of the workflow, as the Anova and PCA steps for example.
+    | You get a sampleMetadata.tsv only if you use a zip. Otherwise, you have to provide one for the findChromPeaks Merger step. 
 
 ---------------------------------------------------
 

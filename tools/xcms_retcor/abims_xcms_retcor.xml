@@ -314,7 +314,7 @@ Changelog/News
 
 - IMPROVEMENT: the advanced options are now in sections. It will allow you to access to all the parameters and to know their default values.
 
-- CHANGE: removing of the TIC and BPC plots. You can new use the dedicated tool "xcms plot chromatogram"
+- CHANGE: removing of the TIC and BPC plots. You can now use the dedicated tool "xcms plot chromatogram"
 
 
 **Version 2.1.1 - 29/11/2017**

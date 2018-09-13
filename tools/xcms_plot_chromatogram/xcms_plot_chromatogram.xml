@@ -1,5 +1,5 @@
 <tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@WRAPPER_VERSION@.0">
-    <description>Plot base peak intensity chromatogram (BPI) and total ion chromatogram (TIC) from MSnbase or xcms experience(s)</description>
+    <description>Plots base peak intensity chromatogram (BPI) and total ion current chromatogram (TIC) from MSnbase or xcms experiment(s)</description>
 
     <macros>
         <import>macros.xml</import>
@@ -23,7 +23,7 @@
 
     <inputs>
         <param name="images" type="data" format="rdata.msnbase.raw,rdata.xcms.findchrompeaks,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from: findChromPeaks, groupChromPeaks or adjustRtime" multiple="true" />
-        <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
+        <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="Must contain at least one column with the sample id and one column with the sample class"/>
 
         <expand macro="input_file_load"/>
     </inputs>
@@ -63,7 +63,7 @@ xcms plot chromatogram
 Description
 -----------
 
-This tool will plot base peak intensity chromatogram (BPI) and total ion chromatogram (TIC) from xcms experience
+This tool will plot Base Peak Intensity chromatogram (BPI) and Total Ion Current chromatogram (TIC) from xcms experiments.
 
 
 -----------------
@@ -93,10 +93,10 @@ Output files
 ------------
 
 **Total Ion Current (TIC) chromatogram**
-    | Sum of intensity (Y) of all ions detected at each retention time(X)
+    | Sum of intensity (Y) of all ions detected at each retention time (X)
 
 **Base Peak Intensity Chromatogram (BPI)**
-    | Sum of intensity (Y) of the most intense peaks at each retention time(X)
+    | Sum of intensity (Y) of the most intense peaks at each retention time (X)
 
 ---------------------------------------------------
 

@@ -89,7 +89,7 @@ Changelog/News
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods
 
-- IMPROVEMENT: the tool now shows all the parameters and not only those which were setted.
+- IMPROVEMENT: the tool now shows all the parameters and not only those which were set.
 
 
 **Version 1.0.4 - 13/02/2018**
