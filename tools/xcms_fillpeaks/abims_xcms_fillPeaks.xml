@@ -105,6 +105,29 @@
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.variableMetadata.tsv" />
             <output name="dataMatrix" file="faahKO.xset.group.retcor.group.fillPeaks.dataMatrix.tsv" />
         </test>-->
+        <!--<test>
+            <param name="image" value="faahKO-single.xset.merged.group2.retcor2.group2.RData" ftype="rdata"/>
+            <conditional name="peaklist">
+                <param name="peaklistBool" value="true" />
+                <param name="convertRTMinute" value="false" />
+                <param name="numDigitsMZ" value="4" />
+                <param name="numDigitsRT" value="1" />
+                <param name="naTOzero" value="false" />
+            </conditional>
+            <expand macro="test_file_load_single"/>
+            <assert_stdout>
+                <has_text text="expandMz: 0" />
+                <has_text text="expandRt: 0" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 15230 (about 3808 per sample)" />
+                <has_text text="Peak Groups: 6332" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
+            <output name="variableMetadata" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.variableMetadata.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.dataMatrix.tsv" />
+        </test>-->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group2.retcor2.group2.RData" ftype="rdata"/>
             <conditional name="peaklist">
@@ -125,7 +148,7 @@
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
             <output name="variableMetadata" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.variableMetadata.tsv" />
-            <output name="dataMatrix" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.dataMatrix.tsv" />
+            <output name="dataMatrix" file="faahKO.xset.group2.retcor2.group2.fillPeaks2.dataMatrix.NAless.tsv" />
         </test>
     </tests>
 
