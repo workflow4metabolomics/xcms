@@ -102,6 +102,7 @@
                 <param name="convertRTMinute" value="false" />
                 <param name="numDigitsMZ" value="4" />
                 <param name="numDigitsRT" value="1" />
+                <param name="naTOzero" value="false" />
             </conditional>
             <expand macro="test_file_load_single"/>
             <assert_stdout>
@@ -160,6 +161,7 @@
                 <param name="peaklistBool" value="true" />
                 <param name="numDigitsMZ" value="4" />
                 <param name="numDigitsRT" value="1" />
+                <param name="naTOzero" value="false" />
             </conditional>
             <expand macro="test_file_load_zip"/>
             <assert_stdout>

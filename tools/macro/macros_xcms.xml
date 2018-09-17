@@ -85,6 +85,7 @@
             numDigitsMZ $peaklist.numDigitsMZ
             numDigitsRT $peaklist.numDigitsRT
             intval $peaklist.intval
+            naTOzero $peaklist.naTOzero
         #end if
     </token>
 
@@ -100,6 +101,7 @@
                   <option value="maxo">maxo</option>
                   <option value="intb">intb</option>
               </param>
+              <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Replace the remain NA by 0 in the dataMatrix" help="Rather mandatory for some downstream statistical steps"/>
             </when>
             <when value="false" />
         </conditional>
