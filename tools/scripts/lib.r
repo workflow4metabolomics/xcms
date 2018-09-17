@@ -134,6 +134,15 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
 }
 
 #@author G. Le Corguille
+# This function convert the remain NA to 0 in the dataMatrix
+naTOzeroDataMatrix <- function(dataMatrix, naTOzero) {
+    if (naTOzero){
+        dataMatrix[is.na(dataMatrix)] <- 0
+    }
+    return (dataMatrix)
+}
+
+#@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
 getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
     pdf(file="plotChromPeakDensity.pdf", width=16, height=12)
@@ -177,7 +186,7 @@ getPlotAdjustedRtime <- function(xdata) {
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
-getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, variableMetadataOutput, dataMatrixOutput) {
+getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput) {
     dataMatrix <- featureValues(xdata, method="medret", value=intval)
     colnames(dataMatrix) <- tools::file_path_sans_ext(colnames(dataMatrix))
     dataMatrix = cbind(name=groupnamesW4M(xdata), dataMatrix)
@@ -187,6 +196,7 @@ getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=
 
     variableMetadata <- RTSecondToMinute(variableMetadata, convertRTMinute)
     variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
+    dataMatrix <- naTOzeroDataMatrix(dataMatrix, naTOzero)
 
     write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
     write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
