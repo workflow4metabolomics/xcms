@@ -1,340 +1,404 @@
-<tool id="abims_xcms_xcmsSet" name="xcms.xcmsSet" version="2.1.1">
-    <description>Filtration and Peak Identification using xcmsSet function from xcms R package to preprocess LC/MS data for relative quantification and statistical analysis </description>
+<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@WRAPPER_VERSION@.0">
+    <description>Chromatographic peak detection</description>
 
     <macros>
         <import>macros.xml</import>
+        <import>macros_xcms.xml</import>
     </macros>
 
     <expand macro="requirements"/>
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_XCMS_SCRIPT@
+        @COMMAND_RSCRIPT@/xcms_xcmsSet.r
 
-        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
-        #else
-            zipfile '$input'
+        image '$image'
+
+        BPPARAM \${GALAXY_SLOTS:-1}
+
+        #if $filterSection.filterAcquisitionNum != "":
+            filterAcquisitionNum "c($filterSection.filterAcquisitionNum)"
+        #end if
+        #if $filterSection.filterRt != "":
+            filterRt "c($filterSection.filterRt)"
+        #end if
+        #if $filterSection.filterMz != "":
+            filterMz "c($filterSection.filterMz)"
         #end if
 
-        xfunction xcmsSet
+        method $methods.method
 
-        xsetRdataOutput '$xsetRData'
-        sampleMetadataOutput '$sampleMetadata'
-        ticspdf '$ticsRawPdf'
-        bicspdf '$bpcsRawPdf'
-
-
-        #if $options_scanrange.option == "show":
-            scanrange "c($options_scanrange.scanrange)"
-        #end if
-
-        ## profmethod $profmethod
-        nSlaves \${GALAXY_SLOTS:-1} method $methods.method
-        #if $methods.method == "centWave":
-            ppm $methods.ppm
-            peakwidth "c($methods.peakwidth)"
-            #if $methods.options_c.option == "show":
-                mzdiff $methods.options_c.mzdiff
-                snthresh $methods.options_c.snthresh
-                integrate $methods.options_c.integrate
-                noise $methods.options_c.noise
-                prefilter "c($methods.options_c.prefilter)"
-            #end if
-        #elif $methods.method == "matchedFilter":
-            step $methods.step
+        #if $methods.method == "CentWave":
+            @COMMAND_CENTWAVE@
+            ## List of regions-of-interest (ROI)
+            #set $sectionROI = $methods.CentWaveAdv.CentWaveAdvROI
+            @COMMAND_CENTWAVEADVROI@
+        #elif $methods.method == "CentWavePredIso":
+            @COMMAND_CENTWAVE@
+            ## List of regions-of-interest (ROI)
+            #set $sectionROI = $methods.CentWaveAdvROI
+            @COMMAND_CENTWAVEADVROI@
+            snthreshIsoROIs $sectionROI.snthreshIsoROIs
+            maxCharge $sectionROI.maxCharge
+            maxIso $sectionROI.maxIso
+            mzIntervalExtension $sectionROI.mzIntervalExtension
+            polarity $sectionROI.polarity
+        #elif $methods.method == "MatchedFilter":
             fwhm $methods.fwhm
-            #if $methods.options_m.option == "show":
-                ## sigma "$methods.options_m.sigma"
-                max $methods.options_m.max
-                snthresh $methods.options_m.snthresh
-                steps $methods.options_m.steps
-                mzdiff $methods.options_m.mzdiff
+            binSize $methods.binSize
+            ## Advanced
+            impute $methods.MatchedFilterAdv.impute_cond.impute
+            #if $methods.MatchedFilterAdv.impute_cond.impute == "linbase":
+                #if $methods.MatchedFilterAdv.impute_cond.baseValue != "":
+                    baseValue $methods.MatchedFilterAdv.impute_cond.baseValue
+                #end if
+                distance $methods.MatchedFilterAdv.impute_cond.distance
             #end if
+            #if $methods.MatchedFilterAdv.sigma != "":
+                sigma $methods.MatchedFilterAdv.sigma
+            #end if
+            max $methods.MatchedFilterAdv.max
+            snthresh $methods.MatchedFilterAdv.snthresh
+            steps $methods.MatchedFilterAdv.steps
+            mzdiff $methods.MatchedFilterAdv.mzdiff
         #elif $methods.method == "MSW":
-            snthr $methods.snthr
-            nearbyPeak $methods.nearbyPeak
-            winSize.noise $methods.winSize_noise
-            amp.Th $methods.amp_Th
+            snthresh $methods.snthresh
+            verboseColumns $methods.verboseColumns
             scales "c($methods.scales)"
-            SNR.method "$methods.SNR_method"
+            nearbyPeak $methods.nearbyPeak
+            ampTh $methods.ampTh
         #end if
+
+        @COMMAND_FILE_LOAD@
+
         @COMMAND_LOG_EXIT@
     ]]></command>
 
     <inputs>
 
-        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+        <param name="image" type="data" format="rdata.msnbase.raw,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from MSnbase readMSData" />
 
-        <conditional name="options_scanrange">
-            <param name="option" type="select" label="Scan range option " >
-                <option value="show">show</option>
-                <option value="hide" selected="true">hide</option>
+        <section name="filterSection" title="Spectra Filters" expanded="False">
+            <param argument="filterAcquisitionNum" type="text" value="" optional="true" label="Filter on Acquisition Numbers" help="min,max">
+                <expand macro="input_validator_range_integer"/>
             </param>
-            <when value="show">
-                <param name="scanrange" type="text" value="" label="scanrange" help="scan range to process, for example (16,365)" >
-                    <validator type="empty_field"/>
-                </param>
-            </when>
-            <when value="hide">
-            </when>
-        </conditional>
+            <param argument="filterRt" type="text" value="" optional="true" label="Filter on Retention Time" help="min,max">
+                <expand macro="input_validator_range_integer"/>
+            </param>
+            <param argument="filterMz" type="text" value="" optional="true" label="Filter on Mz" help="min,max">
+                <expand macro="input_validator_range_integer"/>
+            </param>
+        </section>
 
-
-<!--
-        <param name="profmethod" type="select" label="Method to use for profile generation (profmethod)" >
-            <option value="bin" selected="true">bin</option>
-            <option value="binlin">binlin</option>
-            <option value="binlinbase">binlinbase</option>
-            <option value="intlin">intlin</option>
-        </param>
--->
         <conditional name="methods">
-            <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
-                <option value="centWave" >centWave</option>
-                <option value="matchedFilter" selected="true">matchedFilter</option>
-                <option value="MSW">MSW</option>
+            <param name="method" type="select" label="Extraction method for peaks detection" help="See the help section below">
+                <option value="MatchedFilter" selected="true">MatchedFilter - peak detection in chromatographic space</option>
+                <option value="CentWave">CentWave - chromatographic peak detection using the centWave method</option>
+                <option value="CentWavePredIso">CentWaveWithPredIsoROIs - performs a two-step centWave-based chromatographic peak detection</option>
+                <option value="MSW">MSW - single-spectrum non-chromatography MS data peak detection</option>
             </param>
 
-            <!-- centWave Filter options -->
-            <when value="centWave">
-                <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
-                <param name="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="[peakwidth]" />
+            <!-- CentWave -->
+            <when value="CentWave">
+                <expand macro="input_centwave"/>
+                <section name="CentWaveAdv" title="Advanced Options" expanded="False">
+                    <expand macro="input_centwaveAdv"/>
+                    <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="False">
+                        <expand macro="input_centwaveAdvROI"  optional="true"/>
+                    </section>
+                </section>
+            </when>
 
-                <conditional name="options_c">
-                    <param name="option" type="select" label="Advanced options" >
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
-                    </param>
-                    <when value="show">
-                        <param name="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="[snthresh] Signal to noise ratio cutoff" />
-                        <param name="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap" />
-                        <param name="integrate" type="select" label="peak limits method" help="[integrate]" >
-                            <option value="1">peak limits based on smoothed 2nd derivative (less precise)</option>
-                            <option value="2">peak limits based on real data (more sensitive to noise)</option>
+            <!-- MatchedFilter -->
+            <when value="MatchedFilter">
+                <param argument="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="Only used to calculate the actual sigma" />
+                <param argument="binSize" type="float" value="0.1" label="Step size to use for profile generation" help="The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size. (Previously step)" />
+                <section name="MatchedFilterAdv" title="Advanced Options" expanded="False">
+                    <conditional name="impute_cond">
+                        <param argument="impute" type="select" label="Method to be used for missing value imputation" help="(previously profmethod)">
+                            <option value="none">none - no linear interpolation</option>
+                            <option value="lin">lin - linear interpolation</option>
+                            <option value="linbase">linbase - linear interpolation within a certain bin-neighborhood</option>
+                            <option value="intlin">intlin - integral of the linearly interpolated data from plus to minus half the step size</option>
                         </param>
-                        <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
-                        <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
-                    </when>
-                    <when value="hide">
-                    </when>
-                </conditional>
+                        <when value="none" />
+                        <when value="lin" />
+                        <when value="linbase">
+                            <param argument="baseValue" type="float" value="" optional="true" label="The base value to which empty elements should be set" help="The default for the ‘baseValue’ is half of the smallest value in ‘x’ (‘NA’s being removed)." />
+                            <param argument="distance" type="integer" value="0" label="Number of non-empty neighboring element of an empty element that should be considered for linear interpolation." />
+                        </when>
+                        <when value="intlin" />
+                    </conditional>
+                    <param argument="sigma" type="float" value="" optional="true" label="Standard deviation (width) of matched filtration model peak" help="Leave it to empty to calculate it using fwhm by default at fwhm/2.3548" />
+                    <param argument="max" type="integer" value="5" label="Maximum number of peaks that are expected/will be identified per slice" />
+                    <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
+                    <param argument="steps" type="integer" value="2" label="Number of bins to be merged before filtration" help="(i.e. the number of neighboring bins that will be joined to the slice in which filtration and peak detection will be performed)" />
+                    <param argument="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-binSize*steps " />
+                    <!-- index -->
+                </section>
             </when>
 
-            <!-- matched Filter options -->
-            <when value="matchedFilter">
-                <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
-                <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
-                <conditional name="options_m">
-                    <param name="option" type="select" label="Advanced options" >
-                        <option value="show">show</option>
-                        <option value="hide" selected="true">hide</option>
+            <!-- CentWaveWithPredIsoROIs -->
+            <when value="CentWavePredIso">
+                <expand macro="input_centwave"/>
+                <section name="CentWaveAdv" title="Advanced Options" expanded="False">
+                    <expand macro="input_centwaveAdv"/>
+                </section>
+                <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="True">
+                    <expand macro="input_centwaveAdvROI" optional="false" />
+                    <param argument="snthreshIsoROIs" type="float" value="6.25" label="Signal to noise ratio cutoff" help="used in the second centWave run to identify peaks for predicted isotope ROIs." />
+                    <param argument="maxCharge" type="integer" value="3" label="Maximal isotope charge" help="Isotopes will be defined for charges ‘1:maxCharge’." />
+                    <param argument="maxIso" type="integer" value="5" label="Number of isotope peaks that should be predicted for each peak identified in the first centWave run" />
+                    <param argument="mzIntervalExtension" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Is the mz range for the predicted isotope ROIs should be extended to increase detection of low intensity peaks" />
+                    <param argument="polarity" type="select" label="Polarity of the data">
+                        <option value="unknown">unknown</option>
+                        <option value="positive">positive</option>
+                        <option value="negative">negative</option>
                     </param>
-                    <when value="show">
-                        <!--<param name="sigma" type="float" value="12.739935451" label="Standard deviation (width) of matched filtration model peak" help="[sigma] By default: fwhm/2.3548" />-->
-                        <param name="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" help="[max]" />
-                        <param name="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" help="[snthresh]" />
-                        <param name="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="[steps] The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
-                        <param name="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps " />
-                    </when>
-                    <when value="hide">
-                    </when>
-                </conditional>
+                </section>
             </when>
 
-            <!-- MSW Filter options -->
+            <!-- MSW -->
             <when value="MSW">
-                <param name="nearbyPeak" type="select" label="Determine whether to include the nearby small peaks of major peaks" help="[nearbyPeak]" >
-                    <option value="TRUE">TRUE</option>
-                    <option value="FALSE">FALSE</option>
+                <!---@TODO <param argument="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />-->
+                <param argument="snthresh" type="integer" value="3" label="Signal to Noise ratio cutoff" help="" />
+                <param argument="verboseColumns" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="verbose Columns" help="whether additional peak meta data columns should be returned" />
+                <param argument="scales" type="text" value="1,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,36,40,44,48,52,56,60,64" label="Scales of the Continuous Wavelet Transform (CWT)" help="Scales are linked to the width of the peaks that are to be detected." >
+                    <expand macro="input_validator_list_integer"/>
                 </param>
-                <param name="winSize_noise" type="integer" value="500" label="The local window size to estimate the noise level" help="[winSize.noise]" />
-                <param name="snthr" type="integer" value="3" label="SNR (Signal to Noise Ratio) threshold" help="[snthr]" />
-                <param name="amp_Th" type="float" value="0.002" label="Minimum required relative amplitude of the peak" help="[amp.Th] Ratio to the maximum of CWT coefficients" />
-                <param name="scales" type="text" value="seq(1,22,3)" label="Scales for the Continuous Wavelet Transform (CWT)" help="[scales] Scales are linked to the width of the peaks that are to be detected. Tape as indicaded seq('n,n,n') or c(n,n) : seq(from, to, by steps), c - linear vector " />
-                <param name="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />
+                <param argument="nearbyPeak" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Determine whether to include the nearby small peaks of major peaks" />
+                <!-- peakScaleRange -->
+                <param argument="ampTh" type="float" value="0.01" label="Minimum required relative amplitude of the peak" help="Ratio to the maximum of CWT coefficients" />
+                <!-- minNoiseLevel -->
+                <!-- ridgeLength -->
+                <!-- peakThr -->
+                <!-- tuneIn -->
+                <!---@TODO <param argument="SNR_method" type="text" value="data.mean" label="SNR (Signal to Noise Ratio) method" help="[SNR.method] Method to estimate noise level. Currently, only 95 percentage quantile is supported." />-->
             </when>
         </conditional>
+
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="${input.name.rsplit('.',1)[0]}.xset.RData" />
-        <data name="sampleMetadata" format="tabular" label="${input.name.rsplit('.',1)[0]}.sampleMetadata.tsv">
-            <filter>input.extension not in ["mzxml","mzml","mzdata","netcdf"]</filter>
-        </data>
-        <data name="ticsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.TICs_raw.pdf" />
-        <data name="bpcsRawPdf"   format="pdf" label="${input.name.rsplit('.',1)[0]}.xset.BPCs_raw.pdf" />
-        <data name="log" format="txt" label="${input.name.rsplit('.',1)[0]}.xset.log.txt" />
+        <data name="xsetRData" format="rdata.xcms.findchrompeaks" label="${image.name.rsplit('.',1)[0]}.xset.RData" from_work_dir="xcmsSet.RData" />
+        <data name="log" format="txt" label="${image.name.rsplit('.',1)[0]}.xset.log.txt" from_work_dir="log.txt" />
     </outputs>
 
     <tests>
+
         <!--<test>
-            <param name="input" value="sacuri_dir_root.zip"  ftype="zip" />
-            <param name="methods|method" value="matchedFilter" />
-            <param name="methods|step" value="0.01" />
-            <param name="methods|fwhm" value="4" />
-            <param name="methods|options_m|option" value="show" />
-            <param name="methods|options_m|max" value="50" />
-            <param name="methods|options_m|snthresh" value="1" />
-            <param name="methods|options_m|steps" value="2" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
-                    <has_text text="Mass range: 50.0021-999.9863 m/z" />
-                    <has_text text="Peaks: 59359 (about 14840 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
-        </test>
-        <test>
-            <param name="input" value="sacuri_current_root.zip"  ftype="zip" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 3.5-1139.2 seconds (0.1-19 minutes)" />
-                    <has_text text="Mass range: 57.9756-593.4086 m/z" />
-                    <has_text text="Peaks: 1535 (about 384 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: bio, blank" />
-                </assert_contents>
-            </output>
+            <param name="image" value="faahKO.raw.Rdata" ftype="rdata" />
+            <section name="filterSection">
+                <param name="filterAcquisitionNum" value="100,5000" />
+                <param name="filterRt" value="3000,4000" />
+                <param name="filterMz" value="300,400" />
+            </section>
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />-->
+                <!-- DISABLE: just for testing the arguments
+                <section name="CentWaveAdv">
+                    <section name="CentWaveAdvROI">
+                        <param name="roiList" value="roiList.txt" ftype="tabular" />
+                    </section>
+                </section>-->
+            <!--</conditional>
+            <expand macro="test_file_load_zip"/>
+            <assert_stdout>
+                <has_text text="ppm: 25" />
+                <has_text text="peakwidth: 20, 50" />
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 3006.9-3978.7 seconds (50.1-66.3 minutes)" />
+                <has_text text="Mass range: 300-400 m/z" />
+                <has_text text="Peaks: 1311 (about 328 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: KO, WT" />
+            </assert_stdout>
         </test>-->
         <test>
-            <param name="input" value="faahKO_reduce.zip"  ftype="zip" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 4 samples" />
-                    <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: KO, WT" />
-                </assert_contents>
-            </output>
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <expand macro="test_file_load_single_ko15"/>
+            <assert_stdout>
+                <has_text text="ppm: 25" />
+                <has_text text="peakwidth: 20, 50" />
+                <has_text text="object with 1 samples" />
+                <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
+                <has_text text="Mass range: 200.2-600 m/z" />
+                <has_text text="Peaks: 2262 (about 2262 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
         </test>
-        <!-- Passed but disable to save time for Travis" -->
-        <!--<test>
-            <param name="input" value="ko15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2506.1-4471.7 seconds (41.8-74.5 minutes)" />
-                    <has_text text="Mass range: 200.2-600 m/z" />
-                    <has_text text="Peaks: 2262 (about 2262 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+        <!-- DISABLE FOR TRAVIS
+        Useful to generate test-data for the further steps
+        <test>
+            <param name="image" value="ko16-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <assert_stdout>
+                <has_text text="object with 1 samples" />
+                <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
+                <has_text text="Mass range: 200.1-600 m/z" />
+                <has_text text="Peaks: 2408 (about 2408 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="ko16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.1-600 m/z" />
-                    <has_text text="Peaks: 2408 (about 2408 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+            <param name="image" value="wt15-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <assert_stdout>
+                <has_text text="object with 1 samples" />
+                <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
+                <has_text text="Mass range: 200.2-599.8 m/z" />
+                <has_text text="Peaks: 2278 (about 2278 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="wt15.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
-                    <has_text text="Mass range: 200.2-599.8 m/z" />
-                    <has_text text="Peaks: 2278 (about 2278 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+            <param name="image" value="wt16-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <assert_stdout>
+                <has_text text="object with 1 samples" />
+                <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
+                <has_text text="Mass range: 200.3-600 m/z" />
+                <has_text text="Peaks: 2303 (about 2303 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: ." />
+            </assert_stdout>
+        </test>
+        -->
+        <!-- DISABLE FOR TRAVIS
+        Test to test the different methods parameters
+        <test>
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="MatchedFilter" />
+                <param name="fwhm" value="35" />
+                <section name="MatchedFilterAdv"
+                    <conditional name="impute_cond">
+                        <param name="impute" value="linbase" />
+                        <param name="baseValue" value="0.1" />
+                        <param name="distance" value="1" />
+                    </conditional>
+                </section>
+            </conditional>
+            <assert_stdout>
+                <has_text text="fwhm: 35" />
+                <has_text text="impute: linbase" />
+                <has_text text="baseValue: 0.1" />
+                <has_text text="distance: 1" />
+            </assert_stdout>
         </test>
         <test>
-            <param name="inputs|input" value="single_file" />
-            <param name="inputs|single_file" value="wt16.CDF"  ftype="netcdf" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
-                    <has_text text="Mass range: 200.3-600 m/z" />
-                    <has_text text="Peaks: 2303 (about 2303 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
-        </test>-->
-        <test>
-            <param name="input" value="HU_neg_017.mzXML"  ftype="mzxml" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|peakwidth" value="20,50" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 3.5-1139.1 seconds (0.1-19 minutes)" />
-                    <has_text text="Mass range: 57.9756-556.8128 m/z" />
-                    <has_text text="Peaks: 380 (about 380 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="CentWavePredIso" />
+                <param name="ppm" value="56" />
+                <param name="peakwidth" value="5.275,13.5" />
+                <section name="CentWaveAdvROI">
+                    <param name="roiList" value="roiList.txt" ftype="tabular" />
+                </section>
+            </conditional>
+            <assert_stdout>
+                <has_text text="  scmin scmax mzmin mzmax length intensity" />
+                <has_text text="1   200   300   300   350    100      5000" />
+            </assert_stdout>
         </test>
         <test>
-            <param name="input" value="MM14.mzML"  ftype="mzxml" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="56" />
-            <param name="methods|peakwidth" value="5.275,13.5" />
-            <output name="log">
-                <assert_contents>
-                    <has_text text="object with 1 samples" />
-                    <has_text text="Time range: 271-307.3 seconds (4.5-5.1 minutes)" />
-                    <has_text text="Mass range: 117.0357-936.7059 m/z" />
-                    <has_text text="Peaks: 222 (about 222 per sample)" />
-                    <has_text text="Peak Groups: 0" />
-                    <has_text text="Sample classes: ." />
-                </assert_contents>
-            </output>
+            <param name="image" value="ko15-raw.RData" ftype="rdata" />
+            <conditional name="methods">
+                <param name="method" value="MSW" />
+                <param name="snthresh" value="4" />
+                <param name="verboseColumns" value="true" />
+            </conditional>
+            <assert_stdout>
+                <has_text text="snthresh: 4" />
+                <has_text text="verboseColumns: TRUE" />
+            </assert_stdout>
         </test>
+        -->
+        <!-- DISABLE FOR TRAVIS
+        No more test-data/sacuri_dir_root.zip
+        <test>
+            <param name="image" value="sacuri_dir_root.zip"  ftype="zip" />
+            <conditional name="methods">
+                <param name="method" value="MatchedFilter" />
+                <param name="step" value="0.01" />
+                <param name="fwhm" value="4" />
+                <conditional name="options_m">
+                    <param name="option" value="show" />
+                    <param name="max" value="50" />
+                    <param name="snthresh" value="1" />
+                    <param name="steps" value="2" />
+                </conditional>
+            </conditional>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 0.7-1139.7 seconds (0-19 minutes)" />
+                <has_text text="Mass range: 50.0021-999.9863 m/z" />
+                <has_text text="Peaks: 59359 (about 14840 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: bio, blank" />
+            </assert_stdout>
+        </test>
+        -->
+        <!--  DISABLE FOR TRAVIS
+        No more test-data/sacuri_current_root.zip
+        <test>
+            <param name="image" value="sacuri_current_root.zip"  ftype="zip" />
+            <conditional name="methods">
+                <param name="method" value="CentWave" />
+                <param name="ppm" value="25" />
+                <param name="peakwidth" value="20,50" />
+            </conditional>
+            <assert_stdout>
+                <has_text text="object with 4 samples" />
+                <has_text text="Time range: 3.5-1139.2 seconds (0.1-19 minutes)" />
+                <has_text text="Mass range: 57.9756-593.4086 m/z" />
+                <has_text text="Peaks: 1535 (about 384 per sample)" />
+                <has_text text="Peak Groups: 0" />
+                <has_text text="Sample classes: bio, blank" />
+            </assert_stdout>
+        </test>
+        -->
     </tests>
 
     <help><![CDATA[
 
 @HELP_AUTHORS@
 
-============
-Xcms.xcmsSet
-============
+===================
+xcms findChromPeaks
+===================
 
 -----------
 Description
 -----------
 
-This tool is used for preprocessing analyte data from multiple LC/MS files (formats NetCDF, mzXML and mzData). It extracts ion from each sample independently and using a statistic model, peaks are filtered and integrated.
-You can read a tutorial on how to perform xcms preprocessing which is available here_.
+This tool is used for preprocessing data from multiple LC/MS files (NetCDF, mzXML and mzData formats) using the xcms_ R package. It extracts ions from each sample independently, and using a statistical model, peaks are filtered and integrated.
+A tutorial on how to perform xcms preprocessing is available here_.
 
+.. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
 .. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
 
 
@@ -344,105 +408,29 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
+========================= ================= ==============================
+Name                      Output file       Format
+========================= ================= ==============================
+MSnbase.readMSData        ``*``.raw.RData   rdata.msnbase.raw
+========================= ================= ==============================
 
 
 **Downstream tools**
 
-+---------------------------+--------------------+-----------------+
-| Name                      | Output file        | Format          |
-+===========================+====================+=================+
-|xcms.group                 | xset.RData         | rdata.xcms.raw  |
-+---------------------------+--------------------+-----------------+
-|PCA ellipsoid by factors   | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
-|Anova                      | sampleMetadata.tsv | Tabular         |
-+---------------------------+--------------------+-----------------+
+==================================== ======================== =========================
+Name                                 Output file              Format
+==================================== ======================== =========================
+xcms.findChromPeaks Merger (single)  ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ -------------------------
+xcms.groupChromPeaks (zip)           ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+==================================== ======================== =========================
 
 
 **Example of a metabolomic workflow**
 
 .. image:: xcms_xcmsset_workflow.png
 
-
-------
-
-.. class:: infomark
-
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
-
 ---------------------------------------------------
-
-
-
------------
-Input files
------------
-
-+---------------------------+----------------------------------+
-| Parameter : num + label   |   Format                         |
-+===========================+==================================+
-| OR : Zip file             |   zip                            |
-+---------------------------+----------------------------------+
-| OR : Single file          |   mzXML, mzML, mzData, netCDF    |
-+---------------------------+----------------------------------+
-
-**Choose your inputs**
-
-You have two methods for your inputs:
-
-    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several xcmsSet in parallel and use "xcms.xcmsSet Merger" before "xcms.group"
-    | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-
-Zip file: Steps for creating the zip file
------------------------------------------
-
-**Step1: Creating your directory and hierarchize the subdirectories**
-
-
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
-
-Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
-arabidopsis/wild/01.raw
-arabidopsis/mutant/01.raw
-
-**Step2: Creating a zip file**
-
-Create your zip file (e.g.: arabidopsis.zip).
-
-**Step 3 : Uploading it to our Galaxy server**
-
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
-
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
-
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
-
-Advices for converting your files for the XCMS input
-----------------------------------------------------
-
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
-
-**We recommend you the following parameters:**
-
-Use Filtering: **True**
-
-Use Peak Picking: **True**
-
-Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
-
-Use zlib: **64**
-
-Binary Encoding: **64**
-
-m/z Encoding: **64**
-
-Intensity Encoding: **64**
-
 
 ----------
 Parameters
@@ -451,115 +439,75 @@ Parameters
 Extraction method for peaks detection
 -------------------------------------
 
-**Matched Filter**
+**MatchedFilter**
 
-    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
-    | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
+    | The matchedFilter algorithm identifies peaks in the chromatographic time domain as described in [Smith 2006]. The intensity values are binned by cutting The LC/MS data into slices (bins) of a mass unit (‘binSize’ m/z) wide. Within each bin the maximal intensity is selected. The chromatographic peak detection is then performed in each bin by extending it based on the ‘steps’ parameter to generate slices comprising bins ‘current_bin - steps +1’ to ‘current_bin + steps - 1’. Each of these slices is then filtered with matched filtration using a second-derative Gaussian as the model peak shape. After filtration peaks are detected using a signal-to-ratio cut-off. For more details and illustrations see [Smith 2006].
+    | See the MatchedFilter_manual_
 
+**CentWave**
 
-**cent Wave**
-
-    | This algorithm is most suitable for high resolution LC/{TOF,OrbiTrap,FTICR}-MS data in centroid mode.
+    | The centWave algorithm perform peak density and wavelet based chromatographic peak detection for high resolution LC/MS data in centroid mode [Tautenhahn 2008].
     | Due to the fact that peak centroids are used, a binning step is not necessary.
     | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
+    | See the CentWave_manual_
+
+**CentWaveWithPredIsoROIs**
+
+    | This method performs a two-step centWave-based chromatographic peak detection: in a first centWave run peaks are identified for which then the location of their potential isotopes in the mz-retention time is predicted. A second centWave run is then performed on these regions of interest (ROIs). The final list of chromatographic peaks comprises all non-overlapping peaks from both centWave runs.
+    | See the CentWaveWithPredIsoROIs_manual_
 
 **MSW**
 
     | Wavelet based, used for direct infusion data. Continuous wavelet transform (CWT) can be used to locate chromatographic peaks on different scales.
-    | If you wish to have more details about the other parameters, you can read the following documents:
-    | -Example of preprocessing data with XCMS : http://www.bioconductor.org/packages/2.12/bioc/vignettes/xcms/inst/doc/xcmsPreprocess.pdf
-    | -Details and explanations for all the parameters of XCMS package: http://www.bioconductor.org/packages/release/bioc/manuals/xcms/man/xcms.pdf
+    | See the MSW_manual_
 
+.. _MatchedFilter_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-matchedFilter.html#heading-2
+.. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
+.. _CentWaveWithPredIsoROIs_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWaveWithPredIsoROIs.html#heading-2
+.. _MSW_manual: https://rdrr.io/bioc/xcms/man/findPeaks-MSW.html#heading-2
+
+@HELP_XCMS_MANUAL@
 
 ------------
 Output files
 ------------
 
-xset.TICs_raw.pdf
+xset.RData: rdata.xcms.findchrompeaks format
 
-    | "Total Ion Chromatograms" graph in pdf format.
-
-xset.BPCs_raw.pdf
-
-    | "Base Peak Chromatograms" graph in pdf format with each class samples opposed.
-
-sampleMetadata.tsv
-
-    | Tabular file that contains for each sample, it's associated class and polarity (positive,negative and mixed).
-    | This file is necessary in the Anova and PCA step of the workflow.
-
-xset.RData: rdata.xcms.raw format
-
-    | Rdata file that is necessary in the second step of the workflow "xcms.group".
-
-------
-
-.. class:: infomark
-
-The output file is an xset.RData file. You can continue your analysis using it in **xcms.group** tool.
-
----------------------------------------------------
-
----------------
-Working example
----------------
-
-Input files
------------
-
-    | zip_file -> **sacuri.zip**
-
-Parameters
-----------
-
-    | Method -> **matchedFilter**
-    | step   -> **0.01**
-    | fwhm   -> **4**
-    | Advanced option -> **show**
-    | max: -> **50**
-    | snthresh -> **1**
-    | steps -> **2**
-
-
-Output files
-------------
-
-    | **1) xset.RData: RData file**
-
-    | **2) Example of a sampleMetadata.tsv  :**
-
-
-+---------------------------+------------+---------+
-| sampleMetadata            |   class    | polarity|
-+===========================+============+=========+
-|HU_neg_017                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_028                 |   bio      |negative |
-+---------------------------+------------+---------+
-|HU_neg_034                 |   bio      |negative |
-+---------------------------+------------+---------+
-|Blanc04                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc06                    |   blank    |negative |
-+---------------------------+------------+---------+
-|Blanc09                    |   blank    |negative |
-+---------------------------+------------+---------+
-
-
-
-    | **3) Example of xset.TICs_raw.pdf (Total Ion Chromatograms) :**
-
-.. image:: xcms_tics.png
-
+    | (single) RData files that are necessary in the second step of the workflow "xcms.groupChromPeaks" - must be merged first using "xcms.findChromPeaks Merger"
+    | (zip) RData file that is necessary in the second step of the workflow "xcms.groupChromPeaks".
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
 
+
+**Version 3.0.0.0 - 08/03/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
+
+- CHANGE: xcms.findChromPeaks no longer read the raw data. You have to run MSnbase readMSData first.
+
+- NEW: a bunch of new options: Spectra Filters (previously scanrange), CentWave.(mzCenterFun, fitgauss, verboseColumns), MatchedFilter.(sigma, impute, baseValue, max), MSW.(verboseColumns), ...
+
+- NEW: new Filters for Spectra
+
+- NEW: new methods: CentWaveWithPredIsoROIs
+
+- UPDATE: since xcms 3.0.0, some options are no more available: scanrange (replace by filters), profmethod, MatchedFilter.step, MatchedFilter.sigma, MSW.winSize.noise, MSW.SNR.method
+
+- IMPROVEMENT: the advanced options are now in sections. It will allow you to access to all the parameters and to know their default values.
+
+- IMPROVEMENT: the tool "should" be now more flexible in term of file naming: it "should" accept space and comma. But don't be too imaginative :)
+
+- CHANGE: removing of the TIC and BPC plots. You can new use the dedicated tool "xcms plot chromatogram"
+
+
 **Version 2.1.1 - 29/11/2017**
 
 - BUGFIX: To avoid issues with accented letter in the parentFile tag of the mzXML files, we changed a hidden mechanim to LC_ALL=C
+
 
 **Version 2.1.0 - 22/02/2017**
 
@@ -567,17 +515,21 @@ Changelog/News
 
 - BUGFIX: the default value of "matchedFilter" -> "Step size to use for profile generation" which was of 0.01 have been changed to fix with the XMCS default values to 0.1
 
+
 **Version 2.0.11 - 22/12/2016**
 
 - BUGFIX: propose scanrange for all methods
+
 
 **Version 2.0.10 - 22/12/2016**
 
 - BUGFIX: when having only one group (i.e. one folder of raw data) the BPC and TIC pdf files do not contain any graph
 
+
 **Version 2.0.9 - 06/07/2016**
 
 - UPGRADE: upgrade the xcms version from 1.44.0 to 1.46.0
+
 
 **Version 2.0.8 - 06/04/2016**
 
