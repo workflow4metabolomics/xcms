@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<HTML lang='en'>
+<HEAD>
+<meta http-equiv='Content-Type' content='text/html; charset=UTF-8' />
+<title>[W4M] XCMS analysis summary</title>
+<style>
+table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }
+td,th { padding: 5px; padding-right: 12px; }
+th { background: #898989; text-align:left;color: white;}
+h2 { color: #FFA212; }
+ul li { margin-bottom:10px; }
+</style>
+</HEAD>
+<BODY>
+<div><h1>___ XCMS analysis summary using Workflow4Metabolomics ___</h1>
+</div>
+<h2>Samples used:</h2>
+<div><table>
+<tr><th>sample</th><th>filename</th><th>md5sum<sup>*</sup></th></tr>
+<tr><td>ko15</td><td>ko15.CDF</td><td>4698c36c0b3af007faf70975c04ccf2a</td></tr><tr><td>ko16</td><td>ko16.CDF</td><td>afaeed94ced3140bc042d5ab6aeb16c1</td></tr><tr><td>wt15</td><td>wt15.CDF</td><td>d58a27fad7c04ddddb0359ddc2b7ba68</td></tr><tr><td>wt16</td><td>wt16.CDF</td><td>29654e9f8ad48c1fbe2a41b9ba578f6e</td></tr>
+</table>
+<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.
+</div>
+<h2>Function launched:</h2>
+<div><table>
+<tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
+<tr><td>Wed Feb  7 11:15:25 2018</td><td>Peak detection</td><td colspan='2'><pre>
+Object of class:  CentWaveParam 
+Parameters:
+ ppm: 25 
+ peakwidth: 20, 50 
+ snthresh: 10 
+ prefilter: 3, 100 
+ mzCenterFun: wMean 
+ integrate: 1 
+ mzdiff: -0.001 
+ fitgauss: FALSE 
+ noise: 0 
+ verboseColumns: FALSE 
+ roiList length: 0 
+ firstBaselineCheck TRUE 
+ roiScales length: 0 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:11 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+Object of class:  PeakDensityParam 
+Parameters:
+ sampleGroups: character of length 4 
+ bw: 30 
+ minFraction: 0.8 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:19 2018</td><td>Retention time correction</td><td colspan='2'><pre>
+Object of class:  PeakGroupsParam 
+Parameters:
+ minFraction: 0.85 
+ extraPeaks: 1 
+ smooth: loess 
+ span: 0.2 
+ family: gaussian 
+ number of peak groups: 125 
+</pre></td></tr>
+<tr><td>Mon Feb 12 15:31:27 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+Object of class:  PeakDensityParam 
+Parameters:
+ sampleGroups: character of length 4 
+ bw: 20 
+ minFraction: 0.4 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
+</pre></td></tr>
+<tr><td>Wed Feb 14 09:55:13 2018</td><td>Missing peak filling</td><td colspan='2'><pre>
+Object of class:  FillChromPeaksParam 
+Parameters:
+ expandMz: 0 
+ expandRt: 0 
+ ppm: 0 
+</pre></td></tr>
+</table>
+<br/><sup>***</sup>timestamp format: DD MM dd hh:mm:ss YYYY or yymmdd-hh:mm:ss
+</div>
+<h2>Informations about the XCMSnExp object:</h2>
+<div><pre>
+MSn experiment data ("XCMSnExp")
+Object size in memory: 1.36 Mb
+- - - Spectra data - - -
+ MS level(s): 1 
+ Number of spectra: 5112 
+ MSn retention times: 41:33 - 75:0 minutes
+- - - Processing information - - -
+Concatenated [Thu Feb  8 15:36:09 2018] 
+ MSnbase version: 2.4.2 
+- - - Meta data  - - -
+phenoData
+  rowNames: ./ko15.CDF ./ko16.CDF ./wt15.CDF ./wt16.CDF
+  varLabels: sample_name sample_group
+  varMetadata: labelDescription
+Loaded from:
+  [1] ko15.CDF...  [4] wt16.CDF
+  Use 'fileNames(.)' to see all files.
+protocolData: none
+featureData
+  featureNames: F1.S0001 F1.S0002 ... F4.S1278 (5112 total)
+  fvarLabels: fileIdx spIdx ... spectrum (27 total)
+  fvarMetadata: labelDescription
+experimentData: use 'experimentData(object)'
+- - - xcms preprocessing - - -
+Chromatographic peak detection:
+ method: centWave 
+ 15230 peaks identified in 4 samples.
+ On average 3808 chromatographic peaks per sample.
+Alignment/retention time adjustment:
+ method: peak groups 
+Correspondence:
+ method: chromatographic peak density 
+ 6332 features identified.
+ Median mz range of features: 0
+ Median rt range of features: 0
+ 5979 filled peaks (on average 1494.75 per sample).
+</pre></div>
+<h2>Informations about the xcmsSet object:</h2>
+<div><pre>
+An "xcmsSet" object with 4 samples
+
+Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)
+Mass range: 200.1-600 m/z
+Peaks: 15230 (about 3808 per sample)
+Peak Groups: 6332 
+Sample classes: KO, WT 
+
+Feature detection:
+ o Peak picking performed on MS1.
+ o Scan range limited to  1 - 1278 
+Profile settings: method = bin
+                  step = 0.1
+
+Memory usage: 2.98 MB
+</pre></div>
+<h2>Citations:</h2>
+<div><ul>
+<li>To cite the <b>XCMS</b> package in publications use:
+<ul>
+<li>Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)</li>
+<li>Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)</li>
+<li>H. Paul Benton, Elizabeth J. Want and Timothy M. D. Ebbels Correction of mass calibration gaps in liquid chromatography-mass spectrometry metabolomics data Bioinformatics, 26:2488 (2010)</li>
+</ul>
+</li>
+<li>To cite the <b>CAMERA</b> package in publications use:
+<ul>
+<li>Kuhl, C., Tautenhahn, R., Boettcher, C., Larson, T. R. and Neumann,S. CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets. Analytical Chemistry, 84:283-289 (2012)</li>
+</ul>
+</li>
+<li>To cite the <b>Workflow4Metabolimics (W4M)</b> project in publications use:
+<ul>
+<li>Franck Giacomoni, Gildas Le Corguillé, Misharl Monsoor, Marion Landi, Pierre Pericard, Mélanie Pétéra, Christophe Duperier, Marie Tremblay-Franco, Jean-François Martin, Daniel Jacob, Sophie Goulitquer, Etienne A. Thévenot and Christophe Caron (2014). Workflow4Metabolomics: A collaborative research infrastructure for computational metabolomics. Bioinformatics  doi:10.1093/bioinformatics/btu813</li>
+</ul>
+</li>
+</ul></div>
+</BODY>
+</HTML>
