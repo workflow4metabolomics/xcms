@@ -1,20 +1,20 @@
-<tool id="abims_xcms_summary" name="xcms.summary" version="1.0.4">
+<tool id="abims_xcms_summary" name="xcms process history" version="@WRAPPER_VERSION@.0">
 
     <description>Create a summary of XCMS analysis</description>
 
     <macros>
         <import>macros.xml</import>
+        <import>macros_xcms.xml</import>
     </macros>
 
-    <requirements>
+    <expand macro="requirements">
         <requirement type="package" version="1.32.0">bioconductor-camera</requirement>
-        <requirement type="package" version="1.1_4">r-batch</requirement>
-    </requirements>
+    </expand>
 
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        $__tool_directory__/xcms_summary.r
+        @COMMAND_RSCRIPT@/xcms_summary.r
 
         image '$image'
         htmlOutput '$htmlOutput'
@@ -24,7 +24,7 @@
 
     <inputs>
 
-        <param name="image" type="data" format="rdata.xcms.raw,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
+        <param name="image" type="data" format="rdata.xcms.findchrompeaks,rdata.xcms.group,rdata.xcms.retcor,rdata.xcms.fillpeaks,rdata.camera.quick,rdata.camera.positive,rdata.camera.negative,rdata" label="xset RData file" help="output file from another function xcms (xcmsSet, group, retcor, fillpeaks etc.)" />
 
     </inputs>
 
@@ -33,12 +33,12 @@
     </outputs>
 
     <tests>
-        <test>
-            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" />
+        <!--<test>
+            <param name="image" value="faahKO.xset.group.retcor.group.fillpeaks.RData" ftype="rdata"/>
             <output name="htmlOutput" file="faahKO.xset.group.retcor.group.fillpeaks.summary.html" />
-        </test>
+        </test>-->
         <test>
-            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" />
+            <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData" ftype="rdata"/>
             <output name="htmlOutput" file="faahKO-single.xset.merged.group.retcor.group.fillpeaks.summary.html" />
         </test>
     </tests>
@@ -47,9 +47,9 @@
 
 @HELP_AUTHORS@
 
-============
-Xcms.summary
-============
+====================
+xcms process history
+====================
 
 -----------
 Description
@@ -63,19 +63,19 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ===================== ==========
-Name                      output file       format                parameter
-========================= ================= ===================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw        RData file
-------------------------- ----------------- --------------------- ----------
-xcms.group                xset.RData        rdata.xcms.group      RData file
-------------------------- ----------------- --------------------- ----------
-xcms.retcor               xset.RData        rdata.xcms.retcor     RData file
-------------------------- ----------------- --------------------- ----------
-xcms.fillpeaks            xset.RData        rdata.xcms.fillpeaks  RData file
-------------------------- ----------------- --------------------- ----------
-CAMERA.annotate           xset.RData        rdata.camera.*        RData file
-========================= ================= ===================== ==========
+========================= =========================== ================================
+Name                      Output file                 Format
+========================= =========================== ================================
+xcms.findChromPeaks       xset.RData                  rdata.xcms.findchrompeaks
+------------------------- --------------------------- --------------------------------
+xcms.groupChromPeaks      ``*``.groupChromPeaks.RData rdata.xcms.group
+------------------------- --------------------------- --------------------------------
+xcms.adjustRtime          ``*``.adjustRtime.RData     rdata.xcms.retcor
+------------------------- --------------------------- --------------------------------
+xcms.fillChromPeaks       ``*``.fillChromPeaks.RData  rdata.xcms.fillpeaks
+------------------------- --------------------------- --------------------------------
+CAMERA.annotate           ``*``.annotate.*.RData      rdata.camera.``*``
+========================= =========================== ================================
 
 
 .. image:: xcms_summary_workflow.png
@@ -85,17 +85,27 @@ CAMERA.annotate           xset.RData        rdata.camera.*        RData file
 Changelog/News
 --------------
 
+**Version 3.0.0.0 - 14/02/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods
+
+- IMPROVEMENT: the tool now shows all the parameters and not only those which were set.
+
+
 **Version 1.0.4 - 13/02/2018**
 
 - UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0
+
 
 **Version 1.0.3 - 03/02/2017**
 
 - IMPROVEMENT: xcms.summary can deal with merged individual data
 
+
 **Version 1.0.2 - 06/07/2016**
 
 - UPGRADE: upgrate the xcms version from 1.44.0 to 1.46.0
+
 
 **Version 1.0.1 - 04/04/2016**
 

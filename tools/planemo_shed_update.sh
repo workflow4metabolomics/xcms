@@ -12,7 +12,13 @@ realpath() {
 
 ROOTPATH=$(dirname $(realpath "$0"))
 
+cd $ROOTPATH/msnbase_readmsdata
+planemo shed_update -t $TARGET
+
 cd $ROOTPATH/xcms_xcmsset
+planemo shed_update -t $TARGET
+
+cd $ROOTPATH/xcms_plot_chromatogram
 planemo shed_update -t $TARGET
 
 cd $ROOTPATH/xcms_merge

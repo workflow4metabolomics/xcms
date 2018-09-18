@@ -9,36 +9,39 @@ import logging
 import os,os.path,re
 from galaxy.datatypes.data import *
 from galaxy.datatypes.sniff import *
-from galaxy.datatypes.binary import * 
+from galaxy.datatypes.binary import *
 
 log = logging.getLogger(__name__)
-    
 
-class RdataXcmsRaw( Binary ):
-    file_ext = "rdata.xcms.raw"
-    blurb = "Output of xcms.xcmsSet\nInput of xcms.group and xcms.retcor"
-    
+
+class RdataMsnbaseRaw( RData ):
+    file_ext = "rdata.msnbase.raw"
+    blurb = "Output of MSnbase.readMSData\nInput of xcms.findChromPeaks"
+
     #TODO: sniff
 
+class RdataXcmsFindChromPeaks( RData ):
+    file_ext = "rdata.xcms.findchrompeaks"
+    blurb = "Output of xcms.findChromPeaks\nInput of xcms.groupChromPeaks and xcms.adjustRtime"
 
-class RdataXcmsGroup( Binary ):
+    #TODO: sniff
+
+class RdataXcmsGroup( RData ):
     file_ext = "rdata.xcms.group"
-    blurb = "Output of xcms.group\nInput of xcms.group, xcms.retcor and xcms.fillpeaks"
-    
+    blurb = "Output of xcms.groupChromPeaks\nInput of xcms.groupChromPeaks, xcms.adjustRtime, xcms.fillChromPeaks and camera.annotate"
+
     #TODO: sniff
 
 
-class RdataXcmsRetcor( Binary ):
+class RdataXcmsRetcor( RData ):
     file_ext = "rdata.xcms.retcor"
-    blurb = "Output of xcms.retcor\nInput of xcms.group"
-    
+    blurb = "Output of xcms.adjustRtime\nInput of xcms.groupChromPeaks"
+
     #TODO: sniff
 
 
-class RdataXcmsFillpeaks( Binary ):
+class RdataXcmsFillpeaks( RData ):
     file_ext = "rdata.xcms.fillpeaks"
-    blurb = "Output of xcms.fillpeaks\nInput of camera.annotate"
-    
+    blurb = "Output of xcms.fillChromPeaks\nInput of camera.annotate"
+
     #TODO: sniff
-
-

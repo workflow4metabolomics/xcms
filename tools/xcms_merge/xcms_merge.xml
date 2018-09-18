@@ -1,99 +1,45 @@
-<tool id="xcms_merge" name="xcms.xcmsSet Merger" version="1.1.0">
-    <description>Merge xcms.xcmsSet xset in one to be used by group</description>
+<tool id="xcms_merge" name="xcms findChromPeaks Merger" version="@WRAPPER_VERSION@.0">
+    <description>Merge xcms findChromPeaks RData into a unique file to be used by group</description>
 
     <macros>
         <import>macros.xml</import>
+        <import>macros_xcms.xml</import>
     </macros>
 
-    <expand macro="requirements_light"/>
+    <expand macro="requirements"/>
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        Rscript $script_file
+        @COMMAND_RSCRIPT@/xcms_merge.r
+
+        images 'c("${"\",\"".join(map(str, $images))}")'
+
+        #if str($sampleMetadata) != 'None':
+            sampleMetadata '$sampleMetadata'
+        #end if
+
+        @COMMAND_FILE_LOAD@
     ]]></command>
 
-    <configfiles>
-        <configfile name="script_file"><![CDATA[
-suppressPackageStartupMessages(library(xcms, quietly=TRUE))
-
-images=c(
-"${"\",\"".join(map(str, $images))}"
-)
-
-
-cat("\tXSET MERGING...\n")
-
-for(image in images) {
-    load(image)
-    cat(sampleNamesList\$sampleNamesOrigin,"\n")
-    if (!exists("xset_merged")) {
-        xset_merged=xset
-        singlefile_merged=singlefile
-        listOFlistArguments_merged=listOFlistArguments
-        md5sumList_merged=md5sumList
-        sampleNamesList_merged=sampleNamesList
-    } else {
-        xset_merged=c(xset_merged,xset)
-        singlefile_merged=c(singlefile_merged,singlefile)
-        listOFlistArguments_merged=c(listOFlistArguments_merged,listOFlistArguments)
-        md5sumList_merged\$origin=rbind(md5sumList_merged\$origin,md5sumList\$origin)
-        sampleNamesList_merged\$sampleNamesOrigin=c(sampleNamesList_merged\$sampleNamesOrigin,sampleNamesList\$sampleNamesOrigin)
-        sampleNamesList_merged\$sampleNamesMakeNames=c(sampleNamesList_merged\$sampleNamesMakeNames,sampleNamesList\$sampleNamesMakeNames)
-    }
-}
-rm(image)
-xset=xset_merged; rm(xset_merged)
-singlefile=singlefile_merged; rm(singlefile_merged)
-listOFlistArguments=listOFlistArguments_merged; rm(listOFlistArguments_merged)
-md5sumList=md5sumList_merged; rm(md5sumList_merged)
-sampleNamesList=sampleNamesList_merged; rm(sampleNamesList_merged)
-
-#if str($sampleMetadata) != 'None':
-    cat("\tXSET PHENODATA SETTING...\n")
-    sampleMetadata=read.table("$sampleMetadata", h=F, sep=";", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep="\t", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) sampleMetadata=read.table("$sampleMetadata", h=F, sep=",", stringsAsFactors=F)
-    if (ncol(sampleMetadata) < 2) {
-        error_message="Your sampleMetadata file seems not well formatted. The column separators accepted are ; , and tabulation"
-        print(error_message)
-        stop(error_message)
-    }
-
-    sampclass(xset)=sampleMetadata\$V2[match(rownames(xset@phenoData),sampleMetadata\$V1)]
-
-    if (any(is.na(sampclass(xset)))) {
-        sample_missing <- rownames(phenoData(xset))[is.na(sampclass(xset))]
-        error_message <- paste("Those samples are missing in your sampleMetadata:", paste(sample_missing, collapse=" "))
-        print(error_message)
-        stop(error_message)
-    }
-#end if
-
-
-
-cat("\tXSET OBJECT INFO\n")
-
-print(xset@phenoData)
-print(xset)
-
-cat("\tSAVE RData\n")
-save.image("$xsetRData")
-
-        ]]></configfile>
-    </configfiles>
-
     <inputs>
-        <param name="images" type="data" format="rdata.xcms.raw,rdata" label="xset RData / xcms.xcmsSet file" help="output file from another xcms.xcmsSet" multiple="true" />
+        <param name="images" type="data" format="rdata.xcms.findchrompeaks,rdata" label="@INPUT_IMAGE_LABEL@" help="@INPUT_IMAGE_HELP@ from multiple findChromPeaks" multiple="true" />
         <param name="sampleMetadata" label="Sample metadata file " format="tabular" type="data" optional="true" help="must contain at least one column with the sample id and one column with the sample class"/>
+
+        <expand macro="input_file_load"/>
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="xset.merged.RData" />
+        <data name="xsetRData" format="rdata.xcms.findchrompeaks" label="xset.merged.RData" from_work_dir="merged.RData" />
+        <data name="sampleMetadataOutput" format="tabular" label="xset.merged.sampleMetadata.tsv" from_work_dir="sampleMetadata.tsv">
+            <filter>not sampleMetadata</filter>
+        </data>
     </outputs>
 
     <tests>
+        <!-- DISABLE FOR TRAVIS
         <test>
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
+            <expand macro="test_file_load_single"/>
             <assert_stdout>
                 <has_text text="object with 4 samples" />
                 <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
@@ -102,15 +48,18 @@ save.image("$xsetRData")
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+            <output name="sampleMetadataOutput" file="noclass.merged.sampleMetadata.tsv" />
         </test>
+        -->
         <test>
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
+            <expand macro="test_file_load_single"/>
             <param name="sampleMetadata" value="sampleMetadata.tab" />
             <assert_stdout>
-                <has_text text="ko15    KO" />
-                <has_text text="ko16    KO" />
-                <has_text text="wt15    WT" />
-                <has_text text="wt16    WT" />
+                <has_text_matching expression="ko15\s+KO" />
+                <has_text_matching expression="ko16\s+KO" />
+                <has_text_matching expression="wt15\s+WT" />
+                <has_text_matching expression="wt16\s+WT" />
                 <has_text text="object with 4 samples" />
                 <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
                 <has_text text="Mass range: 200.1-600 m/z" />
@@ -119,43 +68,32 @@ save.image("$xsetRData")
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
         </test>
-        <test>
-            <param name="images" value="MM8-xset.RData,MM14-xset.RData" />
-            <assert_stdout>
-                <has_text text="object with 2 samples" />
-                <has_text text="Time range: 19.7-307.3 seconds (0.3-5.1 minutes)" />
-                <has_text text="Mass range: 117.0357-936.7059 m/z" />
-                <has_text text="Peaks: 236 (about 118 per sample)" />
-                <has_text text="Peak Groups: 0" />
-                <has_text text="Sample classes: ." />
-            </assert_stdout>
-        </test>
-        <test expect_failure="True">
-            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" />
+        <!--<test expect_failure="True">
+            <param name="images" value="ko15-xset.RData,ko16-xset.RData,wt15-xset.RData,wt16-xset.RData" ftype="rdata"/>
             <param name="sampleMetadata" value="sampleMetadata_missing.tab" />
             <expand macro="test_file_load_single"/>
             <assert_stderr>
                 <has_text text="Those samples are missing in your sampleMetadata: ko16" />
             </assert_stderr>
-        </test>
+        </test>-->
     </tests>
 
     <help><![CDATA[
 
 @HELP_AUTHORS@
 
-===================
-Xcms.xcmsSet Merger
-===================
+==========================
+xcms findChromPeaks Merger
+==========================
 
 -----------
 Description
 -----------
 
-This tool will allow you to run one xcms.xcmsSet process per sample in parallel and then to merge all RData images in one.
-The result is then suitable for xcms.group.
+This tool allows you to run one xcms findChromPeaks process per sample in parallel and then to merge all RData images into one.
+The result is then suitable for xcms groupChromPeaks.
 
-You can provide a sampleMetadata table to attribute phenotypic value to your samples.
+You can provide a sampleMetadata table to attribute phenotypic values to your samples.
 
 
 -----------------
@@ -164,26 +102,28 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= =================== ==========
-Name                      output file       format              parameter
-========================= ================= =================== ==========
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
-------------------------- ----------------- ------------------- ----------
-...                       ...               ...                 ...
-========================= ================= =================== ==========
+========================= ===================== ==============================
+Name                      Output file           Format
+========================= ===================== ==============================
+xcms.findChromPeaks       ``*``.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- --------------------- ------------------------------
+xcms.findChromPeaks       ``*``.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- --------------------- ------------------------------
+xcms.findChromPeaks       ``*``.raw.xset.RData  rdata.xcms.findchrompeaks
+------------------------- --------------------- ------------------------------
+...                       ...                   ...
+------------------------- --------------------- ------------------------------
+Upload file [optional]    sampleMetadata        tabular
+========================= ===================== ==============================
 
 
 **Downstream tools**
 
-+---------------------------+--------------------+-----------------+
-| Name                      | Output file        | Format          |
-+===========================+====================+=================+
-|xcms.group                 | xset.RData         | rdata.xcms.raw  |
-+---------------------------+--------------------+-----------------+
+=========================== ==================== ============================
+Name                        Output file          Format
+=========================== ==================== ============================
+xcms.groupChromPeaks        xset.merged.RData    rdata.xcms.findchrompeaks
+=========================== ==================== ============================
 
 .. image:: xcms_merge_workflow.png
 
@@ -191,49 +131,59 @@ xcms.xcmsSet              xset.RData        rdata.xcms.raw      RData file
 Input files
 -----------
 
-+---------------------------+-----------------------+
-| Parameter : num + label   |   Format              |
-+===========================+=======================+
-| 1 : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| 2 : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| N : RData file            |   rdata.xcms.raw      |
-+---------------------------+-----------------------+
-| Optional : sampleMetadata |   tsv or csv          |
-+---------------------------+-----------------------+
+=========================== ==================================
+Parameter : num + label     Format
+=========================== ==================================
+1 : RData file              rdata.xcms.findchrompeaks
+--------------------------- ----------------------------------
+2 : RData file              rdata.xcms.findchrompeaks
+--------------------------- ----------------------------------
+N : RData file              rdata.xcms.findchrompeaks
+--------------------------- ----------------------------------
+Optional : sampleMetadata   tsv or csv
+=========================== ==================================
 
 Example of a sampleMetadata:
 
-+---------------------------+------------+
-|HU_neg_028                 |   bio      |
-+---------------------------+------------+
-|HU_neg_034                 |   bio      |
-+---------------------------+------------+
-|Blanc04                    |   blank    |
-+---------------------------+------------+
-|Blanc06                    |   blank    |
-+---------------------------+------------+
-|Blanc09                    |   blank    |
-+---------------------------+------------+
+=========================== ============
+Samples                     class
+=========================== ============
+HU_neg_028                  bio
+--------------------------- ------------
+HU_neg_034                  bio
+--------------------------- ------------
+Blanc04                     blank
+--------------------------- ------------
+Blanc06                     blank
+--------------------------- ------------
+Blanc09                     blank
+=========================== ============
+
 
 ------------
 Output files
 ------------
 
-xset.merged.RData: rdata.xcms.raw format
+xset.merged.RData: rdata.xcms.findchrompeaks format
 
-    | Rdata file that is necessary in the next step of the workflow "xcms.group".
+    | Rdata file that is necessary in the next step of the workflow "xcms.groupChromPeaks".
 
 ---------------------------------------------------
 
 Changelog/News
 --------------
 
+**Version 3.0.0.0 - 08/03/2018**
+
+- UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlining codes and methods
+
+- IMPROVMENT: a new dedicated tool "xcms plot chromatogram" will allow you to get TIC and BPI of your raw data.
+
+- IMPROVMENT: the tool will now generate a sampleMetadata file if any was provided. It will be useful to add some further information for the normalization and statistics steps.
+
 **Version 1.0.1 - 13/02/2017**
 
 - IMPROVMENT: the tool will now raise an error if a sample isn't describe in the sampleMetadata file
-
 
 **Version 1.0.0 - 03/02/2017**
 
