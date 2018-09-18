@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<macros>
+    <xml name="stdio">
+        <stdio>
+            <exit_code range="1" level="fatal" />
+        </stdio>
+    </xml>
+
+    <!-- COMMAND -->
+    <token name="@COMMAND_RSCRIPT@">LC_ALL=C Rscript $__tool_directory__/</token>
+
+    <token name="@COMMAND_LOG_EXIT@">
+        ;
+        return=\$?;
+        cat 'log.txt';
+        sh -c "exit \$return"
+    </token>
+
+    <!-- INPUT_VALIDATORS -->
+    <xml name="input_validator_range_integer">
+        <validator type="regex" message="The format is 'min,max'" >[0-9]+ *, *[0-9]+</validator>
+    </xml>
+
+    <xml name="input_validator_range_float">
+        <validator type="regex" message="The format is 'min,max'" >[0-9]+\.?[0-9]* *, *[0-9]+\.?[0-9]*</validator>
+    </xml>
+
+    <xml name="input_validator_list_integer">
+        <validator type="regex" message="The format is '1,2,4,6'" >[0-9, ]+</validator>
+    </xml>
+
+
+    <token name="@INPUT_IMAGE_LABEL@">RData file</token>
+    <token name="@INPUT_IMAGE_HELP@">It contains a xcms3::XCMSnExp object (named xdata)</token>
+
+
+    <!-- MISC -->
+    <token name="@HELP_AUTHORS_WRAPPERS@">
+
+.. class:: infomark
+
+**Galaxy integration** ABiMS TEAM - SU/CNRS - Station biologique de Roscoff and Yann Guitton - LABERCA
+Part of Workflow4Metabolomics.org [W4M]
+
+ | Contact support@workflow4metabolomics.org for any questions or concerns about the Galaxy implementation of this tool.
+
+    </token>
+
+    <xml name="citation_w4m">
+            <citation type="doi">10.1093/bioinformatics/btu813</citation>
+    </xml>
+</macros>

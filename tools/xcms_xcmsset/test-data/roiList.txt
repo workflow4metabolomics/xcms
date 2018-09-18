@@ -1,0 +1,2 @@
+scmin	scmax	mzmin	mzmax	length	intensity
+200	300	300	350	100	5000
