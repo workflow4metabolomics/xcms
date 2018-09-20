@@ -147,6 +147,6 @@ c.XCMSnExp <- function(...) {
 
 #@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
 # https://github.com/sneumann/xcms/issues/247
-c.MSnbase <- function(...) {
+c.OnDiskMSnExp <- function(...) {
     .concatenate_OnDiskMSnExp(...)
 }
