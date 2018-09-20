@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <macros>
-    <token name="@WRAPPER_VERSION@">3.2.0</token>
+    <token name="@WRAPPER_VERSION@">3.3.0</token>
 
     <xml name="requirements">
         <requirements>
@@ -38,6 +38,10 @@
 
 Changelog/News
 --------------
+**Version 3.3.0**
+
+* Debugged R scripts for possibly negative baselines
+
 **Version 3.2.0**
 
 * Updated R scripts and the help section of NMR_ReadFids and NMR_preprocessing
