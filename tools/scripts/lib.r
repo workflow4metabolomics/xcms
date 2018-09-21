@@ -68,8 +68,7 @@ mergeXData <- function(args) {
             chromTIC_adjusted_merged <- chromTIC_adjusted
             chromBPI_adjusted_merged <- chromBPI_adjusted
         } else {
-            if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
-            else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- .concatenate_OnDiskMSnExp(xdata_merged,xdata)
+            if ( is(xdata, "XCMSnExp") || is(xdata, "OnDiskMSnExp") ) xdata_merged <- c(xdata_merged,xdata)
             else stop("\n\nERROR: The RData either a OnDiskMSnExp object called raw_data or a XCMSnExp object called xdata")
 
             singlefile_merged <- c(singlefile_merged,singlefile)
