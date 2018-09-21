@@ -27,18 +27,23 @@ sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMe
 
 cat("\n\n")
 
-cat("\tXCMSnExp OBJECT INFO\n")
-print(pData(xdata))
-print(xdata)
-cat("\n\n")
+if(is(xdata,"XCMSnExp")){
+	cat("\tXCMSnExp OBJECT INFO\n")
+	print(pData(xdata))
+	print(xdata)
+	cat("\n\n")
 
-cat("\txcmsSet OBJECT INFO\n")
-# Get the legacy xcmsSet object
-xset <- getxcmsSetObject(xdata)
-print(xset@phenoData)
-print(xset)
-cat("\n\n")
-
+	cat("\txcmsSet OBJECT INFO\n")
+	# Get the legacy xcmsSet object
+	xset <- getxcmsSetObject(xdata)
+	print(xset@phenoData)
+	print(xset)
+	cat("\n\n")
+}else if(is(xdata,"OnDiskMSnExp")){
+	cat("\tOnDiskMSnExp OBJECT INFO\n")
+	print(xdata)
+	cat("\n\n")
+}
 cat("\tSAVE RData\n")
 #saving R data in .Rdata file to save the variables used in the present tool
 objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList", "chromTIC", "chromBPI")
