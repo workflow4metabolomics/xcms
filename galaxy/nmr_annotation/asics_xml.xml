@@ -1,4 +1,4 @@
-<tool id="NmrAnnotation" name="NMR_Annotation" version="1.0.0">
+<tool id="NmrAnnotation" name="NMR_Annotation" version="3.0.0">
 
     <description> Annotation of complex mixture NMR spectra and metabolite proportion estimation </description>
 
