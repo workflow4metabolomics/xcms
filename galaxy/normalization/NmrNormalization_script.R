@@ -96,12 +96,22 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
     # Recuperation spectres individus controle
     control.spectra <- data.normalized[,sampleMetadata[,pqnFactor]==nomControl]
     spectrum.ref <- apply(control.spectra,1,median)
+    for (j in 1:length(spectrum.ref))
+    {
+      if (spectrum.ref[j] == 0)
+        spectrum.ref[j] <- mean(control.spectra[j, ])
+      if (spectrum.ref[j] == 0)
+        spectrum.ref[j] <- 10^(-24)
+    }
 
     # Ratio between normalized and reference spectra
     data.normalized.ref <- data.normalized/spectrum.ref
 
     # Median ratio
     data.normalized.ref.median <- apply(data.normalized.ref,1,median)
+    for (j in 1:length(data.normalized.ref.median))
+      if (data.normalized.ref.median[j] == 0 | is.na(data.normalized.ref.median[j]) | data.normalized.ref.median == "NaN" | data.normalized.ref.median == "NA")
+        data.normalized.ref.median[j] <- mean(data.normalized.ref[j, ])
 
     # Normalization
     data.normalizedPQN <- data.normalized[,1]/data.normalized.ref.median
@@ -145,3 +155,4 @@ NmrNormalization <- function(dataMatrix,scalingMethod=c("None","Total","PQN","Bi
   return(list(NormalizedBucketedSpectra))
 
 }
+
