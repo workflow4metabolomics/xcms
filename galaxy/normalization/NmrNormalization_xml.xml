@@ -1,4 +1,4 @@
-<tool id="normalization" name="Normalization" version="1.0.6">
+<tool id="normalization" name="Normalization" version="1.0.7">
 
     <description> Normalization of (preprocessed) spectra </description>
 
@@ -240,6 +240,9 @@ Under construction
 --------------
 Changelog/News
 --------------
+**Version 1.0.7 - 25/09/2018**
+
+- Bug fixing for PQN normalization in case of zero's
 
 **Version 1.0.3 - 30/01/2017**
 

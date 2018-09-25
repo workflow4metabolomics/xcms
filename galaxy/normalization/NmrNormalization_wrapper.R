@@ -14,6 +14,7 @@ runExampleL <- FALSE
 ##------------------------------
 strAsFacL <- options()$stringsAsFactors
 options(stringsAsFactors = FALSE)
+options(scipen=999)
 
 
 ##------------------------------
