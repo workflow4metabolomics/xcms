@@ -1,4 +1,4 @@
-<tool id="normalization" name="Normalization" version="1.0.2">
+<tool id="normalization" name="Normalization" version="1.0.6">
 
     <description> Normalization of (preprocessed) spectra </description>
 
@@ -10,7 +10,7 @@
         <exit_code range="1:" level="fatal" />
     </stdio>
 
-    <command>
+    <command><![CDATA[
         Rscript $__tool_directory__/NmrNormalization_wrapper.R
 
             ## Data matrix of bucketed and integrated spectra
@@ -43,9 +43,7 @@
             logOut $logOut
             dataMatrixOut $dataMatrixOut
             graphOut $graphOut
-
-
-    </command>
+    ]]></command>
 
     <inputs>
         <param name="dataMatrix" type="data" label="Data matrix of preprocessed data" help="" format="tabular" />

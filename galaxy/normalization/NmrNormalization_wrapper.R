@@ -1,4 +1,4 @@
-#!/usr/local/public/bin/Rscript --vanilla --slave --no-site-file
+#!/usr/bin/env Rscript
 
 ## 070115_NmrBucketing2galaxy_v1.R
 ## Marie Tremblay-Franco
@@ -21,6 +21,24 @@ options(stringsAsFactors = FALSE)
 ##------------------------------
 # For parseCommandArgs function
 library(batch) 
+
+# Constants
+argv <- commandArgs(trailingOnly = FALSE)
+script.path <- sub("--file=","",argv[grep("--file=",argv)])
+prog.name <- basename(script.path)
+
+# Print help
+if (length(grep('-h', argv)) >0) {
+	cat("Usage:", prog.name,
+	    "dataMatrix myDataMatrix.tsv",
+	    "scalingMethod PQN|QuantitativeVariable",
+	    "graphType None|Overlay|One_per_individual",
+	    "logOut myLog.txt",
+	    "dataMatrixOut myDataMatrixOutput.tsv",
+	    "graphOut myGraph.pdf",
+		"\n")
+	quit(status = 0)
+}
 
 # R script call
 source_local <- function(fname)
