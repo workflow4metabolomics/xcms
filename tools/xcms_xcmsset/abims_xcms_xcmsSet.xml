@@ -145,7 +145,7 @@
                     <expand macro="input_centwaveAdv"/>
                 </section>
                 <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="True">
-                    <expand macro="input_centwaveAdvROI" optional="false" />
+                    <expand macro="input_centwaveAdvROI" optional="true" />
                     <param argument="snthreshIsoROIs" type="float" value="6.25" label="Signal to noise ratio cutoff" help="used in the second centWave run to identify peaks for predicted isotope ROIs." />
                     <param argument="maxCharge" type="integer" value="3" label="Maximal isotope charge" help="Isotopes will be defined for charges ‘1:maxCharge’." />
                     <param argument="maxIso" type="integer" value="5" label="Number of isotope peaks that should be predicted for each peak identified in the first centWave run" />
