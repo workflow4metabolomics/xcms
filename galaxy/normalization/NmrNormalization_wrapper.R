@@ -106,7 +106,7 @@ log <- argLs[["logOut"]]
 
 ## Checking R packages
 ##--------------------
-sink(logOut)
+sink(log)
 cat("\tPACKAGE INFO\n")
 pkgs=c("batch")
 for(pkg in pkgs) {
