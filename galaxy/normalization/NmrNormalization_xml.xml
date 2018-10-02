@@ -86,7 +86,7 @@
 
   <tests>
         <test>
-            <param name="dataMatrix" value="MTBLS1_bucketedData.tabular" ftype="tabular" />
+            <param name="dataMatrix" value="MTBLS1_bucketedData.tabular.tsv" ftype="tabular" />
             <conditional name="scalingMethod" >
                 <param name="method" value="Total" />
             </conditional>
@@ -247,7 +247,7 @@ Changelog/News
 **Version 1.0.3 - 30/01/2017**
 
 - BUGFIX: Fix a bug: stack overflow for integers
-        
+
 **Version 1.0.2 - 22/10/2016**
 
 - NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of preprocessed data
