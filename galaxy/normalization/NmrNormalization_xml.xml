@@ -1,4 +1,4 @@
-<tool id="normalization" name="Normalization" version="1.0.3">
+<tool id="normalization" name="Normalization" version="1.0.6">
 
     <description> Normalization of (preprocessed) spectra </description>
 
