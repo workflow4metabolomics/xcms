@@ -241,6 +241,10 @@ Under construction
 Changelog/News
 --------------
 
+**Version 1.0.3 - 30/01/2017**
+
+- BUGFIX: Fix a bug: stack overflow for integers
+        
 **Version 1.0.2 - 22/10/2016**
 
 - NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of preprocessed data
