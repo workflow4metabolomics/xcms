@@ -6,8 +6,8 @@
 language: python
 
 before_install:
- - export GALAXY_RELEASE=release_17.01
- - export PLANEMO_RELEASE=0.37.0
+ - export GALAXY_RELEASE=release_17.05
+ - export PLANEMO_RELEASE=0.47.0
 
 install:
  - pip install planemo==$PLANEMO_RELEASE
