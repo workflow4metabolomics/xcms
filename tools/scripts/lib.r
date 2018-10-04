@@ -186,9 +186,9 @@ getPlotAdjustedRtime <- function(xdata) {
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
-getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput) {
+getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput, sampleNamesList) {
     dataMatrix <- featureValues(xdata, method="medret", value=intval)
-    colnames(dataMatrix) <- tools::file_path_sans_ext(colnames(dataMatrix))
+    colnames(dataMatrix) <- make.names(tools::file_path_sans_ext(colnames(dataMatrix)))
     dataMatrix = cbind(name=groupnamesW4M(xdata), dataMatrix)
     variableMetadata <- featureDefinitions(xdata)
     colnames(variableMetadata)[1] = "mz"; colnames(variableMetadata)[4] = "rt"
