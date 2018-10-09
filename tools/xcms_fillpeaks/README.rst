@@ -2,6 +2,11 @@
 Changelog/News
 --------------
 
+**Version 3.0.0.1 - 09/10/2018**
+
+- IMPROVEMENT: the export of the PeakList is now mandatory
+
+
 **Version 3.0.0.0 - 08/03/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
