@@ -57,7 +57,7 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
 }
 
 #The function annotateDiffreport without the corr function which bugs
-annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadataOutput="variableMetadata.tsv", dataMatrixOutput="dataMatrix.tsv") {
+annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadataOutput="variableMetadata.tsv") {
     # Resolve the bug with x11, with the function png
     options(bitmapType='cairo')
 
@@ -107,11 +107,6 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     xa = do.call("annotate", listArguments4annotate)
     peakList=getPeaklist(xa,intval=listArguments[["intval"]])
     peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
-
-    # --- dataMatrix ---
-    dataMatrix = peakList[,(make.names(colnames(peakList)) %in% c("name", make.names(sampnames(xa@xcmsSet))))]
-    write.table(dataMatrix, sep="\t", quote=FALSE, row.names=FALSE, file=dataMatrixOutput)
-
 
     # --- Multi condition : diffreport ---
     diffrepOri=NULL
@@ -330,24 +325,24 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
 getEIC <- function(object, mzrange, rtrange = 200,
                    groupidx, sampleidx = sampnames(object),
                    rt = c("corrected", "raw")) {
-    
+
     files <- filepaths(object)
     grp <- groups(object)
     samp <- sampnames(object)
     prof <- profinfo(object)
-    
+
     rt <- match.arg(rt)
-    
+
     if (is.numeric(sampleidx))
     sampleidx <- sampnames(object)[sampleidx]
     sampidx <- match(sampleidx, sampnames(object))
-    
+
     if (!missing(groupidx)) {
         if (is.numeric(groupidx))
         groupidx <- groupnames(object)[unique(as.integer(groupidx))]
         grpidx <- match(groupidx, groupnames(object, template = groupidx))
     }
-    
+
     if (missing(mzrange)) {
         if (missing(groupidx))
         stop("No m/z range or groups specified")
@@ -369,7 +364,7 @@ getEIC <- function(object, mzrange, rtrange = 200,
     else if (is.null(dim(mzrange)))
     stop("mzrange must be a matrix")
     colnames(mzrange) <- c("mzmin", "mzmax")
-    
+
     if (length(rtrange) == 1) {
         if (missing(groupidx))
         rtrange <- matrix(rep(range(object@rt[[rt]][sampidx]), nrow(mzrange)),
@@ -380,11 +375,11 @@ getEIC <- function(object, mzrange, rtrange = 200,
     } else if (is.null(dim(rtrange)))
     stop("rtrange must be a matrix or single number")
     colnames(rtrange) <- c("rtmin", "rtmax")
-    
+
     ## Ensure that we've got corrected retention time if requested.
     if (is.null(object@rt[[rt]]))
     stop(rt, " retention times not present in 'object'!")
-    
+
     ## Ensure that the defined retention time range is within the rtrange of the
     ## object: we're using the max minimal rt of all files and the min maximal rt
     rtrs <- lapply(object@rt[[rt]], range)
@@ -406,17 +401,17 @@ getEIC <- function(object, mzrange, rtrange = 200,
         rtrange[lower_rt_outside, "rtmin"] <- rtr[1]
         rtrange[upper_rt_outside, "rtmax"] <- rtr[2]
     }
-    
+
     if (missing(groupidx))
     gnames <- character(0)
     else
     gnames <- groupidx
-    
+
     eic <- vector("list", length(sampleidx))
     names(eic) <- sampleidx
-    
+
     for (i in seq(along = sampidx)) {
-        
+
         ## cat(sampleidx[i], "")
         flush.console()
         ## getXcmsRaw takes care of rt correction, susetting to scanrage and other
@@ -428,7 +423,7 @@ getEIC <- function(object, mzrange, rtrange = 200,
         gc()
     }
     ## cat("\n")
-    
+
     invisible(new("xcmsEIC", eic = eic, mzrange = mzrange, rtrange = rtrange,
     rt = rt, groupnames = gnames))
 }
@@ -449,15 +444,15 @@ diffreport = function(object,
                       metlin = FALSE,
                       h = 480, w = 640, mzdec=2,
                       missing = numeric(), ...) {
-    
+
     if ( nrow(object@groups)<1 || length(object@groupidx) <1) {
         stop("No group information. Use group().")
     }
-    
+
     if (!is.numeric(w) || !is.numeric(h))
         stop("'h' and 'w' have to be numeric")
     ## require(multtest) || stop("Couldn't load multtest")
-    
+
     value <- match.arg(value)
     groupmat <- groups(object)
     if (length(groupmat) == 0)
@@ -466,20 +461,20 @@ diffreport = function(object,
     n <- length(samples)
     classlabel <- sampclass(object)
     classlabel <- levels(classlabel)[as.vector(unclass(classlabel))]
-    
+
     values <- groupval(object, "medret", value=value)
     indecies <- groupval(object, "medret", value = "index")
-    
+
     if (!all(c(class1,class2) %in% classlabel))
     stop("Incorrect Class Labels")
-    
+
     ## c1 and c2 are column indices of class1 and class2 resp.
     c1 <- which(classlabel %in% class1)
     c2 <- which(classlabel %in% class2)
     ceic <- which(classlabel %in% classeic)
     if (length(intersect(c1, c2)) > 0)
     stop("Intersecting Classes")
-    
+
     ## Optionally replace NA values with the value provided with missing
     if (length(missing)) {
         if (is.numeric(missing)) {
@@ -493,21 +488,21 @@ diffreport = function(object,
     warning("`NA` values in xcmsSet. Use fillPeaks() on the object to fill",
     "-in missing peak values. Note however that this will also ",
     "insert intensities of 0 for peaks that can not be filled in.")
-    
+
     mean1 <- rowMeans(values[,c1,drop=FALSE], na.rm = TRUE)
     mean2 <- rowMeans(values[,c2,drop=FALSE], na.rm = TRUE)
-    
+
     ## Calculate fold change.
     ## For foldchange <1 set fold to 1/fold
     ## See tstat to check which was higher
     fold <- mean2 / mean1
     fold[!is.na(fold) & fold < 1] <- 1/fold[!is.na(fold) & fold < 1]
-    
+
     testval <- values[,c(c1,c2)]
     ## Replace eventual infinite values with NA (CAMERA issue #33)
     testval[is.infinite(testval)] <- NA
     testclab <- c(rep(0,length(c1)),rep(1,length(c2)))
-    
+
     if (min(length(c1), length(c2)) >= 2) {
         tstat <- mt.teststat(testval, testclab, ...)
         pvalue <- xcms:::pval(testval, testclab, tstat)
@@ -543,18 +538,18 @@ diffreport = function(object,
         values<-values[tsidx,]
     } else
     tsidx <- 1:nrow(values)
-    
+
     if (length(filebase))
     write.table(twosamp, paste(filebase, ".tsv", sep = ""), quote = FALSE, sep = "\t", col.names = NA)
-    
+
     if (eicmax > 0) {
         if (length(unique(peaks(object)[,"rt"])) > 1) {
             ## This looks like "normal" LC data
-            
+
             eicmax <- min(eicmax, length(tsidx))
             eics <- getEIC(object, rtrange = eicwidth*1.1, sampleidx = ceic,
             groupidx = tsidx[seq(length = eicmax)])
-            
+
             if (length(filebase)) {
                 eicdir <- paste(filebase, "_eic", sep="")
                 boxdir <- paste(filebase, "_box", sep="")
@@ -572,7 +567,7 @@ diffreport = function(object,
                 }
             }
             plot(eics, object, rtrange = eicwidth, mzdec=mzdec)
-            
+
             if (length(filebase))
             dev.off()
         } else {
@@ -596,13 +591,13 @@ diffreport = function(object,
                     height = h/72, onefile = FALSE)
                 }
             }
-            
+
             plotSpecWindow(object, gidxs = tsidx[seq(length = eicmax)], borderwidth=1)
-            
+
             if (length(filebase))
             dev.off()
         }
     }
-    
+
     invisible(twosamp)
 }
