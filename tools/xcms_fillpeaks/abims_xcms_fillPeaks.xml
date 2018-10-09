@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms fillChromPeaks (fillPeaks)" version="@WRAPPER_VERSION@.0">
+<tool id="abims_xcms_fillPeaks" name="xcms fillChromPeaks (fillPeaks)" version="@WRAPPER_VERSION@.1">
 
     <description>Integrate areas of missing peaks</description>
 
@@ -37,7 +37,7 @@
             <param argument="ppm" type="integer" value="0" label="Specifying a ppm by which the mz width of the peak region should be expanded" help="For peaks with an mz width smaller than ‘mean(c(mzmin, mzmax)) * ppm / 1e6’, the ‘mzmin’ will be replaced by ‘mean(c(mzmin, mzmax)) - (mean(c(mzmin, mzmax)) * ppm / 2 / 1e6)’ and ‘mzmax’ by ‘mean(c(mzmin, mzmax)) + (mean(c(mzmin, mzmax)) * ppm / 2 / 1e6)’. This is applied before eventually expanding the mz width using the ‘expandMz’ parameter." />
         </section>
 
-        <expand macro="input_peaklist"/>
+        <expand macro="input_peaklist_section"/>
 
         <expand macro="input_file_load"/>
 
@@ -130,12 +130,12 @@
         </test>-->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group2.retcor2.group2.RData" ftype="rdata"/>
-            <conditional name="peaklist">
+            <section name="peaklist">
                 <param name="peaklistBool" value="true" />
                 <param name="convertRTMinute" value="false" />
                 <param name="numDigitsMZ" value="4" />
                 <param name="numDigitsRT" value="1" />
-            </conditional>
+            </section>
             <expand macro="test_file_load_single"/>
             <assert_stdout>
                 <has_text text="expandMz: 0" />
@@ -229,6 +229,11 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 
 Changelog/News
 --------------
+
+**Version 3.0.0.1 - 09/10/2018**
+
+- IMPROVEMENT: the export of the PeakList is now mandatory
+
 
 **Version 3.0.0.0 - 08/03/2018**
 
