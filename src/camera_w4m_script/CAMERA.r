@@ -83,11 +83,6 @@ if (!is.null(listArguments[["rplotspdf"]])){
     rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
 }
 
-dataMatrixOutput = "dataMatrix.tsv"
-if (!is.null(listArguments[["dataMatrixOutput"]])){
-    dataMatrixOutput = listArguments[["dataMatrixOutput"]]; listArguments[["dataMatrixOutput"]]=NULL
-}
-
 variableMetadataOutput = "variableMetadata.tsv"
 if (!is.null(listArguments[["variableMetadataOutput"]])){
     variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
@@ -129,7 +124,7 @@ cat("\tMAIN PROCESSING INFO\n")
 pdf(file=rplotspdf, width=16, height=12)
 
 if (thefunction %in% c("annotatediff")) {
-    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput,dataMatrixOutput=dataMatrixOutput)
+    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput)
     xa=results_list[["xa"]]
     diffrep=results_list[["diffrep"]]
     variableMetadata=results_list[["variableMetadata"]]
