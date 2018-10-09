@@ -73,7 +73,7 @@
             </when>
         </conditional>
 
-        <expand macro="input_peaklist"/>
+        <expand macro="input_peaklist_conditional"/>
 
         <expand macro="input_file_load"/>
     </inputs>

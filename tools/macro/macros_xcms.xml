@@ -90,9 +90,6 @@
     </token>
 
     <xml name="input_peaklist">
-        <conditional name="peaklist">
-            <param name="peaklistBool" type="boolean" label="Get a Peak List" />
-            <when value="true">
               <param name="convertRTMinute" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Convert retention time (seconds) into minutes" help="Convert the columns rtmed, rtmin and rtmax into minutes"/>
               <param name="numDigitsMZ" type="integer" value="4" label="Number of decimal places for mass values reported in ions' identifiers." help="A minimum of 4 decimal places is recommended. Useful to avoid duplicates within identifiers" />
               <param name="numDigitsRT" type="integer" value="0" label="Number of decimal places for retention time values reported in ions' identifiers." help="Useful to avoid duplicates within identifiers" />
@@ -102,6 +99,20 @@
                   <option value="intb">intb</option>
               </param>
               <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Replace the remain NA by 0 in the dataMatrix" help="Rather mandatory for some downstream statistical steps"/>
+    </xml>
+
+    <xml name="input_peaklist_section">
+        <section name="peaklist" title="Peak List" expanded="True">
+            <param name="peaklistBool" type="hidden" label="Get the Peak List" value="True" />
+            <expand macro="input_peaklist"/>
+        </section>
+    </xml>
+
+    <xml name="input_peaklist_conditional">
+        <conditional name="peaklist">
+            <param name="peaklistBool" type="boolean" label="Get the Peak List" />
+            <when value="true">
+              <expand macro="input_peaklist"/>
             </when>
             <when value="false" />
         </conditional>
