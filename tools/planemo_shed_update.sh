@@ -36,5 +36,8 @@ planemo shed_update -t $TARGET
 cd $ROOTPATH/xcms_summary
 planemo shed_update -t $TARGET
 
+cd $ROOTPATH/xcms_export_samplemetadata
+planemo shed_update -t $TARGET
+
 cd $ROOTPATH/xcms_repository_suite
 planemo shed_update -t $TARGET
