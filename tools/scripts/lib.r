@@ -260,9 +260,9 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
     #Create the sampleMetada dataframe
     sampleMetadata <- xdata@phenoData@data
     rownames(sampleMetadata) <- NULL
-    colnames(sampleMetadata) <-  c("sampleMetadata", "class")
+    colnames(sampleMetadata) <-  c("sample_name", "class")
 
-    sampleNamesOrigin <- sampleMetadata$sampleMetadata
+    sampleNamesOrigin <- sampleMetadata$sample_name
     sampleNamesMakeNames <- make.names(sampleNamesOrigin)
 
     if (any(duplicated(sampleNamesMakeNames))) {
@@ -280,7 +280,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
         }
     }
 
-    sampleMetadata$sampleMetadata <- sampleNamesMakeNames
+    sampleMetadata$sample_name <- sampleNamesMakeNames
 
 
     #For each sample file, the following actions are done
