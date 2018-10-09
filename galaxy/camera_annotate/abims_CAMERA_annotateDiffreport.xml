@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.3">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.4">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -18,7 +18,6 @@
 
         ## output
         variableMetadataOutput '$variableMetadata'
-        dataMatrixOutput '$datamatrix'
 
         ## groupFWHM
         sigma $groupfwhm.sigma
@@ -172,7 +171,6 @@
 
     <outputs>
         <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" />
-        <data name="datamatrix" format="tabular" label="${image.name[:-6]}.annotate.dataMatrix.tsv" />
         <data name="rdata_quick_false" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
             <filter>quick_block['quick'] == 'FALSE'</filter>
             <change_format>
@@ -197,23 +195,20 @@
             <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_zip"/>
             <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
-            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
         </test>-->
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
             <expand macro="test_annotate_diffreport"/>
             <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_single"/>
-            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" />
-            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix.tsv" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata.tsv" lines_diff="2" />
         </test>
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks-xcms3.RData"/>
             <expand macro="test_annotate_diffreport"/>
             <expand macro="test_annotate_quick_true"/>
             <expand macro="test_file_load_single"/>
-            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata-xcms3.tsv" />
-            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.dataMatrix-xcms3.tsv" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.variableMetadata-xcms3.tsv" lines_diff="2" />
         </test>
         <test>
             <param name="image" value="faahKO-single.xset.merged.group.retcor.group.fillpeaks.RData"/>
@@ -229,8 +224,7 @@
                 </section>
             </conditional>
             <expand macro="test_file_load_single"/>
-            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" />
-            <output name="datamatrix" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.dataMatrix.tsv" />
+            <output name="variableMetadata" file="faahKO.xset.group.retcor.group.fillPeaks.annotate.rules.variableMetadata.tsv" lines_diff="2"/>
         </test>
     </tests>
 
@@ -287,19 +281,19 @@ xcms.fillPeaks            xset.fillPeaks.RData rdata.xcms.fillpeaks   RData file
 +===========================+=======================================+================================================+
 |CAMERA_combinexsAnnot      |xset.annotate.Rdata                    | rdata.camera.positive or rdata.camera.negative |
 +---------------------------+---------------------------------------+------------------------------------------------+
-|Determine Vdk or Lowess    |xset.annotate.dataMatrix.tsv           | Tabular                                        |
+|Determine Vdk or Lowess    |xset.annotate.variableMetadata.tsv     | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
-|Normalization Vdk/Lowess   |xset.annotate.dataMatrix.tsv           | Tabular                                        |
+|Normalization Vdk/Lowess   |xset.annotate.variableMetadata.tsv     | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
-|Anova                      |xset.annotate.dataMatrix.tsv           | Tabular                                        |
+|Anova                      |xset.annotate.variableMetadata.tsv     | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
-|PCA                        |xset.annotate.dataMatrix.tsv           | Tabular                                        |
+|PCA                        |xset.annotate.variableMetadata.tsv     | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
-|Hierarchical Clustering    |xset.annotate.dataMatrix.tsv           | Tabular                                        |
+|Hierarchical Clustering    |xset.annotate.variableMetadata.tsv     | Tabular                                        |
 +---------------------------+---------------------------------------+------------------------------------------------+
 
 
-The output file **xset.annotate.dataMatrix.tsv** is an tabular file. You can continue your analysis using it in the following tools:
+The output file **xset.annotate.variableMetadata.tsv** is an tabular file. You can continue your analysis using it in the following tools:
 
     | Determine Vdk or Lowess
     | Normalization Vdk/Lowess
@@ -361,10 +355,6 @@ xset.annotate.variableMetadata.tsv
     | For each metabolite (row) :
     | the value of the intensity in each sample, fold, anova, mzmed, mzmin, mzmax, rtmed, rtmin, rtmax, npeaks, isotopes, adduct and pcgroup
 
-xset.annotate.dataMatrix.tsv
-
-    | A tabular file which represents for each metabolite (row), the value of the intensity in each sample (column).
-
 xset.annotate.zip
 
     | It contains filebase_eic, filebase_box and filebase.tsv for one conditon vs another (Anova analysis).
@@ -377,7 +367,7 @@ xset.annotate.Rdata rdata.camera.quick or rdata.camera.positive or rdata.camera.
 
 .. class:: infomark
 
-The output **"xset.annotate.dataMatrix.tsv"** is a tabular file. You can continue your analysis using it in the following tools of the workflow:
+The output **"xset.annotate.variableMetadata.tsv"** is a tabular file. You can continue your analysis using it in the following tools of the workflow:
 
     | Determine Vdk or Lowess (Data correction)
     | Normalization Vdk/Lowess (Data correction)
@@ -418,10 +408,6 @@ Parameters
 Output files
 ------------
 
-**Example of an xset.annotate.dataMatrix.tsv output**
-
-.. image:: annotatediffreport_dataMatrix.png
-
 **Example of a part of xset.annotate.variableMetadata.tsv output**
 
 .. image:: annotatediffreport_variableMetadata.png
@@ -431,6 +417,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Version 2.2.4 - 09/10/2018**
+
+- NES: CAMERA.annotate no longer export a DataMatrix. fillChromPeaks does the job
 
 **Version 2.2.3 - 30/04/2018**
 

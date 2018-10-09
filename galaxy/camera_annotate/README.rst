@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.4 - 09/10/2018**
+
+- NES: CAMERA.annotate no longer export a DataMatrix. fillChromPeaks does the job
+
 **Version 2.2.3 - 30/04/2018**
 
 - NEW: support the new xcms 3.0.0 wrapper
