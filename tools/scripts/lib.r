@@ -198,6 +198,9 @@ getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=
     variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
     dataMatrix <- naTOzeroDataMatrix(dataMatrix, naTOzero)
 
+    # FIX: issue when the vector at peakidx is too long and is written in a new line during the export
+    variableMetadata[,"peakidx"] <- vapply(variableMetadata[,"peakidx"], FUN = paste, FUN.VALUE = character(1), collapse = ",")
+
     write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
     write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
 

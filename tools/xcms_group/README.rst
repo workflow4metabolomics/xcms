@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 3.0.0.1 - 09/11/2018**
+
+- BUGFIX: issue when the vector at peakidx is too long and is written in a new line during the export of the peaklist
+
 **Version 3.0.0.0 - 08/03/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods. Some parameters may have been renamed.
