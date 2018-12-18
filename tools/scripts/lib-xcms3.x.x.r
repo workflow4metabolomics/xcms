@@ -150,3 +150,77 @@ c.XCMSnExp <- function(...) {
 c.MSnbase <- function(...) {
     .concatenate_OnDiskMSnExp(...)
 }
+
+#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
+# https://github.com/workflow4metabolomics/xcms/issues/117
+.getChromPeakData <- function(object, peakArea, sample_idx,
+                              mzCenterFun = "weighted.mean",
+                              cn = c("mz", "rt", "into", "maxo", "sample")) {
+    if (length(fileNames(object)) != 1)
+        stop("'object' should be an XCMSnExp for a single file!")
+    ncols <- length(cn)
+    res <- matrix(ncol = ncols, nrow = nrow(peakArea))
+    colnames(res) <- cn
+    res[, "sample"] <- sample_idx
+    res[, c("mzmin", "mzmax")] <- peakArea[, c("mzmin", "mzmax")]
+    ## Load the data
+    message("Requesting ", nrow(res), " peaks from ",
+             basename(fileNames(object)), " ... ", appendLF = FALSE)
+    spctr <- spectra(object, BPPARAM = SerialParam())
+    mzs <- lapply(spctr, mz)
+    valsPerSpect <- lengths(mzs)
+    ints <- unlist(lapply(spctr, intensity), use.names = FALSE)
+    rm(spctr)
+    mzs <- unlist(mzs, use.names = FALSE)
+    mzs_range <- range(mzs)
+    rtim <- rtime(object)
+    rtim_range <- range(rtim)
+    for (i in seq_len(nrow(res))) {
+        rtr <- peakArea[i, c("rtmin", "rtmax")]
+        mzr <- peakArea[i, c("mzmin", "mzmax")]
+        ## If the rt range is completely out; additional fix for #267
+        if (rtr[2] < rtim_range[1] | rtr[1] > rtim_range[2] |
+            mzr[2] < mzs_range[1] | mzr[1] > mzs_range[2]) {
+            res[i, ] <- rep(NA_real_, ncols)
+            next
+        }
+        ## Ensure that the mz and rt region is within the range of the data.
+        rtr[1] <- max(rtr[1], rtim_range[1])
+        rtr[2] <- min(rtr[2], rtim_range[2])
+        mzr[1] <- max(mzr[1], mzs_range[1])
+        mzr[2] <- min(mzr[2], mzs_range[2])
+        mtx <- .rawMat(mz = mzs, int = ints, scantime = rtim,
+                       valsPerSpect = valsPerSpect, rtrange = rtr,
+                       mzrange = mzr)
+        if (length(mtx)) {
+            if (any(!is.na(mtx[, 3]))) {
+                ## How to calculate the area: (1)sum of all intensities / (2)by
+                ## the number of data points (REAL ones, considering also NAs)
+                ## and multiplied with the (3)rt width.
+                ## (1) sum(mtx[, 3], na.rm = TRUE)
+                ## (2) sum(rtim >= rtr[1] & rtim <= rtr[2]) - 1 ; if we used
+                ## nrow(mtx) here, which would correspond to the non-NA
+                ## intensities within the rt range we don't get the same results
+                ## as e.g. centWave. Using max(1, ... to avoid getting Inf in
+                ## case the signal is based on a single data point.
+                ## (3) rtr[2] - rtr[1]
+                res[i, "into"] <- sum(mtx[, 3], na.rm = TRUE) *
+                    ((rtr[2] - rtr[1]) /
+                     max(1, (sum(rtim >= rtr[1] & rtim <= rtr[2]) - 1)))
+                maxi <- which.max(mtx[, 3])
+                res[i, c("rt", "maxo")] <- mtx[maxi[1], c(1, 3)]
+                res[i, c("rtmin", "rtmax")] <- rtr
+                ## Calculate the intensity weighted mean mz
+                meanMz <- do.call(mzCenterFun, list(mtx[, 2], mtx[, 3]))
+                if (is.na(meanMz)) meanMz <- mtx[maxi[1], 2]
+                res[i, "mz"] <- meanMz
+            } else {
+                res[i, ] <- rep(NA_real_, ncols)
+            }
+        } else {
+            res[i, ] <- rep(NA_real_, ncols)
+        }
+    }
+    message("got ", sum(!is.na(res[, "into"])), ".")
+    return(res)
+}
