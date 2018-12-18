@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.1">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.2">
 
     <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
@@ -354,6 +354,10 @@ xset.groupChromPeaks.plotChromPeakDensity.pdf
 
 Changelog/News
 --------------
+
+**Version 3.0.0.2 - 18/12/2018**
+
+- BUGFIX: issue with Inf values in the exported DataMatrix: https://github.com/sneumann/xcms/issues/323#issuecomment-433044378
 
 **Version 3.0.0.1 - 09/11/2018**
 
