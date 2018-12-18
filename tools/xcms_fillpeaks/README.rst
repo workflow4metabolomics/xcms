@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 3.0.0.3 - 18/12/2018**
+
+- BUGFIX: issue with Inf values in the exported DataMatrix: https://github.com/sneumann/xcms/issues/323#issuecomment-433044378
+
 **Version 3.0.0.2 - 09/11/2018**
 
 - BUGFIX: issue when the vector at peakidx is too long and is written in a new line during the export of the peaklist
