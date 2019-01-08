@@ -10,10 +10,11 @@ before_install:
  - virtualenv planemo-venv
  - . planemo-venv/bin/activate
  - pip install planemo==0.47.0
- #- planemo conda_init
 
-#install:
- #- planemo conda_install ${TRAVIS_BUILD_DIR}/galaxy/xcms_4_travis/
+# @TODO: remove ASAP
+# The issue: https://github.com/galaxyproject/planemo/issues/865
+install:
+ - for LINK in ${TRAVIS_BUILD_DIR}/tools/xcms_4_travis/test-data/*; do REALPATH=$(readlink -f $LINK); rm -f $LINK; cp $REALPATH $LINK; done
 
 script:
  - planemo lint ${TRAVIS_BUILD_DIR}/tools/xcms_4_travis/
