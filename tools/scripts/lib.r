@@ -189,10 +189,10 @@ getPlotAdjustedRtime <- function(xdata) {
 getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput, sampleNamesList) {
     dataMatrix <- featureValues(xdata, method="medret", value=intval)
     colnames(dataMatrix) <- make.names(tools::file_path_sans_ext(colnames(dataMatrix)))
-    dataMatrix = cbind(name=groupnamesW4M(xdata), dataMatrix)
+    dataMatrix = cbind(name=groupnames(xdata), dataMatrix)
     variableMetadata <- featureDefinitions(xdata)
     colnames(variableMetadata)[1] = "mz"; colnames(variableMetadata)[4] = "rt"
-    variableMetadata = data.frame(name=groupnamesW4M(xdata), variableMetadata)
+    variableMetadata = data.frame(name=groupnames(xdata), variableMetadata)
 
     variableMetadata <- RTSecondToMinute(variableMetadata, convertRTMinute)
     variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
