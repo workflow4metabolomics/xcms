@@ -7,9 +7,11 @@
         <import>macros_xcms.xml</import>
     </macros>
 
-    <expand macro="requirements">
+    <requirements>
+        <requirement type="package" version="3.0.0">bioconductor-xcms</requirement>
         <requirement type="package" version="1.32.0">bioconductor-camera</requirement>
-    </expand>
+        <requirement type="package" version="1.1_4">r-batch</requirement>
+    </requirements>
 
     <expand macro="stdio"/>
 
