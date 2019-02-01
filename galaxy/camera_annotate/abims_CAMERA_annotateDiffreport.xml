@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.4">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.5">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -442,9 +442,13 @@ Output files
 Changelog/News
 --------------
 
+**Version 2.2.5 - 01/02/2019**
+
+- NEW: zip export are back for pictures (eic and boxplot) and diffreport tables
+
 **Version 2.2.4 - 09/10/2018**
 
-- NES: CAMERA.annotate no longer export a DataMatrix. fillChromPeaks does the job
+- NEW: CAMERA.annotate no longer export a DataMatrix. fillChromPeaks does the job
 
 **Version 2.2.3 - 30/04/2018**
 
