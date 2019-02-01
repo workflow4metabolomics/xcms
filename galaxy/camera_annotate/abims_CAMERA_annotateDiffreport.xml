@@ -66,6 +66,7 @@
             h $diffreport.options.h
             w $diffreport.options.w
             mzdec $diffreport.options.mzdec
+            tabular2 $diffreport.options.tabular2
             png2 $diffreport.options.png2
         #end if
 
@@ -160,9 +161,13 @@
                     <param name="w" type="integer" value="640" label="Numeric variable for the width of the eic and boxplots print out made" help="[width]" />
                     <param name="mzdec" type="integer" value="2" label="Number of decimal places of title m/z values in the eic plot" help="[mzdec]" />
                     <param name="sortpval" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="logical indicating whether the reports should be sorted by p-value" help="[sortpval]"/>
+                    <param name="tabular2" type="select" label="Export the Diffreport files in ">
+                        <option value="zip" selected="true">Zip</option>
+                        <option value="datasetcollection">Individual file in a Dataset Collection</option>
+                    </param>
                     <param name="png2" type="select" label="Export the EIC and boxplots in ">
-                        <option value="pdf" selected="true">individual pdf</option>
-                        <option value="zip">zip</option>
+                        <option value="zip" selected="true">Zip</option>
+                        <option value="pdf">Individual pdf</option>
                     </param>
                 </when>
                 <when value="hide">
@@ -186,20 +191,25 @@
         <data name="rdata_quick_true" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
             <filter>quick_block['quick'] == 'TRUE'</filter>
         </data>
-        <data name="output_diffreport_pdf" format="text" label="${image.name[:-6]}.annotateDiffreport.pdf" hidden="true">
+
+        <data name="output_diffreport_eic_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport_eic.zip" from_work_dir="eic.zip" >
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
+        </data>
+        <data name="output_diffreport_box_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport_box.zip" from_work_dir="box.zip" >
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
+        </data>
+        <collection name="output_diffreport_picture_pdf" type="list" label="${image.name[:-6]}.annotateDiffreport.pdf">
             <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'pdf'</filter>
-            <discover_datasets pattern="__designation_and_ext__" directory="pdf" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="pdf" format="pdf" visible="true" />
+        </collection>
+
+        <data name="output_diffreport_table_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport.pdf" from_work_dir="tabular.zip">
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['tabular2'] == 'zip'</filter>
         </data>
-        <data name="output_diffreport_zip_eic" format="text" label="${image.name[:-6]}.annotateDiffreport_eic.zip" from_work_dir="eic.zip" >
-            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
-        </data>
-        <data name="output_diffreport_zip_box" format="text" label="${image.name[:-6]}.annotateDiffreport_box.zip" from_work_dir="box.zip" >
-            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
-        </data>
-        <data name="output_diffreport_table" format="text" label="${image.name[:-6]}.annotateDiffreport_table" hidden="true">
-            <filter>diffreport['options']['option'] == 'show'</filter>
-            <discover_datasets pattern="__designation_and_ext__" directory="tabular" visible="true" />
-        </data>
+        <collection name="output_diffreport_table_collection" type="list" label="${image.name[:-6]}.annotateDiffreport_table">
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['tabular2'] == 'datasetcollection'</filter>
+            <discover_datasets pattern="__designation_and_ext__" directory="tabular" format="tabular" visible="true" />
+        </collection>
     </outputs>
 
     <tests>
