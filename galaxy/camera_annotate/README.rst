@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.5 - 01/02/2019**
+
+- NEW: zip export are back for pictures (eic and boxplot) and diffreport tables
+
 **Version 2.2.4 - 09/10/2018**
 
 - NES: CAMERA.annotate no longer export a DataMatrix. fillChromPeaks does the job
