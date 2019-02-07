@@ -18,4 +18,4 @@ install:
 
 script:
  - planemo lint ${TRAVIS_BUILD_DIR}/tools/xcms_4_travis/
- - planemo test --conda_ensure_channels bioconda/label/gcc7,bioconda,conda-forge --galaxy_branch release_18.05 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/tools/xcms_4_travis/
+ - planemo test --conda_ensure_channels bioconda,workflow4metabolomics,conda-forge,default --galaxy_branch release_18.05 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/tools/xcms_4_travis/
