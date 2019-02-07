@@ -66,7 +66,7 @@ checkFilesCompatibilityWithXcms(directory)
 
 cat("\n\n")
 
-
+save.image()
 # ----- MAIN PROCESSING INFO -----
 cat("\tMAIN PROCESSING INFO\n")
 
@@ -79,6 +79,8 @@ args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))
 
 fillChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(fillChromPeaksParam)
+
+xdata <- updateObject(xdata)
 xdata <- fillChromPeaks(xdata, param=fillChromPeaksParam)
 
 if (exists("intval")) {
