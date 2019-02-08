@@ -143,7 +143,7 @@
                 <has_text text="object with 4 samples" />
                 <has_text text="Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)" />
                 <has_text text="Mass range: 200.1-600 m/z" />
-                <has_text text="Peaks: 15230 (about 3808 per sample)" />
+                <has_text text="Peaks: 15218 (about 3804 per sample)" />
                 <has_text text="Peak Groups: 6332" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
