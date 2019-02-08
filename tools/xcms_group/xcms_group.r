@@ -83,7 +83,7 @@ xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)
 
 
 cat("\t\tDRAW GRAPHICS\n")
-getPlotChromPeakDensity(xdata)
+getPlotChromPeakDensity(xdata, param = groupChromPeaksParam)
 
 if (exists("intval")) {
     getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, naTOzero, "variableMetadata.tsv", "dataMatrix.tsv")

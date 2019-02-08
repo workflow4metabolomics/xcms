@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 3.4.3.0 - 08/02/2019**
+
+- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.3
+
 **Version 3.0.0.0 - 14/02/2018**
 
 - UPGRADE: upgrade the xcms version from 1.46.0 to 3.0.0. So refactoring of a lot of underlying codes and methods
