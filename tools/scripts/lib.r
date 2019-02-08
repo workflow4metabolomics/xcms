@@ -144,7 +144,7 @@ naTOzeroDataMatrix <- function(dataMatrix, naTOzero) {
 
 #@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
-getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
+getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
     pdf(file="plotChromPeakDensity.pdf", width=16, height=12)
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
@@ -156,7 +156,7 @@ getPlotChromPeakDensity <- function(xdata, mzdigit=4) {
     for (i in 1:nrow(featureDefinitions(xdata))) {
         mzmin = featureDefinitions(xdata)[i,]$mzmin
         mzmax = featureDefinitions(xdata)[i,]$mzmax
-        plotChromPeakDensity(xdata, mz=c(mzmin,mzmax), col=group_colors, pch=16, xlim=xlim, main=paste(round(mzmin,mzdigit),round(mzmax,mzdigit)))
+        plotChromPeakDensity(xdata, param = param, mz=c(mzmin,mzmax), col=group_colors, pch=16, xlim=xlim, main=paste(round(mzmin,mzdigit),round(mzmax,mzdigit)))
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
 

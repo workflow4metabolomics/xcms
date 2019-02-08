@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.2">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.0">
 
     <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
@@ -354,6 +354,12 @@ xset.groupChromPeaks.plotChromPeakDensity.pdf
 
 Changelog/News
 --------------
+
+**Version 3.4.3.0 - 08/02/2019**
+
+- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.3
+
+- BUGFIX: groupChromPeaks wasn't pass to the ChromPeakDensity plots
 
 **Version 3.0.0.2 - 18/12/2018**
 
