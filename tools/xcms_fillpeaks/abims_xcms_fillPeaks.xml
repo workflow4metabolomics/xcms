@@ -1,4 +1,4 @@
-<tool id="abims_xcms_fillPeaks" name="xcms fillChromPeaks (fillPeaks)" version="@WRAPPER_VERSION@.3">
+<tool id="abims_xcms_fillPeaks" name="xcms fillChromPeaks (fillPeaks)" version="@WRAPPER_VERSION@.0">
 
     <description>Integrate areas of missing peaks</description>
 
@@ -143,7 +143,7 @@
                 <has_text text="object with 4 samples" />
                 <has_text text="Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)" />
                 <has_text text="Mass range: 200.1-600 m/z" />
-                <has_text text="Peaks: 15230 (about 3808 per sample)" />
+                <has_text text="Peaks: 15218 (about 3804 per sample)" />
                 <has_text text="Peak Groups: 6332" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
@@ -230,7 +230,9 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 Changelog/News
 --------------
 
-**Version 3.0.0.3 - 18/12/2018**
+**Version 3.4.3.0 - 08/02/2019**
+
+- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.3
 
 - BUGFIX: issue with Inf values in the exported DataMatrix: https://github.com/sneumann/xcms/issues/323#issuecomment-433044378
 

@@ -12,7 +12,6 @@ cat("\tSESSION INFO\n")
 #Import the different functions
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
-source_local("lib-xcms3.x.x.r")
 
 pkgs <- c("xcms","batch","RColorBrewer")
 loadAndDisplayPackages(pkgs)
@@ -84,7 +83,7 @@ xdata <- groupChromPeaks(xdata, param = groupChromPeaksParam)
 
 
 cat("\t\tDRAW GRAPHICS\n")
-getPlotChromPeakDensity(xdata)
+getPlotChromPeakDensity(xdata, param = groupChromPeaksParam)
 
 if (exists("intval")) {
     getPeaklistW4M(xdata, intval, convertRTMinute, numDigitsMZ, numDigitsRT, naTOzero, "variableMetadata.tsv", "dataMatrix.tsv")

@@ -12,7 +12,6 @@ cat("\tSESSION INFO\n")
 #Import the different functions
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
-source_local("lib-xcms3.x.x.r")
 
 pkgs <- c("xcms","batch")
 loadAndDisplayPackages(pkgs)
@@ -67,7 +66,6 @@ checkFilesCompatibilityWithXcms(directory)
 
 cat("\n\n")
 
-
 # ----- MAIN PROCESSING INFO -----
 cat("\tMAIN PROCESSING INFO\n")
 
@@ -80,6 +78,10 @@ args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))
 
 fillChromPeaksParam <- do.call(paste0(method,"Param"), args)
 print(fillChromPeaksParam)
+
+# back compatibility between xcms-3.0.0 and xcms-3.5.2
+xdata <- updateObject(xdata)
+
 xdata <- fillChromPeaks(xdata, param=fillChromPeaksParam)
 
 if (exists("intval")) {

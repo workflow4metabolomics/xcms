@@ -2,7 +2,9 @@
 Changelog/News
 --------------
 
-**Version 3.0.0.3 - 18/12/2018**
+**Version 3.4.3.0 - 08/02/2019**
+
+- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.3
 
 - BUGFIX: issue with Inf values in the exported DataMatrix: https://github.com/sneumann/xcms/issues/323#issuecomment-433044378
 
