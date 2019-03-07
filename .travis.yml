@@ -24,7 +24,7 @@ before_install:
 # @TODO: remove ASAP
 # The issue: https://github.com/galaxyproject/planemo/issues/865
 install:
-  - for LINK in ${TRAVIS_BUILD_DIR}/${TESTFOLDER}/test-data/*; do REALPATH=$(readlink -f $LINK); rm -f $LINK; cp $REALPATH $LINK; done
+  - for LINK in $(find ${TRAVIS_BUILD_DIR}/${TESTFOLDER}/test-data/ -type l -exec ls {} \;); do REALPATH=$(readlink -f $LINK); rm -f $LINK; cp $REALPATH $LINK; done
 
 script:
   - planemo lint ${TRAVIS_BUILD_DIR}/${TESTFOLDER}
