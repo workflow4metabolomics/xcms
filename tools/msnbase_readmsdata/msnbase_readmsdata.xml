@@ -61,7 +61,7 @@
             </assert_stdout>
         </test>
         <!-- DISABLE FOR TRAVIS
-        Useful to generate test-data for the further steps-->
+        Useful to generate test-data for the further steps
         <test>
             <param name="input" value="ko16.CDF"  ftype="netcdf" />
             <assert_stdout>
@@ -86,7 +86,7 @@
                 <has_text text="./wt16.CDF        wt16            ." />
             </assert_stdout>
         </test>
-        <!-- -->
+        -->
     </tests>
 
     <help><![CDATA[
@@ -132,7 +132,7 @@ Name                        Output file          Format
 xcms.findChromPeaks         ``*``.raw.RData      rdata.msnbase.raw
 =========================== ==================== ====================
 
- 
+
 
 **Example of a metabolomic workflow**
 
@@ -158,7 +158,7 @@ OR : Single file            mzXML, mzML, mzData, netCDF
 
 You have two methods for your inputs:
 
-    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several readMSData and findChromPeaks in parallel and use "findChromPeaks Merger" before groupChromPeaks. 
+    | Single file (recommended): You can put a single file as input. That way, you will be able to launch several readMSData and findChromPeaks in parallel and use "findChromPeaks Merger" before groupChromPeaks.
     | Zip file: You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
 
 Zip file: Steps for creating the zip file
@@ -223,7 +223,7 @@ sampleMetadata.tsv (only when a zip is used)
 
     | Tabular file that contains for each sample its associated class and polarity (positive,negative and mixed).
     | This file is necessary in further steps of the workflow, as the Anova and PCA steps for example.
-    | You get a sampleMetadata.tsv only if you use a zip. Otherwise, you have to provide one for the findChromPeaks Merger step. 
+    | You get a sampleMetadata.tsv only if you use a zip. Otherwise, you have to provide one for the findChromPeaks Merger step.
 
 ---------------------------------------------------
 
