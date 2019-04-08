@@ -103,7 +103,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList", "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
+objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list=objects2save[objects2save %in% ls()], file="fillpeaks.RData")
 
 cat("\n\n")
