@@ -25,58 +25,58 @@ ul li { margin-bottom:10px; }
 <div><table>
 <tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
 <tr><td>Wed Feb  7 11:15:25 2018</td><td>Peak detection</td><td colspan='2'><pre>
-Object of class:  CentWaveParam
+Object of class:  CentWaveParam 
 Parameters:
- ppm: 25
- peakwidth: 20, 50
- snthresh: 10
- prefilter: 3, 100
- mzCenterFun: wMean
- integrate: 1
- mzdiff: -0.001
- fitgauss: FALSE
- noise: 0
- verboseColumns: FALSE
- roiList length: 0
- firstBaselineCheck TRUE
- roiScales length: 0
+ ppm: 25 
+ peakwidth: 20, 50 
+ snthresh: 10 
+ prefilter: 3, 100 
+ mzCenterFun: wMean 
+ integrate: 1 
+ mzdiff: -0.001 
+ fitgauss: FALSE 
+ noise: 0 
+ verboseColumns: FALSE 
+ roiList length: 0 
+ firstBaselineCheck TRUE 
+ roiScales length: 0 
 </pre></td></tr>
 <tr><td>Mon Feb 12 15:31:11 2018</td><td>Peak grouping</td><td colspan='2'><pre>
-Object of class:  PeakDensityParam
+Object of class:  PeakDensityParam 
 Parameters:
- sampleGroups: character of length 4
- bw: 30
- minFraction: 0.8
- minSamples: 1
- binSize: 0.25
- maxFeatures: 50
+ sampleGroups: character of length 4 
+ bw: 30 
+ minFraction: 0.8 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
 </pre></td></tr>
 <tr><td>Mon Feb 12 15:31:19 2018</td><td>Retention time correction</td><td colspan='2'><pre>
-Object of class:  PeakGroupsParam
+Object of class:  PeakGroupsParam 
 Parameters:
- minFraction: 0.85
- extraPeaks: 1
- smooth: loess
- span: 0.2
- family: gaussian
- number of peak groups: 125
+ minFraction: 0.85 
+ extraPeaks: 1 
+ smooth: loess 
+ span: 0.2 
+ family: gaussian 
+ number of peak groups: 125 
 </pre></td></tr>
 <tr><td>Mon Feb 12 15:31:27 2018</td><td>Peak grouping</td><td colspan='2'><pre>
-Object of class:  PeakDensityParam
+Object of class:  PeakDensityParam 
 Parameters:
- sampleGroups: character of length 4
- bw: 20
- minFraction: 0.4
- minSamples: 1
- binSize: 0.25
- maxFeatures: 50
+ sampleGroups: character of length 4 
+ bw: 20 
+ minFraction: 0.4 
+ minSamples: 1 
+ binSize: 0.25 
+ maxFeatures: 50 
 </pre></td></tr>
 <tr><td>Wed Feb 14 09:55:13 2018</td><td>Missing peak filling</td><td colspan='2'><pre>
-Object of class:  FillChromPeaksParam
+Object of class:  FillChromPeaksParam 
 Parameters:
- expandMz: 0
- expandRt: 0
- ppm: 0
+ expandMz: 0 
+ expandRt: 0 
+ ppm: 0 
 </pre></td></tr>
 </table>
 <br/><sup>***</sup>timestamp format: DD MM dd hh:mm:ss YYYY or yymmdd-hh:mm:ss
@@ -86,12 +86,12 @@ Parameters:
 MSn experiment data ("XCMSnExp")
 Object size in memory: 1.41 Mb
 - - - Spectra data - - -
- MS level(s): 1
- Number of spectra: 5112
+ MS level(s): 1 
+ Number of spectra: 5112 
  MSn retention times: 41:33 - 75:0 minutes
 - - - Processing information - - -
-Concatenated [Thu Feb  8 15:36:09 2018]
- MSnbase version: 2.4.2
+Concatenated [Thu Feb  8 15:36:09 2018] 
+ MSnbase version: 2.4.2 
 - - - Meta data  - - -
 phenoData
   rowNames: ./ko15.CDF ./ko16.CDF ./wt15.CDF ./wt16.CDF
@@ -108,13 +108,13 @@ featureData
 experimentData: use 'experimentData(object)'
 - - - xcms preprocessing - - -
 Chromatographic peak detection:
- method: centWave
+ method: centWave 
  15230 peaks identified in 4 samples.
  On average 3808 chromatographic peaks per sample.
 Alignment/retention time adjustment:
- method: peak groups
+ method: peak groups 
 Correspondence:
- method: chromatographic peak density
+ method: chromatographic peak density 
  6332 features identified.
  Median mz range of features: 0
  Median rt range of features: 0
@@ -127,12 +127,12 @@ An "xcmsSet" object with 4 samples
 Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)
 Mass range: 200.1-600 m/z
 Peaks: 15230 (about 3808 per sample)
-Peak Groups: 6332
-Sample classes: KO, WT
+Peak Groups: 6332 
+Sample classes: KO, WT 
 
 Feature detection:
  o Peak picking performed on MS1.
- o Scan range limited to  1 - 1278
+ o Scan range limited to  1 - 1278 
 Profile settings: method = bin
                   step = 0.1
 
