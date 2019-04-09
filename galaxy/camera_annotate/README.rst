@@ -2,9 +2,10 @@
 Changelog/News
 --------------
 
-**Version 2.2.5 - 01/02/2019**
+**Version 2.2.5 - 09/04/2019**
 
 - NEW: zip export are back for pictures (eic and boxplot) and diffreport tables
+- UPGRADE: upgrade the CAMERA version from 1.34.0 to 1.38.1 (see CAMERA News_)
 
 **Version 2.2.4 - 09/10/2018**
 
