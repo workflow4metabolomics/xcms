@@ -200,15 +200,15 @@
         </data>
         <collection name="output_diffreport_picture_pdf" type="list" label="${image.name[:-6]}.annotateDiffreport.pdf">
             <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'pdf'</filter>
-            <discover_datasets pattern="__designation_and_ext__" directory="pdf" format="pdf" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="pdf" format="pdf" />
         </collection>
 
-        <data name="output_diffreport_table_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport.pdf" from_work_dir="tabular.zip">
+        <data name="output_diffreport_table_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport_table.pdf" from_work_dir="tabular.zip">
             <filter>diffreport['options']['option'] == 'show' and diffreport['options']['tabular2'] == 'zip'</filter>
         </data>
         <collection name="output_diffreport_table_collection" type="list" label="${image.name[:-6]}.annotateDiffreport_table">
             <filter>diffreport['options']['option'] == 'show' and diffreport['options']['tabular2'] == 'datasetcollection'</filter>
-            <discover_datasets pattern="__designation_and_ext__" directory="tabular" format="tabular" visible="true" />
+            <discover_datasets pattern="__designation_and_ext__" directory="tabular" format="tabular" />
         </collection>
     </outputs>
 
@@ -442,9 +442,12 @@ Output files
 Changelog/News
 --------------
 
-**Version 2.2.5 - 01/02/2019**
+.. _News: https://bioconductor.org/packages/release/bioc/news/CAMERA/NEWS
+
+**Version 2.2.5 - 09/04/2019**
 
 - NEW: zip export are back for pictures (eic and boxplot) and diffreport tables
+- UPGRADE: upgrade the CAMERA version from 1.34.0 to 1.38.1 (see CAMERA News_)
 
 **Version 2.2.4 - 09/10/2018**
 
