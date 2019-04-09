@@ -42,7 +42,7 @@
                 <has_text text="rowNames: faahKO_reduce/KO/ko15.CDF faahKO_reduce/KO/ko16.CDF" />
                 <has_text text="faahKO_reduce/WT/wt15.CDF faahKO_reduce/WT/wt16.CDF" />
                 <has_text text="featureNames: F1.S0001 F1.S0002 ... F4.S1278 (5112 total)" />
-                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (27 total)" />
+                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (28 total)" />
                 <has_text text="faahKO_reduce/KO/ko15.CDF        ko15           KO" />
                 <has_text text="faahKO_reduce/KO/ko16.CDF        ko16           KO" />
                 <has_text text="faahKO_reduce/WT/wt15.CDF        wt15           WT" />
@@ -56,7 +56,7 @@
                 <has_text text="rowNames: ./ko15.CDF" />
                 <has_text text="ko15.CDF" />
                 <has_text text="featureNames: F1.S0001 F1.S0002 ... F1.S1278 (1278 total)" />
-                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (27 total)" />
+                <has_text text="fvarLabels: fileIdx spIdx ... spectrum (28 total)" />
                 <has_text text="./ko15.CDF        ko15            ." />
             </assert_stdout>
         </test>
