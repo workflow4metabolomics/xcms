@@ -1,1 +1,0 @@
-../../camera_annotate/test-data/wt16.CDF
