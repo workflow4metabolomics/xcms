@@ -333,7 +333,7 @@ checkFilesCompatibilityWithXcms <- function(directory) {
     files[exists] <- sub("//","/",files[exists])
 
     # WHAT IS ON THE FILESYSTEM
-    filesystem_filepaths <- system(paste0("find \"$PWD/",directory,"\" -not -name '\\.*' -not -path '*conda-env*' -type f -name \"*\""), intern=T)
+    filesystem_filepaths <- system(paste0("find \"",getwd(),"/",directory,"\" -not -name '\\.*' -not -path '*conda-env*' -type f -name \"*\""), intern=T)
     filesystem_filepaths <- filesystem_filepaths[grep(filepattern, filesystem_filepaths, perl=T)]
 
     # COMPARISON
