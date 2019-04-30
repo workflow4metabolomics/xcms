@@ -66,9 +66,9 @@ adjustRtimeParam <- do.call(paste0(method,"Param"), args)
 print(adjustRtimeParam)
 xdata <- adjustRtime(xdata, param=adjustRtimeParam)
 
-cat("\t\t\tCompute and Store TIC and BPI\n")
-chromTIC_adjusted = chromatogram(xdata, aggregationFun = "sum")
-chromBPI_adjusted = chromatogram(xdata, aggregationFun = "max")
+#cat("\t\t\tCompute and Store TIC and BPI\n")
+#chromTIC_adjusted = chromatogram(xdata, aggregationFun = "sum")
+#chromBPI_adjusted = chromatogram(xdata, aggregationFun = "max")
 
 cat("\n\n")
 
