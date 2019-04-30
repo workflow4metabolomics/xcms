@@ -24,6 +24,10 @@ Changelog/News
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
+**Version 3.4.4.1 - 30/04/2019**
+
+- BUGFIX: remove the pre-compute of the chromatograms which was memory consuming. Now, only xcms plot chromatogram will generate the Chromatograms.
+
 **Version 3.4.4.0 - 08/02/2019**
 
 - UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.4 (see XCMS News_)
