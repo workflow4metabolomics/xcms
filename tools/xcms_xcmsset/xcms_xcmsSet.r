@@ -105,9 +105,9 @@ xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@proces
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
 
-cat("\t\t\tCompute and Store TIC and BPI\n")
-chromTIC = chromatogram(xdata, aggregationFun = "sum")
-chromBPI = chromatogram(xdata, aggregationFun = "max")
+#cat("\t\t\tCompute and Store TIC and BPI\n")
+#chromTIC = chromatogram(xdata, aggregationFun = "sum")
+#chromBPI = chromatogram(xdata, aggregationFun = "max")
 
 cat("\n\n")
 
