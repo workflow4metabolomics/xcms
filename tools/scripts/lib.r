@@ -322,7 +322,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
 checkFilesCompatibilityWithXcms <- function(directory) {
     cat("Checking files filenames compatibilities with xmcs...\n")
     # WHAT XCMS WILL FIND
-    filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
+    filepattern <- c("([Nn][Ee][Tt])?[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
     filepattern <- paste(paste("\\.", filepattern, "$", sep=""),collapse="|")
     info <- file.info(directory)
     listed <- list.files(directory[info$isdir], pattern=filepattern, recursive=TRUE, full.names=TRUE)
@@ -348,7 +348,7 @@ checkFilesCompatibilityWithXcms <- function(directory) {
 #This function list the compatible files within the directory as xcms did
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABiMS TEAM
 getMSFiles <- function (directory) {
-    filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
+    filepattern <- c("([Nn][Ee][Tt])?[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
     filepattern <- paste(paste("\\.", filepattern, "$", sep=""),collapse="|")
     info <- file.info(directory)
     listed <- list.files(directory[info$isdir], pattern=filepattern,recursive=TRUE, full.names=TRUE)
