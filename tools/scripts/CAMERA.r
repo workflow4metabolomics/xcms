@@ -36,7 +36,6 @@ if (!is.null(args$image)){
 if (args$xfunction %in% c("combinexsAnnos")) {
     load(args$image_pos)
     xaP=xa
-    listOFargsP=listOFargs
     if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
 
     diffrepP=NULL
@@ -44,7 +43,6 @@ if (args$xfunction %in% c("combinexsAnnos")) {
 
     load(args$image_neg)
     xaN=xa
-    listOFargsN=listOFargs
     if (exists("xsAnnotate_object")) xaN=xsAnnotate_object
 
     diffrepN=NULL
@@ -128,7 +126,6 @@ if (thefunction %in% c("annotatediff")) {
 if (thefunction %in% c("combinexsAnnos")) {
     cAnnot=combinexsAnnos_function(
         xaP=xaP,xaN=xaN,
-        listOFargsP=listOFargsP, listOFargsN=listOFargsN,
         diffrepP=diffrepP, diffrepN=diffrepN,
         pos=args$pos, tol=args$tol,ruleset=args$ruleset, keep_meta=args$keep_meta,
         convertRTMinute=args$convertRTMinute, numDigitsMZ=args$numDigitsMZ, numDigitsRT=args$numDigitsRT,

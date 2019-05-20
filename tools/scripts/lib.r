@@ -214,7 +214,7 @@ annotatediff <- function(xset=xset, args=args, variableMetadataOutput="variableM
 }
 
 
-combinexsAnnos_function <- function(xaP, xaN, listOFargsP,listOFargsN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
+combinexsAnnos_function <- function(xaP, xaN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
 
     #Load the two Rdata to extract the xset objects from positive and negative mode
     cat("\tObject xset from positive mode\n")
@@ -241,11 +241,9 @@ combinexsAnnos_function <- function(xaP, xaN, listOFargsP,listOFargsN, diffrepP=
 
     if(pos){
         xa=xaP
-        listOFargsP=listOFargs
         mode="neg. Mode"
     } else {
         xa=xaN
-        listOFargsN=listOFargs
         mode="pos. Mode"
     }
 
