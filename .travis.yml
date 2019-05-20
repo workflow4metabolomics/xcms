@@ -6,8 +6,8 @@
 language: python
 
 env:
-  - TESTFOLDER=galaxy/camera_annotate
-  - TESTFOLDER=galaxy/camera_combinexsannos
+  - TESTFOLDER=tools/camera_annotate
+  - TESTFOLDER=tools/camera_combinexsannos
 
 before_install:
  - sudo apt-get install -y python-virtualenv
@@ -17,4 +17,4 @@ before_install:
 
 script:
  - planemo lint ${TRAVIS_BUILD_DIR}/${TESTFOLDER}
- - planemo test --conda_auto_init --conda_auto_install --conda_dependency_resolution --galaxy_branch release_18.05 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/${TESTFOLDER}
+ - planemo test --galaxy_branch release_18.05 --no_cache_galaxy ${TRAVIS_BUILD_DIR}/${TESTFOLDER}

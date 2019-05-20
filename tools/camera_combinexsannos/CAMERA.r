@@ -1,1 +1,1 @@
-../../src/camera_w4m_script/CAMERA.r
+../scripts/CAMERA.r
