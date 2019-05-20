@@ -6,18 +6,12 @@
 # ----- PACKAGE -----
 cat("\tSESSION INFO\n")
 
+#Import the different functions
+source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local("lib.r")
+
 pkgs=c("CAMERA","multtest","batch")
-for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
-
-sessioninfo = sessionInfo()
-cat(sessioninfo$R.version$version.string,"\n")
-cat("Main packages:\n")
-for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
-cat("Other loaded packages:\n")
-for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
-
-source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
-
+loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
 
@@ -87,9 +81,6 @@ variableMetadataOutput = "variableMetadata.tsv"
 if (!is.null(listArguments[["variableMetadataOutput"]])){
     variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
 }
-
-#Import the different functions
-source_local("lib.r")
 
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("annotatediff"))  {
