@@ -1,1 +1,0 @@
-planemo shed_init -f --name=package_camera_w4m_script_2_1 --owner=lecorguille --description="[W4M][GC-MS] Script used by the suite_camera" --long_description="Part of the W4M project: http://workflow4metabolomics.org\n\nThoses scripts are used by the [W4M][GC-MS] suite_camera"--homepage_url="http://workflow4metabolomics.org" --category="Metagenomics"

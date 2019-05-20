@@ -1,1 +1,1 @@
-../../src/camera_w4m_script/lib.r
+../scripts/lib.r
