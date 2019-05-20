@@ -19,8 +19,8 @@ cat("\n\n");
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
 
-listArguments = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n");
 
@@ -29,22 +29,22 @@ cat("\n\n");
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-if (!is.null(listArguments[["image"]])){
-    load(listArguments[["image"]]); listArguments[["image"]]=NULL
+if (!is.null(args$image)){
+    load(args$image); args$image=NULL
 }
 
-if (listArguments[["xfunction"]] %in% c("combinexsAnnos")) {
-    load(listArguments[["image_pos"]])
+if (args$xfunction %in% c("combinexsAnnos")) {
+    load(args$image_pos)
     xaP=xa
-    listOFlistArgumentsP=listOFlistArguments
+    listOFargsP=listOFargs
     if (exists("xsAnnotate_object")) xaP=xsAnnotate_object
 
     diffrepP=NULL
     if (exists("diffrep")) diffrepP=diffrep
 
-    load(listArguments[["image_neg"]])
+    load(args$image_neg)
     xaN=xa
-    listOFlistArgumentsN=listOFlistArguments
+    listOFargsN=listOFargs
     if (exists("xsAnnotate_object")) xaN=xsAnnotate_object
 
     diffrepN=NULL
@@ -59,37 +59,37 @@ cat("\n\n")
 cat("\tARGUMENTS PROCESSING INFO\n")
 
 # Save arguments to generate a report
-if (!exists("listOFlistArguments")) listOFlistArguments=list()
-listOFlistArguments[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"),listArguments[["xfunction"]],sep="")]] = listArguments
+if (!exists("listOFargs")) listOFargs=list()
+listOFargs[[paste(format(Sys.time(), "%y%m%d-%H:%M:%S_"),args$xfunction,sep="")]] = args
 
 
 #saving the commun parameters
-thefunction = listArguments[["xfunction"]]
-listArguments[["xfunction"]]=NULL #delete from the list of arguments
+thefunction = args$xfunction
+args$xfunction=NULL #delete from the list of arguments
 
 xsetRdataOutput = paste(thefunction,"RData",sep=".")
-if (!is.null(listArguments[["xsetRdataOutput"]])){
-    xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
+if (!is.null(args$xsetRdataOutput)){
+    xsetRdataOutput = args$xsetRdataOutput; args$xsetRdataOutput=NULL
 }
 
 rplotspdf = "Rplots.pdf"
-if (!is.null(listArguments[["rplotspdf"]])){
-    rplotspdf = listArguments[["rplotspdf"]]; listArguments[["rplotspdf"]]=NULL
+if (!is.null(args$rplotspdf)){
+    rplotspdf = args$rplotspdf; args$rplotspdf=NULL
 }
 
 variableMetadataOutput = "variableMetadata.tsv"
-if (!is.null(listArguments[["variableMetadataOutput"]])){
-    variableMetadataOutput = listArguments[["variableMetadataOutput"]]; listArguments[["variableMetadataOutput"]]=NULL
+if (!is.null(args$variableMetadataOutput)){
+    variableMetadataOutput = args$variableMetadataOutput; args$variableMetadataOutput=NULL
 }
 
 # We unzip automatically the chromatograms from the zip files.
 if (thefunction %in% c("annotatediff"))  {
     if (!exists("zipfile")) zipfile=NULL
     if (!exists("singlefile")) singlefile=NULL
-    rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, listArguments)
+    rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, args)
     zipfile = rawFilePath$zipfile
     singlefile = rawFilePath$singlefile
-    listArguments = rawFilePath$listArguments
+    args = rawFilePath$args
     directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 }
 
@@ -100,7 +100,7 @@ if (exists("xdata")){
 
 # addition of xset object to the list of arguments in the first position
 if (exists("xset")){
-    listArguments=append(list(xset), listArguments)
+    args=append(list(xset), args)
 }
 
 cat("\n\n")
@@ -115,10 +115,10 @@ cat("\tMAIN PROCESSING INFO\n")
 pdf(file=rplotspdf, width=16, height=12)
 
 if (thefunction %in% c("annotatediff")) {
-    results_list=annotatediff(xset=xset,listArguments=listArguments,variableMetadataOutput=variableMetadataOutput)
-    xa=results_list[["xa"]]
-    diffrep=results_list[["diffrep"]]
-    variableMetadata=results_list[["variableMetadata"]]
+    results_list=annotatediff(xset=xset,args=args,variableMetadataOutput=variableMetadataOutput)
+    xa=results_list$xa
+    diffrep=results_list$diffrep
+    variableMetadata=results_list$variableMetadata
 
     cat("\n\n")
     cat("\tXSET OBJECT INFO\n")
@@ -128,10 +128,10 @@ if (thefunction %in% c("annotatediff")) {
 if (thefunction %in% c("combinexsAnnos")) {
     cAnnot=combinexsAnnos_function(
         xaP=xaP,xaN=xaN,
-        listOFlistArgumentsP=listOFlistArgumentsP,listOFlistArgumentsN=listOFlistArgumentsN,
-        diffrepP=diffrepP,diffrepN=diffrepN,
-        pos=listArguments[["pos"]],tol=listArguments[["tol"]],ruleset=listArguments[["ruleset"]],keep_meta=listArguments[["keep_meta"]],
-        convertRTMinute=listArguments[["convertRTMinute"]], numDigitsMZ=listArguments[["numDigitsMZ"]], numDigitsRT=listArguments[["numDigitsRT"]],
+        listOFargsP=listOFargsP, listOFargsN=listOFargsN,
+        diffrepP=diffrepP, diffrepN=diffrepN,
+        pos=args$pos, tol=args$tol,ruleset=args$ruleset, keep_meta=args$keep_meta,
+        convertRTMinute=args$convertRTMinute, numDigitsMZ=args$numDigitsMZ, numDigitsRT=args$numDigitsRT,
         variableMetadataOutput=variableMetadataOutput
     )
 }
@@ -140,7 +140,7 @@ dev.off()
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFlistArguments","zipfile","singlefile")
+objects2save = c("xa","variableMetadata","diffrep","cAnnot","listOFargs","zipfile","singlefile")
 save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
 
 cat("\n\n")
