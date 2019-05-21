@@ -10,14 +10,10 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_CAMERA_SCRIPT@
-        xfunction annotatediff
+        @COMMAND_RSCRIPT@/CAMERA_annotateDiffreport.r
         image '$image'
 
         nSlaves \${GALAXY_SLOTS:-1}
-
-        ## output
-        variableMetadataOutput '$variableMetadata'
 
         ## groupFWHM
         sigma $groupfwhm.sigma
@@ -34,8 +30,6 @@
 
         quick $quick_block.quick
         #if $quick_block.quick == "FALSE":
-            xsetRdataOutput '$rdata_quick_false'
-
             ## groupcorr
             cor_eic_th $quick_block.groupcorr.cor_eic_th
             graphMethod $quick_block.groupcorr.graphMethod
@@ -52,8 +46,6 @@
             #else
                 rules $quick_block.findadducts.rules_block.rules
             #end if
-        #else
-            xsetRdataOutput '$rdata_quick_true'
         #end if
 
         #if $diffreport.options.option == "show":
@@ -180,15 +172,15 @@
     </inputs>
 
     <outputs>
-        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" />
-        <data name="rdata_quick_false" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata" >
+        <data name="variableMetadata" format="tabular" label="${image.name[:-6]}.annotate.variableMetadata.tsv" from_work_dir="variableMetadata.tsv" />
+        <data name="rdata_quick_false" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.${$quick_block.findadducts.polarity}.Rdata"  from_work_dir="annotatediff.RData">
             <filter>quick_block['quick'] == 'FALSE'</filter>
             <change_format>
                 <when input="quick_block.findadducts.polarity" value="positive" format="rdata.camera.positive" />
                 <when input="quick_block.findadducts.polarity" value="negative" format="rdata.camera.negative" />
             </change_format>
         </data>
-        <data name="rdata_quick_true" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" >
+        <data name="rdata_quick_true" format="rdata.camera.quick" label="${image.name[:-6]}.annotate.quick.Rdata" from_work_dir="annotatediff.RData">
             <filter>quick_block['quick'] == 'TRUE'</filter>
         </data>
 
