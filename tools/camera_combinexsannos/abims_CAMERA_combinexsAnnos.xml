@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.2.2">
+<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.2.5">
 
     <description>Wrapper function for the combinexsAnnos CAMERA function. Returns a dataframe with recalculated annotations.</description>
 
@@ -214,6 +214,8 @@ Changelog/News
 **Version 2.2.5 - 09/04/2019**
 
 - UPGRADE: upgrade the CAMERA version from 1.34.0 to 1.38.1 (see CAMERA News_)
+
+- UPGRADE: refactoring of internal code
 
 **Version 2.2.2 - 01/03/2018**
 
