@@ -15,9 +15,7 @@
         </stdio>
     </xml>
 
-    <token name="@COMMAND_CAMERA_SCRIPT@">
-        LC_ALL=C Rscript $__tool_directory__/CAMERA.r
-    </token>
+    <token name="@COMMAND_RSCRIPT@">LC_ALL=C Rscript $__tool_directory__/</token>
 
     <!-- raw file load for planemo test -->
     <token name="@COMMAND_FILE_LOAD@">

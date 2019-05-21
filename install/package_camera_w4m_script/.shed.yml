@@ -1,7 +1,0 @@
-categories: [Metabolomics, Tool Dependency Packages]
-description: '[Metabolomics][W4M][LC-MS] Script used by the suite_camera'
-homepage_url: http://workflow4metabolomics.org
-long_description: 'Part of the W4M project: http://workflow4metabolomics.org Thoses
-  scripts are used by the [W4M][LC-MS] suite_camera'
-name: package_camera_w4m_script_2_2_1
-owner: lecorguille

@@ -6,6 +6,8 @@ Changelog/News
 
 - UPGRADE: upgrade the CAMERA version from 1.34.0 to 1.38.1 (see CAMERA News_)
 
+- UPGRADE: refactoring of internal code
+
 **Version 2.2.2 - 01/03/2018**
 
 - UPGRADE: upgrate the CAMERA version from 1.26.0 to 1.32.0

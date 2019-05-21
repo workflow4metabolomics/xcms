@@ -1,5 +1,31 @@
 # lib.r
 
+#@author G. Le Corguille
+# solve an issue with batch if arguments are logical TRUE/FALSE
+parseCommandArgs <- function(...) {
+    args <- batch::parseCommandArgs(...)
+    for (key in names(args)) {
+        if (args[key] %in% c("TRUE","FALSE"))
+            args[key] = as.logical(args[key])
+    }
+    return(args)
+}
+
+#@author G. Le Corguille
+# This function will
+# - load the packages
+# - display the sessionInfo
+loadAndDisplayPackages <- function(pkgs) {
+    for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+
+    sessioninfo = sessionInfo()
+    cat(sessioninfo$R.version$version.string,"\n")
+    cat("Main packages:\n")
+    for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+    cat("Other loaded packages:\n")
+    for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+}
+
 # This function retrieve a xset like object
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
 getxcmsSetObject <- function(xobject) {
@@ -69,7 +95,7 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0)
 }
 
 #The function annotateDiffreport without the corr function which bugs
-annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadataOutput="variableMetadata.tsv") {
+annotatediff <- function(xset=xset, args=args, variableMetadataOutput="variableMetadata.tsv") {
     # Resolve the bug with x11, with the function png
     options(bitmapType='cairo')
 
@@ -77,52 +103,52 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
     res=try(is.null(xset@filled))
 
     # ------ annot -------
-    listArguments[["calcCiS"]]=as.logical(listArguments[["calcCiS"]])
-    listArguments[["calcIso"]]=as.logical(listArguments[["calcIso"]])
-    listArguments[["calcCaS"]]=as.logical(listArguments[["calcCaS"]])
+    args$calcCiS=as.logical(args$calcCiS)
+    args$calcIso=as.logical(args$calcIso)
+    args$calcCaS=as.logical(args$calcCaS)
 
     # common parameters
-    listArguments4annotate = list(object=xset,
-    nSlaves=listArguments[["nSlaves"]],sigma=listArguments[["sigma"]],perfwhm=listArguments[["perfwhm"]],
-    maxcharge=listArguments[["maxcharge"]],maxiso=listArguments[["maxiso"]],minfrac=listArguments[["minfrac"]],
-    ppm=listArguments[["ppm"]],mzabs=listArguments[["mzabs"]],quick=listArguments[["quick"]],
-    polarity=listArguments[["polarity"]],max_peaks=listArguments[["max_peaks"]],intval=listArguments[["intval"]])
+    args4annotate = list(object=xset,
+        nSlaves=args$nSlaves,sigma=args$sigma,perfwhm=args$perfwhm,
+        maxcharge=args$maxcharge,maxiso=args$maxiso,minfrac=args$minfrac,
+        ppm=args$ppm,mzabs=args$mzabs,quick=args$quick,
+        polarity=args$polarity,max_peaks=args$max_peaks,intval=args$intval)
 
     # quick == FALSE
-    if(listArguments[["quick"]]==FALSE) {
-        listArguments4annotate = append(listArguments4annotate,
-            list(graphMethod=listArguments[["graphMethod"]],cor_eic_th=listArguments[["cor_eic_th"]],pval=listArguments[["pval"]],
-            calcCiS=listArguments[["calcCiS"]],calcIso=listArguments[["calcIso"]],calcCaS=listArguments[["calcCaS"]]))
+    if(args$quick==FALSE) {
+        args4annotate = append(args4annotate,
+            list(graphMethod=args$graphMethod,cor_eic_th=args$cor_eic_th,pval=args$pval,
+            calcCiS=args$calcCiS,calcIso=args$calcIso,calcCaS=args$calcCaS))
         # no ruleset
-        if (!is.null(listArguments[["multiplier"]])) {
-            listArguments4annotate = append(listArguments4annotate,
-                list(multiplier=listArguments[["multiplier"]]))
+        if (!is.null(args$multiplier)) {
+            args4annotate = append(args4annotate,
+                list(multiplier=args$multiplier))
         }
         # ruleset
         else {
-            rulset=read.table(listArguments[["rules"]], h=T, sep=";")
-            if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep="\t")
-            if (ncol(rulset) < 4) rulset=read.table(listArguments[["rules"]], h=T, sep=",")
+            rulset=read.table(args$rules, h=T, sep=";")
+            if (ncol(rulset) < 4) rulset=read.table(args$rules, h=T, sep="\t")
+            if (ncol(rulset) < 4) rulset=read.table(args$rules, h=T, sep=",")
             if (ncol(rulset) < 4) {
                 error_message="Your ruleset file seems not well formatted. The column separators accepted are ; , and tabulation"
                 print(error_message)
                 stop(error_message)
             }
 
-            listArguments4annotate = append(listArguments4annotate,
+            args4annotate = append(args4annotate,
                 list(rules=rulset))
         }
     }
 
 
     # launch annotate
-    xa = do.call("annotate", listArguments4annotate)
-    peakList=getPeaklist(xa,intval=listArguments[["intval"]])
+    xa = do.call("annotate", args4annotate)
+    peakList=getPeaklist(xa,intval=args$intval)
     peakList=cbind(groupnames(xa@xcmsSet),peakList); colnames(peakList)[1] = c("name");
 
     # --- Multi condition : diffreport ---
     diffrepOri=NULL
-    if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))>=2) {
+    if (!is.null(args$runDiffreport) & nlevels(sampclass(xset))>=2) {
         #Check if the fillpeaks step has been done previously, if it hasn't, there is an error message and the execution is stopped.
         res=try(is.null(xset@filled))
         classes=levels(sampclass(xset))
@@ -133,7 +159,10 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
                 if(i+n <= length(classes)){
                     filebase=paste(classes[i],class2=classes[i+n],sep="-vs-")
 
-                    diffrep=diffreport(object=xset,class1=classes[i],class2=classes[i+n],filebase=filebase,eicmax=listArguments[["eicmax"]],eicwidth=listArguments[["eicwidth"]],sortpval=TRUE,value=listArguments[["value"]],h=listArguments[["h"]],w=listArguments[["w"]],mzdec=listArguments[["mzdec"]],missing=0)
+                    diffrep=diffreport(
+                        object=xset,class1=classes[i],class2=classes[i+n],
+                        filebase=filebase,eicmax=args$eicmax,eicwidth=args$eicwidth,
+                        sortpval=TRUE,value=args$value,h=args$h,w=args$w,mzdec=args$mzdec,missing=0)
 
                     diffrepOri = diffrep
 
@@ -145,37 +174,37 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
                     diffrep = merge(peakList, diffrep[,c("name","fold","tstat","pvalue")], by.x="name", by.y="name", sort=F)
                     diffrep = cbind(diffrep[,!(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))],diffrep[,(colnames(diffrep) %in% c(sampnames(xa@xcmsSet)))])
 
-                    diffrep = RTSecondToMinute(diffrep, listArguments[["convertRTMinute"]])
-                    diffrep = formatIonIdentifiers(diffrep, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
+                    diffrep = RTSecondToMinute(diffrep, args$convertRTMinute)
+                    diffrep = formatIonIdentifiers(diffrep, numDigitsRT=args$numDigitsRT, numDigitsMZ=args$numDigitsMZ)
 
-                    if(listArguments[["sortpval"]]){
+                    if(args$sortpval){
                         diffrep=diffrep[order(diffrep$pvalue), ]
                     }
 
                     dir.create("tabular", showWarnings = FALSE)
                     write.table(diffrep, sep="\t", quote=FALSE, row.names=FALSE, file=paste("tabular/",filebase,"_tsv.tabular",sep=""))
 
-                    if (listArguments[["eicmax"]] != 0) {
-                        if (listArguments[["png2"]] == "pdf")
+                    if (args$eicmax != 0) {
+                        if (args$png2 == "pdf")
                             diffreport_png2pdf(filebase)
                     }
                 }
             }
         }
-        if (listArguments[["png2"]] == "zip")
+        if (args$png2 == "zip")
             diffreport_png2zip()
-        if (listArguments[["tabular2"]] == "zip")
+        if (args$tabular2 == "zip")
             diffreport_tabular2zip()
     }
 
     # --- variableMetadata ---
     variableMetadata=peakList[,!(make.names(colnames(peakList)) %in% c(make.names(sampnames(xa@xcmsSet))))]
-    variableMetadata = RTSecondToMinute(variableMetadata, listArguments[["convertRTMinute"]])
-    variableMetadata = formatIonIdentifiers(variableMetadata, numDigitsRT=listArguments[["numDigitsRT"]], numDigitsMZ=listArguments[["numDigitsMZ"]])
+    variableMetadata = RTSecondToMinute(variableMetadata, args$convertRTMinute)
+    variableMetadata = formatIonIdentifiers(variableMetadata, numDigitsRT=args$numDigitsRT, numDigitsMZ=args$numDigitsMZ)
     # if we have 2 conditions, we keep stat of diffrep
-    if (!is.null(listArguments[["runDiffreport"]]) & nlevels(sampclass(xset))==2) {
+    if (!is.null(args$runDiffreport) & nlevels(sampclass(xset))==2) {
         variableMetadata = merge(variableMetadata, diffrep[,c("name","fold","tstat","pvalue")],by.x="name", by.y="name", sort=F)
-        if(exists("listArguments[[\"sortpval\"]]")){
+        if(exists("args[[\"sortpval\"]]")){
             variableMetadata=variableMetadata[order(variableMetadata$pvalue), ]
         }
     }
@@ -188,7 +217,9 @@ annotatediff <- function(xset=xset, listArguments=listArguments, variableMetadat
 }
 
 
-combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArgumentsN, diffrepP=NULL,diffrepN=NULL,pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, convertRTMinute=F, numDigitsMZ=0, numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
+combinexsAnnos_function <- function(xaP, xaN, diffrepP=NULL,diffrepN=NULL,
+    pos=TRUE,tol=2,ruleset=NULL,keep_meta=TRUE, convertRTMinute=F, numDigitsMZ=0,
+    numDigitsRT=0, variableMetadataOutput="variableMetadata.tsv"){
 
     #Load the two Rdata to extract the xset objects from positive and negative mode
     cat("\tObject xset from positive mode\n")
@@ -215,11 +246,9 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
 
     if(pos){
         xa=xaP
-        listOFlistArgumentsP=listOFlistArguments
         mode="neg. Mode"
     } else {
         xa=xaN
-        listOFlistArgumentsN=listOFlistArguments
         mode="pos. Mode"
     }
 
@@ -256,22 +285,22 @@ combinexsAnnos_function <- function(xaP, xaN, listOFlistArgumentsP,listOFlistArg
 }
 
 # This function get the raw file path from the arguments
-getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
-    if (!is.null(listArguments[["zipfile"]]))           zipfile = listArguments[["zipfile"]]
-    if (!is.null(listArguments[["zipfilePositive"]]))   zipfile = listArguments[["zipfilePositive"]]
-    if (!is.null(listArguments[["zipfileNegative"]]))   zipfile = listArguments[["zipfileNegative"]]
+getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
+    if (!is.null(args$zipfile))           zipfile = args$zipfile
+    if (!is.null(args$zipfilePositive))   zipfile = args$zipfilePositive
+    if (!is.null(args$zipfileNegative))   zipfile = args$zipfileNegative
 
-    if (!is.null(listArguments[["singlefile_galaxyPath"]])) {
-        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPath"]];
-        singlefile_sampleNames = listArguments[["singlefile_sampleName"]]
+    if (!is.null(args$singlefile_galaxyPath)) {
+        singlefile_galaxyPaths = args$singlefile_galaxyPath;
+        singlefile_sampleNames = args$singlefile_sampleName
     }
-    if (!is.null(listArguments[["singlefile_galaxyPathPositive"]])) {
-        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPathPositive"]];
-        singlefile_sampleNames = listArguments[["singlefile_sampleNamePositive"]]
+    if (!is.null(args$singlefile_galaxyPathPositive)) {
+        singlefile_galaxyPaths = args$singlefile_galaxyPathPositive;
+        singlefile_sampleNames = args$singlefile_sampleNamePositive
     }
-    if (!is.null(listArguments[["singlefile_galaxyPathNegative"]])) {
-        singlefile_galaxyPaths = listArguments[["singlefile_galaxyPathNegative"]];
-        singlefile_sampleNames = listArguments[["singlefile_sampleNameNegative"]]
+    if (!is.null(args$singlefile_galaxyPathNegative)) {
+        singlefile_galaxyPaths = args$singlefile_galaxyPathNegative;
+        singlefile_sampleNames = args$singlefile_sampleNameNegative
     }
     if (exists("singlefile_galaxyPaths")){
         singlefile_galaxyPaths = unlist(strsplit(singlefile_galaxyPaths,","))
@@ -284,10 +313,13 @@ getRawfilePathFromArguments <- function(singlefile, zipfile, listArguments) {
             singlefile[[singlefile_sampleName]] = singlefile_galaxyPath
         }
     }
-    for (argument in c("zipfile","zipfilePositive","zipfileNegative","singlefile_galaxyPath","singlefile_sampleName","singlefile_galaxyPathPositive","singlefile_sampleNamePositive","singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
-        listArguments[[argument]]=NULL
+    for (argument in c("zipfile", "zipfilePositive", "zipfileNegative",
+                        "singlefile_galaxyPath", "singlefile_sampleName",
+                        "singlefile_galaxyPathPositive", "singlefile_sampleNamePositive",
+                        "singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
+        args[[argument]]=NULL
     }
-    return(list(zipfile=zipfile, singlefile=singlefile, listArguments=listArguments))
+    return(list(zipfile=zipfile, singlefile=singlefile, args=args))
 }
 
 
