@@ -10,14 +10,14 @@
     <expand macro="stdio"/>
 
     <command><![CDATA[
-        @COMMAND_CAMERA_SCRIPT@
-        xfunction combinexsAnnos
+        @COMMAND_RSCRIPT@/CAMERA_combinexsAnnos.r
         image_pos '$image_pos'
         image_neg '$image_neg'
 
-        variableMetadataOutput '$variableMetadata'
-
-        pos $pos tol $tol ruleset $ruleset keep_meta $keep_meta
+        pos $pos tol
+        $tol ruleset
+        $ruleset keep_meta
+        $keep_meta
 
         convertRTMinute $export.convertRTMinute
         numDigitsMZ $export.numDigitsMZ
@@ -46,9 +46,9 @@
     </inputs>
 
     <outputs>
-        <data name="variableMetadata" format="tabular" label="${image_pos.name[:-6]}.combinexsAnnos.variableMetadata.tsv" />
+        <data name="variableMetadata" format="tabular" label="${image_pos.name[:-6]}.combinexsAnnos.variableMetadata.tsv" from_work_dir="variableMetadata.tsv" />
         <!--
-        <data name="rdata" format="rdata" label="${image_pos.name[:-6]}.combinexsAnnos.Rdata" />
+        <data name="rdata" format="rdata" label="${image_pos.name[:-6]}.combinexsAnnos.Rdata" from_work_dir="combinexsAnnos.RData" />
         -->
     </outputs>
 
