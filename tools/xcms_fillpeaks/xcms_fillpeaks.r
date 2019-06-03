@@ -81,7 +81,7 @@ print(fillChromPeaksParam)
 
 # back compatibility between xcms-3.0.0 and xcms-3.5.2
 xdata <- updateObject(xdata)
-
+register(SerialParam())
 xdata <- fillChromPeaks(xdata, param=fillChromPeaksParam)
 
 if (exists("intval")) {
