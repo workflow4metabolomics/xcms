@@ -14,4 +14,4 @@ long_description: 'Part of the W4M project: http://workflow4metabolomics.org CAM
   annotations. BEWARE: this tool don''t come with its script. You will need to install
   the dedicated package_camara_w4m_script too'
 name: camera_combinexsannos
-owner: mmonsoor
+owner: workflow4metabolomics
