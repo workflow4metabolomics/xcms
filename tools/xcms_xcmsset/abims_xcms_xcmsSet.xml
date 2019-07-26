@@ -395,7 +395,8 @@ xcms findChromPeaks
 Description
 -----------
 
-This tool is used for preprocessing data from multiple LC/MS files (NetCDF, mzXML and mzData formats) using the xcms_ R package. It extracts ions from each sample independently, and using a statistical model, peaks are filtered and integrated.
+This tool is used for preprocessing data from multiple LC/MS files (NetCDF, mzXML and mzData formats) using the xcms_ R package.
+It extracts ions from each sample independently, and using a statistical model, peaks are filtered and integrated.
 A tutorial on how to perform xcms preprocessing is available as GTN_ (Galaxy Training Network).
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
