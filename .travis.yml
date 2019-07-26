@@ -117,6 +117,8 @@ install:
 script:
   - set -e
   - |
+    # @TODO: remove ASAP - the issue: https://github.com/galaxyproject/planemo/issues/865
+    for LINK in $(find . -type l -exec ls {} \;); do REALPATH=$(readlink -f $LINK); rm -f $LINK; cp $REALPATH $LINK; done
     if [ -s changed_tools_chunk.list ]; then
         planemo test --conda_dependency_resolution --conda_auto_install --conda_channels iuc,conda-forge,bioconda,defaults --galaxy_branch "$GALAXY_RELEASE" --galaxy_source "$GALAXY_REPO" $(cat changed_tools_chunk.list)
     elif [ -s changed_repositories_chunk.list ]; then
