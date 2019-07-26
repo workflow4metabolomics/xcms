@@ -6,42 +6,44 @@ Author: lecorguille@sb-roscoff.fr
 """
 
 import logging
-import os,os.path,re
-from galaxy.datatypes.data import *
-from galaxy.datatypes.sniff import *
-from galaxy.datatypes.binary import *
+
+from galaxy.datatypes.binary import RData
 
 log = logging.getLogger(__name__)
 
 
-class RdataMsnbaseRaw( RData ):
+class RdataMsnbaseRaw(RData):
     file_ext = "rdata.msnbase.raw"
     blurb = "Output of MSnbase.readMSData\nInput of xcms.findChromPeaks"
 
-    #TODO: sniff
+    # @TODO: sniff
 
-class RdataXcmsFindChromPeaks( RData ):
+
+class RdataXcmsFindChromPeaks(RData):
     file_ext = "rdata.xcms.findchrompeaks"
-    blurb = "Output of xcms.findChromPeaks\nInput of xcms.groupChromPeaks and xcms.adjustRtime"
+    blurb = "Output of xcms.findChromPeaks\nInput of xcms.groupChromPeaks and \
+        xcms.adjustRtime"
 
-    #TODO: sniff
+    # @TODO: sniff
 
-class RdataXcmsGroup( RData ):
+
+class RdataXcmsGroup(RData):
     file_ext = "rdata.xcms.group"
-    blurb = "Output of xcms.groupChromPeaks\nInput of xcms.groupChromPeaks, xcms.adjustRtime, xcms.fillChromPeaks and camera.annotate"
+    blurb = "Output of xcms.groupChromPeaks\nInput of xcms.groupChromPeaks, \
+        xcms.adjustRtime, xcms.fillChromPeaks and camera.annotate"
 
-    #TODO: sniff
+    # @TODO: sniff
 
 
-class RdataXcmsRetcor( RData ):
+class RdataXcmsRetcor(RData):
     file_ext = "rdata.xcms.retcor"
     blurb = "Output of xcms.adjustRtime\nInput of xcms.groupChromPeaks"
 
-    #TODO: sniff
+    # @TODO: sniff
 
 
-class RdataXcmsFillpeaks( RData ):
+class RdataXcmsFillpeaks(RData):
     file_ext = "rdata.xcms.fillpeaks"
     blurb = "Output of xcms.fillChromPeaks\nInput of camera.annotate"
 
-    #TODO: sniff
+    # @TODO: sniff
