@@ -396,10 +396,10 @@ Description
 -----------
 
 This tool is used for preprocessing data from multiple LC/MS files (NetCDF, mzXML and mzData formats) using the xcms_ R package. It extracts ions from each sample independently, and using a statistical model, peaks are filtered and integrated.
-A tutorial on how to perform xcms preprocessing is available here_.
+A tutorial on how to perform xcms preprocessing is available as GTN_ (Galaxy Training Network).
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
-.. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
+.. _GTN: https://training.galaxyproject.org/training-material/topics/metabolomics/tutorials/lcms/tutorial.html
 
 
 -----------------
