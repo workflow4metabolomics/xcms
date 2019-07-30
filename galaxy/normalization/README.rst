@@ -13,10 +13,3 @@ Changelog/News
 **Version 2015-01-28 - 28/01/2015**
 
 
-
-Test Status
------------
-
-Planemo test using conda: passed
-
-Planemo shed_test: passed
