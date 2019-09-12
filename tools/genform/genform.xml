@@ -46,7 +46,7 @@ genform
   #elif $elemfilt_cond.elemfilt_select == 'oc'
     oc
   #elif $elemfilt_cond.elemfilt_select == 'fuzzy'
-    ff=$elemfilt_cond.fuzzy
+    ff=$elemfilt_cond.ff
   #end if
   $het
   $hcf
@@ -95,65 +95,65 @@ genform
     ]]></command>
     <inputs>
         <param type="data" argument="ms" label="MS data" format="tabular" help="" />
-        <param type="data" argument="msms" label="MS/MS data" optional="true" format="tabular" help="" />
+        <param type="data" argument="msms" label="MS/MS data (optional)" optional="true" format="tabular" help="" />
         <conditional name="formula_cond">
-            <param type="select" name="formula_select" label="structural formula existence check" help="allow only molecular formulas for that at least one structural formula exists or specify advanced restictions, note that the default of genform is 'no existence check'">
-                <option value="">no existence check</option>
-                <option value="exist" selected="true">only molecular formulas for that at least one structural formula exists (exist)</option>
-                <option value="exist=mv">enable multiple valencies for P and S (exist=mv)</option>
-                <option value="advanced">advanced</option>
+            <param type="select" name="formula_select" label="Structural formula existence check" help="Allow only molecular formulas for that at least one structural formula exists or specify advanced restictions, note that the default of genform is 'no existence check'">
+                <option value="">No existence check</option>
+                <option value="exist" selected="true">Only molecular formulas for that at least one structural formula exists (exist)</option>
+                <option value="exist=mv">Enable multiple valencies for P and S (exist=mv)</option>
+                <option value="advanced">Advanced</option>
              </param>
              <when value=""/>
              <when value="exist"/>
              <when value="exist=mv"/>
              <when value="advanced">
-                <param type="select" argument="vsp" label="valency sum parity" help="even for graphical formulas" >
-                    <option value="">use default</option>
-                    <option value="vsp=even">even</option>
-                    <option value="vsp=odd">odd</option>
+                <param type="select" argument="vsp" label="Valency sum parity" help="Even for graphical formulas" >
+                    <option value="">Use default</option>
+                    <option value="vsp=even">Even</option>
+                    <option value="vsp=odd">Odd</option>
                 </param>
-                <param type="integer" argument="vsm2mv" label="lower bound for valency sum - 2 * maximum valency for graphical formulas" min="0" value="" help="" />
-                <param type="integer" argument="vsm2ap2" label="lower bound for valency sum - 2 * number of atoms + 2 for graphical connected formulas" min="0" value="" help="" />
-                <param type="integer" argument="ivsm2mv" label="lower bound for valency sum - 2 * maximum valency for fragment ions" min="0" value="" help="" />
-                <param type="integer" argument="ivsm2ap2" label="lower bound for valency sum - 2 * number of atoms + 2 for fragment ions" min="0" value="" help="" />
+                <param type="integer" argument="vsm2mv" label="Lower bound for valency sum - 2 * maximum valency for graphical formulas" min="0" value="" help="" />
+                <param type="integer" argument="vsm2ap2" label="Lower bound for valency sum - 2 * number of atoms + 2 for graphical connected formulas" min="0" value="" help="" />
+                <param type="integer" argument="ivsm2mv" label="Lower bound for valency sum - 2 * maximum valency for fragment ions" min="0" value="" help="" />
+                <param type="integer" argument="ivsm2ap2" label="Lower bound for valency sum - 2 * number of atoms + 2 for fragment ions" min="0" value="" help="" />
              </when>
         </conditional>
-        <param type="float" argument="m" label="experimental molecular mass" min="0" optional="true" help="(default: mass of MS basepeak)" />
-        <param type="select" argument="ion" label="type of ion measured" help="" >
+        <param type="float" argument="m" label="Experimental molecular mass" min="0" optional="true" help="(default: mass of MS basepeak)" />
+        <param type="select" argument="ion" label="Type of ion measured" help="" >
             <option value="M+H">[M+H]+</option>
             <option value="M-H">[M-H]-</option>
             <option value="M+e">M+</option>
             <option value="M-e">M-</option>
             <option value="M+Na">[M+Na]+</option>
         </param>
-        <param type="integer" argument="ppm" label="accuracy of measurement of MS1" min="0" value="5" help="in parts per million" />
-        <param type="select" argument="msmv" label="MS match value" help="select output type of the MS match value" >
-            <option value="msmv=ndp">normalized dot product</option>
-            <option value="msmv=nsse">normalized sum of squared</option>
-            <option value="msmv=nsae" selected="true">absolute errors</option>
+        <param type="integer" argument="ppm" label="Accuracy of measurement of MS1" min="0" value="5" help="In parts per million" />
+        <param type="select" argument="msmv" label="MS match value" help="Select output type of the MS match value" >
+            <option value="msmv=ndp">Normalized dot product</option>
+            <option value="msmv=nsse">Normalized sum of squared</option>
+            <option value="msmv=nsae" selected="true">Absolute errors</option>
         </param>
-        <param type="integer" argument="acc" label="allowed deviation for full acceptance" min="0" value="2" help="of MS/MS peak in ppm" />
-        <param type="integer" argument="rej" label="allowed deviation for total rejection" min="0" value="4" help="of MS/MS peak in ppm" />
-        <param type="float" argument="thms" label="threshold for the MS match value" min="0" max="1" value="0" help="" />
-        <param type="float" argument="thmsms" label="threshold for the MS/MS match value" min="0" max="1" value="0" help="" />
-        <param type="float" argument="thcomb" label="threshold for the combined match value" min="0" max="1" value="0" help="" />
-        <param type="select" argument="sort" label="sort generated formulas by" help="" >
-            <option value="">do not sort</option>
-            <option value="sort=ppm">mass deviation in ppm</option>
+        <param type="integer" argument="acc" label="Allowed deviation for full acceptance" min="0" value="2" help="of MS/MS peak in ppm" />
+        <param type="integer" argument="rej" label="Allowed deviation for total rejection" min="0" value="4" help="of MS/MS peak in ppm" />
+        <param type="float" argument="thms" label="Threshold for the MS match value" min="0" max="1" value="0" help="" />
+        <param type="float" argument="thmsms" label="Threshold for the MS/MS match value" min="0" max="1" value="0" help="" />
+        <param type="float" argument="thcomb" label="Threshold for the combined match value" min="0" max="1" value="0" help="" />
+        <param type="select" argument="sort" label="Sort generated formulas by" help="" >
+            <option value="">Do not sort</option>
+            <option value="sort=ppm">Mass deviation in ppm</option>
             <option value="sort=msmv">MS match value</option>
             <option value="sort=msmsmv">MS/MS match value</option>
-            <option value="sort=combmv">combined match value</option>
+            <option value="sort=combmv">Combined match value</option>
         </param>
         <conditional name="elemfilt_cond">
-            <param type="select" name="elemfilt_select" label="chemical element filtering">
-                <option value="nofilter">no filter</option>
-                <option value="elem">by used elements</option>
-                <option value="oc">only organic compounds (oc)</option>
-                <option value="fuzzy">by fuzzy formula</option>
-            </param>
-            <when value="nofilter"/>
+            <param type="select" name="elemfilt_select" label="Chemical element filtering">
+                <option value="nofilter">No filter</option>
+                <option value="elem">By used elements</option>
+                <option value="oc">Only organic compounds (oc)</option>
+                <option value="fuzzy">By fuzzy formula</option>
+	    </param>
+	    <when value="nofilter"/>
             <when value="elem">
-                <param type="select" multiple="true" argument="el" label="used chemical elements" help="" >
+                <param type="select" multiple="true" argument="el" label="Used chemical elements" help="" >
                     <option selected="true" value="C">C</option>
                     <option selected="true" value="N">N</option>
                     <option selected="true" value="O">O</option>
@@ -169,55 +169,55 @@ genform
              </when>
              <when value="oc"/>
              <when value="fuzzy">
-                 <param type="text" argument="ff" checked="false" label="uses fuzzy formula for limits of element multiplicities" help="" />
+                 <param type="text" argument="ff" checked="false" label="Uses fuzzy formula for limits of element multiplicities" help="" />
              </when>
         </conditional>
-        <param type="boolean" argument="het" checked="false" truevalue="het" falsevalue="" label="formulas must have at least one hetero atom" help="" />
-        <param type="boolean" argument="hcf" checked="false" truevalue="hcf" falsevalue="" label="apply Heuerding-Clerc filter" help="" />
-        <param type="select" argument="wm" label="m/z weighting for MS/MS match value" help="" >
-            <option value="">no weighting</option>
-            <option value="wm=lin">linear</option>
-            <option value="wm=sqrt">square root</option>
-            <option value="wm=log">logarithmic</option>
+        <param type="boolean" argument="het" checked="false" truevalue="het" falsevalue="" label="Formulas must have at least one hetero atom" help="" />
+        <param type="boolean" argument="hcf" checked="false" truevalue="hcf" falsevalue="" label="Apply Heuerding-Clerc filter" help="" />
+        <param type="select" argument="wm" label="Weighting of m/z for MS/MS match value" help="" >
+            <option value="">No weighting</option>
+            <option value="wm=lin">Linear</option>
+            <option value="wm=sqrt">Square root</option>
+            <option value="wm=log">Logarithmic</option>
         </param>
         <conditional name="wi_cond">
-            <param type="select" argument="wi" label="intensity weighting for MS/MS match value" help="" >
-                <option value="">no weighting</option>
-                <option value="wi=lin">linear</option>
-                <option value="wi=sqrt">square root</option>
-                <option value="wi=log">logarithmic</option>
+            <param type="select" argument="wi" label="Intensity weighting for MS/MS match value" help="" >
+                <option value="">No weighting</option>
+                <option value="wi=lin">Linear</option>
+                <option value="wi=sqrt">Square root</option>
+                <option value="wi=log">Logarithmic</option>
             </param>
             <when value=""/>
             <when value="wi=lin"/>
             <when value="wi=sqrt"/>
             <when value="wi=log">
-                <param type="float" argument="exp" optional="true" label="exponent" value="" help="" />
+                <param type="float" argument="exp" optional="true" label="Exponent" value="" help="" />
             </when>
         </conditional>
-        <param type="boolean" argument="oei" checked="false" truevalue="oei" falsevalue="" label="allow odd electron ions for explaining MS/MS peaks" help="" />
-        <param type="integer" argument="dbeexc" optional="true" label="excess of double bond equivalent for ions" help="" />
-        <section name="output" title="output options for main output" expanded="true">
+        <param type="boolean" argument="oei" checked="false" truevalue="oei" falsevalue="" label="Allow odd electron ions for explaining MS/MS peaks" help="" />
+        <param type="integer" argument="dbeexc" optional="true" label="Excess of double bond equivalent for ions" help="" />
+        <section name="output" title="Output options for main output" expanded="true">
             <conditional name="out_cond">
-                <param type="select" name="out_select" label="write explanations for MS/MS peaks to output" help="" >
+                <param type="select" name="out_select" label="Write explanations for MS/MS peaks to output" help="" >
                     <option value="">no</option>
                     <option value="analyze">yes</option>
                 </param>
                 <when value=""/>
                 <when value="analyze">
-                    <param type="boolean" argument="loss" checked="false" truevalue="loss" falsevalue="" label="for analyzing MS/MS peaks write losses instead of fragments" help="" />
-                    <param type="boolean" argument="intens" checked="false" truevalue="intens" falsevalue="" label="write intensities of MS/MS peaks to output" help="" />
+                    <param type="boolean" argument="loss" checked="false" truevalue="loss" falsevalue="" label="For analyzing MS/MS peaks write losses instead of fragments" help="" />
+                    <param type="boolean" argument="intens" checked="false" truevalue="intens" falsevalue="" label="Write intensities of MS/MS peaks to output" help="" />
                 </when>
             </conditional>
-            <param type="boolean" argument="dbe" checked="false" truevalue="dbe" falsevalue="" label="write double bond equivalents to output" help="" />
-            <param type="boolean" argument="cm" checked="false" truevalue="cm" falsevalue="" label="write calculated ion masses to output" help="" />
-            <param type="boolean" argument="pc" checked="false" truevalue="pc" falsevalue="" label="output match values in percent" help="" />
-            <param type="boolean" argument="sc" checked="false" truevalue="sc" falsevalue="" label="strip calculated isotope distributions" help="" />
+            <param type="boolean" argument="dbe" checked="false" truevalue="dbe" falsevalue="" label="Write double bond equivalents to output" help="" />
+            <param type="boolean" argument="cm" checked="false" truevalue="cm" falsevalue="" label="Write calculated ion masses to output" help="" />
+            <param type="boolean" argument="pc" checked="false" truevalue="pc" falsevalue="" label="Output match values in percent" help="" />
+            <param type="boolean" argument="sc" checked="false" truevalue="sc" falsevalue="" label="Strip calculated isotope distributions" help="" />
         </section>
-        <section name="addoutput" title="additional output data sets" expanded="true">
-            <param type="boolean" argument="oms" checked="false" truevalue="oms" falsevalue="" label="write scaled MS peaks output" help="" />
-            <param type="boolean" argument="omsms" checked="false" truevalue="omsms" falsevalue="" label="write scaled MS/MS peaks output" help="" />
-            <param type="boolean" argument="oclean" checked="false" truevalue="oclean" falsevalue="" label="write MS/MS with only explained peaks" help="" />
-            <param type="boolean" argument="oclean" checked="false" truevalue="oms" falsevalue="" label="write MS/MS with only explained peaks" help="" />
+        <section name="addoutput" title="Additional output data sets" expanded="true">
+            <param type="boolean" argument="oms" checked="false" truevalue="oms" falsevalue="" label="Write scaled MS peaks output" help="" />
+            <param type="boolean" argument="omsms" checked="false" truevalue="omsms" falsevalue="" label="Write scaled MS/MS peaks output" help="" />
+            <param type="boolean" argument="oclean" checked="false" truevalue="oclean" falsevalue="" label="Write MS/MS with only explained peaks" help="" />
+            <param type="boolean" argument="oclean" checked="false" truevalue="oms" falsevalue="" label="Write MS/MS with only explained peaks" help="" />
         </section>
     </inputs>
     <outputs>
@@ -426,7 +426,7 @@ genform
         
 **Overview**
 
-The computer program genform generates candidate molecular formulas from high-resolution
+Genform generates candidate molecular formulas from high-resolution
 MS data. It calculates match values (MV) that show how well candidate molecular formulas fit the MS
 isotope peak distributions (MS MV) and the high-resolution MS/MS fragment peak masses (MSMS
 MV). Finally it computes a combined match value from these two scores. This software can be
