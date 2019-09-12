@@ -362,9 +362,9 @@ genform
             <param name="msmv" value="msmv=ndp"/>
             <param name="acc" value="21" />
             <param name="rej" value="39" />
-            <param name="thms" value="0.3" help="" />
-            <param name="thmsms" value="0.2" help="" />
-            <param name="thcomb" value="0.1" help="" />
+            <param name="thms" value="0.3" />
+            <param name="thmsms" value="0.2" />
+            <param name="thcomb" value="0.1" />
             <param name="sort" value="sort=combmv" />
             <conditional name="elemfilt_cond">
                 <param name="elemfilt_select" value="elem"/>
