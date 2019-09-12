@@ -42,8 +42,7 @@ genform
   thcomb=$thcomb
   $sort
   #if $elemfilt_cond.elemfilt_select == 'elem'
-    #set elements="".join($elemfilt_cond.el.split(','))
-    el=$elements
+    el=#echo "".join(str($elemfilt_cond.el).split(','))
   #elif $elemfilt_cond.elemfilt_select == 'oc'
     oc
   #elif $elemfilt_cond.elemfilt_select == 'fuzzy'
@@ -53,11 +52,13 @@ genform
   $hcf
   $wm
   $wi_cond.wi
-  #if $wi_cond.wi == 'log' and str($wi_cond.exp) != ''
+  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp) != ''
     exp=$wi_cond.exp
   #end if
   $oei
-
+  #if str($dbeexc) != ''
+    dbeexc=$dbeexc
+  #end if
   #if $output.out_cond.out_select == 'analyze':
       analyze
       $output.out_cond.loss
@@ -66,6 +67,7 @@ genform
   $output.dbe
   $output.cm
   $output.pc
+  $output.sc
   out=out
   #if $addoutput.oms
      oms='$outoms'
@@ -77,15 +79,18 @@ genform
      oclean='$outoclean'
   #end if
 
+  ## for some reason genform prints the file twice if sorting is selected
+  ## (once unsorted and once sorted). hence, if soring is enabled just
+  ## the lower half of the file is returned
   #if $sort != ''
   &&
     wc=\$(wc -l out | cut -d" " -f 1 )
   &&
     hwc=\$(echo "\$wc/2" | bc)
   &&
-    tail -n $hwc > $out
+    tail -n \$hwc > '$out'
   #else
-  && cp out $out
+    && cp out '$out'
   #end if
     ]]></command>
     <inputs>
@@ -190,6 +195,7 @@ genform
             </when>
         </conditional>
         <param type="boolean" argument="oei" checked="false" truevalue="oei" falsevalue="" label="allow odd electron ions for explaining MS/MS peaks" help="" />
+        <param type="integer" argument="dbeexc" optional="true" label="excess of double bond equivalent for ions" help="" />
         <section name="output" title="output options for main output" expanded="true">
             <conditional name="out_cond">
                 <param type="select" name="out_select" label="write explanations for MS/MS peaks to output" help="" >
@@ -205,6 +211,7 @@ genform
             <param type="boolean" argument="dbe" checked="false" truevalue="dbe" falsevalue="" label="write double bond equivalents to output" help="" />
             <param type="boolean" argument="cm" checked="false" truevalue="cm" falsevalue="" label="write calculated ion masses to output" help="" />
             <param type="boolean" argument="pc" checked="false" truevalue="pc" falsevalue="" label="output match values in percent" help="" />
+            <param type="boolean" argument="sc" checked="false" truevalue="sc" falsevalue="" label="strip calculated isotope distributions" help="" />
         </section>
         <section name="addoutput" title="additional output data sets" expanded="true">
             <param type="boolean" argument="oms" checked="false" truevalue="oms" falsevalue="" label="write scaled MS peaks output" help="" />
@@ -226,32 +233,59 @@ genform
         </data>
     </outputs>
     <tests>
+        <!-- test with MS input and mostly default values -->
         <test expect_num_outputs="1">
             <param name="ms" ftype="tabular" value="CreatineMs.txt" />
             <param name="acc" value="20" />
             <param name="rej" value="40" />
             <output name="out" ftype="tabular" file="CreatineMs.out"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <not_has_text text=" msms=" />
+                <has_text text=" exist " />
+                <not_has_text text=" m=" />
+                <has_text text=" ion=M+H " />
+                <has_text text=" ppm=5 " />
+                <has_text text=" msmv=nsae " />
+                <has_text text=" acc=20 " />
+                <has_text text=" rej=40 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thcomb=0.0 " />
+                <not_has_text text=" sort" />
+                <not_has_text text=" el=" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <not_has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <not_has_text text=" hcf " />
+                <not_has_text text=" wm=" />
+                <not_has_text text=" wi=" />
+                <not_has_text text=" exp=" />
+                <not_has_text text=" oei " />
+                <not_has_text text=" dbeexc=" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <not_has_text text=" oms=" />
+                <not_has_text text=" omsms=" />
+                <not_has_text text=" oclean=" />
+                <not_has_text text=" analyze " />
+                <not_has_text text=" loss " />
+                <not_has_text text=" intens " />
+                <not_has_text text=" dbe " />
+                <not_has_text text=" cm " />
+                <not_has_text text=" pc " />
+                <not_has_text text=" sc " />
+            </assert_command>
         </test>
-        <test expect_num_outputs="1">
-            <param name="ms" ftype="tabular" value="CreatineMs.txt" />
-            <param name="msms" ftype="tabular" value="CreatineMsMs.txt" />
-            <param name="acc" value="20" />
-            <param name="rej" value="40" />
-            <output name="out" ftype="tabular" file="CreatineMsMs.out"/>
-        </test>
+        <!-- test with MS/MS input and non default output options -->
         <test expect_num_outputs="4">
             <param name="ms" ftype="tabular" value="CreatineMs.txt" />
             <param name="msms" ftype="tabular" value="CreatineMsMs.txt" />
             <param name="acc" value="20" />
             <param name="rej" value="40" />
-            <param name="het" value="het" />
-            <param name="hcf" value="hcf" />
-            <param name="wm" value="wm=sqrt"/>
-            <conditional name="wi_cond">
-                <param name="wi" value="wi=log"/>
-                <param name="exp" value="2.31"/>
-            </conditional>
-            <param name="oei" value="oei" />
             <section name="output">
                 <conditional name="out_cond">
                     <param name="out_select" value="analyze"/>
@@ -261,6 +295,7 @@ genform
                 <param name="dbe" value="dbe" />
                 <param name="cm" value="cm" />
                 <param name="pc" value="pc" />
+                <param name="sc" value="sc" />
             </section>
             <section name="addoutput">
                 <param name="oms" value="oms" />
@@ -272,6 +307,119 @@ genform
             <output name="outoms" ftype="tabular" file="CreatineMsMs-oms.out"/>
             <output name="outomsms" ftype="tabular" file="CreatineMsMs-omsms.out"/>
             <output name="outoclean" ftype="tabular" file="CreatineMsMs-oclean.out"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <has_text text=" msms=" />
+                <has_text text=" exist" />
+                <not_has_text text=" m=" />
+                <has_text text=" ion=M+H " />
+                <has_text text=" ppm=5 " />
+                <has_text text=" msmv=nsae " />
+                <has_text text=" acc=20 " />
+                <has_text text=" rej=40 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thcomb=0.0 " />
+                <not_has_text text=" sort" />
+                <not_has_text text=" el=" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <not_has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <not_has_text text=" hcf " />
+                <not_has_text text=" wm=" />
+                <not_has_text text=" wi=" />
+                <not_has_text text=" exp=" />
+                <not_has_text text=" oei " />
+                <not_has_text text=" dbeexc=" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <has_text text=" oms=" />
+                <has_text text=" omsms=" />
+                <has_text text=" oclean=" />
+                <has_text text=" analyze " />
+                <has_text text=" loss " />
+                <has_text text=" intens " />
+                <has_text text=" dbe " />
+                <has_text text=" cm " />
+                <has_text text=" pc " />
+                <has_text text=" sc " />
+            </assert_command>
+        </test>
+        <!-- test with MS/MS input and other non-default values 
+             (creates empty output .. but test is still usefull) -->
+        <test expect_num_outputs="1">
+            <param name="ms" ftype="tabular" value="CreatineMs.txt" />
+            <param name="msms" ftype="tabular" value="CreatineMsMs.txt" />
+            <conditional name="formula_cond">
+                <param name="formula_select" value=""/>
+            </conditional>
+            <param name="m" value="111.0201" />
+            <param name="ion" value="M-H" />
+            <param name="ppm" value="4" />
+            <param name="msmv" value="msmv=ndp"/>
+            <param name="acc" value="21" />
+            <param name="rej" value="39" />
+            <param name="thms" value="0.3" help="" />
+            <param name="thmsms" value="0.2" help="" />
+            <param name="thcomb" value="0.1" help="" />
+            <param name="sort" value="sort=combmv" />
+            <conditional name="elemfilt_cond">
+                <param name="elemfilt_select" value="elem"/>
+                <param name="el" value="C,N,O,P,S,H,Cl,Br,F,I" />
+            </conditional>
+            <param name="het" value="het" />
+            <param name="hcf" value="hcf" />
+            <param name="wm" value="wm=sqrt"/>
+            <conditional name="wi_cond">
+                <param name="wi" value="wi=log"/>
+                <param name="exp" value="2.31"/>
+            </conditional>
+            <param name="oei" value="oei" />
+            <param name="dbeexc" value="1" />
+            <output name="out" ftype="tabular" file="CreatineMsMs.out" lines_diff="3"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <has_text text=" msms=" />
+                <not_has_text text=" exist" />
+                <has_text text=" m=111.0201" />
+                <has_text text=" ion=M-H" />
+                <has_text text=" ppm=4" />
+                <has_text text=" msmv=ndp" />
+                <has_text text=" acc=21" />
+                <has_text text=" rej=39" />
+                <has_text text=" thms=0.3" />
+                <has_text text=" thmsms=0.2" />
+                <has_text text=" thcomb=0.1" />
+                <has_text text=" sort=combmv" />
+                <has_text text=" el=CNOPSHClBrFI" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <has_text text=" hcf " />
+                <has_text text=" wm=sqrt " />
+                <has_text text=" wi=log " />
+                <has_text text=" exp=2.31 " />
+                <has_text text=" oei " />
+                <has_text text=" dbeexc=1" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <not_has_text text=" oms=" />
+                <not_has_text text=" omsms=" />
+                <not_has_text text=" oclean=" />
+                <not_has_text text=" analyze " />
+                <not_has_text text=" loss " />
+                <not_has_text text=" intens " />
+                <not_has_text text=" dbe " />
+                <not_has_text text=" cm " />
+                <not_has_text text=" pc " />
+                <not_has_text text=" sc " />
+            </assert_command>
         </test>
     </tests>
     <help><![CDATA[
