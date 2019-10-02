@@ -9,15 +9,14 @@ sink(log_file, type = "output")
 
 
 # ----- PACKAGE -----
-options(bitmapType='cairo')
-cat("\tPACKAGE INFO\n")
-#pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","rsm","igraph","CAMERA","IPO","snow","batch")
-for(pkg in pkgs) {
-  suppressWarnings( suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE))))
-  cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
-}
-source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+cat("\tSESSION INFO\n")
+
+#Import the different functions
+source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local("lib.r")
+
+pkgs <- c("IPO","batch")
+loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
 
@@ -31,14 +30,12 @@ cat("\n\n");
 
 # ----- ARGUMENTS PROCESSING -----
 cat("\tINFILE PROCESSING INFO\n")
+options(bitmapType='cairo')
 
 #image is an .RData file necessary to use xset variable given by previous tools
 if (!is.null(listArguments[["image"]])){
   load(listArguments[["image"]]); listArguments[["image"]]=NULL
 }
-
-#Import the different functions
-source_local("lib.r")
 
 cat("\n\n")
 

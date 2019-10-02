@@ -9,19 +9,15 @@ sink(log_file, type = "output")
 
 
 # ----- PACKAGE -----
-options(bitmapType='cairo')
-cat("\tPACKAGE INFO\n")
-#pkgs=c("xcms","batch")
-pkgs=c("parallel","BiocGenerics", "Biobase", "Rcpp", "mzR", "xcms","rsm","igraph","CAMERA","IPO","snow","batch")
-for(pkg in pkgs) {
-  suppressWarnings( suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE))))
-  cat(pkg,"\t",as.character(packageVersion(pkg)),"\n",sep="")
-}
-source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
-cat("\n\n"); 
+cat("\tSESSION INFO\n")
 
+#Import the different functions
+source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local("lib.r")
 
-
+pkgs <- c("IPO","batch")
+loadAndDisplayPackages(pkgs)
+cat("\n\n");
 
 
 # ----- ARGUMENTS -----
@@ -31,20 +27,9 @@ write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
 
 cat("\n\n");
 
-
-# ----- ARGUMENTS PROCESSING -----
-cat("\tINFILE PROCESSING INFO\n")
-
-
-#Import the different functions
-source_local("lib.r")
-
-cat("\n\n")
-
-#Import the different functions
-
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
+options(bitmapType='cairo')
 
 xsetRdataOutput = paste("ipo4xcmsSet","RData",sep=".")
 if (!is.null(listArguments[["xsetRdataOutput"]])){
@@ -82,15 +67,15 @@ if(exists("singlefile_galaxyPath") && (singlefile_galaxyPath!="")) {
         error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
         print(error_message); stop(error_message)
     }
-    
+
     cwd=getwd()
     dir.create("raw")
     setwd("raw")
     file.symlink(singlefile_galaxyPath,singlefile_sampleName)
     setwd(cwd)
-    
+
     directory = "raw"
-    
+
 }
 
 # We unzip automatically the chromatograms from the zip files.
