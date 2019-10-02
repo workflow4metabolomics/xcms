@@ -1,0 +1,382 @@
+<tool id="ipo4xcmsSet" name="IPO for xcmsSet" version="0.0.3">
+
+    <description>IPO optimization process for xcms.xcmsSet</description>
+
+    <macros>
+        <import>macros.xml</import>
+
+        <macro name="centwave_ppm_fixed">
+            <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
+        </macro>
+        <macro name="centwave_peakwidth_fixed">
+            <param name="min_peakwidth" type="float" value="20" label="Min peak width range in seconds" optional="true" help="[min_peakwidth]" />
+            <param name="max_peakwidth" type="float" value="50" label="Max peak width range in seconds" optional="true" help="[max_peakwidth]" />
+        </macro>
+        <macro name="centwave_mzdiff_fixed">
+            <param name="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] Can be negative to allow overlap" />
+        </macro>
+
+        <macro name="matchedfilter_fwhm_fixed">
+            <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
+        </macro>
+        <macro name="matchedfilter_mzdiff_fixed">
+            <param name="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps " />
+        </macro>
+    </macros>
+
+    <expand macro="requirements"/>
+    <expand macro="stdio"/>
+
+    <command><![CDATA[
+        LANG=C Rscript $__tool_directory__/ipo4xcmsSet.r
+
+        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
+            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+        #else
+            zipfile '$input'
+        #end if
+
+        parametersOutput $parametersOutput
+        xsetRdataOutput $xsetRData
+
+        samplebyclass $samplebyclass
+
+        ## profmethod $profmethod
+        @COMMAND_NSLAVES@
+        method $methods.method
+        #if $methods.method == "centWave":
+            ppm "c($methods.section_centwave_optiomizable.conditional_parameter.ppm)"
+            min_peakwidth "c($methods.section_centwave_optiomizable.conditional_parameter.min_peakwidth)"
+            max_peakwidth "c($methods.section_centwave_optiomizable.conditional_parameter.max_peakwidth)"
+            mzdiff "c($methods.section_centwave_optiomizable.conditional_parameter.mzdiff)"
+
+            snthresh $methods.section_centwave_non_optiomizable.snthresh
+            integrate $methods.section_centwave_non_optiomizable.integrate
+            noise $methods.section_centwave_non_optiomizable.noise
+            prefilter "c($methods.section_centwave_non_optiomizable.prefilter)"
+
+        #elif $methods.method == "matchedFilter":
+            fwhm "c($methods.section_matchedfilter_optiomizable.conditional_parameter.fwhm)"
+            mzdiff "c($methods.section_matchedfilter_optiomizable.conditional_parameter.mzdiff)"
+
+            step $methods.section_matchedfilter_non_optimizable.step
+            steps $methods.section_matchedfilter_non_optimizable.steps
+            max $methods.section_matchedfilter_non_optimizable.max
+            snthresh $methods.section_matchedfilter_non_optimizable.snthresh
+        #end if
+
+        @COMMAND_LOG_EXIT@
+    ]]></command>
+
+    <inputs>
+
+        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+
+        <param name="samplebyclass" type="integer" value="2" label="Number of samples used per class to estimate the best parameters" help="Set to 0 to use the whole dataset. To save time, reduce this number" />
+
+        <conditional name="methods">
+            <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
+                <option value="centWave" >centWave</option>
+                <option value="matchedFilter" selected="true">matchedFilter</option>
+            </param>
+
+            <!-- centWave Filter options -->
+            <when value="centWave">
+                <section name="section_centwave_optiomizable"  title="Optimizable parameters" expanded="True">
+                    <conditional name="conditional_parameter">
+                        <param name="select_parameter" type="select" label="Which parameter do you want to optimize?" help="Only one paramter can be optimized at once. The other will require fixed values">
+                            <option value="ppm">Max tolerated ppm m/z deviation in consecutive scans in ppm [ppm]</option>
+                            <option value="peakwidth">Min,Max peak width in seconds [peakwidth]</option>
+                            <option value="mzdiff">Minimum difference in m/z for peaks with overlapping Retention Times [mzdiff]</option>
+                        </param>
+                        <when value="ppm">
+                            <param name="ppm" type="text" value="17,32" label="Range for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="[ppm] (ex: 25 or 17,32)">
+                                <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
+                            </param>
+                            <expand macro="centwave_peakwidth_fixed" />
+                            <expand macro="centwave_mzdiff_fixed" />
+                        </when>
+                        <when value="peakwidth">
+                            <param name="min_peakwidth" type="text" value="12,18" label="Range for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
+                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                            </param>
+                            <param name="max_peakwidth" type="text" value="35,65" label="Range for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
+                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                            </param>
+                            <expand macro="centwave_ppm_fixed" />
+                            <expand macro="centwave_mzdiff_fixed" />
+                        </when>
+                        <when value="mzdiff">
+                            <param name="mzdiff" type="text" value="-0.001,0.010" label="Range for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
+                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                            </param>
+                            <expand macro="centwave_ppm_fixed" />
+                            <expand macro="centwave_peakwidth_fixed" />
+                        </when>
+                    </conditional>
+                </section>
+
+                <section name="section_centwave_non_optiomizable"  title="Non optimizable parameters" expanded="True">
+                    <param name="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="[snthresh] Signal to noise ratio cutoff" />
+                    <param name="integrate" type="select" label="Peak limits method" help="[integrate]" >
+                        <option value="1">peak limits based on smoothed 2nd derivative (less precise)</option>
+                        <option value="2">peak limits based on real data (more sensitive to noise)</option>
+                    </param>
+                    <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
+                    <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
+                </section>
+            </when>
+
+            <!-- matched Filter options -->
+            <when value="matchedFilter">
+                <section name="section_matchedfilter_optiomizable"  title="Optimizable parameters" expanded="True">
+                    <conditional name="conditional_parameter">
+                        <param name="select_parameter" type="select" label="Which parameter do you want to optimize?" help="Only one paramter can be optimized at once. The other will require fixed values">
+                            <option value="fwhm">Full width at half maximum of matched filtration gaussian model peak [fwhm]</option>
+                            <option value="mzdiff">Minimum difference in m/z for peaks with overlapping Retention Times [mzdiff]</option>
+                        </param>
+                        <when value="fwhm">
+                            <param name="fwhm" type="text" value="25,35" label="Range for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
+                                <validator type="regex" message="Should be this format: XX,YY">[0-9]+,[0-9]+</validator>
+                            </param>
+                            <expand macro="matchedfilter_mzdiff_fixed" />
+                        </when>
+                        <when value="mzdiff">
+                            <param name="mzdiff" type="text" value="0.4,0.7" label="Range for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
+                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                            </param>
+                            <expand macro="matchedfilter_fwhm_fixed" />
+                        </when>
+                    </conditional>
+                </section>
+
+                <section name="section_matchedfilter_non_optimizable" title="Non optimizable parameters"  expanded="True">
+                    <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
+                    <param name="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="[steps] The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
+                    <param name="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" help="[max]" />
+                    <param name="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" help="[snthresh]" />
+                </section>
+            </when>
+        </conditional>
+
+
+    </inputs>
+
+    <outputs>
+        <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
+        <data name="parametersOutput" format="tabular" label="IPO_parameters4xcmsSet.tsv" />
+        <data name="log" format="txt" label="ipo4xcmsSet.log.txt" />
+    </outputs>
+
+    <tests>
+        <test>
+            <param name="input" value="MM14.mzML"  ftype="mzxml" />
+            <param name="samplebyclass" value="0" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <section name="section_centwave_optiomizable" >
+                    <conditional name="conditional_parameter">
+                        <param name="select_parameter" value="peakwidth" />
+                        <param name="min_peakwidth" value="3,9.5" />
+                        <param name="max_peakwidth" value="10,20" />
+                        <param name="ppm" value="56" />
+                        <param name="mzdiff" value="-0.001" />
+                    </conditional>
+                </section>
+            </conditional>
+            <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_peakwidth.tsv" />
+        </test>
+        <test>
+            <param name="input" value="MM14.mzML"  ftype="mzxml" />
+            <param name="samplebyclass" value="0" />
+            <conditional name="methods">
+                <param name="method" value="centWave" />
+                <section name="section_centwave_optiomizable" >
+                    <conditional name="conditional_parameter">
+                        <param name="select_parameter" value="ppm" />
+                        <param name="ppm" value="50,60" />
+                        <param name="min_peakwidth" value="3.325" />
+                        <param name="max_peakwidth" value="11" />
+                        <param name="mzdiff" value="-0.001" />
+                    </conditional>
+                </section>
+            </conditional>
+            <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_ppm.tsv" />
+        </test>
+        <!-- Too long for Travis CI -->
+        <!--<test>
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="sacuri_2files.zip"  ftype="zip" />
+            <param name="samplebyclass" value="1" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|min_peakwidth" value="20,30" />
+            <param name="methods|max_peakwidth" value="45,55" />
+            <output name="parametersOutput" file="sacuri_2files_centWave_IPO_parameters4xcmsSet.tsv" />
+        </test>-->
+        <!-- Too long for Travis CI -->
+        <!--<test>
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="sacuri_2files.zip"  ftype="zip" />
+            <param name="samplebyclass" value="1" />
+            <param name="methods|method" value="matchedFilter" />
+            <param name="methods|step" value="0.05,0.15" />
+            <param name="methods|fwhm" value="25,35" />
+            <output name="parametersOutput" file="sacuri_2files_matchedFilter_IPO_parameters4xcmsSet.tsv" />
+        </test>-->
+        <!--Failed:
+                Error in resultIncreased(history) :
+                        No isotopes have been detected, peak picking not optimizable by IPO!-->
+        <!--<test>
+            <param name="inputs|input" value="zip_file" />
+            <param name="inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
+            <param name="methods|method" value="centWave" />
+            <param name="methods|ppm" value="25" />
+            <param name="methods|min_peakwidth" value="15,25" />
+            <param name="methods|min_peakwidth" value="20,30" />
+            <param name="methods|max_peakwidth" value="45,55" />
+            <output name="parametersOutput" file="faahKO_IPO_parameters4xcmsSet.tsv" />
+        </test>-->
+    </tests>
+
+    <help><![CDATA[
+
+@HELP_AUTHORS@
+
+===============
+IPO.ipo4xcmsSet
+===============
+
+-----------
+Description
+-----------
+
+A Tool for automated Optimization of XCMS Parameters
+
+
+-----------------
+Workflow position
+-----------------
+
+**Upstream tools**
+
+========================= ================= ======= =========
+Name                      output file       format  parameter
+========================= ================= ======= =========
+NA                        NA                zip     NA
+========================= ================= ======= =========
+
+
+**Downstream tools**
+
++---------------------------+----------------------+-----------------+
+| Name                      | Output file          | Format          |
++===========================+======================+=================+
+|xcms.xcmsSet               | parametersOutput.tsv | Tabular         |
++---------------------------+--------------------+-------------------+
+
+
+
+-----------
+Input files
+-----------
+
++---------------------------+------------+
+| Parameter : num + label   |   Format   |
++===========================+============+
+| 1 : Choose your inputs    |   zip      |
++---------------------------+------------+
+
+**Choose your inputs**
+
+You have two methods for your inputs:
+
+    | Zip file (recommended): You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
+    | library folder: You must specify the name of your "library" (folder) created within your space project (for example: /projet/externe/institut/login/galaxylibrary/yourlibrary). Your library must contain all your conditions as sub-directories.
+
+Steps for creating the zip file
+-------------------------------
+
+**Step1: Creating your directory and hierarchize the subdirectories**
+
+
+VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
+
+Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
+arabidopsis/wild/01.raw
+arabidopsis/mutant/01.raw
+
+**Step2: Creating a zip file**
+
+Create your zip file (e.g.: arabidopsis.zip).
+
+**Step 3 : Uploading it to our Galaxy server**
+
+If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
+
+Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
+
+For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
+
+Advices for converting your files for the XCMS input
+----------------------------------------------------
+
+We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
+
+**We recommend you the following parameters:**
+
+Use Filtering: **True**
+
+Use Peak Picking: **True**
+
+Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
+
+Use zlib: **64**
+
+Binary Encoding: **64**
+
+m/z Encoding: **64**
+
+Intensity Encoding: **64**
+
+
+----------
+Parameters
+----------
+
+Extraction method for peaks detection
+-------------------------------------
+
+**Matched Filter**
+
+    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
+    | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
+
+
+**cent Wave**
+
+    | This algorithm is most suitable for high resolution LC/{TOF,OrbiTrap,FTICR}-MS data in centroid mode.
+    | Due to the fact that peak centroids are used, a binning step is not necessary.
+    | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
+
+
+------------
+Output files
+------------
+
+IPO_parameters4xcmsSet.tsv
+
+    | Optimal parameters for xcmsSet
+
+
+---------------------------------------------------
+
+Changelog/News
+--------------
+
+
+
+    ]]></help>
+
+    <expand macro="citation" />
+</tool>
