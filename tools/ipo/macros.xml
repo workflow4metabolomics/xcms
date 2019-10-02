@@ -2,8 +2,7 @@
 <macros>
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="0.4_1">r-snow</requirement>
-            <requirement type="package" version="1.0.0">bioconductor-ipo</requirement>
+            <requirement type="package" version="1.10.0">bioconductor-ipo</requirement>
             <requirement type="package" version="1.1_4">r-batch</requirement>
         </requirements>
     </xml>
