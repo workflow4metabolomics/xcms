@@ -6,33 +6,33 @@
             <requirement type="package" version="1.1_5">r-batch</requirement>
         </requirements>
     </xml>
-
-    <token name="@COMMAND_LOG_EXIT@">
+    <token name="@COMMAND_LOG_EXIT@"><![CDATA[
         ;
         return=\$?;
         mv log.txt $log;
         cat $log;
         sh -c "exit \$return"
-    </token>
+    ]]></token>
 
-    <token name="@COMMAND_NSLAVES@">
+    <token name="@COMMAND_NSLAVES@"><![CDATA[
         nSlaves \${GALAXY_SLOTS:-1}
-    </token>
+    ]]></token>
 
     <!-- zipfile load for planemo test -->
 
-    <token name="@COMMAND_FILE_LOAD@">
+    <token name="@ESCAPE_IDENTIFIER@"><![CDATA[re.sub('[^\s\w\-\.]', '_', str($file.element_identifier))]]></token>
+    <token name="@COMMAND_FILE_LOAD@"><![CDATA[
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
             #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
                 #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
-                #set singlefile_sampleName = ','.join( [ str( $single_file.name ) for $single_file in $file_load_section.file_load_conditional.input ] )
+                #set singlefile_sampleName = ','.join(["'%s'" % @ESCAPE_IDENTIFIER@ for file in $file_load_section.file_load_conditional.input ] )
 
                 singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #else
                 zipfile '$file_load_section.file_load_conditional.input'
             #end if
         #end if
-    </token>
+    ]]></token>
 
     <xml name="input_file_load">
         <section name="file_load_section" title="Resubmit your raw dataset or your zip file">
@@ -68,7 +68,7 @@
         </section>
     </xml>
 
-    <token name="@HELP_AUTHORS@">
+    <token name="@HELP_AUTHORS@"><![CDATA[
 .. class:: infomark
 
 **Authors**  Gunnar Libiseller, Michaela Dvorzak, Ulrike Kleb, Edgar Gander, Tobias Eisenberg, Frank Madeo, Steffen Neumann, Gert Trausinger, Frank Sinner, Thomas Pieber and Christoph Magnes
@@ -81,12 +81,12 @@
 
 ---------------------------------------------------
 
-    </token>
-    <token name="@HELP_NEWVERSION_1_10_0_0@">
+    ]]></token>
+    <token name="@HELP_NEWVERSION_1_10_0_0@"><![CDATA[
 **Version 1.10.0.0 - 03/09/2019**
 
 - NEW: new versions of the IPO wrappers based on IPO-1.10.0
-    </token>
+    ]]></token>
 
 
     <xml name="citation">
