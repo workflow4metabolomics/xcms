@@ -1,4 +1,5 @@
-categories: [Metabolomics]
+categories:
+  - Metabolomics
 description: '[W4M][LC-MS] IPO'
 homepage_url: http://workflow4metabolomics.org
 long_description: 'Part of the W4M project: http://workflow4metabolomics.org'

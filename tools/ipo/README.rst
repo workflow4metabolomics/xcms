@@ -2,13 +2,7 @@
 Changelog/News
 --------------
 
-**Version X.X.X - XX/XX/XXXX**
+**Version 1.10.0.0 - 03/09/2019**
 
-- NEW: 
+- NEW: new versions of the IPO wrappers based on IPO-1.10.0
 
-Test Status
------------
-
-Planemo test using conda: failed on the faahKO_reduce.zip
-
-Planemo shed_test : unbuild

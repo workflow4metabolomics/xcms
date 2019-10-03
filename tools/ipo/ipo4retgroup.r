@@ -145,11 +145,11 @@ cat("\n\n")
 
 # ----- EXPORT -----
 
-cat("\tEXPORTING INFO\n")
+#cat("\tEXPORTING INFO\n")
 
 #save.image(file="ipo-retcor.RData")
 
-cat("\n\n")
+#cat("\n\n")
 
 
 cat("\tDONE\n")

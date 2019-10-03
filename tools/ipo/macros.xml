@@ -6,15 +6,6 @@
             <requirement type="package" version="1.1_5">r-batch</requirement>
         </requirements>
     </xml>
-    <xml name="stdio">
-        <stdio>
-            <exit_code range="1" level="fatal" />
-        </stdio>
-    </xml>
-
-    <token name="@COMMAND_SCRIPT@">
-        LANG=C Rscript $__tool_directory__/
-    </token>
 
     <token name="@COMMAND_LOG_EXIT@">
         ;
@@ -90,6 +81,11 @@
 
 ---------------------------------------------------
 
+    </token>
+    <token name="@HELP_NEWVERSION_1_10_0_0@">
+**Version 1.10.0.0 - 03/09/2019**
+
+- NEW: new versions of the IPO wrappers based on IPO-1.10.0
     </token>
 
 

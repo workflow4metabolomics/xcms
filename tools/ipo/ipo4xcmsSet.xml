@@ -25,10 +25,9 @@
     </macros>
 
     <expand macro="requirements"/>
-    <expand macro="stdio"/>
 
-    <command><![CDATA[
-        LANG=C Rscript $__tool_directory__/ipo4xcmsSet.r
+    <command detect_errors="exit_code"><![CDATA[
+        LANG=C Rscript '$__tool_directory__/ipo4xcmsSet.r'
 
         #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
             singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
@@ -374,7 +373,7 @@ IPO_parameters4xcmsSet.tsv
 Changelog/News
 --------------
 
-
+@HELP_NEWVERSION_1_10_0_0@
 
     ]]></help>
 
