@@ -125,12 +125,13 @@ install:
 script:
   - set -e
   - |
+    travis_wait 30 
     # @TODO: remove ASAP - the issue: https://github.com/galaxyproject/planemo/issues/865
     for LINK in $(find . -type l -exec ls {} \;); do REALPATH=$(readlink -f $LINK); rm -f $LINK; cp $REALPATH $LINK; done
     if [ -s changed_tools_chunk.list ]; then
-        travis_wait 30 planemo test --conda_dependency_resolution --conda_auto_install --conda_channels iuc,conda-forge,bioconda,defaults --galaxy_branch "$GALAXY_RELEASE" --galaxy_source "$GALAXY_REPO" $(cat changed_tools_chunk.list)
+        planemo test --conda_dependency_resolution --conda_auto_install --conda_channels iuc,conda-forge,bioconda,defaults --galaxy_branch "$GALAXY_RELEASE" --galaxy_source "$GALAXY_REPO" $(cat changed_tools_chunk.list)
     elif [ -s changed_repositories_chunk.list ]; then
         while read -r DIR; do
-            travis_wait 30 planemo test --conda_dependency_resolution --conda_auto_install --conda_channels iuc,conda-forge,bioconda,defaults --galaxy_branch "$GALAXY_RELEASE" --galaxy_source "$GALAXY_REPO" "$DIR"
+            planemo test --conda_dependency_resolution --conda_auto_install --conda_channels iuc,conda-forge,bioconda,defaults --galaxy_branch "$GALAXY_RELEASE" --galaxy_source "$GALAXY_REPO" "$DIR"
         done < changed_repositories_chunk.list
     fi
