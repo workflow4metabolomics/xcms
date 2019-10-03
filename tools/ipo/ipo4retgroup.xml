@@ -142,7 +142,7 @@
                 <param name="method" value="density"/>
                 <section name="section_group_density_optiomizable">
                     <param name="bw" value="28,32"/>
-                    <param name="mzwid" value="0.25,0.25"/>
+                    <param name="mzwid" value="0.24,0.26"/>
                 </section>
                 <section name="section_group_density_non_optimizable">
                     <param name="minfrac" value="1"/>
