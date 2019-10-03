@@ -20,12 +20,13 @@
 
     <!-- zipfile load for planemo test -->
 
-    <token name="@ESCAPE_IDENTIFIER@"><![CDATA[re.sub('[^\s\w\-\.]', '_', str($file.element_identifier))]]></token>
+    <token name="@ESCAPE_IDENTIFIER@"><![CDATA[re.sub('[^\s\w\-\.]', '_', str($single_file.element_identifier))]]></token>
     <token name="@COMMAND_FILE_LOAD@"><![CDATA[
+        #import re
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
             #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
                 #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
-                #set singlefile_sampleName = ','.join(["'%s'" % @ESCAPE_IDENTIFIER@ for file in $file_load_section.file_load_conditional.input ] )
+                #set singlefile_sampleName = ','.join( ["'%s'" % re.sub('[^\s\w\-\.]', '_', str($single_file.element_identifier)) for single_file in $file_load_section.file_load_conditional.input ] )
 
                 singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
             #else
