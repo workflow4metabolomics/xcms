@@ -26,10 +26,10 @@
         @COMMAND_NSLAVES@
         method $methods.method
         #if $methods.method == "centWave":
-            ppm "c($methods.section_centwave_optiomizable.conditional_parameter.ppm)"
-            min_peakwidth "c($methods.section_centwave_optiomizable.conditional_parameter.min_peakwidth)"
-            max_peakwidth "c($methods.section_centwave_optiomizable.conditional_parameter.max_peakwidth)"
-            mzdiff "c($methods.section_centwave_optiomizable.conditional_parameter.mzdiff)"
+            ppm "c($methods.section_centwave_optiomizable.ppm)"
+            min_peakwidth "c($methods.section_centwave_optiomizable.min_peakwidth)"
+            max_peakwidth "c($methods.section_centwave_optiomizable.max_peakwidth)"
+            mzdiff "c($methods.section_centwave_optiomizable.mzdiff)"
 
             snthresh $methods.section_centwave_non_optiomizable.snthresh
             integrate $methods.section_centwave_non_optiomizable.integrate
@@ -37,8 +37,8 @@
             prefilter "c($methods.section_centwave_non_optiomizable.prefilter)"
 
         #elif $methods.method == "matchedFilter":
-            fwhm "c($methods.section_matchedfilter_optiomizable.conditional_parameter.fwhm)"
-            mzdiff "c($methods.section_matchedfilter_optiomizable.conditional_parameter.mzdiff)"
+            fwhm "c($methods.section_matchedfilter_optiomizable.fwhm)"
+            mzdiff "c($methods.section_matchedfilter_optiomizable.mzdiff)"
 
             step $methods.section_matchedfilter_non_optimizable.step
             steps $methods.section_matchedfilter_non_optimizable.steps

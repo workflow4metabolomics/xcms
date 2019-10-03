@@ -23,8 +23,8 @@
 
         sleep 0.001
         #if $group.method == "density":
-            bw "c($group.section_group_density_optiomizable.conditional_parameter.bw)"
-            mzwid "c($group.section_group_density_optiomizable.conditional_parameter.mzwid)"
+            bw "c($group.section_group_density_optiomizable.bw)"
+            mzwid "c($group.section_group_density_optiomizable.mzwid)"
 
             minfrac $group.section_group_density_non_optimizable.minfrac
             max $group.section_group_density_non_optimizable.max
