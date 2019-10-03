@@ -127,8 +127,8 @@
                 <section name="section_centwave_optiomizable" >
                     <param name="min_peakwidth" value="3,9.5" />
                     <param name="max_peakwidth" value="10,20" />
-                    <param name="ppm" value="56,56" />
-                    <param name="mzdiff" value="-0.001,-0.001" />
+                    <param name="ppm" value="56" />
+                    <param name="mzdiff" value="-0.001" />
                 </section>
             </conditional>
             <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_peakwidth.tsv" />
