@@ -22,8 +22,8 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n");
 
@@ -33,8 +33,8 @@ cat("\tINFILE PROCESSING INFO\n")
 options(bitmapType='cairo')
 
 #image is an .RData file necessary to use xset variable given by previous tools
-if (!is.null(listArguments[["image"]])){
-  load(listArguments[["image"]]); listArguments[["image"]]=NULL
+if (!is.null(args$image)){
+  load(args$image); args$image=NULL
 }
 
 cat("\n\n")
@@ -46,27 +46,27 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 
 
 parametersOutput = "parametersOutput.tsv"
-if (!is.null(listArguments[["parametersOutput"]])){
-  parametersOutput = listArguments[["parametersOutput"]]; listArguments[["parametersOutput"]]=NULL
+if (!is.null(args$parametersOutput)){
+  parametersOutput = args$parametersOutput; args$parametersOutput=NULL
 }
 
 samplebyclass = 2
-if (!is.null(listArguments[["samplebyclass"]])){
-  samplebyclass = listArguments[["samplebyclass"]]; listArguments[["samplebyclass"]]=NULL
+if (!is.null(args$samplebyclass)){
+  samplebyclass = args$samplebyclass; args$samplebyclass=NULL
 }
 
 #necessary to unzip .zip file uploaded to Galaxy
 #thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
 
 
-if (!is.null(listArguments[["zipfile"]])){
-  zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
+if (!is.null(args$zipfile)){
+  zipfile= args$zipfile; args$zipfile=NULL
 }
 
 
-if (!is.null(listArguments[["singlefile_galaxyPath"]])){
-    singlefile_galaxyPath = unlist(strsplit(listArguments[["singlefile_galaxyPath"]],",")); listArguments[["singlefile_galaxyPath"]]=NULL
-    singlefile_sampleName = unlist(strsplit(listArguments[["singlefile_sampleName"]],",")); listArguments[["singlefile_sampleName"]]=NULL
+if (!is.null(args$singlefile_galaxyPath)){
+    singlefile_galaxyPath = unlist(strsplit(args$singlefile_galaxyPath,",")); args$singlefile_galaxyPath=NULL
+    singlefile_sampleName = unlist(strsplit(args$singlefile_sampleName,",")); args$singlefile_sampleName=NULL
 }
 
 # single file case
@@ -136,7 +136,7 @@ cat("\n\n")
 cat("\tMAIN PROCESSING INFO\n")
 
 
-ipo4retgroup(xset, directory, parametersOutput, listArguments, samplebyclass)
+ipo4retgroup(xset, directory, parametersOutput, args, samplebyclass)
 
 
 

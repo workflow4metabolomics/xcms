@@ -64,11 +64,11 @@
                 <option value="density" selected="true">density</option>
             </param>
             <section name="section_group_density_optiomizable"  title="Optimizable parameters" expanded="True">
-                <param name="bw" type="text" value="22,38" label="Range for Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
-                    <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
+                <param name="bw" type="text" value="22,38" label="Range or a fixed value for Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
+                    <expand macro="input_validator_range_integer"/>
                 </param>
-                <param name="mzwid" type="text" value="0.015,0.035" label="Range for Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
-                    <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                <param name="mzwid" type="text" value="0.015,0.035" label="Range or a fixed value for Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
+                    <expand macro="input_validator_range_float_neg"/>
                 </param>
             </section>
             <section name="section_group_density_non_optimizable" title="Non optimizable parameters"  expanded="True">
@@ -85,7 +85,9 @@
                 </param>
                 <when value="obiwarp">
                     <section name="section_retcor_obiwarp_non_optimizable" title="Non optimizable parameters"  expanded="True">
-                        <param name="profStep" type="text" value="0.7,1.0" label="Range for Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files (ex: 1 or 0.7 1.0)" />
+                        <param name="profStep" type="text" value="0.7,1.0" label="Range or a fixed value for Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files (ex: 1 or 0.7 1.0)" >
+                            <expand macro="input_validator_range_float_neg"/>
+                        </param>
                     </section>
                 </when>
                 <when value="peakgroups">

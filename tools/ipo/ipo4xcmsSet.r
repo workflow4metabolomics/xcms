@@ -22,8 +22,8 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-listArguments = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(listArguments), col.names=F, quote=F, sep='\t')
+args = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 
 cat("\n\n");
 
@@ -32,32 +32,32 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 options(bitmapType='cairo')
 
 xsetRdataOutput = paste("ipo4xcmsSet","RData",sep=".")
-if (!is.null(listArguments[["xsetRdataOutput"]])){
-  xsetRdataOutput = listArguments[["xsetRdataOutput"]]; listArguments[["xsetRdataOutput"]]=NULL
+if (!is.null(args$xsetRdataOutput)){
+  xsetRdataOutput = args$xsetRdataOutput; args$xsetRdataOutput=NULL
 }
 
 parametersOutput = "parametersOutput.tsv"
-if (!is.null(listArguments[["parametersOutput"]])){
-  parametersOutput = listArguments[["parametersOutput"]]; listArguments[["parametersOutput"]]=NULL
+if (!is.null(args$parametersOutput)){
+  parametersOutput = args$parametersOutput; args$parametersOutput=NULL
 }
 
 samplebyclass = 2
-if (!is.null(listArguments[["samplebyclass"]])){
-  samplebyclass = listArguments[["samplebyclass"]]; listArguments[["samplebyclass"]]=NULL
+if (!is.null(args$samplebyclass)){
+  samplebyclass = args$samplebyclass; args$samplebyclass=NULL
 }
 
 #necessary to unzip .zip file uploaded to Galaxy
 #thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
 
 
-if (!is.null(listArguments[["zipfile"]])){
-  zipfile= listArguments[["zipfile"]]; listArguments[["zipfile"]]=NULL
+if (!is.null(args$zipfile)){
+  zipfile= args$zipfile; args$zipfile=NULL
 }
 
 
-if (!is.null(listArguments[["singlefile_galaxyPath"]])){
-    singlefile_galaxyPath = listArguments[["singlefile_galaxyPath"]]; listArguments[["singlefile_galaxyPath"]]=NULL
-    singlefile_sampleName = listArguments[["singlefile_sampleName"]]; listArguments[["singlefile_sampleName"]]=NULL
+if (!is.null(args$singlefile_galaxyPath)){
+    singlefile_galaxyPath = args$singlefile_galaxyPath; args$singlefile_galaxyPath=NULL
+    singlefile_sampleName = args$singlefile_sampleName; args$singlefile_sampleName=NULL
 }
 
 # single file case
@@ -123,7 +123,7 @@ cat("\n\n")
 cat("\tMAIN PROCESSING INFO\n")
 
 
-xset = ipo4xcmsSet(directory, parametersOutput, listArguments, samplebyclass)
+xset = ipo4xcmsSet(directory, parametersOutput, args, samplebyclass)
 
 
 

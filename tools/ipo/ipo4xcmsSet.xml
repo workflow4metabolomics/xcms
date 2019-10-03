@@ -65,16 +65,16 @@
             <when value="centWave">
                 <section name="section_centwave_optiomizable"  title="Optimizable parameters" expanded="True">
                     <param name="ppm" type="text" value="17,32" label="Range for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="[ppm] (ex: 25 or 17,32)">
-                        <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
+                        <expand macro="input_validator_range_integer"/>
                     </param>
-                    <param name="min_peakwidth" type="text" value="12,18" label="Range for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
-                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                    <param name="min_peakwidth" type="text" value="12,18" label="Range or a fixed value for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
+                        <expand macro="input_validator_range_float"/>
                     </param>
-                    <param name="max_peakwidth" type="text" value="35,65" label="Range for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
-                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                    <param name="max_peakwidth" type="text" value="35,65" label="Range or a fixed value  for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
+                        <expand macro="input_validator_range_float"/>
                     </param>
-                    <param name="mzdiff" type="text" value="-0.001,0.010" label="Range for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
-                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                    <param name="mzdiff" type="text" value="-0.001,0.010" label="Range or a fixed value  for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
+                        <expand macro="input_validator_range_float_neg"/>
                     </param>
                 </section>
 
@@ -92,11 +92,11 @@
             <!-- matched Filter options -->
             <when value="matchedFilter">
                 <section name="section_matchedfilter_optiomizable"  title="Optimizable parameters" expanded="True">
-                    <param name="fwhm" type="text" value="25,35" label="Range for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
-                        <validator type="regex" message="Should be this format: XX,YY">[0-9]+,[0-9]+</validator>
+                    <param name="fwhm" type="text" value="25,35" label="Range or a fixed value for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
+                        <expand macro="input_validator_range_integer"/>
                     </param>
-                    <param name="mzdiff" type="text" value="0.4,0.7" label="Range for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
-                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                    <param name="mzdiff" type="text" value="0.4,0.7" label="Range or a fixed value for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
+                        <expand macro="input_validator_range_float_neg"/>
                     </param>
                 </section>
 

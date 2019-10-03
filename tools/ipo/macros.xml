@@ -35,6 +35,18 @@
         #end if
     ]]></token>
 
+    <xml name="input_validator_range_integer">
+      <validator type="regex" message="Should be this format: XX or XX,YY">[0-9]+,?[0-9]*</validator>
+    </xml>
+
+    <xml name="input_validator_range_float">
+        <validator type="regex" message="Should be one combinaison of those format: XX, XX.YY, XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,?[0-9]*[\.]?[0-9]*</validator>
+    </xml>
+
+    <xml name="input_validator_range_float_neg">
+        <validator type="regex" message="Should be one combinaison of those format: XX, XX.YY, XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,?[\-]?[0-9]*[\.]?[0-9]*</validator>
+    </xml>
+
     <xml name="input_file_load">
         <section name="file_load_section" title="Resubmit your raw dataset or your zip file">
             <conditional name="file_load_conditional">
