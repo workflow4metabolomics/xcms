@@ -4,24 +4,6 @@
 
     <macros>
         <import>macros.xml</import>
-
-        <macro name="centwave_ppm_fixed">
-            <param name="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="[ppm]" />
-        </macro>
-        <macro name="centwave_peakwidth_fixed">
-            <param name="min_peakwidth" type="float" value="20" label="Min peak width range in seconds" optional="true" help="[min_peakwidth]" />
-            <param name="max_peakwidth" type="float" value="50" label="Max peak width range in seconds" optional="true" help="[max_peakwidth]" />
-        </macro>
-        <macro name="centwave_mzdiff_fixed">
-            <param name="mzdiff" type="float" value="-0.001" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] Can be negative to allow overlap" />
-        </macro>
-
-        <macro name="matchedfilter_fwhm_fixed">
-            <param name="fwhm" type="integer" value="30" label="Full width at half maximum of matched filtration gaussian model peak" help="[fwhm] Only used to calculate the actual sigma" />
-        </macro>
-        <macro name="matchedfilter_mzdiff_fixed">
-            <param name="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps " />
-        </macro>
     </macros>
 
     <expand macro="requirements"/>
@@ -82,37 +64,18 @@
             <!-- centWave Filter options -->
             <when value="centWave">
                 <section name="section_centwave_optiomizable"  title="Optimizable parameters" expanded="True">
-                    <conditional name="conditional_parameter">
-                        <param name="select_parameter" type="select" label="Which parameter do you want to optimize?" help="Only one paramter can be optimized at once. The other will require fixed values">
-                            <option value="ppm">Max tolerated ppm m/z deviation in consecutive scans in ppm [ppm]</option>
-                            <option value="peakwidth">Min,Max peak width in seconds [peakwidth]</option>
-                            <option value="mzdiff">Minimum difference in m/z for peaks with overlapping Retention Times [mzdiff]</option>
-                        </param>
-                        <when value="ppm">
-                            <param name="ppm" type="text" value="17,32" label="Range for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="[ppm] (ex: 25 or 17,32)">
-                                <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
-                            </param>
-                            <expand macro="centwave_peakwidth_fixed" />
-                            <expand macro="centwave_mzdiff_fixed" />
-                        </when>
-                        <when value="peakwidth">
-                            <param name="min_peakwidth" type="text" value="12,18" label="Range for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
-                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
-                            </param>
-                            <param name="max_peakwidth" type="text" value="35,65" label="Range for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
-                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
-                            </param>
-                            <expand macro="centwave_ppm_fixed" />
-                            <expand macro="centwave_mzdiff_fixed" />
-                        </when>
-                        <when value="mzdiff">
-                            <param name="mzdiff" type="text" value="-0.001,0.010" label="Range for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
-                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
-                            </param>
-                            <expand macro="centwave_ppm_fixed" />
-                            <expand macro="centwave_peakwidth_fixed" />
-                        </when>
-                    </conditional>
+                    <param name="ppm" type="text" value="17,32" label="Range for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="[ppm] (ex: 25 or 17,32)">
+                        <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
+                    </param>
+                    <param name="min_peakwidth" type="text" value="12,18" label="Range for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
+                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                    </param>
+                    <param name="max_peakwidth" type="text" value="35,65" label="Range for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
+                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or XX.XX,YY.YY">[0-9]+[\.]?[0-9]*,[0-9]+[\.]?[0-9]*</validator>
+                    </param>
+                    <param name="mzdiff" type="text" value="-0.001,0.010" label="Range for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
+                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                    </param>
                 </section>
 
                 <section name="section_centwave_non_optiomizable"  title="Non optimizable parameters" expanded="True">
@@ -129,24 +92,12 @@
             <!-- matched Filter options -->
             <when value="matchedFilter">
                 <section name="section_matchedfilter_optiomizable"  title="Optimizable parameters" expanded="True">
-                    <conditional name="conditional_parameter">
-                        <param name="select_parameter" type="select" label="Which parameter do you want to optimize?" help="Only one paramter can be optimized at once. The other will require fixed values">
-                            <option value="fwhm">Full width at half maximum of matched filtration gaussian model peak [fwhm]</option>
-                            <option value="mzdiff">Minimum difference in m/z for peaks with overlapping Retention Times [mzdiff]</option>
-                        </param>
-                        <when value="fwhm">
-                            <param name="fwhm" type="text" value="25,35" label="Range for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
-                                <validator type="regex" message="Should be this format: XX,YY">[0-9]+,[0-9]+</validator>
-                            </param>
-                            <expand macro="matchedfilter_mzdiff_fixed" />
-                        </when>
-                        <when value="mzdiff">
-                            <param name="mzdiff" type="text" value="0.4,0.7" label="Range for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
-                                <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
-                            </param>
-                            <expand macro="matchedfilter_fwhm_fixed" />
-                        </when>
-                    </conditional>
+                    <param name="fwhm" type="text" value="25,35" label="Range for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
+                        <validator type="regex" message="Should be this format: XX,YY">[0-9]+,[0-9]+</validator>
+                    </param>
+                    <param name="mzdiff" type="text" value="0.4,0.7" label="Range for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
+                        <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                    </param>
                 </section>
 
                 <section name="section_matchedfilter_non_optimizable" title="Non optimizable parameters"  expanded="True">
@@ -174,13 +125,10 @@
             <conditional name="methods">
                 <param name="method" value="centWave" />
                 <section name="section_centwave_optiomizable" >
-                    <conditional name="conditional_parameter">
-                        <param name="select_parameter" value="peakwidth" />
-                        <param name="min_peakwidth" value="3,9.5" />
-                        <param name="max_peakwidth" value="10,20" />
-                        <param name="ppm" value="56" />
-                        <param name="mzdiff" value="-0.001" />
-                    </conditional>
+                    <param name="min_peakwidth" value="3,9.5" />
+                    <param name="max_peakwidth" value="10,20" />
+                    <param name="ppm" value="56,56" />
+                    <param name="mzdiff" value="-0.001,-0.001" />
                 </section>
             </conditional>
             <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_peakwidth.tsv" />
@@ -191,38 +139,14 @@
             <conditional name="methods">
                 <param name="method" value="centWave" />
                 <section name="section_centwave_optiomizable" >
-                    <conditional name="conditional_parameter">
-                        <param name="select_parameter" value="ppm" />
-                        <param name="ppm" value="50,60" />
-                        <param name="min_peakwidth" value="3.325" />
-                        <param name="max_peakwidth" value="11" />
-                        <param name="mzdiff" value="-0.001" />
-                    </conditional>
+                    <param name="ppm" value="50,60" />
+                    <param name="min_peakwidth" value="3.325,3.325" />
+                    <param name="max_peakwidth" value="11,11" />
+                    <param name="mzdiff" value="-0.001,-0.001" />
                 </section>
             </conditional>
             <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_ppm.tsv" />
         </test>
-        <!-- Too long for Travis CI -->
-        <!--<test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="sacuri_2files.zip"  ftype="zip" />
-            <param name="samplebyclass" value="1" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|min_peakwidth" value="20,30" />
-            <param name="methods|max_peakwidth" value="45,55" />
-            <output name="parametersOutput" file="sacuri_2files_centWave_IPO_parameters4xcmsSet.tsv" />
-        </test>-->
-        <!-- Too long for Travis CI -->
-        <!--<test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="sacuri_2files.zip"  ftype="zip" />
-            <param name="samplebyclass" value="1" />
-            <param name="methods|method" value="matchedFilter" />
-            <param name="methods|step" value="0.05,0.15" />
-            <param name="methods|fwhm" value="25,35" />
-            <output name="parametersOutput" file="sacuri_2files_matchedFilter_IPO_parameters4xcmsSet.tsv" />
-        </test>-->
         <!--Failed:
                 Error in resultIncreased(history) :
                         No isotopes have been detected, peak picking not optimizable by IPO!-->

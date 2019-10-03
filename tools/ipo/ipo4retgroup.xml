@@ -4,14 +4,6 @@
 
     <macros>
         <import>macros.xml</import>
-
-        <macro name="group_density_bw_fixed">
-            <param name="bw" type="integer" value="30" min="0" label="Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram" />
-        </macro>
-
-        <macro name="group_density_mzwid_fixed">
-            <param name="mzwid" type="float" value="0.25" min="0" label="Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples " />
-        </macro>
     </macros>
 
     <expand macro="requirements"/>
@@ -30,7 +22,7 @@
         ## group methods
 
         sleep 0.001
-        #if $group.methods.method == "density":
+        #if $group.method == "density":
             bw "c($group.section_group_density_optiomizable.conditional_parameter.bw)"
             mzwid "c($group.section_group_density_optiomizable.conditional_parameter.mzwid)"
 
@@ -72,24 +64,12 @@
                 <option value="density" selected="true">density</option>
             </param>
             <section name="section_group_density_optiomizable"  title="Optimizable parameters" expanded="True">
-                <conditional name="conditional_parameter">
-                    <param name="select_parameter" type="select" label="Which parameter do you want to optimize?" help="Only one paramter can be optimized at once. The other will require fixed values">
-                        <option value="bw">Bandwidth [bw]</option>
-                        <option value="mzwid">Width of overlapping m/z slices [mzwid]</option>
-                    </param>
-                    <when value="bw">
-                        <param name="bw" type="text" value="22,38" label="Range for Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
-                            <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
-                        </param>
-                        <expand macro="group_density_mzwid_fixed" />
-                    </when>
-                    <when value="mzwid">
-                        <param name="mzwid" type="text" value="0.015,0.035" label="Range for Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
-                            <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
-                        </param>
-                        <expand macro="group_density_bw_fixed" />
-                    </when>
-                </conditional>
+                <param name="bw" type="text" value="22,38" label="Range for Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
+                    <validator type="regex" message="Should be this format XX,YY">[0-9]+,[0-9]+</validator>
+                </param>
+                <param name="mzwid" type="text" value="0.015,0.035" label="Range for Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
+                    <validator type="regex" message="Should be one combinaison of those format: XX,YY or -XX,YY or XX.XX,YY.YY">[\-]?[0-9]+[\.]?[0-9]*,[\-]?[0-9]+[\.]?[0-9]*</validator>
+                </param>
             </section>
             <section name="section_group_density_non_optimizable" title="Non optimizable parameters"  expanded="True">
                 <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
@@ -161,10 +141,8 @@
             <section name="group">
                 <param name="method" value="density"/>
                 <section name="section_group_density_optiomizable">
-                    <conditional name="conditional_parameter">
-                        <param name="bw" value="28,32"/>
-                        <param name="mzwid" value="0.25"/>
-                    </conditional>
+                    <param name="bw" value="28,32"/>
+                    <param name="mzwid" value="0.25,0.25"/>
                 </section>
                 <section name="section_group_density_non_optimizable">
                     <param name="minfrac" value="1"/>
