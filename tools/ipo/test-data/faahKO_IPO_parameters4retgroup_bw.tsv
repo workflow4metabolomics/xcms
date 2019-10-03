@@ -1,5 +1,5 @@
-bw	10.14016
-mzwid	0.25
+bw	5.5
+mzwid	0.02
 minfrac	1
 max	50
 retcorMethod	loess
