@@ -56,7 +56,7 @@
         <param name="samplebyclass" type="integer" value="2" label="Number of samples used per class to estimate the best parameters" help="Set to 0 to use the whole dataset. To save time, reduce this number" />
 
         <conditional name="methods">
-            <param name="method" type="select" label="Extraction method for peaks detection" help="[method] See the help section below">
+            <param argument="method" type="select" label="Extraction method for peaks detection" help="See the help section below">
                 <option value="centWave" >centWave</option>
                 <option value="matchedFilter" selected="true">matchedFilter</option>
             </param>
@@ -64,47 +64,47 @@
             <!-- centWave Filter options -->
             <when value="centWave">
                 <section name="section_centwave_optiomizable"  title="Optimizable parameters" expanded="True">
-                    <param name="ppm" type="text" value="17,32" label="Range for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="[ppm] (ex: 25 or 17,32)">
+                    <param argument="ppm" type="text" value="17,32" label="Range or a fixed value for Max tolerated ppm m/z deviation in consecutive scans in ppm" optional="false" help="(ex: 25 or 17,32)">
                         <expand macro="input_validator_range_integer"/>
                     </param>
-                    <param name="min_peakwidth" type="text" value="12,18" label="Range or a fixed value for Min peak width range in seconds" optional="true" help="[min_peakwidth] (ex: 12,18)">
+                    <param argument="min_peakwidth" type="text" value="12,18" label="Range or a fixed value for Min peak width range in seconds" optional="true" help="(ex: 12,18)">
                         <expand macro="input_validator_range_float"/>
                     </param>
-                    <param name="max_peakwidth" type="text" value="35,65" label="Range or a fixed value  for Max peak width range in seconds" optional="true" help="[max_peakwidth] (ex: 35,65)">
+                    <param argument="max_peakwidth" type="text" value="35,65" label="Range or a fixed value  for Max peak width range in seconds" optional="true" help="(ex: 35,65)">
                         <expand macro="input_validator_range_float"/>
                     </param>
-                    <param name="mzdiff" type="text" value="-0.001,0.010" label="Range or a fixed value  for Minimum difference in m/z for peaks with overlapping retention times" help="[mzdiff] Can be negative to allow overlap (ex: -0.001,0.010)">
+                    <param argument="mzdiff" type="text" value="-0.001,0.010" label="Range or a fixed value  for Minimum difference in m/z for peaks with overlapping retention times" help="Can be negative to allow overlap (ex: -0.001,0.010)">
                         <expand macro="input_validator_range_float_neg"/>
                     </param>
                 </section>
 
                 <section name="section_centwave_non_optiomizable"  title="Non optimizable parameters" expanded="True">
-                    <param name="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="[snthresh] Signal to noise ratio cutoff" />
-                    <param name="integrate" type="select" label="Peak limits method" help="[integrate]" >
+                    <param argument="snthresh" type="integer" value="10" label="Signal/Noise threshold" help="Signal to noise ratio cutoff" />
+                    <param argument="integrate" type="select" label="Peak limits method" >
                         <option value="1">peak limits based on smoothed 2nd derivative (less precise)</option>
                         <option value="2">peak limits based on real data (more sensitive to noise)</option>
                     </param>
-                    <param name="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="[prefilter] Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
-                    <param name="noise" type="integer" value="0" label="Noise filter" help="[noise] optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
+                    <param argument="prefilter" type="text" value="3,100" label="Prefilter step for the first phase" help="Separate by coma k,I. Mass traces are only retained if they contain at least ‘k’ peaks with intensity >= ‘I’"/>
+                    <param argument="noise" type="integer" value="0" label="Noise filter" help="optional argument which is useful for data that was centroided without any intensity threshold, centroids with intensity smaller than ‘noise’ are omitted from ROI detection"/>
                 </section>
             </when>
 
             <!-- matched Filter options -->
             <when value="matchedFilter">
                 <section name="section_matchedfilter_optiomizable"  title="Optimizable parameters" expanded="True">
-                    <param name="fwhm" type="text" value="25,35" label="Range or a fixed value for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="[fwhm] Only used to calculate the actual sigma (ex: 25,35)">
+                    <param argument="fwhm" type="text" value="25,35" label="Range or a fixed value for Full width at half maximum of matched filtration gaussian model peak" optional="true" help="Only used to calculate the actual sigma (ex: 25,35)">
                         <expand macro="input_validator_range_integer"/>
                     </param>
-                    <param name="mzdiff" type="text" value="0.4,0.7" label="Range or a fixed value for Minimum difference in m/z for peaks with overlapping Retention Times" help="[mzdiff] By default: 0.8-step*steps (ex: 0.4,0.7)">
+                    <param argument="mzdiff" type="text" value="0.4,0.7" label="Range or a fixed value for Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-step*steps (ex: 0.4,0.7)">
                         <expand macro="input_validator_range_float_neg"/>
                     </param>
                 </section>
 
                 <section name="section_matchedfilter_non_optimizable" title="Non optimizable parameters"  expanded="True">
-                    <param name="step" type="float" value="0.1" label="Step size to use for profile generation" help="[step] The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
-                    <param name="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="[steps] The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
-                    <param name="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" help="[max]" />
-                    <param name="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" help="[snthresh]" />
+                    <param argument="step" type="float" value="0.1" label="Step size to use for profile generation" help="The peak detection algorithm creates extracted ion base peak chromatograms (EIBPC) on a fixed step size" />
+                    <param argument="steps" type="integer" value="2" label="Number of steps to merge prior to filtration" help="The peak identification algorithm combines a given number of EIBPCs prior to filtration and peak detection, as defined by the steps argument" />
+                    <param argument="max" type="integer" value="5" label="Maximum number of peaks per extracted ion chromatogram" />
+                    <param argument="snthresh" type="integer" value="10" label="Signal to noise ratio cutoff" />
                 </section>
             </when>
         </conditional>
@@ -140,9 +140,9 @@
                 <param name="method" value="centWave" />
                 <section name="section_centwave_optiomizable" >
                     <param name="ppm" value="50,60" />
-                    <param name="min_peakwidth" value="3.324,3.326" />
-                    <param name="max_peakwidth" value="10.9,11.1" />
-                    <param name="mzdiff" value="-0.002,0.0" />
+                    <param name="min_peakwidth" value="3.325" />
+                    <param name="max_peakwidth" value="11.0" />
+                    <param name="mzdiff" value="-0.001" />
                 </section>
             </conditional>
             <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_ppm.tsv" />
