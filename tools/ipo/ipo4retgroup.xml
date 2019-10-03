@@ -60,49 +60,49 @@
         <param name="samplebyclass" type="integer" value="2" min="0" label="Number of samples used per class to estimate the best parameters" help="Set to 0 to use the whole dataset. To save time, reduce this number" />
 
         <section name="group" title="Group Options" expanded="True">
-            <param name="method" type="select" label="Method to use for grouping" help="[method] See the help section below. Only the density method is available so far">
+            <param argument="method" type="select" label="Method to use for grouping" help="See the help section below. Only the density method is available so far">
                 <option value="density" selected="true">density</option>
             </param>
             <section name="section_group_density_optiomizable"  title="Optimizable parameters" expanded="True">
-                <param name="bw" type="text" value="22,38" label="Range or a fixed value for Bandwidth" help="[bw] bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
+                <param argument="bw" type="text" value="22,38" label="Range or a fixed value for Bandwidth" help="bandwidth (standard deviation or half width at half maximum) of gaussian smoothing kernel to apply to the peak density chromatogram (ex: 22,38)">
                     <expand macro="input_validator_range_integer"/>
                 </param>
-                <param name="mzwid" type="text" value="0.015,0.035" label="Range or a fixed value for Width of overlapping m/z slices" help="[mzwid] to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
+                <param argument="mzwid" type="text" value="0.015,0.035" label="Range or a fixed value for Width of overlapping m/z slices" help="to use for creating peak density chromatograms and grouping peaks across samples (ex: 0.015,0.035)" >
                     <expand macro="input_validator_range_float_neg"/>
                 </param>
             </section>
             <section name="section_group_density_non_optimizable" title="Non optimizable parameters"  expanded="True">
-                <param name="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="[minfrac] in at least one of the sample groups for it to be a valid group" />
-                <param name="max" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" help="[max]" />
+                <param argument="minfrac" type="float" value="0.5" label="Minimum fraction of samples necessary" help="in at least one of the sample groups for it to be a valid group" />
+                <param argument="max" type="integer" value="50" label="Maximum number of groups to identify in a single m/z slice" />
             </section>
         </section>
 
         <section name="retcor" title="Retcor Options" expanded="True">
             <conditional name="methods">
-                <param name="method" type="select" label="Method to use for retention time correction" help="[method] See the help section below" >
+                <param argument="method" type="select" label="Method to use for retention time correction" help="See the help section below" >
                     <option value="obiwarp">obiwarp</option>
                     <option value="peakgroups">peakgroups</option>
                 </param>
                 <when value="obiwarp">
                     <section name="section_retcor_obiwarp_non_optimizable" title="Non optimizable parameters"  expanded="True">
-                        <param name="profStep" type="text" value="0.7,1.0" label="Range or a fixed value for Step size (in m/z)" help="[profStep] to use for profile generation from the raw data files (ex: 1 or 0.7 1.0)" >
+                        <param argument="profStep" type="text" value="0.7,1.0" label="Range or a fixed value for Step size (in m/z)" help="to use for profile generation from the raw data files (ex: 1 or 0.7 1.0)" >
                             <expand macro="input_validator_range_float_neg"/>
                         </param>
                     </section>
                 </when>
                 <when value="peakgroups">
                     <section name="section_retcor_peakgroups_non_optimizable" title="Non optimizable parameters"  expanded="True">
-                        <param name="smooth" type="select" label="Smooth method" help="[smooth] only the 'loess’ for non-linear alignment is available so far" >
+                        <param argument="smooth" type="select" label="Smooth method" help="only the 'loess’ for non-linear alignment is available so far" >
                             <option value="loess">loess</option>
                         </param>
-                        <param name="extra" type="integer" value="1" min="0" label="Number of extra peaks to allow in retention time correction correction groups" help="[extra]" />
-                        <param name="missing" type="integer" value="1" min="0" label="Number of missing samples to allow in retention time correction groups" help="[missing]" />
-                        <param name="span" type="float" value="0.2" min="0" label="Degree of smoothing for local polynomial regression fitting" help="[span]"/>
-                        <param name="family" type="select" label="Family" help="[family] if gaussian fitting is by least-squares with no outlier removal, and if symmetric a re descending M estimator is used with Tukey's biweight function, allowing outlier removal">
+                        <param argument="extra" type="integer" value="1" min="0" label="Number of extra peaks to allow in retention time correction correction groups" />
+                        <param argument="missing" type="integer" value="1" min="0" label="Number of missing samples to allow in retention time correction groups" />
+                        <param argument="span" type="float" value="0.2" min="0" label="Degree of smoothing for local polynomial regression fitting" />
+                        <param argument="family" type="select" label="Family" help="if gaussian fitting is by least-squares with no outlier removal, and if symmetric a re descending M estimator is used with Tukey's biweight function, allowing outlier removal">
                             <option value="gaussian" selected="true">gaussian</option>
                             <option value="symmetric">symmetric</option>
                         </param>
-                        <param name="plottype" type="select" help="[plottype] if deviation plot retention time deviation points and regression fit, and if mdevden also plot peak overall peak density and retention time correction peak density">
+                        <param argument="plottype" type="select" help="if deviation plot retention time deviation points and regression fit, and if mdevden also plot peak overall peak density and retention time correction peak density">
                             <option value="none" selected="true">none</option>
                             <option value="deviation">deviation</option>
                             <option value="mdevden">mdevden</option>
