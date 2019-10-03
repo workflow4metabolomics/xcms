@@ -123,28 +123,14 @@
     </outputs>
 
     <tests>
-        <!-- TOO LONG
         <test>
             <param name="image" value="faahKO.xset.RData"/>
-            <param name="group|methods|method" value="density"/>
-            <param name="group|methods|bw" value="28,32"/>
-            <param name="group|methods|minfrac" value="1"/>
-            <param name="group|methods|mzwid" value="0.15,0.35"/>
-            <param name="retcor|methods|method" value="peakgroups"/>
-            <param name="retcor|methods|smooth" value="loess"/>
-            <param name="retcor|methods|extra" value="1"/>
-            <param name="retcor|methods|missing" value="1"/>
-            <expand macro="test_file_load_zip"/>
-            <output name="parametersOutput" file="faahKO_IPO_parameters4retgroup.tsv" />
-        </test>-->
-
-        <test>
-            <param name="image" value="faahKO.xset.RData"/>
+            <param name="samplebyclass" value="0"/>
             <section name="group">
                 <param name="method" value="density"/>
                 <section name="section_group_density_optiomizable">
-                    <param name="bw" value="28,32"/>
-                    <param name="mzwid" value="0.24,0.26"/>
+                    <param name="bw" value="5,6"/>
+                    <param name="mzwid" value="0.01,0.02"/>
                 </section>
                 <section name="section_group_density_non_optimizable">
                     <param name="minfrac" value="1"/>
@@ -163,35 +149,6 @@
             <expand macro="test_file_load_zip"/>
             <output name="parametersOutput" file="faahKO_IPO_parameters4retgroup_bw.tsv" />
         </test>
-
-        <!--<test>
-            <param name="image" value="faahKO.xset.RData"/>
-            <param name="group|methods|method" value="density"/>
-            <param name="group|methods|bw" value="30"/>
-            <param name="group|methods|minfrac" value="1"/>
-            <param name="group|methods|mzwid" value="0.15,0.35"/>
-            <param name="retcor|methods|method" value="peakgroups"/>
-            <param name="retcor|methods|smooth" value="loess"/>
-            <param name="retcor|methods|extra" value="1"/>
-            <param name="retcor|methods|missing" value="1"/>
-            <expand macro="test_file_load_zip"/>
-            <output name="parametersOutput" file="faahKO_IPO_parameters4retgroup_mzmid.tsv" />
-        </test>-->
-
-        <!--<test>
-            <param name="image" value="MM-xset-merge.RData"/>
-            <param name="group|methods|method" value="density"/>
-            <param name="group|methods|bw" value="22,38"/>
-            <param name="group|methods|minfrac" value="1"/>
-            <param name="group|methods|mzwid" value="0.015,0.035"/>
-            <param name="retcor|methods|method" value="peakgroups"/>
-            <param name="retcor|methods|smooth" value="loess"/>
-            <param name="retcor|methods|extra" value="1"/>
-            <param name="retcor|methods|missing" value="1"/>
-            <param name="file_load_conditional|file_load_select" value="yes" />
-            <expand macro="test_file_load_single"/>
-            <output name="parametersOutput" file="MM_IPO_parameters4retgroup.tsv" />
-        </test>-->
     </tests>
 
     <help><![CDATA[
