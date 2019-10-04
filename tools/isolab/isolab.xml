@@ -1,0 +1,587 @@
+<!--
+  wl-11-04-2018, wed: commence
+  wl-12-04-2018, Thu: first working draft
+  wl-13-04-2018, Fri: enter target information manually. The main 
+     reference is galaxy tool 'masigpro'.
+  wl-05-02-2019, Tue: add load group file and help   
+  wl-24-03-2019, Sun: R package 'ecipex' is not in bioconda and conda-forge
+  wl-02-04-2019, Tue: add more tests and use 'sed' to remove the first and 
+   bottom lines of '$target_matrix'. Note that sed's '$' need to escape.
+-->
+
+<tool id="isolab" name="IsotopicLabelling" version="0.1.0">
+  <description>
+    Mass Spectrometric Isotopic Labelling
+  </description>
+  <macros>
+    <import>macros.xml</import>
+  </macros>
+  <expand macro="requirements" />
+  <expand macro="stdio" />
+  
+  <!-- =============================================================== -->
+  <command>
+    <![CDATA[
+      #if str($target.target_selector) == "no":
+          sed -i '1d;\$d' '$target_matrix' &&
+          #if $target.target_output:
+              ln -f $target_matrix $target_out &&
+          #end if
+          #set $targ_file = $target_matrix
+      #else:
+          #set $targ_file = $target.targ_file
+      #end if
+
+      Rscript ${__tool_directory__}/isolab.R
+        ## input files
+        --peak_file $peak_file 
+        --targ_file $targ_file 
+        
+        ## Average estimate for groups
+        --grp $grp.grp_selector
+        #if $grp.grp_selector =="TRUE":
+          ## input group information directly or load a file?
+          --grp_file_sel '$grp.grp_1.grp_file_sel' 
+          #if $grp.grp_1.grp_file_sel=='yes':
+          --grp_file '$grp.grp_1.grp_file'
+          #else
+          --groups '$grp.grp_1.groups'
+          #end if
+        #end if
+
+        ## Plot results
+        --pattern_plot $pattern_plot
+        --residual_plot $residual_plot
+        --result_plot $result_plot 
+
+        ## output pdf files
+        #if $pattern_plot:
+          --pattern_file $pattern_file
+        #end if
+        #if $residual_plot:
+          --residual_file $residual_file
+        #end if
+        #if $result_plot:
+          --result_file $result_file
+        #end if
+
+        ## Output Excel files
+        --summary_file $summary_file 
+        #if $grp.grp_selector =="TRUE":
+           --summary_grp_file $summary_grp_file
+        #end if
+
+    ]]>
+  </command>
+
+  <!-- =============================================================== -->
+  <!-- wl-13-04-2018, Fri: Beware that produced text file has two empty
+       rows, the first row and bottom row. R can remove the first row 
+       automatically, but you must remove the bottom row by yourself.  -->
+  <configfiles>
+    <configfile name="target_matrix">
+        #if str($target.target_selector) == "no":
+          #set $header = 'name_compound' + '\t' + 'compound' + '\t' + 'charge' + '\t'  + 'labelling' + '\t' + 'RT' + '\t' + 'RT_shift' + '\t' + 'chrom_width' + '\t' + 'mass_shift' + '\t' + 'initial_abundance'
+          $header
+          #for $t in $target.rep_target:
+            #set $line = str($t.name_compound) + '\t' + str($t.compound) + '\t' + str($t.charge) + '\t' + str($t.labelling) + '\t' + str($t.RT) + '\t' + str($t.RT_shift) + '\t' + str($t.chrom_width) + '\t' + str($t.mass_shift) + '\t' + str($t.initial_abundance)
+            $line
+          #end for
+        #end if
+    </configfile>
+  </configfiles>
+
+  <!-- =============================================================== -->
+  <inputs>
+    <param name="peak_file" type="data"  format="tabular" label="Data matrix" 
+           help="Data matrix containing the integrated signals for the
+                 samples. The first two columns represent the mass and the
+                 retention time of the peaks; the other columns represent
+                 peak intensities for each sample." />
+
+    <conditional name="target">
+      <param name="target_selector" type="select"
+             label="Input targets from file?" 
+             help="Choose if you want to provide targets file, or if you
+                   want to enter targets manually.">
+        <option value="yes">Use targets file</option>
+        <option value="no">Enter targets manually</option>
+      </param>
+
+      <when value="yes">
+        <param name="targ_file" type="data"  format="tabular" 
+               label="Targets matrix" 
+               help="A data matrix containing information on the target analytes.
+                     Columns 1 to 8 are: 'name_compound' (the name of the target
+                     analytes), 'compound', 'charge', 'labelling', 'RT',
+                     'RT_shift', 'chrom_width', 'mass_shift'.  Columns from 9
+                     onwards contain the initial estimates for the label
+                     abundances (one estimate for each sample). If not known,
+                     a single column of NA values can be entered" />
+      </when>
+
+     <when value="no">
+       <param name="target_output" type="boolean" truevalue="1" falsevalue="0"
+              checked="true" label="Output generated targets input files?"
+              help="Choose if you want to output the generated targets." />
+
+        <repeat name="rep_target" title="Target" min="1" default="1">
+
+          <param name="name_compound" type="text" value=""
+                 label="Specify a compound name"
+                 help="Letters, numbers and underscores will be allowed">
+            <sanitizer invalid_char="">
+              <valid initial="string.ascii_letters,string.digits">
+                <add value="_" />
+                <add value="+" />
+                <add value="[" />
+                <add value="]" />
+              </valid>
+            </sanitizer>
+          </param>
+
+          <param name="compound" type="text" value=""
+                 label="Specify a compound"
+                 help="Letters and numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.ascii_letters,string.digits"></valid>
+            </sanitizer>
+          </param>
+          
+          <param name="charge" type="integer" value="1"
+                 label="Specify a charge value"
+                 help="Only numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.digits"></valid>
+            </sanitizer>
+          </param>
+
+          <param name="labelling" type="text" value="C"
+                 label="Specify a labelling isotope"
+                 help="Letters will be allowed">
+            <sanitizer>
+              <valid initial="string.ascii_letters"></valid>
+            </sanitizer>
+          </param>
+          
+          <param name="RT" type="integer" value="285"
+                 label="Specify an retention time"
+                 help="Only numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.digits"></valid>
+            </sanitizer>
+          </param>
+
+          <param name="RT_shift" type="integer" value="20"
+                 label="Specify an retention time shift"
+                 help="Only numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.digits"></valid>
+            </sanitizer>
+          </param>
+
+          <param name="chrom_width" type="integer" value="7"
+                 label="Specify a chrom width"
+                 help="Only numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.digits"></valid>
+            </sanitizer>
+          </param>
+
+          <param name="mass_shift" type="float" value="0.05"
+                 label="Specify a mass shift"
+                 help="Only numbers will be allowed">
+            <sanitizer invalid_char="">
+              <valid initial="string.digits">
+                <add value="." />
+              </valid>
+            </sanitizer>
+          </param>
+
+          <param name="initial_abundance" type="text" value="NA"
+                 label="Specify an initial abundance"
+                 help="Letters and numbers will be allowed">
+            <sanitizer>
+              <valid initial="string.ascii_letters,string.digits"></valid>
+            </sanitizer>
+          </param>
+          
+        </repeat>
+
+      </when>
+      
+    </conditional>
+
+    <!-- =============================================================== -->
+    <conditional name="grp">
+      <param name="grp_selector"
+             type="select"
+             label="Average estimate within groups" 
+             help="Calculate summary statistics for the samples belonging to 
+                   the same group.">
+                <option value="TRUE" selected="True">Average within groups</option>
+                <option value="FALSE">Do not average within groups</option>
+      </param>
+
+      <when value="TRUE">
+        <conditional name="grp_1">
+          <param name="grp_file_sel" type="select"
+                 label="Group information. Input from a file?" 
+                 help="You can load group from a file or enter below manually.">
+            <option value="yes">Use group file</option>
+            <option value="no">Enter group manually</option>
+          </param>
+
+          <when value="yes">
+            <param name="grp_file" type="data"  format="txt" 
+                   label="Group file" 
+                   help="A data matrix containing only one column" />
+                   <!-- wl-30-11-2018, Fri: cannot use format="tabular". It
+                     does not treat one column data file as tabular format.  
+                    -->   
+          </when>
+          <when value="no">
+            <param name="groups" type="text" value=""
+                   label="Specify group information"
+                   help="A vector containing the name of the group of each sample
+                         analysed. Delimited by a comma" />
+          </when>
+        </conditional>
+      </when>
+
+      <when value="FALSE">
+      </when>
+
+    </conditional>
+
+    <!-- =============================================================== -->
+    <param name="pattern_plot" type="boolean" truevalue="True" 
+           falsevalue="False" checked="true" label="Plot patterns" 
+           help="Plot the normalized experimental pattern superimposed to 
+                 its fitted theoretical pattern." />
+    <param name="residual_plot" type="boolean" truevalue="True" 
+           falsevalue="False" checked="true" label="Plot residuals" 
+           help="Plot the residuals (the differences between 
+                 experimental and best fitted theoretical patterns)" />
+    <param name="result_plot" type="boolean" truevalue="True" 
+           falsevalue="False" checked="true" label="Plot results" 
+           help="Plot summary showing the estimated percentage abundances
+                 with related standard errors." />
+
+  </inputs>
+
+  <!-- =============================================================== -->
+  <outputs>
+    <data format="tabular" name="target_out" label="Target file on ${on_string}">
+      <filter>
+        (( 
+        target['target_selector'] == 'no' and
+        target['target_output'] == True 
+        ))
+      </filter>
+    </data>
+
+    <data format="pdf" name="pattern_file"
+          label="Pattern plot on ${on_string}">
+      <filter> pattern_plot == True </filter>
+    </data>
+    <data format="pdf" name="residual_file"
+          label="Residual plot on ${on_string}">
+      <filter> residual_plot == True </filter>
+    </data>
+    <data format="pdf" name="result_file"
+          label="Result summary plot on ${on_string}">
+      <filter> result_plot == True </filter>
+    </data>
+    <data format="xlsx" name="summary_file" 
+          label="Result summary on ${on_string}"/>
+    <data format="xlsx" name="summary_grp_file" 
+          label="Group result summary on ${on_string}" >
+      <filter> grp['grp_selector'] == "TRUE" </filter>
+    </data>
+    
+  </outputs>
+
+  <!-- =============================================================== -->
+  <tests>
+    <!-- test for manually target input. compare with 'isolab_1.sh' except
+         'xcms_tar_res.tsv' which is not output from R.
+      -->  
+    <test>
+      <param name="peak_file" value="xcms.tsv" />
+      <conditional name="target">
+        <param name="target_selector" value="no" />
+        <repeat name="rep_target">
+          <param name="name_compound"     value="[PC_32_2+H]+" />
+          <param name="compound"          value="X40H77NO8P"   />
+          <param name="charge"            value="1" />
+          <param name="labelling"         value="C" />
+          <param name="RT"                value="285" />
+          <param name="RT_shift"          value="20" />
+          <param name="chrom_width"       value="7" />
+          <param name="mass_shift"        value="0.05" />
+          <param name="initial_abundance" value="NA" />
+        </repeat>
+        <repeat name="rep_target">
+          <param name="name_compound"     value="[PC_32_1+H]+" />
+          <param name="compound"          value="X40H79NO8P"   />
+          <param name="charge"            value="1" />
+          <param name="labelling"         value="C" />
+          <param name="RT"                value="360" />
+          <param name="RT_shift"          value="20" />
+          <param name="chrom_width"       value="10" />
+          <param name="mass_shift"        value="0.05" />
+          <param name="initial_abundance" value="NA" />
+        </repeat>
+        <repeat name="rep_target">
+          <param name="name_compound"     value="[PC_32_2+H]+" />
+          <param name="compound"          value="X42H81NO8P"   />
+          <param name="charge"            value="1" />
+          <param name="labelling"         value="C" />
+          <param name="RT"                value="370" />
+          <param name="RT_shift"          value="20" />
+          <param name="chrom_width"       value="13" />
+          <param name="mass_shift"        value="0.05" />
+          <param name="initial_abundance" value="NA" />
+        </repeat>
+      </conditional>
+      <param name="grp" value="TURE" /> 
+      <param name="grp_file_sel" value="yes" /> 
+      <param name="grp_file" value="xcms_grp.tsv" /> 
+      <param name="pattern_plot" value="TRUE" /> 
+      <param name="residual_plot" value="TRUE" /> 
+      <param name="result_plot" value="TRUE" /> 
+      <output name="pattern_file" file="res/xcms_pattern_1.pdf" compare="sim_size" delta="50000"/>
+      <output name="residual_file" file="res/xcms_residual_1.pdf" compare="sim_size" delta="50000"/>
+      <output name="result_file" file="res/xcms_result_1.pdf" compare="sim_size" delta="50000"/>
+      <output name="summary_file" file="res/xcms_summary_1.xlsx" compare="sim_size" delta="50000"/>
+      <output name="summary_grp_file" file="res/xcms_summary_grp_1.xlsx" compare="sim_size" delta="50000"/>
+      <!-- The following is not from R script, but from cheetah -->  
+      <output name="target_out" file="res/xcms_tar_res.tsv" />
+    </test>
+    <test>
+      <param name="peak_file" value="xcms.tsv" />
+      <param name="targ_file" value="xcms_tar.tsv" />
+      <param name="grp" value="TURE" /> 
+      <param name="grp_file_sel" value="yes" /> 
+      <param name="grp_file" value="xcms_grp.tsv" /> 
+      <param name="pattern_plot" value="TRUE" /> 
+      <param name="residual_plot" value="TRUE" /> 
+      <param name="result_plot" value="TRUE" /> 
+      <output name="pattern_file" file="res/xcms_pattern.pdf" compare="sim_size" delta="50000"/>
+      <output name="residual_file" file="res/xcms_residual.pdf" compare="sim_size" delta="50000"/>
+      <output name="result_file" file="res/xcms_result.pdf" compare="sim_size" delta="50000"/>
+      <output name="summary_file" file="res/xcms_summary.xlsx" compare="sim_size" delta="50000"/>
+      <output name="summary_grp_file" file="res/xcms_summary_grp.xlsx" compare="sim_size" delta="50000"/>
+    </test>
+
+    <!-- test the target file and group file -->
+    <test>
+      <param name="peak_file" value="xcms.tsv" />
+      <param name="targ_file" value="xcms_tar.tsv" />
+      <param name="grp" value="TURE" /> 
+      <param name="grp_file_sel" value="no" /> 
+      <param name="groups" value="C12,C12,C12,C12,C13,C13,C13,C13" /> 
+      <param name="pattern_plot" value="TRUE" /> 
+      <param name="residual_plot" value="TRUE" /> 
+      <param name="result_plot" value="TRUE" /> 
+      <output name="pattern_file" file="res/xcms_pattern.pdf" compare="sim_size" delta="50000"/>
+      <output name="residual_file" file="res/xcms_residual.pdf" compare="sim_size" delta="50000"/>
+      <output name="result_file" file="res/xcms_result.pdf" compare="sim_size" delta="50000"/>
+      <output name="summary_file" file="res/xcms_summary.xlsx" compare="sim_size" delta="50000"/>
+      <output name="summary_grp_file" file="res/xcms_summary_grp.xlsx" compare="sim_size" delta="50000"/>
+    </test>
+
+    <test>
+      <param name="peak_file" value="ecamam12.tsv" />
+      <param name="targ_file" value="ecamam12_tar.tsv" />
+      <param name="grp" value="TURE" /> 
+      <param name="grp_file_sel" value="yes" /> 
+      <param name="grp_file" value="ecamam12_grp.tsv" /> 
+      <param name="pattern_plot" value="TRUE" /> 
+      <param name="residual_plot" value="TRUE" /> 
+      <param name="result_plot" value="TRUE" /> 
+      <output name="pattern_file" file="res/ecamam12_pattern.pdf" compare="sim_size" delta="50000"/>
+      <output name="residual_file" file="res/ecamam12_residual.pdf" compare="sim_size" delta="50000"/>
+      <output name="result_file" file="res/ecamam12_result.pdf" compare="sim_size" delta="50000"/>
+      <output name="summary_file" file="res/ecamam12_summary.xlsx" compare="sim_size" delta="50000"/>
+      <output name="summary_grp_file" file="res/ecamam12_summary_grp.xlsx" compare="sim_size" delta="50000"/>
+    </test>
+    
+  </tests>
+
+  <!-- =============================================================== -->
+  <help>
+Mass Spectrometric Isotopic Labelling
+======================================
+
+Description
+-----------
+
+This Galaxy tool wraps R package *IsotopicLabelling* to analyse mass
+spectrometric isotopic patterns obtained following isotopic labelling
+experiments.
+
+A typical labelling experiment makes use of substrates enriched in one
+stable isotope, such as :sup:`2`\H or :sup:`13`\C; consequently, after the
+growth period, some metabolites are expected to have incorporated the
+labelling isotope, and therefore its relative distribution within them will
+be different from its natural occurrence. The *IsotopicLabelling* R package
+is based on the principle that, since the isotopic patterns obtained in mass
+spectrometry reflect the isotopic compositions of the elements making up the
+observed species, the amount of labelling can be assessed by their proper
+examination. 
+
+Worth of note, because there could be overlapping between the isotopic
+patterns of different species, the isotopic pattern analysis is better
+suited for LC-MS or GC-MS data rather than for direct-infusion MS, where the
+chromatographic step prior to MS detection reduces such issues. Therefore,
+the current implementation of the package only works for LC-MS or GC-MS
+data. (from  `IsotopicLabelling R Package - a Practical Guide`_)
+
+
+.. _IsotopicLabelling R Package - a Practical Guide: https://goo.gl/YihqMN
+
+Inputs
+------
+
+**\1. Data matrix**
+
+The input data matrix contains the peak information (m/z, retention time
+(RT) and intensities or areas). It is a tabular format, as shown in:
+
+=======   ========   ================   ================   ================
+mz        rt         C12_Sample_1       C12_Sample_2       C12_Sample_3
+=======   ========   ================   ================   ================
+69.0614   924.0013   284.464073046383   NA                 NA
+74.0727   923.6565   NA                 NA                 NA
+83.0756   947.1894   NA                 257.604382614333   NA
+83.0735   923.2468   NA                 279.519771843507   NA
+87.0323   41.40342   649.483932967305   741.9676456541     504.504348420549
+89.0485   33.71593   1150.01212480098   857.503254338704   1280.96569019438
+=======   ========   ================   ================   ================
+
+|
+
+**\2. Target matrix**
+  
+The target matrix in tabular format(``.tsv``) includes information on the target analytes. 
+The following table is an example:
+
+===============   ===========   ======   =========   ===   ========   ===========   ==========    =================      
+name_compound     compound      charge   labelling   RT    RT_shift   chrom_width   mass_shift    initial_abundance
+===============   ===========   ======   =========   ===   ========   ===========   ==========    =================      
+[PC_32_2+H]+      X40H77NO8P    1        C           285   20         7             0.05          NA
+[PC_32_1+H]+      X40H79NO8P    1        C           360   20         10            0.05          NA
+[PC_34_2+H]+      X42H81NO8P    1        C           370   30         13            0.05          NA
+[PC_34_1+H]+      X42H83NO8P    1        C           474   30         16            0.05          NA
+[TAG_48_3+NH4]+   X51H96NO6     1        C           900   20         9             0.05          NA
+[TAG_48_2+NH4]+   X51H98NO6     1        C           920   20         9             0.05          NA
+[TAG_50_3+NH4]+   X53H100NO6    1        C           921   20         9             0.05          NA
+[TAG_50_2+NH4]+   X53H102NO6    1        C           939   20         8             0.05          NA
+[TAG_52_2+NH4]+   X55H106NO6    1        C           957   20         8             0.05          NA
+===============   ===========   ======   =========   ===   ========   ===========   ==========    =================      
+
+|
+
+Note that the target matrix can be entered manually. For examples of positive 
+and negative mode, see https://github.com/wanchanglin/dimsp/tree/master/test-data/LipidList_generator.
+
+
+**\3. Group matrix**
+
+If the user want to estimate the average of each sample group, the group
+information can be either enter manually or loaded from an one-column file.
+For example, the samples belong to two group: ``C12`` and ``C13``: 
+
+
+   +-----+
+   | C12 |
+   +-----+
+   | C12 |
+   +-----+
+   | C12 |
+   +-----+
+   | C12 |
+   +-----+
+   | C13 |
+   +-----+
+   | C13 |
+   +-----+
+   | C13 |
+   +-----+
+   | C13 |
+   +-----+
+
+      |
+
+  Note that this table does not includes any header.
+
+Parameters
+----------
+
+Enter target
+~~~~~~~~~~~~
+
+The target matrix also can be enter manually. The user enters each item of a
+target. Repeat this procedure for multiple compounds. One option is provided
+for user to save these targets for future use. 
+
+To avoid man-made mistakes, this option should be restricted to few
+compounds. For more compounds to be analysed, the user should prepare it in
+a user-friend software such as Excel and save it as a ``.tsv`` file. And
+then load it into Galaxy. 
+
+Enter group
+~~~~~~~~~~~
+
+The group information can be input manually. Just type group item delimited
+by a comma. 
+
+Outputs
+----------
+
+Isotopic pattern analysis
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The default output is the summary of isotopic pattern analysis for each
+compound. It can be download in ``xlsx`` format to view in Excel. 
+
+One example is:  
+
+==================  ============  ============  =============   =============
+Stats               C12_Sample_1  C12_Sample_2  C13_Sample_1    C13_Sample_2 
+==================  ============  ============  =============   =============
+Best Estimate [%]   1.0805687335  1.0703071648  98.9633146931   98.9543536508
+Standard Error [%]  0.0073567397  0.0073590531  0.007137333     0.0059831704
+==================  ============  ============  =============   =============
+
+|
+
+Group estimate
+~~~~~~~~~~~~~~
+
+If user selects to performance group estimating, the result summary can be
+downloaded as an Excel ``XLSX`` file. It looks like for one compound:
+
+=====   ==  =============   ============  ============  =============  =============
+Group   N   Mean            SE mean       t_crit        Lower 95% CI   Upper 95% CI
+=====   ==  =============   ============  ============  =============  =============
+c12     4   1.0789361556    0.003001192   3.1824463053  1.0693850233   1.0884872879
+c13     4   98.9427703799   0.0045925496  3.1824463053  98.9281548374  98.9573859225
+=====   ==  =============   ============  ============  =============  =============
+
+|
+
+Graphics output
+~~~~~~~~~~~~~~~
+
+All plots will be produced as PDF files if the user choose to do so,
+including isotopic patten analysis, its residuals and the group estimate. 
+
+  </help>
+  <citations>
+    <citation type="doi">10.1093/bioinformatics/btw588</citation>
+  </citations>
+
+</tool>
