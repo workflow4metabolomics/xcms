@@ -1,4 +1,4 @@
-<tool id="ipo4retgroup" name="IPO for group and retcor" version="0.0.1">
+<tool id="ipo4retgroup" name="IPO for group and retcor" version="@TOOL_VERSION@.0">
 
     <description>IPO optimization process for xcms.group and xcms.retcor</description>
 
@@ -59,7 +59,7 @@
 
         <param name="samplebyclass" type="integer" value="2" min="0" label="Number of samples used per class to estimate the best parameters" help="Set to 0 to use the whole dataset. To save time, reduce this number" />
 
-        <section name="group" title="Group Options" expanded="True">
+        <section name="group" title="groupChromPeaks Options" expanded="True">
             <param argument="method" type="select" label="Method to use for grouping" help="See the help section below. Only the density method is available so far">
                 <option value="density" selected="true">density</option>
             </param>
@@ -77,7 +77,7 @@
             </section>
         </section>
 
-        <section name="retcor" title="Retcor Options" expanded="True">
+        <section name="retcor" title="adjustRtime Options" expanded="True">
             <conditional name="methods">
                 <param argument="method" type="select" label="Method to use for retention time correction" help="See the help section below" >
                     <option value="obiwarp">obiwarp</option>
@@ -124,7 +124,7 @@
 
     <tests>
         <test>
-            <param name="image" value="faahKO.xset_single.RData"/>
+            <param name="image" value="faahKO.xset.RData"/>
             <param name="samplebyclass" value="0"/>
             <section name="group">
                 <param name="method" value="density"/>
@@ -172,11 +172,15 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
+==================================== ======================== ==============================
+Name                                 Output file              Format
+==================================== ======================== ==============================
+xcms.findChromPeaks Merger (single)  xset.merged.RData        rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ ------------------------------
+xcms.findChromPeaks (zip)            ``*``.raw.xset.RData     rdata.xcms.findchrompeaks
+------------------------------------ ------------------------ ------------------------------
+xcms.adjustRtime                     ``*``.adjustRtime.RData  rdata.xcms.retcor
+==================================== ======================== ==============================
 
 
 **Downstream tools**
@@ -184,102 +188,41 @@ NA                        NA                zip     NA
 +---------------------------+----------------------+-----------------+
 | Name                      | Output file          | Format          |
 +===========================+======================+=================+
-|xcms.xcmsSet               | parametersOutput.tsv | Tabular         |
+|xcms.groupChromPeaks       | parametersOutput.tsv | Tabular         |
 +---------------------------+--------------------+-------------------+
-
-
-
------------
-Input files
------------
-
-+---------------------------+------------+
-| Parameter : num + label   |   Format   |
-+===========================+============+
-| 1 : Choose your inputs    |   zip      |
-+---------------------------+------------+
-
-**Choose your inputs**
-
-You have two methods for your inputs:
-
-    | Zip file (recommended): You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-    | library folder: You must specify the name of your "library" (folder) created within your space project (for example: /projet/externe/institut/login/galaxylibrary/yourlibrary). Your library must contain all your conditions as sub-directories.
-
-Steps for creating the zip file
--------------------------------
-
-**Step1: Creating your directory and hierarchize the subdirectories**
-
-
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
-
-Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
-arabidopsis/wild/01.raw
-arabidopsis/mutant/01.raw
-
-**Step2: Creating a zip file**
-
-Create your zip file (e.g.: arabidopsis.zip).
-
-**Step 3 : Uploading it to our Galaxy server**
-
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
-
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
-
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
-
-Advices for converting your files for the XCMS input
-----------------------------------------------------
-
-We recommend you to convert your raw files to **mzXML** in centroid mode (smaller files) and the files will be compatible with the xmcs centWave method.
-
-**We recommend you the following parameters:**
-
-Use Filtering: **True**
-
-Use Peak Picking: **True**
-
-Peak Peaking -Apply to MS Levels: **All Levels (1-)** : Centroid Mode
-
-Use zlib: **64**
-
-Binary Encoding: **64**
-
-m/z Encoding: **64**
-
-Intensity Encoding: **64**
 
 
 ----------
 Parameters
 ----------
 
-Extraction method for peaks detection
--------------------------------------
+Method to use for groupChromPeaks
+---------------------------------
 
-**Matched Filter**
+**PeakDensity**
 
-    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
-    | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
-
-
-**cent Wave**
-
-    | This algorithm is most suitable for high resolution LC/{TOF,OrbiTrap,FTICR}-MS data in centroid mode.
-    | Due to the fact that peak centroids are used, a binning step is not necessary.
-    | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
+    | This method performs performs correspondence (chromatographic peak grouping) based on the density (distribution) of identified peaks along the retention time axis within slices of overlapping mz ranges.  All peaks (from the same or from different samples) being close on the retention time axis are grouped into a feature (peak group).
+    | See the PeakDensity_manual_
 
 
-------------
-Output files
-------------
+.. _PeakDensity_manual: https://rdrr.io/bioc/xcms/man/groupChromPeaks-density.html#heading-2
 
-IPO_parameters4xcmsSet.tsv
 
-    | Optimal parameters for xcmsSet
+Method to use for retention time correction
+-------------------------------------------
 
+**PeakGroups**
+
+    | This method performs retention time adjustment based on the alignment of chromatographic peak groups present in all/most samples (hence corresponding to house keeping compounds). First the retention time deviation of these peak groups is described by fitting either a polynomial (‘smooth = "loess"’) or a linear ( ‘smooth = "linear"’) model to the data points. These models are subsequently used to adjust the retention time of each spectrum in each sample.
+    | See the PeakGroups_manual_
+
+**Obiwarp**
+
+    | This method performs retention time adjustment using the Obiwarp method [Prince 2006]. It is based on the code at http://obi-warp.sourceforge.net but supports alignment of multiple samples by aligning each against a _center_ sample. The alignment is performed directly on the ‘profile-matrix’ and can hence be performed independently of the peak detection or peak grouping.
+    | See the Obiwarp_manual_
+
+.. _PeakGroups_manual: https://rdrr.io/bioc/xcms/man/adjustRtime-peakGroups.html#heading-2
+.. _Obiwarp_manual: https://rdrr.io/bioc/xcms/man/adjustRtime-obiwarp.html
 
 ---------------------------------------------------
 

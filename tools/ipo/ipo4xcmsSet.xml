@@ -1,4 +1,4 @@
-<tool id="ipo4xcmsSet" name="IPO for xcmsSet" version="0.0.3">
+<tool id="ipo4xcmsSet" name="IPO for xcmsSet" version="@TOOL_VERSION@.0">
 
     <description>IPO optimization process for xcms.xcmsSet</description>
 
@@ -198,11 +198,13 @@ Workflow position
 
 **Upstream tools**
 
-========================= ================= ======= =========
-Name                      output file       format  parameter
-========================= ================= ======= =========
-NA                        NA                zip     NA
-========================= ================= ======= =========
+========================= ==========================================
+Name                      Format
+========================= ==========================================
+Upload File               mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip
+========================= ==========================================
+
+The easier way to process is to create a Dataset Collection of the type List
 
 
 **Downstream tools**
@@ -218,43 +220,6 @@ NA                        NA                zip     NA
 -----------
 Input files
 -----------
-
-+---------------------------+------------+
-| Parameter : num + label   |   Format   |
-+===========================+============+
-| 1 : Choose your inputs    |   zip      |
-+---------------------------+------------+
-
-**Choose your inputs**
-
-You have two methods for your inputs:
-
-    | Zip file (recommended): You can put a zip file containing your inputs: myinputs.zip (containing all your conditions as sub-directories).
-    | library folder: You must specify the name of your "library" (folder) created within your space project (for example: /projet/externe/institut/login/galaxylibrary/yourlibrary). Your library must contain all your conditions as sub-directories.
-
-Steps for creating the zip file
--------------------------------
-
-**Step1: Creating your directory and hierarchize the subdirectories**
-
-
-VERY IMPORTANT: If you zip your files under Windows, you must use the 7Zip software (http://www.7-zip.org/), otherwise your zip will not be well unzipped on the platform W4M (zip corrupted bug).
-
-Your zip should contain all your conditions as sub-directories. For example, two conditions (mutant and wild):
-arabidopsis/wild/01.raw
-arabidopsis/mutant/01.raw
-
-**Step2: Creating a zip file**
-
-Create your zip file (e.g.: arabidopsis.zip).
-
-**Step 3 : Uploading it to our Galaxy server**
-
-If your zip file is less than 2Gb, you get use the Get Data tool to upload it.
-
-Otherwise if your zip file is larger than 2Gb, please refer to the HOWTO on workflow4metabolomics.org (http://application.sb-roscoff.fr/download/w4m/howto/galaxy_upload_up_2Go.pdf).
-
-For more informations, don't hesitate to send us an email at supportATworkflow4metabolomics.org).
 
 Advices for converting your files for the XCMS input
 ----------------------------------------------------
@@ -285,27 +250,20 @@ Parameters
 Extraction method for peaks detection
 -------------------------------------
 
-**Matched Filter**
+**MatchedFilter**
 
-    | One parameter to consider is the Gaussian model peak width used for matched filtration,an integral part of the peak detection algorithm.
-    | For a discussion of how model peak width affects the signal to noise ratio, see Danielsson et al. (2002).
+    | The matchedFilter algorithm identifies peaks in the chromatographic time domain as described in [Smith 2006]. The intensity values are binned by cutting The LC/MS data into slices (bins) of a mass unit (‘binSize’ m/z) wide. Within each bin the maximal intensity is selected. The chromatographic peak detection is then performed in each bin by extending it based on the ‘steps’ parameter to generate slices comprising bins ‘current_bin - steps +1’ to ‘current_bin + steps - 1’. Each of these slices is then filtered with matched filtration using a second-derative Gaussian as the model peak shape. After filtration peaks are detected using a signal-to-ratio cut-off. For more details and illustrations see [Smith 2006].
+    | See the MatchedFilter_manual_
 
+**CentWave**
 
-**cent Wave**
-
-    | This algorithm is most suitable for high resolution LC/{TOF,OrbiTrap,FTICR}-MS data in centroid mode.
+    | The centWave algorithm perform peak density and wavelet based chromatographic peak detection for high resolution LC/MS data in centroid mode [Tautenhahn 2008].
     | Due to the fact that peak centroids are used, a binning step is not necessary.
     | The method is capable of detecting close-by-peaks and also overlapping peaks. Some efforts are made to detect the exact peak boundaries to get precise peak integrals.
+    | See the CentWave_manual_
 
-
-------------
-Output files
-------------
-
-IPO_parameters4xcmsSet.tsv
-
-    | Optimal parameters for xcmsSet
-
+.. _MatchedFilter_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-matchedFilter.html#heading-2
+.. _CentWave_manual: https://rdrr.io/bioc/xcms/man/findChromPeaks-centWave.html#heading-2
 
 ---------------------------------------------------
 

@@ -1,8 +1,9 @@
 <?xml version="1.0"?>
 <macros>
+    <token name="@TOOL_VERSION@">3.6.1</token>
     <xml name="requirements">
         <requirements>
-            <requirement type="package" version="1.10.0">bioconductor-ipo</requirement>
+            <requirement type="package" version="@TOOL_VERSION@">bioconductor-ipo</requirement>
             <requirement type="package" version="1.1_5">r-batch</requirement>
         </requirements>
     </xml>
