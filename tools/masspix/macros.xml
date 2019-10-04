@@ -5,7 +5,6 @@
       <requirement type="package" version="5.0.0">r-writexls</requirement>
       <requirement type="package" version="0.9_11">r-rjava</requirement>
       <requirement type="package" version="1.7.5">r-calibrate</requirement>
-      <requirement type="package" version="11.0.1">openjdk</requirement>
     </requirements>
   </xml>
   <xml name="stdio">
