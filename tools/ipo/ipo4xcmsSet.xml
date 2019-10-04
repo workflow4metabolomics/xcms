@@ -145,7 +145,22 @@
                     <param name="mzdiff" value="-0.001" />
                 </section>
             </conditional>
-            <output name="parametersOutput" file="MM14_IPO_parameters4xcmsSet_ppm.tsv" />
+            <output name="parametersOutput">
+                <assert_contents>
+                    <!-- &#009; is XML escape code for tab -->
+                    <has_line line="ppm&#009;60" />
+                    <has_line line="min_peakwidth&#009;3.325" />
+                    <has_line line="max_peakwidth&#009;11" />
+                    <has_line line="mzdiff&#009;-0.001" />
+                    <has_line line="prefilter&#009;3" />
+                    <has_line line="snthresh&#009;10" />
+                    <has_line line="integrate&#009;1" />
+                    <has_line line="noise&#009;0" />
+                    <has_line line="value_of_prefilter&#009;100" />
+                    <has_line line="mzCenterFun&#009;wMean" />
+                    <has_line line="fitgauss&#009;FALSE" />
+                </assert_contents>
+            </output>
         </test>
         <!--Failed:
                 Error in resultIncreased(history) :
