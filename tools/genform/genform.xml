@@ -16,20 +16,20 @@ genform
     $formula_cond.formula_select
   #else
     $formula_cond.vsp
-    #if str($formula_cond.vsm2mv) != ''
+    #if str($formula_cond.vsm2mv)
       vsm2mv=$formula_cond.vsm2mv
     #end if
-    #if str($formula_cond.vsm2ap2) != ''
+    #if str($formula_cond.vsm2ap2)
       vsm2ap2=$formula_cond.vsm2ap2
     #end if
-    #if str($formula_cond.ivsm2mv) != ''
+    #if str($formula_cond.ivsm2mv)
       ivsm2mv=$formula_cond.ivsm2mv
     #end if
-    #if str($formula_cond.ivsm2ap2) != ''
+    #if str($formula_cond.ivsm2ap2)
       ivsm2ap2=$formula_cond.ivsm2ap2
     #end if
   #end if
-  #if str($m) != ''
+  #if str($m)
     m=$m
   #end if
   ion=$ion
@@ -52,11 +52,11 @@ genform
   $hcf
   $wm
   $wi_cond.wi
-  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp) != ''
+  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp)
     exp=$wi_cond.exp
   #end if
   $oei
-  #if str($dbeexc) != ''
+  #if str($dbeexc)
     dbeexc=$dbeexc
   #end if
   #if $output.out_cond.out_select == 'analyze':
