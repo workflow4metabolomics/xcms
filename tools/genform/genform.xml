@@ -16,20 +16,20 @@ genform
     $formula_cond.formula_select
   #else
     $formula_cond.vsp
-    #if str($formula_cond.vsm2mv) != ''
+    #if str($formula_cond.vsm2mv)
       vsm2mv=$formula_cond.vsm2mv
     #end if
-    #if str($formula_cond.vsm2ap2) != ''
+    #if str($formula_cond.vsm2ap2)
       vsm2ap2=$formula_cond.vsm2ap2
     #end if
-    #if str($formula_cond.ivsm2mv) != ''
+    #if str($formula_cond.ivsm2mv)
       ivsm2mv=$formula_cond.ivsm2mv
     #end if
-    #if str($formula_cond.ivsm2ap2) != ''
+    #if str($formula_cond.ivsm2ap2)
       ivsm2ap2=$formula_cond.ivsm2ap2
     #end if
   #end if
-  #if str($m) != ''
+  #if str($m)
     m=$m
   #end if
   ion=$ion
@@ -40,7 +40,9 @@ genform
   thms=$thms
   thmsms=$thmsms
   thcomb=$thcomb
-  $sort
+  #if $sort
+    $sort
+  #end if	
   #if $elemfilt_cond.elemfilt_select == 'elem'
     el=#echo "".join(str($elemfilt_cond.el).split(','))
   #elif $elemfilt_cond.elemfilt_select == 'oc'
@@ -52,11 +54,11 @@ genform
   $hcf
   $wm
   $wi_cond.wi
-  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp) != ''
+  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp)
     exp=$wi_cond.exp
   #end if
   $oei
-  #if str($dbeexc) != ''
+  #if str($dbeexc)
     dbeexc=$dbeexc
   #end if
   #if $output.out_cond.out_select == 'analyze':
@@ -82,7 +84,7 @@ genform
   ## for some reason genform prints the file twice if sorting is selected
   ## (once unsorted and once sorted). hence, if soring is enabled just
   ## the lower half of the file is returned
-  #if $sort != ''
+  #if $sort
   &&
     wc=\$(wc -l out | cut -d" " -f 1 )
   &&
@@ -137,8 +139,7 @@ genform
         <param type="float" argument="thms" label="Threshold for the MS match value" min="0" max="1" value="0" help="" />
         <param type="float" argument="thmsms" label="Threshold for the MS/MS match value" min="0" max="1" value="0" help="" />
         <param type="float" argument="thcomb" label="Threshold for the combined match value" min="0" max="1" value="0" help="" />
-        <param type="select" argument="sort" label="Sort generated formulas by" help="" >
-            <option value="">Do not sort</option>
+        <param type="select" argument="sort" optional="true" label="Sort generated formulas by" help="" >
             <option value="sort=ppm">Mass deviation in ppm</option>
             <option value="sort=msmv">MS match value</option>
             <option value="sort=msmsmv">MS/MS match value</option>
