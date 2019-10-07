@@ -40,7 +40,9 @@ genform
   thms=$thms
   thmsms=$thmsms
   thcomb=$thcomb
-  $sort
+  #if $sort
+    $sort
+  #end if	
   #if $elemfilt_cond.elemfilt_select == 'elem'
     el=#echo "".join(str($elemfilt_cond.el).split(','))
   #elif $elemfilt_cond.elemfilt_select == 'oc'
@@ -82,7 +84,7 @@ genform
   ## for some reason genform prints the file twice if sorting is selected
   ## (once unsorted and once sorted). hence, if soring is enabled just
   ## the lower half of the file is returned
-  #if $sort != ''
+  #if $sort
   &&
     wc=\$(wc -l out | cut -d" " -f 1 )
   &&
@@ -137,8 +139,7 @@ genform
         <param type="float" argument="thms" label="Threshold for the MS match value" min="0" max="1" value="0" help="" />
         <param type="float" argument="thmsms" label="Threshold for the MS/MS match value" min="0" max="1" value="0" help="" />
         <param type="float" argument="thcomb" label="Threshold for the combined match value" min="0" max="1" value="0" help="" />
-        <param type="select" argument="sort" label="Sort generated formulas by" help="" >
-            <option value="">Do not sort</option>
+        <param type="select" argument="sort" optional="true" label="Sort generated formulas by" help="" >
             <option value="sort=ppm">Mass deviation in ppm</option>
             <option value="sort=msmv">MS match value</option>
             <option value="sort=msmsmv">MS/MS match value</option>
