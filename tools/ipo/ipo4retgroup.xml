@@ -1,4 +1,4 @@
-<tool id="ipo4retgroup" name="IPO for group and retcor" version="@TOOL_VERSION@.0">
+<tool id="ipo4retgroup" name="IPO for group and retcor" version="@TOOL_VERSION@+galaxy0">
 
     <description>IPO optimization process for xcms.group and xcms.retcor</description>
 
@@ -124,7 +124,7 @@
 
     <tests>
         <test>
-            <param name="image" value="faahKO.xset.RData"/>
+            <param name="image" value="faahKO.xset_single.RData"/>
             <param name="samplebyclass" value="0"/>
             <section name="group">
                 <param name="method" value="density"/>
