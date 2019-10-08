@@ -31,90 +31,24 @@ cat("\n\n");
 cat("\tARGUMENTS PROCESSING INFO\n")
 options(bitmapType='cairo')
 
-xsetRdataOutput = paste("ipo4xcmsSet","RData",sep=".")
-if (!is.null(args$xsetRdataOutput)){
-  xsetRdataOutput = args$xsetRdataOutput; args$xsetRdataOutput=NULL
-}
-
-parametersOutput = "parametersOutput.tsv"
-if (!is.null(args$parametersOutput)){
-  parametersOutput = args$parametersOutput; args$parametersOutput=NULL
-}
-
 samplebyclass = 2
 if (!is.null(args$samplebyclass)){
   samplebyclass = args$samplebyclass; args$samplebyclass=NULL
-}
-
-#necessary to unzip .zip file uploaded to Galaxy
-#thanks to .zip file it's possible to upload many file as the same time conserving the tree hierarchy of directories
 
 
-if (!is.null(args$zipfile)){
-  zipfile= args$zipfile; args$zipfile=NULL
-}
+# ----- INFILE PROCESSING -----
+cat("\tINFILE PROCESSING INFO\n")
 
+# Handle infiles
+if (!exists("singlefile")) singlefile <- NULL
+rawFilePath <- getRawfilePathFromArguments(singlefile, NULL, args)
+singlefile <- rawFilePath$singlefile
+directory <- retrieveRawfileInTheWorkingDirectory(singlefile, NULL)
 
-if (!is.null(args$singlefile_galaxyPath)){
-    singlefile_galaxyPath = args$singlefile_galaxyPath; args$singlefile_galaxyPath=NULL
-    singlefile_sampleName = args$singlefile_sampleName; args$singlefile_sampleName=NULL
-}
-
-# single file case
-#@TODO: need to be refactoring
-if(exists("singlefile_galaxyPath") && (singlefile_galaxyPath!="")) {
-    if(!file.exists(singlefile_galaxyPath)){
-        error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
-        print(error_message); stop(error_message)
-    }
-
-    cwd=getwd()
-    dir.create("raw")
-    setwd("raw")
-    file.symlink(singlefile_galaxyPath,singlefile_sampleName)
-    setwd(cwd)
-
-    directory = "raw"
-
-}
-
-# We unzip automatically the chromatograms from the zip files.
-if(exists("zipfile") && (zipfile!="")) {
-    if(!file.exists(zipfile)){
-        error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
-        print(error_message)
-        stop(error_message)
-    }
-
-    #list all file in the zip file
-    #zip_files=unzip(zipfile,list=T)[,"Name"]
-
-    # Because IPO only want raw data in its working directory
-    dir.create("ipoworkingdir")
-    setwd("ipoworkingdir")
-
-    #unzip
-    suppressWarnings(unzip(zipfile, unzip="unzip"))
-
-    #get the directory name
-    filesInZip=unzip(zipfile, list=T);
-    directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
-    directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
-    directory = "."
-    if (length(directories) == 1) directory = directories
-
-    cat("files_root_directory\t",directory,"\n")
-
-
-}
-
-#addition of the directory to the list of arguments in the first position
+# Check some character issues
 checkXmlStructure(directory)
-checkFilesCompatibilityWithXcms(directory)
 
 cat("\n\n")
-
-
 
 
 
@@ -123,7 +57,7 @@ cat("\n\n")
 cat("\tMAIN PROCESSING INFO\n")
 
 
-xset = ipo4xcmsSet(directory, parametersOutput, args, samplebyclass)
+xset = ipo4xcmsSet(directory, "IPO_parameters4xcmsSet.tsv", args, samplebyclass)
 
 
 
@@ -138,8 +72,8 @@ print(xset)
 
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xset","zipfile")
-save(list=objects2save[objects2save %in% ls()], file=xsetRdataOutput)
+objects2save = c("xset", "singlefile")
+save(list=objects2save[objects2save %in% ls()], file="ipo4xcmsSet.RData")
 
 cat("\n\n")
 

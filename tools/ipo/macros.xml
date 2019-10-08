@@ -25,14 +25,10 @@
     <token name="@COMMAND_FILE_LOAD@"><![CDATA[
         #import re
         #if $file_load_section.file_load_conditional.file_load_select == "yes":
-            #if $file_load_section.file_load_conditional.input[0].is_of_type("mzxml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzml") or $file_load_section.file_load_conditional.input[0].is_of_type("mzdata") or $file_load_section.file_load_conditional.input[0].is_of_type("netcdf"):
-                #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
-                #set singlefile_sampleName = ','.join( ["'%s'" % re.sub('[^\s\w\-\.]', '_', str($single_file.element_identifier)) for single_file in $file_load_section.file_load_conditional.input ] )
+            #set singlefile_galaxyPath = ','.join( [ str( $single_file ) for $single_file in $file_load_section.file_load_conditional.input ] )
+            #set singlefile_sampleName = ','.join( ["'%s'" % re.sub('[^\s\w\-\.]', '_', str($single_file.element_identifier)) for single_file in $file_load_section.file_load_conditional.input ] )
 
-                singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
-            #else
-                zipfile '$file_load_section.file_load_conditional.input'
-            #end if
+            singlefile_galaxyPath '$singlefile_galaxyPath' singlefile_sampleName '$singlefile_sampleName'
         #end if
     ]]></token>
 
@@ -49,26 +45,17 @@
     </xml>
 
     <xml name="input_file_load">
-        <section name="file_load_section" title="Resubmit your raw dataset or your zip file">
+        <section name="file_load_section" title="Resubmit your raw dataset">
             <conditional name="file_load_conditional">
-                <param name="file_load_select" type="select" label="Resubmit your dataset or your zip file" help="Use only if you get a message which say that your original dataset or zip file have been deleted on the server." >
+                <param name="file_load_select" type="select" label="Resubmit your dataset" help="Use only if you get a message which say that your original dataset have been deleted on the server." >
                     <option value="no" >no need</option>
                     <option value="yes" >yes</option>
                 </param>
                 <when value="no">
                 </when>
                 <when value="yes">
-                    <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" multiple="true" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+                    <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf" multiple="true" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
                 </when>
-            </conditional>
-        </section>
-    </xml>
-
-    <xml name="test_file_load_zip">
-        <section name="file_load_section">
-            <conditional name="file_load_conditional">
-                <param name="file_load_select" value="yes" />
-                <param name="input" value="faahKO_reduce.zip" ftype="zip" />
             </conditional>
         </section>
     </xml>

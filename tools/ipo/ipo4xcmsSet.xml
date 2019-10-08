@@ -1,6 +1,6 @@
 <tool id="ipo4xcmsSet" name="IPO for xcmsSet" version="@TOOL_VERSION@+galaxy0">
 
-    <description>IPO optimization process for xcms.xcmsSet</description>
+    <description>IPO optimization process for xcms.findChromPeaks</description>
 
     <macros>
         <import>macros.xml</import>
@@ -11,14 +11,7 @@
     <command detect_errors="exit_code"><![CDATA[
         LANG=C Rscript '$__tool_directory__/ipo4xcmsSet.r'
 
-        #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
-        #else
-            zipfile '$input'
-        #end if
-
-        parametersOutput $parametersOutput
-        xsetRdataOutput $xsetRData
+        singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
 
         samplebyclass $samplebyclass
 
@@ -51,12 +44,12 @@
 
     <inputs>
 
-        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. Zip file mode for the format: no_unzip.zip, zip. See the help section below." />
+        <param name="input" type="data" format="mzxml,mzml,mzdata,netcdf" label="File(s) from your history containing your chromatograms" help="Single file mode for the format: mzxml, mzml, mzdata and netcdf. See the help section below." />
 
         <param name="samplebyclass" type="integer" value="2" label="Number of samples used per class to estimate the best parameters" help="Set to 0 to use the whole dataset. To save time, reduce this number" />
 
         <conditional name="methods">
-            <param argument="method" type="select" label="Extraction method for peaks detection" help="See the help section below">
+            <param argument="method" type="select" label="Extraction method for peaks detection (findChromPeaks)" help="See the help section below">
                 <option value="centWave" >centWave</option>
                 <option value="matchedFilter" selected="true">matchedFilter</option>
             </param>
@@ -113,9 +106,8 @@
     </inputs>
 
     <outputs>
-        <data name="xsetRData" format="rdata.xcms.raw" label="xset.RData" />
-        <data name="parametersOutput" format="tabular" label="IPO_parameters4xcmsSet.tsv" />
-        <data name="log" format="txt" label="ipo4xcmsSet.log.txt" />
+        <data name="xsetRData" format="rdata.xcms.raw" label="ipo4xcmsSet.RData"  from_work_dir="ipo4xcmsSet.RData" />
+        <data name="parametersOutput" format="tabular" label="IPO_parameters4xcmsSet.tsv"  from_work_dir="IPO_parameters4xcmsSet.tsv" />
     </outputs>
 
     <tests>
@@ -162,19 +154,6 @@
                 </assert_contents>
             </output>
         </test>
-        <!--Failed:
-                Error in resultIncreased(history) :
-                        No isotopes have been detected, peak picking not optimizable by IPO!-->
-        <!--<test>
-            <param name="inputs|input" value="zip_file" />
-            <param name="inputs|zip_file" value="faahKO_reduce.zip"  ftype="zip" />
-            <param name="methods|method" value="centWave" />
-            <param name="methods|ppm" value="25" />
-            <param name="methods|min_peakwidth" value="15,25" />
-            <param name="methods|min_peakwidth" value="20,30" />
-            <param name="methods|max_peakwidth" value="45,55" />
-            <output name="parametersOutput" file="faahKO_IPO_parameters4xcmsSet.tsv" />
-        </test>-->
     </tests>
 
     <help><![CDATA[
@@ -198,11 +177,11 @@ Workflow position
 
 **Upstream tools**
 
-========================= ==========================================
+========================= ========================
 Name                      Format
-========================= ==========================================
-Upload File               mzxml,mzml,mzdata,netcdf,no_unzip.zip,zip
-========================= ==========================================
+========================= ========================
+Upload File               mzxml,mzml,mzdata,netcdf
+========================= ========================
 
 The easier way to process is to create a Dataset Collection of the type List
 
@@ -247,7 +226,7 @@ Intensity Encoding: **64**
 Parameters
 ----------
 
-Extraction method for peaks detection
+Extraction method for findChromPeaks
 -------------------------------------
 
 **MatchedFilter**
