@@ -477,7 +477,7 @@ C4H9N3O2  2   132.07675   -0.8   96.674   100.000   96.674
 
 **Advanced options**
 
-For undersanding of the parameters and rules for creating possible molecular formulas, see `the manual of the commandline tool <https://www.researchgate.net/publication/307964728_MOLGEN-MSMS_Software_User_Manual>`_ for info.
+For undersanding of the parameters and rules for creating possible molecular formulas, see `the manual of the commandline tool <https://depot.galaxyproject.org/software/molgen_manual/molgen_manual_1.0.1.5_src_all.pdf>`_ for info.
 
     ]]></help>
 
