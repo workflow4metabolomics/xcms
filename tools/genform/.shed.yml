@@ -1,4 +1,5 @@
-categories: Metabolomics
+categories:
+- Metabolomics
 description: 'genform: generation of molecular formulas by high-resolution MS and MS/MS data'
 homepage_url: https://sourceforge.net/projects/genform/
 long_description: 'genform generates candidate molecular formulas from high-resolution 
