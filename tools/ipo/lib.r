@@ -184,3 +184,21 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
     return (directory)
 }
 
+
+# This function retrieve a xset like object
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr
+getxcmsSetObject <- function(xobject) {
+    # XCMS 1.x
+    if (class(xobject) == "xcmsSet")
+        return (xobject)
+    # XCMS 3.x
+    if (class(xobject) == "XCMSnExp") {
+        # Get the legacy xcmsSet object
+        suppressWarnings(xset <- as(xobject, 'xcmsSet'))
+        if (!is.null(xset@phenoData$sample_group))
+            sampclass(xset) <- xset@phenoData$sample_group
+        else
+            sampclass(xset) <- "."
+        return (xset)
+    }
+}

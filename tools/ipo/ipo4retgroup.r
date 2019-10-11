@@ -28,19 +28,6 @@ write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
 cat("\n\n");
 
 
-# ----- ARGUMENTS PROCESSING -----
-cat("\tINFILE PROCESSING INFO\n")
-options(bitmapType='cairo')
-
-#image is an .RData file necessary to use xset variable given by previous tools
-if (!is.null(args$image)){
-  load(args$image); args$image=NULL
-}
-
-cat("\n\n")
-
-#Import the different functions
-
 # ----- PROCESSING INFILE -----
 cat("\tARGUMENTS PROCESSING INFO\n")
 
@@ -53,10 +40,18 @@ cat("\n\n")
 
 # ----- INFILE PROCESSING -----
 cat("\tINFILE PROCESSING INFO\n")
+options(bitmapType='cairo')
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(args$image)
-if (!exists("xset")) stop("\n\nERROR: The RData doesn't contain any object called 'xset' which is provided by the tool: MSnbase readMSData")
+load(args$image); args$image=NULL
+
+# Because so far CAMERA isn't compatible with the new XCMSnExp object
+if (exists("xdata")){
+    xset <- getxcmsSetObject(xdata)
+}
+
+if (!exists("xset")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata' which is provided by the tool: MSnbase readMSData")
+
 
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
