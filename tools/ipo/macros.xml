@@ -10,8 +10,7 @@
     <token name="@COMMAND_LOG_EXIT@"><![CDATA[
         ;
         return=\$?;
-        mv log.txt $log;
-        cat $log;
+        cat log.txt;
         sh -c "exit \$return"
     ]]></token>
 
