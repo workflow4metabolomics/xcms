@@ -57,6 +57,7 @@ if (!exists("xset")) stop("\n\nERROR: The RData doesn't contain any object calle
 if (!exists("singlefile")) singlefile <- NULL
 rawFilePath <- getRawfilePathFromArguments(singlefile, NULL, args)
 singlefile <- rawFilePath$singlefile
+print(singlefile)
 directory <- retrieveRawfileInTheWorkingDirectory(singlefile, NULL)
 
 
