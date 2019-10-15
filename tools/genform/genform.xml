@@ -1,0 +1,496 @@
+<tool id="genform" name="genform" version="@GENFORM_VERSION@" python_template_version="3.5">
+    <description>Generation of molecular formulas by high-resolution MS and MS/MS data</description>
+    <macros>
+        <token name="@GENFORM_VERSION@">8</token>
+    </macros>
+    <requirements>
+        <requirement type="package" version="r@GENFORM_VERSION@">genform</requirement>
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+genform 
+  ms='$ms'
+  #if $msms
+    msms='$msms'
+  #end if
+  #if $formula_cond.formula_select != 'advanced'
+    $formula_cond.formula_select
+  #else
+    $formula_cond.vsp
+    #if str($formula_cond.vsm2mv)
+      vsm2mv=$formula_cond.vsm2mv
+    #end if
+    #if str($formula_cond.vsm2ap2)
+      vsm2ap2=$formula_cond.vsm2ap2
+    #end if
+    #if str($formula_cond.ivsm2mv)
+      ivsm2mv=$formula_cond.ivsm2mv
+    #end if
+    #if str($formula_cond.ivsm2ap2)
+      ivsm2ap2=$formula_cond.ivsm2ap2
+    #end if
+  #end if
+  #if str($m)
+    m=$m
+  #end if
+  ion=$ion
+  ppm=$ppm
+  $msmv
+  acc=$acc
+  rej=$rej
+  thms=$thms
+  thmsms=$thmsms
+  thcomb=$thcomb
+  #if $sort
+    $sort
+  #end if	
+  #if $elemfilt_cond.elemfilt_select == 'elem'
+    el=#echo "".join(str($elemfilt_cond.el).split(','))
+  #elif $elemfilt_cond.elemfilt_select == 'oc'
+    oc
+  #elif $elemfilt_cond.elemfilt_select == 'fuzzy'
+    ff=$elemfilt_cond.ff
+  #end if
+  $het
+  $hcf
+  $wm
+  $wi_cond.wi
+  #if $wi_cond.wi == 'wi=log' and str($wi_cond.exp)
+    exp=$wi_cond.exp
+  #end if
+  $oei
+  #if str($dbeexc)
+    dbeexc=$dbeexc
+  #end if
+  #if $output.out_cond.out_select == 'analyze':
+      analyze
+      $output.out_cond.loss
+      $output.out_cond.intens
+  #end if
+  $output.dbe
+  $output.cm
+  $output.pc
+  $output.sc
+  out=out
+  #if $addoutput.oms
+     oms='$outoms'
+  #end if
+  #if $addoutput.omsms
+     omsms='$outomsms'
+  #end if
+  #if $addoutput.oclean
+     oclean='$outoclean'
+  #end if
+
+  ## for some reason genform prints the file twice if sorting is selected
+  ## (once unsorted and once sorted). hence, if soring is enabled just
+  ## the lower half of the file is returned
+  #if $sort
+  &&
+    wc=\$(wc -l out | cut -d" " -f 1 )
+  &&
+    hwc=\$(echo "\$wc/2" | bc)
+  &&
+    tail -n \$hwc > '$out'
+  #else
+    && cp out '$out'
+  #end if
+    ]]></command>
+    <inputs>
+        <param type="data" argument="ms" label="MS data" format="tabular" help="" />
+        <param type="data" argument="msms" label="MS/MS data (optional)" optional="true" format="tabular" help="" />
+        <conditional name="formula_cond">
+            <param type="select" name="formula_select" label="Structural formula existence check" help="Allow only molecular formulas for that at least one structural formula exists or specify advanced restictions, note that the default of genform is 'no existence check'">
+                <option value="">No existence check</option>
+                <option value="exist" selected="true">Only molecular formulas for that at least one structural formula exists (exist)</option>
+                <option value="exist=mv">Enable multiple valencies for P and S (exist=mv)</option>
+                <option value="advanced">Advanced</option>
+             </param>
+             <when value=""/>
+             <when value="exist"/>
+             <when value="exist=mv"/>
+             <when value="advanced">
+                <param type="select" argument="vsp" label="Valency sum parity" help="Even for graphical formulas" >
+                    <option value="">Use default</option>
+                    <option value="vsp=even">Even</option>
+                    <option value="vsp=odd">Odd</option>
+                </param>
+                <param type="integer" argument="vsm2mv" label="Lower bound for valency sum - 2 * maximum valency for graphical formulas" min="0" value="" help="" />
+                <param type="integer" argument="vsm2ap2" label="Lower bound for valency sum - 2 * number of atoms + 2 for graphical connected formulas" min="0" value="" help="" />
+                <param type="integer" argument="ivsm2mv" label="Lower bound for valency sum - 2 * maximum valency for fragment ions" min="0" value="" help="" />
+                <param type="integer" argument="ivsm2ap2" label="Lower bound for valency sum - 2 * number of atoms + 2 for fragment ions" min="0" value="" help="" />
+             </when>
+        </conditional>
+        <param type="float" argument="m" label="Experimental molecular mass" min="0" optional="true" help="(default: mass of MS basepeak)" />
+        <param type="select" argument="ion" label="Type of ion measured" help="" >
+            <option value="M+H">[M+H]+</option>
+            <option value="M-H">[M-H]-</option>
+            <option value="M+e">M+</option>
+            <option value="M-e">M-</option>
+            <option value="M+Na">[M+Na]+</option>
+        </param>
+        <param type="integer" argument="ppm" label="Accuracy of measurement of MS1" min="0" value="5" help="In parts per million" />
+        <param type="select" argument="msmv" label="MS match value" help="Select output type of the MS match value" >
+            <option value="msmv=ndp">Normalized dot product</option>
+            <option value="msmv=nsse">Normalized sum of squared</option>
+            <option value="msmv=nsae" selected="true">Absolute errors</option>
+        </param>
+        <param type="integer" argument="acc" label="Allowed deviation for full acceptance" min="0" value="2" help="of MS/MS peak in ppm" />
+        <param type="integer" argument="rej" label="Allowed deviation for total rejection" min="0" value="4" help="of MS/MS peak in ppm" />
+        <param type="float" argument="thms" label="Threshold for the MS match value" min="0" max="1" value="0" help="" />
+        <param type="float" argument="thmsms" label="Threshold for the MS/MS match value" min="0" max="1" value="0" help="" />
+        <param type="float" argument="thcomb" label="Threshold for the combined match value" min="0" max="1" value="0" help="" />
+        <param type="select" argument="sort" optional="true" label="Sort generated formulas by" help="" >
+            <option value="sort=ppm">Mass deviation in ppm</option>
+            <option value="sort=msmv">MS match value</option>
+            <option value="sort=msmsmv">MS/MS match value</option>
+            <option value="sort=combmv">Combined match value</option>
+        </param>
+        <conditional name="elemfilt_cond">
+            <param type="select" name="elemfilt_select" label="Chemical element filtering">
+                <option value="nofilter">No filter</option>
+                <option value="elem">By used elements</option>
+                <option value="oc">Only organic compounds (oc)</option>
+                <option value="fuzzy">By fuzzy formula</option>
+	    </param>
+	    <when value="nofilter"/>
+            <when value="elem">
+                <param type="select" multiple="true" argument="el" label="Used chemical elements" help="" >
+                    <option selected="true" value="C">C</option>
+                    <option selected="true" value="N">N</option>
+                    <option selected="true" value="O">O</option>
+                    <option selected="true" value="P">P</option>
+                    <option selected="true" value="S">S</option>
+                    <option selected="true" value="H">H</option>
+                    <option selected="true" value="Cl">Cl</option>
+                    <option selected="true" value="Br">Br</option>
+                    <option selected="true" value="F">F</option>
+                    <option selected="true" value="I">I</option>
+                    <option selected="true" value="Si">Si</option>
+                </param>
+             </when>
+             <when value="oc"/>
+             <when value="fuzzy">
+                 <param type="text" argument="ff" checked="false" label="Uses fuzzy formula for limits of element multiplicities" help="" />
+             </when>
+        </conditional>
+        <param type="boolean" argument="het" checked="false" truevalue="het" falsevalue="" label="Formulas must have at least one hetero atom" help="" />
+        <param type="boolean" argument="hcf" checked="false" truevalue="hcf" falsevalue="" label="Apply Heuerding-Clerc filter" help="" />
+        <param type="select" argument="wm" label="Weighting of m/z for MS/MS match value" help="" >
+            <option value="">No weighting</option>
+            <option value="wm=lin">Linear</option>
+            <option value="wm=sqrt">Square root</option>
+            <option value="wm=log">Logarithmic</option>
+        </param>
+        <conditional name="wi_cond">
+            <param type="select" argument="wi" label="Intensity weighting for MS/MS match value" help="" >
+                <option value="">No weighting</option>
+                <option value="wi=lin">Linear</option>
+                <option value="wi=sqrt">Square root</option>
+                <option value="wi=log">Logarithmic</option>
+            </param>
+            <when value=""/>
+            <when value="wi=lin"/>
+            <when value="wi=sqrt"/>
+            <when value="wi=log">
+                <param type="float" argument="exp" optional="true" label="Exponent" value="" help="" />
+            </when>
+        </conditional>
+        <param type="boolean" argument="oei" checked="false" truevalue="oei" falsevalue="" label="Allow odd electron ions for explaining MS/MS peaks" help="" />
+        <param type="integer" argument="dbeexc" optional="true" label="Excess of double bond equivalent for ions" help="" />
+        <section name="output" title="Output options for main output" expanded="true">
+            <conditional name="out_cond">
+                <param type="select" name="out_select" label="Write explanations for MS/MS peaks to output" help="" >
+                    <option value="">no</option>
+                    <option value="analyze">yes</option>
+                </param>
+                <when value=""/>
+                <when value="analyze">
+                    <param type="boolean" argument="loss" checked="false" truevalue="loss" falsevalue="" label="For analyzing MS/MS peaks write losses instead of fragments" help="" />
+                    <param type="boolean" argument="intens" checked="false" truevalue="intens" falsevalue="" label="Write intensities of MS/MS peaks to output" help="" />
+                </when>
+            </conditional>
+            <param type="boolean" argument="dbe" checked="false" truevalue="dbe" falsevalue="" label="Write double bond equivalents to output" help="" />
+            <param type="boolean" argument="cm" checked="false" truevalue="cm" falsevalue="" label="Write calculated ion masses to output" help="" />
+            <param type="boolean" argument="pc" checked="false" truevalue="pc" falsevalue="" label="Output match values in percent" help="" />
+            <param type="boolean" argument="sc" checked="false" truevalue="sc" falsevalue="" label="Strip calculated isotope distributions" help="" />
+        </section>
+        <section name="addoutput" title="Additional output data sets" expanded="true">
+            <param type="boolean" argument="oms" checked="false" truevalue="oms" falsevalue="" label="Write scaled MS peaks output" help="" />
+            <param type="boolean" argument="omsms" checked="false" truevalue="omsms" falsevalue="" label="Write scaled MS/MS peaks output" help="" />
+            <param type="boolean" argument="oclean" checked="false" truevalue="oclean" falsevalue="" label="Write MS/MS with only explained peaks" help="" />
+            <param type="boolean" argument="oclean" checked="false" truevalue="oms" falsevalue="" label="Write MS/MS with only explained peaks" help="" />
+        </section>
+    </inputs>
+    <outputs>
+        <data name="out" format="tabular" />
+        <data name="outoms" format="tabular" label="${tool.name} on ${on_string}: MS">
+            <filter>addoutput['oms']</filter>
+        </data>
+        <data name="outomsms" format="tabular" label="${tool.name} on ${on_string}: MS/MS" >
+            <filter>addoutput['omsms']</filter>
+        </data>
+        <data name="outoclean" format="tabular" label="${tool.name} on ${on_string}: clean">
+            <filter>addoutput['oclean']</filter>
+        </data>
+    </outputs>
+    <tests>
+        <!-- test with MS input and mostly default values -->
+        <test expect_num_outputs="1">
+            <param name="ms" ftype="tabular" value="CreatineMs.txt" />
+            <param name="acc" value="20" />
+            <param name="rej" value="40" />
+            <output name="out" ftype="tabular" file="CreatineMs.out"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <not_has_text text=" msms=" />
+                <has_text text=" exist " />
+                <not_has_text text=" m=" />
+                <has_text text=" ion=M+H " />
+                <has_text text=" ppm=5 " />
+                <has_text text=" msmv=nsae " />
+                <has_text text=" acc=20 " />
+                <has_text text=" rej=40 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thcomb=0.0 " />
+                <not_has_text text=" sort" />
+                <not_has_text text=" el=" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <not_has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <not_has_text text=" hcf " />
+                <not_has_text text=" wm=" />
+                <not_has_text text=" wi=" />
+                <not_has_text text=" exp=" />
+                <not_has_text text=" oei " />
+                <not_has_text text=" dbeexc=" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <not_has_text text=" oms=" />
+                <not_has_text text=" omsms=" />
+                <not_has_text text=" oclean=" />
+                <not_has_text text=" analyze " />
+                <not_has_text text=" loss " />
+                <not_has_text text=" intens " />
+                <not_has_text text=" dbe " />
+                <not_has_text text=" cm " />
+                <not_has_text text=" pc " />
+                <not_has_text text=" sc " />
+            </assert_command>
+        </test>
+        <!-- test with MS/MS input and non default output options -->
+        <test expect_num_outputs="4">
+            <param name="ms" ftype="tabular" value="CreatineMs.txt" />
+            <param name="msms" ftype="tabular" value="CreatineMsMs.txt" />
+            <param name="acc" value="20" />
+            <param name="rej" value="40" />
+            <section name="output">
+                <conditional name="out_cond">
+                    <param name="out_select" value="analyze"/>
+                    <param name="loss" value="loss" />
+                    <param name="intens" value="intens" />
+                </conditional>
+                <param name="dbe" value="dbe" />
+                <param name="cm" value="cm" />
+                <param name="pc" value="pc" />
+                <param name="sc" value="sc" />
+            </section>
+            <section name="addoutput">
+                <param name="oms" value="oms" />
+                <param name="omsms" value="omsms" />
+                <param name="oclean" value="oclean" />
+                <param name="oclean" value="oms"/>
+            </section>
+            <output name="out" ftype="tabular" file="CreatineMsMs.out"/>
+            <output name="outoms" ftype="tabular" file="CreatineMsMs-oms.out"/>
+            <output name="outomsms" ftype="tabular" file="CreatineMsMs-omsms.out"/>
+            <output name="outoclean" ftype="tabular" file="CreatineMsMs-oclean.out"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <has_text text=" msms=" />
+                <has_text text=" exist" />
+                <not_has_text text=" m=" />
+                <has_text text=" ion=M+H " />
+                <has_text text=" ppm=5 " />
+                <has_text text=" msmv=nsae " />
+                <has_text text=" acc=20 " />
+                <has_text text=" rej=40 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thmsms=0.0 " />
+                <has_text text=" thcomb=0.0 " />
+                <not_has_text text=" sort" />
+                <not_has_text text=" el=" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <not_has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <not_has_text text=" hcf " />
+                <not_has_text text=" wm=" />
+                <not_has_text text=" wi=" />
+                <not_has_text text=" exp=" />
+                <not_has_text text=" oei " />
+                <not_has_text text=" dbeexc=" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <has_text text=" oms=" />
+                <has_text text=" omsms=" />
+                <has_text text=" oclean=" />
+                <has_text text=" analyze " />
+                <has_text text=" loss " />
+                <has_text text=" intens " />
+                <has_text text=" dbe " />
+                <has_text text=" cm " />
+                <has_text text=" pc " />
+                <has_text text=" sc " />
+            </assert_command>
+        </test>
+        <!-- test with MS/MS input and other non-default values 
+             (creates empty output .. but test is still usefull) -->
+        <test expect_num_outputs="1">
+            <param name="ms" ftype="tabular" value="CreatineMs.txt" />
+            <param name="msms" ftype="tabular" value="CreatineMsMs.txt" />
+            <conditional name="formula_cond">
+                <param name="formula_select" value=""/>
+            </conditional>
+            <param name="m" value="111.0201" />
+            <param name="ion" value="M-H" />
+            <param name="ppm" value="4" />
+            <param name="msmv" value="msmv=ndp"/>
+            <param name="acc" value="21" />
+            <param name="rej" value="39" />
+            <param name="thms" value="0.3" />
+            <param name="thmsms" value="0.2" />
+            <param name="thcomb" value="0.1" />
+            <param name="sort" value="sort=combmv" />
+            <conditional name="elemfilt_cond">
+                <param name="elemfilt_select" value="elem"/>
+                <param name="el" value="C,N,O,P,S,H,Cl,Br,F,I" />
+            </conditional>
+            <param name="het" value="het" />
+            <param name="hcf" value="hcf" />
+            <param name="wm" value="wm=sqrt"/>
+            <conditional name="wi_cond">
+                <param name="wi" value="wi=log"/>
+                <param name="exp" value="2.31"/>
+            </conditional>
+            <param name="oei" value="oei" />
+            <param name="dbeexc" value="1" />
+            <output name="out" ftype="tabular" file="CreatineMsMs.out" lines_diff="3"/>
+            <assert_command>
+                <has_text text=" ms=" />
+                <has_text text=" msms=" />
+                <not_has_text text=" exist" />
+                <has_text text=" m=111.0201" />
+                <has_text text=" ion=M-H" />
+                <has_text text=" ppm=4" />
+                <has_text text=" msmv=ndp" />
+                <has_text text=" acc=21" />
+                <has_text text=" rej=39" />
+                <has_text text=" thms=0.3" />
+                <has_text text=" thmsms=0.2" />
+                <has_text text=" thcomb=0.1" />
+                <has_text text=" sort=combmv" />
+                <has_text text=" el=CNOPSHClBrFI" />
+                <not_has_text text=" oc " />
+                <not_has_text text=" ff=" />
+                <has_text text=" het " />
+                <not_has_text text=" vsp=" />
+                <not_has_text text=" vsp2mv=" />
+                <not_has_text text=" vsm2ap2=" />
+                <has_text text=" hcf " />
+                <has_text text=" wm=sqrt " />
+                <has_text text=" wi=log " />
+                <has_text text=" exp=2.31 " />
+                <has_text text=" oei " />
+                <has_text text=" dbeexc=1" />
+                <not_has_text text=" ivsm2mv=" />
+                <not_has_text text=" ivsm2ap2=" />
+                <not_has_text text=" oms=" />
+                <not_has_text text=" omsms=" />
+                <not_has_text text=" oclean=" />
+                <not_has_text text=" analyze " />
+                <not_has_text text=" loss " />
+                <not_has_text text=" intens " />
+                <not_has_text text=" dbe " />
+                <not_has_text text=" cm " />
+                <not_has_text text=" pc " />
+                <not_has_text text=" sc " />
+            </assert_command>
+        </test>
+    </tests>
+    <help><![CDATA[
+        
+**Overview**
+
+Genform generates candidate molecular formulas from high-resolution
+MS data. It calculates match values (MV) that show how well candidate molecular formulas fit the MS
+isotope peak distributions (MS MV) and the high-resolution MS/MS fragment peak masses (MSMS
+MV). Finally it computes a combined match value from these two scores. This software can be
+regarded as a further development of the ElCoCo and MolForm modules of MOLGEN-MS with a clear
+specialization towards MS/MS.
+
+**Input**        
+
+MS and MS/MS centroided spectra are given as tab separated files with two columns:
+
+1. m/z
+2. intensity
+
+**Output**
+
+Main output containing a list of all possible molecular formulas, further options can be chosen:
+
+1. if the explained peaks shall also be written to the output
+2. if the explanation shall be given as molecular formulas for the fragment or as neutral losses
+3. double bond equivalents for each molecular formula
+4. calculated ion masses 
+5. output match values in percent
+
+Output structure:
+
+molecular fomula / (double bond equivalent) / (calculated mass) / ppm / MS MV / MSMS MV / combined MV 
+
+ppm: The value ppm denotes the relative deviation of
+the calculated mass of the molecular ion from the mass of the basepeak (basemass) in the MS in
+parts per million (ppm).
+
+MS MV: It is calculated from measured and
+theoretical isotope peak intensities. The MV ranges from 0 to 1. The better theoretical and measured
+isotope distributions fit, the higher is the MV. There are three different algorithms implemented for
+calculating the MS MV, which are nomalized dot product, nomalized sum of squared errors and the normalized sum of absolute errors.
+
+MSMS MV: It shows how well the masses of the MS/MS fit possible fragments of the candidate molecular formula. Again, the MS/MS MV is a value
+between 0 and 1, whereby higher values reflect a better fit. 
+
+combined MV: combined match value
+
+Example output:
+
+======== === =========== ====== ======== ========= ========
+C4H9N3O2  2   132.07675   -0.8   96.674   100.000   96.674
+======== === =========== ====== ======== ========= ========
+
+**Advanced options**
+
+For undersanding of the parameters and rules for creating possible molecular formulas, see `the manual of the commandline tool <https://depot.galaxyproject.org/software/molgen_manual/molgen_manual_1.0.1.5_src_all.pdf>`_ for info.
+
+    ]]></help>
+
+    <citations>
+        <citation type="doi">10.3390/metabo3020440</citation>
+        <citation type="bibtex">@article{meringer2011ms,
+        title={MS/MS data improves automated determination of molecular formulas by mass spectrometry},
+        author={Meringer, Markus and Reinker, Stefan and Zhang, Juan and Muller, Alban},
+        journal={MATCH Commun. Math. Comput. Chem},
+        volume={65},
+        number={2},
+        pages={259--290},
+        year={2011}
+        }</citation>
+ </citations>
+</tool>
