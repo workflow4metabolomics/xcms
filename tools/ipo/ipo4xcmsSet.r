@@ -34,7 +34,7 @@ options(bitmapType='cairo')
 samplebyclass = 2
 if (!is.null(args$samplebyclass)){
   samplebyclass = args$samplebyclass; args$samplebyclass=NULL
-
+}
 
 # ----- INFILE PROCESSING -----
 cat("\tINFILE PROCESSING INFO\n")
