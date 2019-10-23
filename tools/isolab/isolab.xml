@@ -25,20 +25,23 @@
       #if str($target.target_selector) == "no":
           sed -i '1d;\$d' '$target_matrix' &&
           #if $target.target_output:
-              ln -f $target_matrix $target_out &&
+              ln -f '$target_matrix' '$target_out' &&
           #end if
           #set $targ_file = $target_matrix
       #else:
           #set $targ_file = $target.targ_file
       #end if
+      
+      ## wl-23-10-2019, Wed: don't use single quotes in #set command 
+      ##  otherwise it does not work.
 
-      Rscript ${__tool_directory__}/isolab.R
+      Rscript '${__tool_directory__}/isolab.R'
         ## input files
-        --peak_file $peak_file 
-        --targ_file $targ_file 
+        --peak_file '$peak_file' 
+        --targ_file '$targ_file' 
         
         ## Average estimate for groups
-        --grp $grp.grp_selector
+        --grp '$grp.grp_selector'
         #if $grp.grp_selector =="TRUE":
           ## input group information directly or load a file?
           --grp_file_sel '$grp.grp_1.grp_file_sel' 
@@ -50,25 +53,25 @@
         #end if
 
         ## Plot results
-        --pattern_plot $pattern_plot
-        --residual_plot $residual_plot
-        --result_plot $result_plot 
+        --pattern_plot '$pattern_plot'
+        --residual_plot '$residual_plot'
+        --result_plot '$result_plot' 
 
         ## output pdf files
         #if $pattern_plot:
-          --pattern_file $pattern_file
+          --pattern_file '$pattern_file'
         #end if
         #if $residual_plot:
-          --residual_file $residual_file
+          --residual_file '$residual_file'
         #end if
         #if $result_plot:
-          --result_file $result_file
+          --result_file '$result_file'
         #end if
 
         ## Output Excel files
-        --summary_file $summary_file 
+        --summary_file '$summary_file' 
         #if $grp.grp_selector =="TRUE":
-           --summary_grp_file $summary_grp_file
+           --summary_grp_file '$summary_grp_file'
         #end if
 
     ]]>
@@ -120,10 +123,10 @@
                      a single column of NA values can be entered" />
       </when>
 
-     <when value="no">
-       <param name="target_output" type="boolean" truevalue="1" falsevalue="0"
-              checked="true" label="Output generated targets input files?"
-              help="Choose if you want to output the generated targets." />
+      <when value="no">
+        <param name="target_output" type="boolean" truevalue="1" falsevalue="0"
+               checked="true" label="Output generated targets input files?"
+               help="Choose if you want to output the generated targets." />
 
         <repeat name="rep_target" title="Target" min="1" default="1">
 

@@ -6,5 +6,5 @@ description: 'Isotopic labelling'
 homepage_url: https://github.com/RuggeroFerrazza/IsotopicLabelling
 long_description: 'Analyses mass spectrometric isotopic patterns obtained
   following isotopic labelling experiments.'
-owner: Wanchang Lin, Julian Griffin
+owner: workflow4metabolomics
 remote_repository_url: https://github.com/wanchanglin/isolab

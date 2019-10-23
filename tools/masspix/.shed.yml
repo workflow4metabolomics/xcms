@@ -7,5 +7,5 @@ description: 'Processes high resolution mass spectrometry imaging data'
 homepage_url: https://github.com/hallz/massPix
 long_description: 'Processes high resolution mass spectrometry imaging data,  
   performs multivariate statistics (PCA, clustering) and lipid identification.'
-owner: Wanchang Lin, Zoe Hall, Julian Griffin
+owner: workflow4metabolomics
 remote_repository_url: https://github.com/wanchanglin/massPix
