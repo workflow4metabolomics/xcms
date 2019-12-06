@@ -13,7 +13,12 @@
         @COMMAND_RSCRIPT@/msnbase_readmsdata.r
 
         #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #if $os.path.islink(str($input))
+                #set $source = $os.readlink(str($input))
+                singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
+            #else
+                singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #end if
         #else
             zipfile '$input'
         #end if
