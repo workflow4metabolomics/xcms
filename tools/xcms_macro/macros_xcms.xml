@@ -178,7 +178,7 @@ xset.dataMatrix.tsv : tabular format
     </token>
 
     <xml name="input_centwave">
-        <param argument="ppm" type="integer" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
+        <param argument="ppm" type="float" value="25" label="Max tolerated ppm m/z deviation in consecutive scans in ppm" help="for the initial ROI definition." />
         <param argument="peakwidth" type="text" value="20,50" label="Min,Max peak width in seconds" help="with the expected approximate peak width in chromatographic space.">
             <expand macro="input_validator_range_float"/>
         </param>
