@@ -2,12 +2,6 @@
 #Authors Gildas Le Corguille and Yann Guitton
 
 
-# ----- LOG FILE -----
-log_file=file("log.txt", open = "wt")
-sink(log_file)
-sink(log_file, type = "output")
-
-
 # ----- PACKAGE -----
 cat("\tSESSION INFO\n")
 

@@ -38,8 +38,6 @@
             max $methods.section_matchedfilter_non_optimizable.max
             snthresh $methods.section_matchedfilter_non_optimizable.snthresh
         #end if
-
-        @COMMAND_LOG_EXIT@
     ]]></command>
 
     <inputs>

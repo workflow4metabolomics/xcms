@@ -49,8 +49,6 @@
         #end if
 
         @COMMAND_FILE_LOAD@
-
-        @COMMAND_LOG_EXIT@
     ]]></command>
 
     <inputs>
