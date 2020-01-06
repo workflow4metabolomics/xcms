@@ -1,0 +1,13 @@
+bw	5.5
+mzwid	0.02
+minfrac	1
+max	50
+retcorMethod	loess
+smooth	loess
+extra	1
+missing	1
+span	0.2
+family	gaussian
+plottype	none
+minsamp	1
+center	2
