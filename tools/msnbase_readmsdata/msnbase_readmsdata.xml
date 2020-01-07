@@ -1,4 +1,4 @@
-<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.1">
+<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.2">
     <description>Imports mass-spectrometry data files</description>
 
     <macros>
@@ -13,7 +13,12 @@
         @COMMAND_RSCRIPT@/msnbase_readmsdata.r
 
         #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #if $os.path.islink(str($input))
+                #set $source = $os.readlink(str($input))
+                singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
+            #else
+                singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #end if
         #else
             zipfile '$input'
         #end if
@@ -107,7 +112,6 @@ provided by the ‘mzR’ package to access data and meta data in
 ‘mzData’, ‘mzXML’ and ‘mzML’.
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
-.. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
 
 
 -----------------
