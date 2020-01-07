@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@WRAPPER_VERSION@.1">
+<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@WRAPPER_VERSION@.2">
     <description>Chromatographic peak detection</description>
 
     <macros>
