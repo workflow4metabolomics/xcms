@@ -42,6 +42,7 @@ mergeXData <- function(args) {
     chromBPI <- NULL
     chromTIC_adjusted <- NULL
     chromBPI_adjusted <- NULL
+    md5sumList <- NULL
     for(image in args$images) {
 
         load(image)
