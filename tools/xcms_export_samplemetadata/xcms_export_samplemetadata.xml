@@ -1,4 +1,4 @@
-<tool id="xcms_export_samplemetadata" name="xcms get a sampleMetadata file" version="@WRAPPER_VERSION@.0">
+<tool id="xcms_export_samplemetadata" name="xcms get a sampleMetadata file" version="@TOOL_VERSION@+galaxy0">
     <description>which need to be filled with extra information</description>
 
     <macros>
@@ -116,6 +116,8 @@ Blanc09                     blank
 
 Changelog/News
 --------------
+
+.. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
 @HELP_XCMS_NEWVERSION_3610@
 

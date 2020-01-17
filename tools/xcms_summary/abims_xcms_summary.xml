@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms process history" version="@WRAPPER_VERSION@.0">
+<tool id="abims_xcms_summary" name="xcms process history" version="@TOOL_VERSION@+galaxy0">
 
     <description>Create a summary of XCMS analysis</description>
 
