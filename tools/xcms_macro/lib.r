@@ -243,12 +243,12 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
     group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
-        plot(chrom, col = group_colors[chrom$sample_group], main=main)
+        plot(chrom, col = group_colors[as.factor(chrom$sample_group)], main=main, peakType = "none")
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
 
     # Color by sample
-    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main)
+    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main, peakType = "none")
     legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
 
     dev.off()

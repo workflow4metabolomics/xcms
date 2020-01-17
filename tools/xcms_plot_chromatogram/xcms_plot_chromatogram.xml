@@ -1,11 +1,10 @@
-<tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@WRAPPER_VERSION@.0">
+<tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@TOOL_VERSION@.0">
     <description>Plots base peak intensity chromatogram (BPI) and total ion current chromatogram (TIC) from MSnbase or xcms experiment(s)</description>
 
     <macros>
         <import>macros.xml</import>
         <import>macros_xcms.xml</import>
     </macros>
-
     <expand macro="requirements"/>
     <expand macro="stdio"/>
 
@@ -38,8 +37,8 @@
             <param name="images" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
             <param name="sampleMetadata" value="sampleMetadata.tab" ftype="tabular"/>
-            <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="600" />
-            <output name="bpisPdf" value="BPIs.pdf" ftype="pdf" compare="sim_size" delta="600" />
+            <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="5000" />
+            <output name="bpisPdf" value="BPIs.pdf" ftype="pdf" compare="sim_size" delta="5000" />
         </test>
         <!-- DISABLE FOR TRAVIS
         <test>
