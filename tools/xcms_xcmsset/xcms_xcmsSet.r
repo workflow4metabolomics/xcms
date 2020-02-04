@@ -59,12 +59,9 @@ load(args$image)
 if (!exists("raw_data")) stop("\n\nERROR: The RData doesn't contain any object called 'raw_data' which is provided by the tool: MSnbase readMSData")
 
 # Handle infiles
-if (!exists("singlefile")) singlefile <- NULL
-if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
 
 cat("\n\n")
@@ -75,9 +72,6 @@ cat("\tMAIN PROCESSING INFO\n")
 
 
 cat("\t\tCOMPUTE\n")
-
-## Get the full path to the files
-files <- getMSFiles(directory)
 
 cat("\t\t\tApply filter[s] (if asked)\n")
 if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_data, filterAcquisitionNumParam[1]:filterAcquisitionNumParam[2])
@@ -98,9 +92,6 @@ xdata <- findChromPeaks(raw_data, param=findChromPeaksParam)
 
 # Check if there are no peaks
 if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should review your settings")
-
-# Transform the files absolute pathways into relative pathways
-xdata@processingData@files <- sub(paste(getwd(), "/", sep="") , "", xdata@processingData@files)
 
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMetadata.tsv")
