@@ -149,7 +149,7 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
 
-    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     names(group_colors) <- unique(xdata$sample_group)
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
@@ -170,7 +170,7 @@ getPlotAdjustedRtime <- function(xdata) {
     pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
 
     # Color by group
-    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
         plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
@@ -239,7 +239,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
     pdf(pdfname, width=16, height=10)
 
     # Color by group
-    group_colors <- brewer.pal(3, "Set1")[1:length(unique(xdata$sample_group))]
+    group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
         plot(chrom, col = group_colors[as.factor(chrom$sample_group)], main=main, peakType = "none")
