@@ -1,1 +1,1 @@
-../../xcms_retcor/test-data/wt16.CDF
+../../xcms_test-data/wt16.CDF

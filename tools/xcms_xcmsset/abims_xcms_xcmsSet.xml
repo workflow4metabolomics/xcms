@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@WRAPPER_VERSION@.2">
+<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@TOOL_VERSION@+galaxy0">
     <description>Chromatographic peak detection</description>
 
     <macros>
@@ -224,7 +224,7 @@
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
-            <expand macro="test_file_load_single_ko15"/>
+            <expand macro="test_file_load_single_file" filename="ko15"/>
             <assert_stdout>
                 <has_text text="ppm: 25" />
                 <has_text text="peakwidth: 20, 50" />
@@ -235,6 +235,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+            <!--<output name="xsetRData" file="ko15-xset.RData" />-->
         </test>
         <!-- DISABLE FOR TRAVIS
         Useful to generate test-data for the further steps
@@ -245,6 +246,7 @@
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
+            <expand macro="test_file_load_single_file" filename="ko16"/>
             <assert_stdout>
                 <has_text text="object with 1 samples" />
                 <has_text text="Time range: 2521.7-4477.9 seconds (42-74.6 minutes)" />
@@ -253,6 +255,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+            <output name="xsetRData" file="ko16-xset.RData" />
         </test>
         <test>
             <param name="image" value="wt15-raw.RData" ftype="rdata" />
@@ -261,6 +264,7 @@
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
+            <expand macro="test_file_load_single_file" filename="wt15"/>
             <assert_stdout>
                 <has_text text="object with 1 samples" />
                 <has_text text="Time range: 2517-4473.2 seconds (42-74.6 minutes)" />
@@ -269,6 +273,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+            <output name="xsetRData" file="wt15-xset.RData" />
         </test>
         <test>
             <param name="image" value="wt16-raw.RData" ftype="rdata" />
@@ -277,6 +282,7 @@
                 <param name="ppm" value="25" />
                 <param name="peakwidth" value="20,50" />
             </conditional>
+            <expand macro="test_file_load_single_file" filename="wt16"/>
             <assert_stdout>
                 <has_text text="object with 1 samples" />
                 <has_text text="Time range: 2521.7-4468.5 seconds (42-74.5 minutes)" />
@@ -285,6 +291,7 @@
                 <has_text text="Peak Groups: 0" />
                 <has_text text="Sample classes: ." />
             </assert_stdout>
+            <output name="xsetRData" file="wt16-xset.RData" />
         </test>
         -->
         <!-- DISABLE FOR TRAVIS
@@ -485,14 +492,13 @@ Changelog/News
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
+@HELP_XCMS_NEWVERSION_3610@
+
 **Version 3.4.4.1 - 30/04/2019**
 
 - BUGFIX: remove the pre-compute of the chromatograms which was memory consuming. Now, only xcms plot chromatogram will generate the Chromatograms.
 
-**Version 3.4.4.0 - 08/02/2019**
-
-- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.4 (see XCMS News_)
-
+@HELP_XCMS_NEWVERSION_3440@
 
 **Version 3.0.0.0 - 08/03/2018**
 

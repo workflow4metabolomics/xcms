@@ -53,15 +53,9 @@ if (!hasFeatures(xdata)) stop("You must always do a group step after a retcor. O
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
-
-# Check some character issues
-md5sumList <- list("origin" = getMd5sum(directory))
-checkXmlStructure(directory)
-checkFilesCompatibilityWithXcms(directory)
 
 
 cat("\n\n")

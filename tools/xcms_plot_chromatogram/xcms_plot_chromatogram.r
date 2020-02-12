@@ -49,8 +49,8 @@ cat("\tMAIN PROCESSING INFO\n")
 cat("\t\tDRAW GRAPHICS\n")
 
 register(SerialParam())
-if (!is.null(chromTIC) || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
-if (!is.null(chromBPI) || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
+if (!exists("chromTIC") || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
+if (!exists("chromBPI") || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
 
 if (!is.null(chromTIC_adjusted)) chromTIC <- chromTIC_adjusted
 if (!is.null(chromBPI_adjusted)) chromBPI <- chromBPI_adjusted
@@ -66,11 +66,12 @@ cat("\tXCMSnExp OBJECT INFO\n")
 print(xdata)
 cat("\n\n")
 
-cat("\txcmsSet OBJECT INFO\n")
+# 2020-01-17 - disable because xcms 3.4.4 raises an error with xdata build with xcms 3.6.1
+#cat("\txcmsSet OBJECT INFO\n")
 # Get the legacy xcmsSet object
-xset <- getxcmsSetObject(xdata)
-print(xset)
-cat("\n\n")
+#xset <- getxcmsSetObject(xdata)
+#print(xset)
+#cat("\n\n")
 
 
 cat("\tDONE\n")

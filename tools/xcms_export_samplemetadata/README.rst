@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 3.6.1.0 - 03/09/2019**
+
+- UPGRADE: upgrade the xcms version from 3.4.4 to 3.6.1 (see XCMS News_)
+
 **Version 3.4.3.0 - 08/02/2019**
 
 - UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.3

@@ -58,11 +58,11 @@
         <test>
             <param name="input" value="ko15.CDF"  ftype="netcdf" />
             <assert_stdout>
-                <has_text text="rowNames: ./ko15.CDF" />
+                <has_text text="rowNames: ko15.CDF" />
                 <has_text text="ko15.CDF" />
                 <has_text text="featureNames: F1.S0001 F1.S0002 ... F1.S1278 (1278 total)" />
                 <has_text text="fvarLabels: fileIdx spIdx ... spectrum (28 total)" />
-                <has_text text="./ko15.CDF        ko15            ." />
+                <has_text text="ko15.CDF        ko15            ." />
             </assert_stdout>
         </test>
         <!-- DISABLE FOR TRAVIS
