@@ -36,14 +36,10 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 if (!exists("listOFargs")) listOFargs=list()
 listOFargs[[format(Sys.time(), "%y%m%d-%H:%M:%S_annotatediff")]] = args
 
-# We unzip automatically the chromatograms from the zip files.
-if (!exists("zipfile")) zipfile=NULL
-if (!exists("singlefile")) singlefile=NULL
-rawFilePath = getRawfilePathFromArguments(singlefile, zipfile, args)
-zipfile = rawFilePath$zipfile
-singlefile = rawFilePath$singlefile
-args = rawFilePath$args
-directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
+# Handle infiles
+rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
+zipfile <- rawFilePath$zipfile
+singlefile <- rawFilePath$singlefile
 
 # Because so far CAMERA isn't compatible with the new XCMSnExp object
 if (exists("xdata")){

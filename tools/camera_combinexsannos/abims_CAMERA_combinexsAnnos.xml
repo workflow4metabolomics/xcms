@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="2.2.5">
+<tool id="abims_CAMERA_combinexsAnnos" name="CAMERA.combinexsAnnos" version="camera@TOOL_VERSION@+galaxy0">
 
     <description>Wrapper function for the combinexsAnnos CAMERA function. Returns a dataframe with recalculated annotations.</description>
 
@@ -210,6 +210,8 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/CAMERA/NEWS
+
+@HELP_CAMERA_NEWVERSION_1420@
 
 **Version 2.2.5 - 09/04/2019**
 

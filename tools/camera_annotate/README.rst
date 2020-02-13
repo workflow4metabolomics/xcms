@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version camera1.42.0 - 13/02/2020**
+
+- UPGRADE: upgrade the xcms version from 3.0.0 to 1.42.0 (see CAMERA News_)
+
 **Version 2.2.5 - 09/04/2019**
 
 - NEW: zip export are back for pictures (eic and boxplot) and diffreport tables

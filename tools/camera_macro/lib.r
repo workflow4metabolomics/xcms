@@ -284,369 +284,75 @@ combinexsAnnos_function <- function(xaP, xaN, diffrepP=NULL,diffrepN=NULL,
 
 }
 
-# This function get the raw file path from the arguments
-getRawfilePathFromArguments <- function(singlefile, zipfile, args) {
-    if (!is.null(args$zipfile))           zipfile = args$zipfile
-    if (!is.null(args$zipfilePositive))   zipfile = args$zipfilePositive
-    if (!is.null(args$zipfileNegative))   zipfile = args$zipfileNegative
-
-    if (!is.null(args$singlefile_galaxyPath)) {
-        singlefile_galaxyPaths = args$singlefile_galaxyPath;
-        singlefile_sampleNames = args$singlefile_sampleName
-    }
-    if (!is.null(args$singlefile_galaxyPathPositive)) {
-        singlefile_galaxyPaths = args$singlefile_galaxyPathPositive;
-        singlefile_sampleNames = args$singlefile_sampleNamePositive
-    }
-    if (!is.null(args$singlefile_galaxyPathNegative)) {
-        singlefile_galaxyPaths = args$singlefile_galaxyPathNegative;
-        singlefile_sampleNames = args$singlefile_sampleNameNegative
-    }
-    if (exists("singlefile_galaxyPaths")){
-        singlefile_galaxyPaths = unlist(strsplit(singlefile_galaxyPaths,","))
-        singlefile_sampleNames = unlist(strsplit(singlefile_sampleNames,","))
-
-        singlefile=NULL
-        for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
-            singlefile_galaxyPath=singlefile_galaxyPaths[singlefile_galaxyPath_i]
-            singlefile_sampleName=singlefile_sampleNames[singlefile_galaxyPath_i]
-            singlefile[[singlefile_sampleName]] = singlefile_galaxyPath
-        }
-    }
-    for (argument in c("zipfile", "zipfilePositive", "zipfileNegative",
-                        "singlefile_galaxyPath", "singlefile_sampleName",
-                        "singlefile_galaxyPathPositive", "singlefile_sampleNamePositive",
-                        "singlefile_galaxyPathNegative","singlefile_sampleNameNegative")) {
-        args[[argument]]=NULL
-    }
-    return(list(zipfile=zipfile, singlefile=singlefile, args=args))
-}
-
-
 # This function retrieve the raw file in the working directory
 #   - if zipfile: unzip the file with its directory tree
 #   - if singlefiles: set symlink with the good filename
-retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile) {
+#@author Gildas Le Corguille lecorguille@sb-roscoff.fr
+retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, prefix="") {
+
+    if (!(prefix %in% c("","Positive","Negative","MS1","MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
+
+    # single - if the file are passed in the command arguments -> refresh singlefile
+    if (!is.null(args[[paste0("singlefile_galaxyPath",prefix)]])) {
+      singlefile_galaxyPaths <- unlist(strsplit(args[[paste0("singlefile_galaxyPath",prefix)]],"\\|"))
+      singlefile_sampleNames <- unlist(strsplit(args[[paste0("singlefile_sampleName",prefix)]],"\\|"))
+
+      singlefile <- NULL
+      for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
+        singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
+        singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
+        # In case, an url is used to import data within Galaxy
+        singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName,"/")), n=1)
+        singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
+      }
+    }
+    # zipfile - if the file are passed in the command arguments -> refresh zipfile
+    if (!is.null(args[[paste0("zipfile",prefix)]]))
+      zipfile <- args[[paste0("zipfile",prefix)]]
+
+    # single
     if(!is.null(singlefile) && (length("singlefile")>0)) {
+        files <- vector()
         for (singlefile_sampleName in names(singlefile)) {
-            singlefile_galaxyPath = singlefile[[singlefile_sampleName]]
+            singlefile_galaxyPath <- singlefile[[singlefile_sampleName]]
             if(!file.exists(singlefile_galaxyPath)){
-                error_message=paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
+                error_message <- paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
                 print(error_message); stop(error_message)
             }
 
-            file.symlink(singlefile_galaxyPath,singlefile_sampleName)
+            if (!suppressWarnings( try (file.link(singlefile_galaxyPath, singlefile_sampleName), silent=T)))
+                file.copy(singlefile_galaxyPath, singlefile_sampleName)
+            files <- c(files, singlefile_sampleName)
         }
-        directory = "."
-
     }
-    if(!is.null(zipfile) && (zipfile!="")) {
+    # zipfile
+    if(!is.null(zipfile) && (zipfile != "")) {
         if(!file.exists(zipfile)){
-            error_message=paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
+            error_message <- paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
             print(error_message)
             stop(error_message)
         }
-
-        #list all file in the zip file
-        #zip_files=unzip(zipfile,list=T)[,"Name"]
-
-        #unzip
         suppressWarnings(unzip(zipfile, unzip="unzip"))
 
         #get the directory name
-        filesInZip=unzip(zipfile, list=T);
-        directories=unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])));
-        directories=directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
-        directory = "."
-        if (length(directories) == 1) directory = directories
+        suppressWarnings(filesInZip <- unzip(zipfile, list=T))
+        directories <- unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])))
+        directories <- directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
+        directory <- "."
+        if (length(directories) == 1) directory <- directories
 
         cat("files_root_directory\t",directory,"\n")
 
+        filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
+        filepattern <- paste(paste("\\.", filepattern, "$", sep=""),collapse="|")
+        info <- file.info(directory)
+        listed <- list.files(directory[info$isdir], pattern=filepattern,recursive=TRUE, full.names=TRUE)
+        files <- c(directory[!info$isdir], listed)
+        exists <- file.exists(files)
+        files <- files[exists]
+
     }
-    return (directory)
+    return(list(zipfile=zipfile, singlefile=singlefile, files=files))
+
 }
 
-#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
-# https://github.com/sneumann/CAMERA/issues/33#issuecomment-405168524
-# https://github.com/sneumann/xcms/commit/950a3fe794cdb6b0fda88696e31aab3d97a3b7dd
-############################################################
-## getEIC
-getEIC <- function(object, mzrange, rtrange = 200,
-                   groupidx, sampleidx = sampnames(object),
-                   rt = c("corrected", "raw")) {
-
-    files <- filepaths(object)
-    grp <- groups(object)
-    samp <- sampnames(object)
-    prof <- profinfo(object)
-
-    rt <- match.arg(rt)
-
-    if (is.numeric(sampleidx))
-    sampleidx <- sampnames(object)[sampleidx]
-    sampidx <- match(sampleidx, sampnames(object))
-
-    if (!missing(groupidx)) {
-        if (is.numeric(groupidx))
-        groupidx <- groupnames(object)[unique(as.integer(groupidx))]
-        grpidx <- match(groupidx, groupnames(object, template = groupidx))
-    }
-
-    if (missing(mzrange)) {
-        if (missing(groupidx))
-        stop("No m/z range or groups specified")
-        if (any(is.na(groupval(object, value = "mz"))))
-        warning(
-        "`NA` values in xcmsSet. Use fillPeaks() on the object to fill",
-        "-in missing peak values. Note however that this will also ",
-        "insert intensities of 0 for peaks that can not be filled in.")
-        mzmin <- apply(groupval(object, value = "mzmin"), 1, min, na.rm = TRUE)
-        mzmax <- apply(groupval(object, value = "mzmax"), 1, max, na.rm = TRUE)
-        mzrange <- matrix(c(mzmin[grpidx], mzmax[grpidx]), ncol = 2)
-        ## if (any(is.na(groupval(object, value = "mz"))))
-        ##     stop('Please use fillPeaks() to fill up NA values !')
-        ## mzmin <- -rowMax(-groupval(object, value = "mzmin"))
-        ## mzmax <- rowMax(groupval(object, value = "mzmax"))
-        ## mzrange <- matrix(c(mzmin[grpidx], mzmax[grpidx]), ncol = 2)
-    } else if (all(c("mzmin","mzmax") %in% colnames(mzrange)))
-    mzrange <- mzrange[,c("mzmin", "mzmax"),drop=FALSE]
-    else if (is.null(dim(mzrange)))
-    stop("mzrange must be a matrix")
-    colnames(mzrange) <- c("mzmin", "mzmax")
-
-    if (length(rtrange) == 1) {
-        if (missing(groupidx))
-        rtrange <- matrix(rep(range(object@rt[[rt]][sampidx]), nrow(mzrange)),
-        ncol = 2, byrow = TRUE)
-        else {
-            rtrange <- retexp(grp[grpidx,c("rtmin","rtmax"),drop=FALSE], rtrange)
-        }
-    } else if (is.null(dim(rtrange)))
-    stop("rtrange must be a matrix or single number")
-    colnames(rtrange) <- c("rtmin", "rtmax")
-
-    ## Ensure that we've got corrected retention time if requested.
-    if (is.null(object@rt[[rt]]))
-    stop(rt, " retention times not present in 'object'!")
-
-    ## Ensure that the defined retention time range is within the rtrange of the
-    ## object: we're using the max minimal rt of all files and the min maximal rt
-    rtrs <- lapply(object@rt[[rt]], range)
-    rtr <- c(max(unlist(lapply(rtrs, "[", 1))),
-    min(unlist(lapply(rtrs, "[", 2))))
-    ## Check if we've got a range which is completely off:
-    if (any(rtrange[, "rtmin"] >= rtr[2] | rtrange[, "rtmax"] <= rtr[1])) {
-        outs <- which(rtrange[, "rtmin"] >= rtr[2] |
-        rtrange[, "rtmax"] <= rtr[1])
-        stop(length(outs), " of the specified 'rtrange' are completely outside ",
-        "of the retention time range of 'object' which is (", rtr[1], ", ",
-        rtr[2], "). The first was: (", rtrange[outs[1], "rtmin"], ", ",
-        rtrange[outs[1], "rtmax"], "!")
-    }
-    lower_rt_outside <- rtrange[, "rtmin"] < rtr[1]
-    upper_rt_outside <- rtrange[, "rtmax"] > rtr[2]
-    if (any(lower_rt_outside) | any(upper_rt_outside)) {
-        ## Silently fix these ranges.
-        rtrange[lower_rt_outside, "rtmin"] <- rtr[1]
-        rtrange[upper_rt_outside, "rtmax"] <- rtr[2]
-    }
-
-    if (missing(groupidx))
-    gnames <- character(0)
-    else
-    gnames <- groupidx
-
-    eic <- vector("list", length(sampleidx))
-    names(eic) <- sampleidx
-
-    for (i in seq(along = sampidx)) {
-
-        ## cat(sampleidx[i], "")
-        flush.console()
-        ## getXcmsRaw takes care of rt correction, susetting to scanrage and other
-        ## stuff.
-        lcraw <- getXcmsRaw(object, sampleidx = sampidx[i], rt=rt)
-        currenteic <- xcms::getEIC(lcraw, mzrange, rtrange, step = prof$step)
-        eic[[i]] <- currenteic@eic[[1]]
-        rm(lcraw)
-        gc()
-    }
-    ## cat("\n")
-
-    invisible(new("xcmsEIC", eic = eic, mzrange = mzrange, rtrange = rtrange,
-    rt = rt, groupnames = gnames))
-}
-
-#@TODO: remove this function as soon as we can use xcms 3.x.x from Bioconductor 3.7
-# https://github.com/sneumann/CAMERA/issues/33#issuecomment-405168524
-# https://github.com/sneumann/xcms/commit/950a3fe794cdb6b0fda88696e31aab3d97a3b7dd
-############################################################
-## diffreport
-diffreport = function(object,
-                      class1 = levels(sampclass(object))[1],
-                      class2 = levels(sampclass(object))[2],
-                      filebase = character(),
-                      eicmax = 0, eicwidth = 200,
-                      sortpval = TRUE,
-                      classeic = c(class1,class2),
-                      value = c("into","maxo","intb"),
-                      metlin = FALSE,
-                      h = 480, w = 640, mzdec=2,
-                      missing = numeric(), ...) {
-
-    if ( nrow(object@groups)<1 || length(object@groupidx) <1) {
-        stop("No group information. Use group().")
-    }
-
-    if (!is.numeric(w) || !is.numeric(h))
-        stop("'h' and 'w' have to be numeric")
-    ## require(multtest) || stop("Couldn't load multtest")
-
-    value <- match.arg(value)
-    groupmat <- groups(object)
-    if (length(groupmat) == 0)
-    stop("No group information found")
-    samples <- sampnames(object)
-    n <- length(samples)
-    classlabel <- sampclass(object)
-    classlabel <- levels(classlabel)[as.vector(unclass(classlabel))]
-
-    values <- groupval(object, "medret", value=value)
-    indecies <- groupval(object, "medret", value = "index")
-
-    if (!all(c(class1,class2) %in% classlabel))
-    stop("Incorrect Class Labels")
-
-    ## c1 and c2 are column indices of class1 and class2 resp.
-    c1 <- which(classlabel %in% class1)
-    c2 <- which(classlabel %in% class2)
-    ceic <- which(classlabel %in% classeic)
-    if (length(intersect(c1, c2)) > 0)
-    stop("Intersecting Classes")
-
-    ## Optionally replace NA values with the value provided with missing
-    if (length(missing)) {
-        if (is.numeric(missing)) {
-            ## handles NA, Inf and -Inf
-            values[, c(c1, c2)][!is.finite(values[, c(c1, c2)])] <- missing[1]
-        } else
-        stop("'missing' should be numeric")
-    }
-    ## Check against missing Values
-    if (any(is.na(values[, c(c1, c2)])))
-    warning("`NA` values in xcmsSet. Use fillPeaks() on the object to fill",
-    "-in missing peak values. Note however that this will also ",
-    "insert intensities of 0 for peaks that can not be filled in.")
-
-    mean1 <- rowMeans(values[,c1,drop=FALSE], na.rm = TRUE)
-    mean2 <- rowMeans(values[,c2,drop=FALSE], na.rm = TRUE)
-
-    ## Calculate fold change.
-    ## For foldchange <1 set fold to 1/fold
-    ## See tstat to check which was higher
-    fold <- mean2 / mean1
-    fold[!is.na(fold) & fold < 1] <- 1/fold[!is.na(fold) & fold < 1]
-
-    testval <- values[,c(c1,c2)]
-    ## Replace eventual infinite values with NA (CAMERA issue #33)
-    testval[is.infinite(testval)] <- NA
-    testclab <- c(rep(0,length(c1)),rep(1,length(c2)))
-
-    if (min(length(c1), length(c2)) >= 2) {
-        tstat <- mt.teststat(testval, testclab, ...)
-        pvalue <- xcms:::pval(testval, testclab, tstat)
-    } else {
-        message("Too few samples per class, skipping t-test.")
-        tstat <- pvalue <- rep(NA,nrow(testval))
-    }
-    stat <- data.frame(fold = fold, tstat = tstat, pvalue = pvalue)
-    if (length(levels(sampclass(object))) >2) {
-        pvalAnova<-c()
-        for(i in 1:nrow(values)){
-            var<-as.numeric(values[i,])
-            ano<-summary(aov(var ~ sampclass(object)) )
-            pvalAnova<-append(pvalAnova, unlist(ano)["Pr(>F)1"])
-        }
-        stat<-cbind(stat, anova= pvalAnova)
-    }
-    if (metlin) {
-        neutralmass <- groupmat[,"mzmed"] + ifelse(metlin < 0, 1, -1)
-        metlin <- abs(metlin)
-        digits <- ceiling(-log10(metlin))+1
-        metlinurl <-
-        paste("http://metlin.scripps.edu/simple_search_result.php?mass_min=",
-        round(neutralmass - metlin, digits), "&mass_max=",
-        round(neutralmass + metlin, digits), sep="")
-        values <- cbind(metlin = metlinurl, values)
-    }
-    twosamp <- cbind(name = groupnames(object), stat, groupmat, values)
-    if (sortpval) {
-        tsidx <- order(twosamp[,"pvalue"])
-        twosamp <- twosamp[tsidx,]
-        rownames(twosamp) <- 1:nrow(twosamp)
-        values<-values[tsidx,]
-    } else
-    tsidx <- 1:nrow(values)
-
-    if (length(filebase))
-    write.table(twosamp, paste(filebase, ".tsv", sep = ""), quote = FALSE, sep = "\t", col.names = NA)
-
-    if (eicmax > 0) {
-        if (length(unique(peaks(object)[,"rt"])) > 1) {
-            ## This looks like "normal" LC data
-
-            eicmax <- min(eicmax, length(tsidx))
-            eics <- getEIC(object, rtrange = eicwidth*1.1, sampleidx = ceic,
-            groupidx = tsidx[seq(length = eicmax)])
-
-            if (length(filebase)) {
-                eicdir <- paste(filebase, "_eic", sep="")
-                boxdir <- paste(filebase, "_box", sep="")
-                dir.create(eicdir)
-                dir.create(boxdir)
-                if (capabilities("png")){
-                    xcms:::xcmsBoxPlot(values[seq(length = eicmax),],
-                    sampclass(object), dirpath=boxdir, pic="png",  width=w, height=h)
-                    png(file.path(eicdir, "%003d.png"), width = w, height = h)
-                } else {
-                    xcms:::xcmsBoxPlot(values[seq(length = eicmax),],
-                    sampclass(object), dirpath=boxdir, pic="pdf", width=w, height=h)
-                    pdf(file.path(eicdir, "%003d.pdf"), width = w/72,
-                    height = h/72, onefile = FALSE)
-                }
-            }
-            plot(eics, object, rtrange = eicwidth, mzdec=mzdec)
-
-            if (length(filebase))
-            dev.off()
-        } else {
-            ## This looks like a direct-infusion single spectrum
-            if (length(filebase)) {
-                eicdir <- paste(filebase, "_eic", sep="")
-                boxdir <- paste(filebase, "_box", sep="")
-                dir.create(eicdir)
-                dir.create(boxdir)
-                if (capabilities("png")){
-                    xcmsBoxPlot(values[seq(length = eicmax),],
-                    sampclass(object), dirpath=boxdir, pic="png",
-                    width=w, height=h)
-                    png(file.path(eicdir, "%003d.png"), width = w, height = h,
-                    units = "px")
-                } else {
-                    xcmsBoxPlot(values[seq(length = eicmax),],
-                    sampclass(object), dirpath=boxdir, pic="pdf",
-                    width=w, height=h)
-                    pdf(file.path(eicdir, "%003d.pdf"), width = w/72,
-                    height = h/72, onefile = FALSE)
-                }
-            }
-
-            plotSpecWindow(object, gidxs = tsidx[seq(length = eicmax)], borderwidth=1)
-
-            if (length(filebase))
-            dev.off()
-        }
-    }
-
-    invisible(twosamp)
-}
