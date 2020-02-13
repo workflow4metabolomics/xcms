@@ -45,7 +45,6 @@ singlefile = rawFilePath$singlefile
 args = rawFilePath$args
 directory = retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
 
-print(rawFilePath)
 
 # Because so far CAMERA isn't compatible with the new XCMSnExp object
 if (exists("xdata")){
