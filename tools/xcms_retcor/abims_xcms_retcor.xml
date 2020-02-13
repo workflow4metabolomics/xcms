@@ -1,4 +1,4 @@
-<tool id="abims_xcms_retcor" name="xcms adjustRtime (retcor)" version="@TOOL_VERSION@+galaxy0">
+<tool id="abims_xcms_retcor" name="xcms adjustRtime (retcor)" version="@TOOL_VERSION@+galaxy1">
 
     <description>Retention Time Correction</description>
 
@@ -290,6 +290,9 @@ Method
 .. _PeakGroups_manual: https://rdrr.io/bioc/xcms/man/adjustRtime-peakGroups.html#heading-2
 .. _Obiwarp_manual: https://rdrr.io/bioc/xcms/man/adjustRtime-obiwarp.html
 
+WARNING: if a retention time ajustment have already been applied to your data.
+The function applyAdjustedRtime will replace raw retention times with adjusted retention times and so alloww to cumulate the ajustments.
+
 @HELP_XCMS_MANUAL@
 
 ------------
@@ -307,6 +310,10 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
+
+**Version 3.6.1+galaxy1 - 13/02/2020**
+
+- NEW: if a retention time ajustment have already been applied to your data. The function applyAdjustedRtime will replace raw retention times with adjusted retention times and so alloww to cumulate the ajustments.
 
 @HELP_XCMS_NEWVERSION_3610@
 
