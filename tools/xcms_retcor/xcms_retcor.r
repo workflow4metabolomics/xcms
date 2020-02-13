@@ -63,6 +63,12 @@ args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))
 
 adjustRtimeParam <- do.call(paste0(method,"Param"), args)
 print(adjustRtimeParam)
+
+if (hasAdjustedRtime(xdata)) {
+  cat("WARNING: a retention time ajustment had already been applied to your data.\nThe function applyAdjustedRtime was processed to cumulate the ajustment")
+  cat("Replace raw retention times with adjusted retention times.\n")
+  xdata <- applyAdjustedRtime(xdata)
+}
 xdata <- adjustRtime(xdata, param=adjustRtimeParam)
 
 #cat("\t\t\tCompute and Store TIC and BPI\n")
