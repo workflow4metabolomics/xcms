@@ -185,13 +185,13 @@
         </data>
 
         <data name="output_diffreport_eic_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport_eic.zip" from_work_dir="eic.zip" >
-            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['eicmax'] > 0 and diffreport['options']['png2'] == 'zip'</filter>
         </data>
         <data name="output_diffreport_box_zip" format="zip" label="${image.name[:-6]}.annotateDiffreport_box.zip" from_work_dir="box.zip" >
-            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'zip'</filter>
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['eicmax'] > 0 and diffreport['options']['png2'] == 'zip'</filter>
         </data>
         <collection name="output_diffreport_picture_pdf" type="list" label="${image.name[:-6]}.annotateDiffreport.pdf">
-            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['png2'] == 'pdf'</filter>
+            <filter>diffreport['options']['option'] == 'show' and diffreport['options']['eicmax'] > 0 and diffreport['options']['png2'] == 'pdf'</filter>
             <discover_datasets pattern="__designation_and_ext__" directory="pdf" format="pdf" />
         </collection>
 
