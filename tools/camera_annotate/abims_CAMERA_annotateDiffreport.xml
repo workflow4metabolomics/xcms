@@ -1,4 +1,4 @@
-<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.5+camera@TOOL_VERSION@+galaxy0">
+<tool id="abims_CAMERA_annotateDiffreport" name="CAMERA.annotate" version="2.2.5+camera@TOOL_VERSION@+galaxy1">
 
     <description>CAMERA annotate function. Returns annotation results (isotope peaks, adducts and fragments) and a diffreport if more than one condition.</description>
 
@@ -435,6 +435,10 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/CAMERA/NEWS
+
+**Version 2.2.5+camera1.42.0+galaxy1 - 09/03/2020**
+
+- BUGFIX: Fix the zip export of the pictures (eic and boxplot)
 
 @HELP_CAMERA_NEWVERSION_1420@
 
