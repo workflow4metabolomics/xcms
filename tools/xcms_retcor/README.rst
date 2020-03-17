@@ -4,6 +4,14 @@ Changelog/News
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
+**Version 3.6.1+galaxy1 - 13/02/2020**
+
+- NEW: if a retention time ajustment have already been applied to your data. The function applyAdjustedRtime will replace raw retention times with adjusted retention times and so alloww to cumulate the ajustments.
+
+**Version 3.6.1.0 - 03/09/2019**
+
+- UPGRADE: upgrade the xcms version from 3.4.4 to 3.6.1 (see XCMS News_)
+
 **Version 3.4.4.1 - 30/04/2019**
 
 - BUGFIX: remove the pre-compute of the chromatograms which was memory consuming. Now, only xcms plot chromatogram will generate the Chromatograms.

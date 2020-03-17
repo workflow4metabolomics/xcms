@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@WRAPPER_VERSION@.0">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@TOOL_VERSION@+galaxy0">
 
     <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
@@ -220,10 +220,10 @@
                 <has_text text="binSize: 0.01"/>
                 <has_text text="maxFeatures: 50" />
                 <has_text text="object with 4 samples" />
-                <has_text text="Time range: 2509.2-4480.3 seconds (41.8-74.7 minutes)" />
+                <has_text text="Time range: 2506.1-4477.9 seconds (41.8-74.6 minutes)" />
                 <has_text text="Mass range: 200.1-600 m/z" />
                 <has_text text="Peaks: 9251 (about 2313 per sample)" />
-                <has_text text="Peak Groups: 8209" />
+                <has_text text="Peak Groups: 8372" />
                 <has_text text="Sample classes: KO, WT" />
             </assert_stdout>
         </test>
@@ -357,9 +357,9 @@ Changelog/News
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
-**Version 3.4.4.0 - 08/02/2019**
+@HELP_XCMS_NEWVERSION_3610@
 
-- UPGRADE: upgrade the xcms version from 3.0.0 to 3.4.4 (see XCMS News_)
+@HELP_XCMS_NEWVERSION_3440@
 
 - BUGFIX: groupChromPeaks wasn't pass to the ChromPeakDensity plots
 

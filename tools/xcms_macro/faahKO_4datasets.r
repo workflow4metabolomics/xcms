@@ -1,5 +1,4 @@
 library(xcms)
-library(CAMERA)
 library(faahKO)
 
 cdfs <- dir(system.file("cdf", package = "faahKO"), full.names = TRUE,
@@ -20,9 +19,14 @@ cwp <- CentWaveParam()
 xdata <- findChromPeaks(raw_data, param = cwp)
 
 pdp <- PeakDensityParam(sampleGroups = xdata$sample_group,
-        minFraction = 0.8)
+        bw = 5,
+        minFraction = 0.3,
+        minSamples = 1,
+        binSize = 0.01,
+        maxFeatures = 50)
 xdata <- groupChromPeaks(xdata, param = pdp)
 
+# WARNING: not align with the tests parameters
 pgp <- PeakGroupsParam(minFraction = 0.85)
 xdata <- adjustRtime(xdata, param = pgp)
 
@@ -52,6 +56,8 @@ getxcmsSetObject <- function(xobject) {
 
 xset <- getxcmsSetObject(xdata)
 
+
+library(CAMERA)
 xa <- annotate(
         xset,
         nSlaves = 1,

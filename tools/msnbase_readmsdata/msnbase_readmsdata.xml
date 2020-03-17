@@ -1,4 +1,4 @@
-<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.1">
+<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.2">
     <description>Imports mass-spectrometry data files</description>
 
     <macros>
@@ -13,7 +13,12 @@
         @COMMAND_RSCRIPT@/msnbase_readmsdata.r
 
         #if $input.is_of_type("mzxml") or $input.is_of_type("mzml") or $input.is_of_type("mzdata") or $input.is_of_type("netcdf"):
-            singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #if $os.path.islink(str($input))
+                #set $source = $os.readlink(str($input))
+                singlefile_galaxyPath '$source' singlefile_sampleName '$os.path.basename($source)'
+            #else
+                singlefile_galaxyPath '$input' singlefile_sampleName '$input.name'
+            #end if
         #else
             zipfile '$input'
         #end if
@@ -53,11 +58,11 @@
         <test>
             <param name="input" value="ko15.CDF"  ftype="netcdf" />
             <assert_stdout>
-                <has_text text="rowNames: ./ko15.CDF" />
+                <has_text text="rowNames: ko15.CDF" />
                 <has_text text="ko15.CDF" />
                 <has_text text="featureNames: F1.S0001 F1.S0002 ... F1.S1278 (1278 total)" />
                 <has_text text="fvarLabels: fileIdx spIdx ... spectrum (28 total)" />
-                <has_text text="./ko15.CDF        ko15            ." />
+                <has_text text="ko15.CDF        ko15            ." />
             </assert_stdout>
         </test>
         <!-- DISABLE FOR TRAVIS
@@ -107,7 +112,6 @@ provided by the ‘mzR’ package to access data and meta data in
 ‘mzData’, ‘mzXML’ and ‘mzML’.
 
 .. _xcms: https://bioconductor.org/packages/release/bioc/html/xcms.html
-.. _here: http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToPerformXcmsPreprocessing_v02.pdf
 
 
 -----------------

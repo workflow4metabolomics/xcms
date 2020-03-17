@@ -38,16 +38,12 @@ cat("\tINFILE PROCESSING INFO\n")
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- getRawfilePathFromArguments(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
-directory <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile)
+files <- rawFilePath$files
 
-# Check some character issues
-md5sumList <- list("origin" = getMd5sum(directory))
-checkXmlStructure(directory)
-checkFilesCompatibilityWithXcms(directory)
-
+md5sumList <- list("origin" = getMd5sum(files))
 
 cat("\n\n")
 
@@ -57,9 +53,6 @@ cat("\tMAIN PROCESSING INFO\n")
 
 
 cat("\t\tCOMPUTE\n")
-
-## Get the full path to the files
-files <- getMSFiles(directory)
 
 cat("\t\t\tCreate a phenodata data.frame\n")
 s_groups <- sapply(files, function(x) tail(unlist(strsplit(dirname(x),"/")), n=1))
