@@ -2,6 +2,10 @@
 Changelog/News
 --------------
 
+**Version 2.2.5+camera1.42.0+galaxy1 - 09/03/2020**
+
+- BUGFIX: Fix the zip export of the pictures (eic and boxplot)
+
 **Version 2.2.5+camera1.42.0 - 13/02/2020**
 
 - UPGRADE: upgrade the xcms version from 3.0.0 to 1.42.0 (see CAMERA News_)
