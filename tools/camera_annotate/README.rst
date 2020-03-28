@@ -8,7 +8,7 @@ Changelog/News
 
 **Version 2.2.5+camera1.42.0 - 13/02/2020**
 
-- UPGRADE: upgrade the xcms version from 3.0.0 to 1.42.0 (see CAMERA News_)
+- UPGRADE: upgrade the CAMERA version from 1.38.1 to 1.42.0 (see CAMERA News_)
 
 **Version 2.2.5 - 09/04/2019**
 
