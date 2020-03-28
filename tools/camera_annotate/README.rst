@@ -2,7 +2,7 @@
 Changelog/News
 --------------
 
-**Version 2.2.5+camera1.42.0+galaxy1 - 09/03/2020**
+**Version 2.2.6+camera1.42.0+galaxy1 - 09/03/2020**
 
 - BUGFIX: Fix the zip export of the pictures (eic and boxplot)
 
