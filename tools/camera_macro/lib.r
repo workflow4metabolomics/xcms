@@ -187,12 +187,12 @@ annotatediff <- function(xset=xset, args=args, variableMetadataOutput="variableM
                     if (args$eicmax != 0) {
                         if (args$png2 == "pdf")
                             diffreport_png2pdf(filebase)
+                        if (args$png2 == "zip")
+                            diffreport_png2zip()
                     }
                 }
             }
         }
-        if (args$png2 == "zip")
-            diffreport_png2zip()
         if (args$tabular2 == "zip")
             diffreport_tabular2zip()
     }
