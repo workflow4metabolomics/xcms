@@ -1,27 +1,21 @@
-<tool id="influx_si" name="influx_si" version="0.8.0+galaxy0" python_template_version="3.5">
-    <description>metabolic flux analysis</description>
-    <macros>
-        <import>macros.xml</import>
-    </macros>
-    <expand macro="requirements" />
-    <!--
-#silent sys.stderr.write("!!!! Cheetah Template Variables !!!!\n")
-#for k,v in $searchList[2].items()
-#silent   sys.stderr.write(" %s = %s\n" % (str(k), str(v) ))
-#end for
-    -->
-    <version_command>influx_s --version</version_command>
-    <command detect_errors="exit_code"><![CDATA[
+<tool id="influx_si" name="influx_si" version="0.9.0+galaxy0" python_template_version="3.5">
+   <description>metabolic flux analysis</description>
+   <macros>
+      <import>macros.xml</import>
+   </macros>
+   <expand macro="requirements" />
+   <version_command>influx_s --version</version_command>
+   <command detect_errors="exit_code"><![CDATA[
        #set $inp_all = [$input_main, ($prlexp.input_aux if $prlexp.input_aux else [])]
        #if $si.s_i == 'i':
          #silent $inp_all.append($si.input_ti)
        #end if
 
-       mkdir outdir && cd outdir;
+       mkdir outdir && cd outdir &&
 
        #for $inp in $inp_all:
          #for $i in $inp:
-           ln -s '$i' '$i.name';
+           ln -s '$i' '$i.name' &&
          #end for
        #end for
        
@@ -31,61 +25,61 @@
            --time_order='$si.time_order'
          #end if
          '${"' '".join([str($in_m.name) for $in_m in $input_main])}'
-         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt' ;
+         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt' &&
        
-       for f in *.ftbl *.log *.err *.R *.kvh; do mv -f "\$f" "\$f".txt || true; done;
+       for f in *.ftbl *.log *.err *.R *.kvh *.attrs; do mv -f "\$f" "\$f".txt || true; done &&
        
-       for f in *.pdf; do [ -e "\$f" ] && mv -f "\$f" "\$f".pdf || true; done;
+       for f in *.pdf; do [ -e "\$f" ] && mv -f "\$f" "\$f".pdf || true; done &&
        
-       for f in *.RData; do [ -e "\$f" ] && mv -f "\$f" "\$f".RData || true; done;
+       for f in *.RData; do [ -e "\$f" ] && mv -f "\$f" "\$f".RData || true; done
     ]]></command>
-    <expand macro="inputs" />
-    <outputs>
-       <collection name="influx_si_output" type="list" label="influx_${si.s_i}_on_${on_string}">
-              <discover_datasets pattern="__name_and_ext__" directory="outdir" visible="false"/>
-     </collection>
-    </outputs>
-    <tests>
-       <test>
-              <param name="input_main" value="e_coli.ftbl" />
-              <conditional name="si">
-                     <param name="s_i" value="s" />
-              </conditional>
-              <output_collection name="influx_si_output" type="list">
-                <element name="e_coli.log" ftype="txt" file="e_coli.log" compare="sim_size" delta="100" />
-              </output_collection>
-       </test>
-       <test>
-              <param name="input_main" value="e_coli.ftbl,e_coli_growth.ftbl" />
-              <conditional name="si">
-                     <param name="s_i" value="s" />
-              </conditional>
-              <output_collection name="influx_si_output" type="list">
-                <element name="e_coli_growth.log" ftype="txt" file="e_coli_growth.log" compare="sim_size" delta="100" />
-              </output_collection>
-       </test>
-       <test>
-              <param name="input_main" value="e_coli_i.ftbl" />
-              <conditional name="si">
-                     <param name="s_i" value="i" />
-                     <param name="input_ti" value="e_coli_msen.txt" />
-                     <!--param name="time_order" value="1,2" /--> <!--How to pass single value with comma in it?-->
-              </conditional>
-              <output_collection name="influx_si_output" type="list">
-                <element name="e_coli_i.log" ftype="txt" file="e_coli_i.log" compare="sim_size" delta="100" />
-              </output_collection>
-       </test>
-       <test>
-              <param name="input_main" value="e_coli_1-Glc_exact.ftbl" />
-              <param name="input_aux" value="e_coli_U-Glc_exact.ftbl" />
-              <conditional name="si">
-                     <param name="s_i" value="s" />
-              </conditional>
-              <output_collection name="influx_si_output" type="list">
-                <element name="e_coli_1-Glc_exact.log" file="e_coli_1-Glc_exact.log" compare="sim_size" delta="100" />
-              </output_collection>
-       </test>
-    </tests>
-    <expand macro="help" />
-    <expand macro="citation" />
+   <expand macro="inputs" />
+   <outputs>
+      <collection name="influx_si_output" type="list" label="influx_${si.s_i}_on_${on_string}">
+         <discover_datasets pattern="__name_and_ext__" directory="outdir" visible="false"/>
+      </collection>
+   </outputs>
+   <tests>
+      <test>
+         <param name="input_main" value="e_coli.ftbl" />
+         <conditional name="si">
+            <param name="s_i" value="s" />
+         </conditional>
+         <output_collection name="influx_si_output" type="list">
+            <element name="e_coli.log" ftype="txt" file="e_coli.log" compare="sim_size" delta="100" />
+         </output_collection>
+      </test>
+      <test>
+         <param name="input_main" value="e_coli.ftbl,e_coli_growth.ftbl" />
+         <conditional name="si">
+            <param name="s_i" value="s" />
+         </conditional>
+         <output_collection name="influx_si_output" type="list">
+            <element name="e_coli_growth.log" ftype="txt" file="e_coli_growth.log" compare="sim_size" delta="100" />
+         </output_collection>
+      </test>
+      <test>
+         <param name="input_main" value="e_coli_i.ftbl" />
+         <conditional name="si">
+            <param name="s_i" value="i" />
+            <param name="input_ti" value="e_coli_msen.txt" />
+            <!--param name="time_order" value="1,2" /--> <!--How to pass single value with comma in it?-->
+         </conditional>
+         <output_collection name="influx_si_output" type="list">
+            <element name="e_coli_i.log" ftype="txt" file="e_coli_i.log" compare="sim_size" delta="100" />
+         </output_collection>
+      </test>
+      <test>
+         <param name="input_main" value="e_coli_1-Glc_exact.ftbl" />
+         <param name="input_aux" value="e_coli_U-Glc_exact.ftbl" />
+         <conditional name="si">
+            <param name="s_i" value="s" />
+         </conditional>
+         <output_collection name="influx_si_output" type="list">
+            <element name="e_coli_1-Glc_exact.log" file="e_coli_1-Glc_exact.log" compare="sim_size" delta="100" />
+         </output_collection>
+      </test>
+   </tests>
+   <expand macro="help" />
+   <expand macro="citation" />
 </tool>
