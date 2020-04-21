@@ -98,7 +98,7 @@
                   <option value="maxo">maxo</option>
                   <option value="intb">intb</option>
               </param>
-              <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Replace the remain NA by 0 in the dataMatrix" help="Rather mandatory for some downstream statistical steps"/>
+              <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="If NA values remain, replace them by 0 in the dataMatrix" help="Mandatory for some of the downstream tools (data processing, statistics) that do not accept NA values"/>
     </xml>
 
     <xml name="input_peaklist_section">
