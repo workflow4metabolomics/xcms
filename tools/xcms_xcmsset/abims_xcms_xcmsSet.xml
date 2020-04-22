@@ -1,4 +1,4 @@
-<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@TOOL_VERSION@+galaxy0">
+<tool id="abims_xcms_xcmsSet" name="xcms findChromPeaks (xcmsSet)" version="@TOOL_VERSION@+galaxy1">
     <description>Chromatographic peak detection</description>
 
     <macros>
@@ -502,7 +502,7 @@ Changelog/News
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
-**Version 3.x.x.x - 22/04/2020**
+**Version 3.6.1+galaxy1 - 22/04/2020**
 
 - NEW: possibility to get a tabular file with all the chromatographic peaks obtained with the CentWave and MatchedFilter methods. 
 
