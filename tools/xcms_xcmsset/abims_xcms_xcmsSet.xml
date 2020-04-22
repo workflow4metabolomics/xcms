@@ -30,6 +30,7 @@
 
         #if $methods.method == "CentWave":
             @COMMAND_CENTWAVE@
+			peaklist $methods.CentWaveAdv.peaklist
             ## List of regions-of-interest (ROI)
             #set $sectionROI = $methods.CentWaveAdv.CentWaveAdvROI
             @COMMAND_CENTWAVEADVROI@
@@ -61,6 +62,7 @@
             snthresh $methods.MatchedFilterAdv.snthresh
             steps $methods.MatchedFilterAdv.steps
             mzdiff $methods.MatchedFilterAdv.mzdiff
+			peaklist $methods.MatchedFilterAdv.peaklist
         #elif $methods.method == "MSW":
             snthresh $methods.snthresh
             verboseColumns $methods.verboseColumns
@@ -103,6 +105,7 @@
                 <expand macro="input_centwave"/>
                 <section name="CentWaveAdv" title="Advanced Options" expanded="False">
                     <expand macro="input_centwaveAdv"/>
+					<param argument="peaklist" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Get a list of found chromatographic peaks" help="Generates a tabular file with all the chromatographic peaks obtained." />
                     <section name="CentWaveAdvROI" title="List of regions-of-interest (ROI)" expanded="False">
                         <expand macro="input_centwaveAdvROI"  optional="true"/>
                     </section>
@@ -134,6 +137,7 @@
                     <param argument="snthresh" type="integer" value="10" label="Signal to Noise ratio cutoff" help="defining the signal to noise cutoff to be used in the chromatographic peak detection step" />
                     <param argument="steps" type="integer" value="2" label="Number of bins to be merged before filtration" help="(i.e. the number of neighboring bins that will be joined to the slice in which filtration and peak detection will be performed)" />
                     <param argument="mzdiff" type="float" value="0.6" label="Minimum difference in m/z for peaks with overlapping Retention Times" help="By default: 0.8-binSize*steps " />
+                    <param argument="peaklist" type="boolean" checked="false" truevalue="TRUE" falsevalue="FALSE" label="Get a list of found chromatographic peaks" help="Generates a tabular file with all the chromatographic peaks obtained." />
                     <!-- index -->
                 </section>
             </when>
@@ -183,6 +187,12 @@
     <outputs>
         <data name="xsetRData" format="rdata.xcms.findchrompeaks" label="${image.name.rsplit('.',1)[0]}.xset.RData" from_work_dir="xcmsSet.RData" />
         <data name="log" format="txt" label="${image.name.rsplit('.',1)[0]}.xset.log.txt" from_work_dir="log.txt" />
+		<data name="peaklist_out1" format="tabular" label="${image.name[:-6]}.chromPeak_table.tsv" from_work_dir="chromPeak_table.tsv" >
+            <filter>methods['method'] == 'CentWave' and (methods['CentWaveAdv']['peaklist'])</filter>
+        </data>
+		<data name="peaklist_out2" format="tabular" label="${image.name[:-6]}.chromPeak_table.tsv" from_work_dir="chromPeak_table.tsv" >
+            <filter>methods['method'] == 'MatchedFilter' and (methods['MatchedFilterAdv']['peaklist'])</filter>
+        </data>
     </outputs>
 
     <tests>
@@ -491,6 +501,11 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
+
+**Version 3.x.x.x - 22/04/2020**
+
+- NEW: possibility to get a tabular file with all the chromatographic peaks obtained with the CentWave and MatchedFilter methods. 
+
 
 @HELP_XCMS_NEWVERSION_3610@
 
