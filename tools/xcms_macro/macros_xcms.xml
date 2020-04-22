@@ -193,7 +193,7 @@ xset.dataMatrix.tsv : tabular format
             <option value="wMean">intensity weighted mean of the peak's m/z values</option>
             <option value="mean">mean of the peak's m/z values</option>
             <option value="apex">use the m/z value at the peak apex</option>
-            <option value="wMeanApex3">ntensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
+            <option value="wMeanApex3">intensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
             <option value="meanApex3">mean of the m/z value of the peak apex and the m/z values left and right of it</option>
         </param>
         <param argument="integrate" type="select" label="Integration method" >
