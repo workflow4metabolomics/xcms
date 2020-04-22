@@ -151,8 +151,8 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 
     group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     names(group_colors) <- unique(xdata$sample_group)
-	col_per_samp <- as.character(xdata$sample_group)
-	for(i in 1:length(group_colors)){col_per_samp[col_per_samp==(names(group_colors)[i])]<-group_colors[i]}
+    col_per_samp <- as.character(xdata$sample_group)
+    for(i in 1:length(group_colors)){col_per_samp[col_per_samp==(names(group_colors)[i])]<-group_colors[i]}
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
