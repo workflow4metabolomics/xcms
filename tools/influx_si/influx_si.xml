@@ -1,7 +1,10 @@
-<tool id="influx_si" name="influx_si" version="0.9.1+galaxy0" python_template_version="3.5">
+<tool id="influx_si" name="influx_si" version="@TOOL_VERSION@+galaxy0" python_template_version="3.5">
    <description>metabolic flux analysis</description>
+   <macros>
+        <token name="@TOOL_VERSION@">5.1.0</token>
+   </macros>
    <requirements>
-      <requirement type="package" version="5.1.0">influx_si</requirement>
+      <requirement type="package" version="@TOOL_VERSION@">influx_si</requirement>
    </requirements>
    <version_command>influx_s --version</version_command>
    <command detect_errors="exit_code"><![CDATA[
@@ -18,10 +21,12 @@
          #end for
        #end for
        
-       influx_$si.s_i
+       (influx_$si.s_i
             $opt.noopt
             $opt.noscale
-            $opt.meth
+            #if $opt.meth != 'None':
+               $opt.meth
+            #end if
             $opt.fullsys
             $opt.emu
             $opt.irand
@@ -77,13 +82,14 @@
            --time_order='$si.time_order'
          #end if
          '${"' '".join([str($in_m.name) for $in_m in $input_main])}'
-         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt' &&
+         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt') || res=$? &&
        
        for f in *.ftbl *.log *.err *.R *.kvh *.attrs; do mv -f "\$f" "\$f".txt || true; done &&
        
        for f in *.pdf; do [ -e "\$f" ] && mv -f "\$f" "\$f".pdf || true; done &&
        
-       for f in *.RData; do [ -e "\$f" ] && mv -f "\$f" "\$f".RData || true; done
+       for f in *.RData; do [ -e "\$f" ] && mv -f "\$f" "\$f".RData || true; done &&
+       [ "\$res" == "0" ]
     ]]></command>
    <inputs>
       <param type="data" name="input_main" format="ftbl" multiple="true" label="main FTBL(s): network+data"/>
