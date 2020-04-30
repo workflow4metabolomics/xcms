@@ -21,7 +21,7 @@
          #end for
        #end for
        
-       (influx_$si.s_i
+       influx_$si.s_i
             $opt.noopt
             $opt.noscale
             #if $opt.meth != 'None':
@@ -82,7 +82,7 @@
            --time_order='$si.time_order'
          #end if
          '${"' '".join([str($in_m.name) for $in_m in $input_main])}'
-         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt') || res=$? &&
+         > 'influx_${si.s_i}.stdout.txt' 2>'influx_${si.s_i}.stderr.txt'; res="\$?" &&
        
        for f in *.ftbl *.log *.err *.R *.kvh *.attrs; do mv -f "\$f" "\$f".txt || true; done &&
        
