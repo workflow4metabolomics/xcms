@@ -16,15 +16,15 @@ ul li { margin-bottom:10px; }
 </div>
 <h2>Samples used:</h2>
 <div><table>
-<tr><th>sample</th><th>filename</th><th>md5sum<sup>*</sup></th></tr>
-<tr><td>ko15</td><td>ko15.CDF</td><td>4698c36c0b3af007faf70975c04ccf2a</td></tr><tr><td>ko16</td><td>ko16.CDF</td><td>afaeed94ced3140bc042d5ab6aeb16c1</td></tr><tr><td>wt15</td><td>wt15.CDF</td><td>d58a27fad7c04ddddb0359ddc2b7ba68</td></tr><tr><td>wt16</td><td>wt16.CDF</td><td>29654e9f8ad48c1fbe2a41b9ba578f6e</td></tr>
+<tr><th>sample</th><th>filename</th></tr>
+<tr><td>ko15</td><td>ko15.CDF</td></tr><tr><td>ko16</td><td>ko16.CDF</td></tr><tr><td>wt15</td><td>wt15.CDF</td></tr><tr><td>wt16</td><td>wt16.CDF</td></tr>
 </table>
-<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.
+
 </div>
 <h2>Function launched:</h2>
 <div><table>
 <tr><th>timestamp<sup>***</sup></th><th>function</th><th>argument</th><th>value</th></tr>
-<tr><td>Wed Feb  7 11:15:25 2018</td><td>Peak detection</td><td colspan='2'><pre>
+<tr><td>Mon May 11 09:37:30 2020</td><td>Peak detection</td><td colspan='2'><pre>
 Object of class:  CentWaveParam 
 Parameters:
  ppm: 25 
@@ -41,17 +41,17 @@ Parameters:
  firstBaselineCheck TRUE 
  roiScales length: 0 
 </pre></td></tr>
-<tr><td>Mon Feb 12 15:31:11 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+<tr><td>Mon May 11 09:37:49 2020</td><td>Peak grouping</td><td colspan='2'><pre>
 Object of class:  PeakDensityParam 
 Parameters:
  sampleGroups: character of length 4 
- bw: 30 
- minFraction: 0.8 
+ bw: 5 
+ minFraction: 0.3 
  minSamples: 1 
- binSize: 0.25 
+ binSize: 0.01 
  maxFeatures: 50 
 </pre></td></tr>
-<tr><td>Mon Feb 12 15:31:19 2018</td><td>Retention time correction</td><td colspan='2'><pre>
+<tr><td>Mon May 11 09:38:08 2020</td><td>Retention time correction</td><td colspan='2'><pre>
 Object of class:  PeakGroupsParam 
 Parameters:
  minFraction: 0.85 
@@ -59,9 +59,10 @@ Parameters:
  smooth: loess 
  span: 0.2 
  family: gaussian 
- number of peak groups: 125 
+ subset:  
+ number of peak groups: 53 
 </pre></td></tr>
-<tr><td>Mon Feb 12 15:31:27 2018</td><td>Peak grouping</td><td colspan='2'><pre>
+<tr><td>Mon May 11 09:38:09 2020</td><td>Peak grouping</td><td colspan='2'><pre>
 Object of class:  PeakDensityParam 
 Parameters:
  sampleGroups: character of length 4 
@@ -71,7 +72,7 @@ Parameters:
  binSize: 0.25 
  maxFeatures: 50 
 </pre></td></tr>
-<tr><td>Wed Feb 14 09:55:13 2018</td><td>Missing peak filling</td><td colspan='2'><pre>
+<tr><td>Mon May 11 09:38:18 2020</td><td>Missing peak filling</td><td colspan='2'><pre>
 Object of class:  FillChromPeaksParam 
 Parameters:
  expandMz: 0 
@@ -84,17 +85,17 @@ Parameters:
 <h2>Informations about the XCMSnExp object:</h2>
 <div><pre>
 MSn experiment data ("XCMSnExp")
-Object size in memory: 1.41 Mb
+Object size in memory: 1.55 Mb
 - - - Spectra data - - -
  MS level(s): 1 
  Number of spectra: 5112 
- MSn retention times: 41:33 - 75:0 minutes
+ MSn retention times: 41:38 - 75:7 minutes
 - - - Processing information - - -
-Concatenated [Thu Feb  8 15:36:09 2018] 
- MSnbase version: 2.4.2 
+Data loaded [Mon May 11 09:37:30 2020] 
+ MSnbase version: 2.10.1 
 - - - Meta data  - - -
 phenoData
-  rowNames: ./ko15.CDF ./ko16.CDF ./wt15.CDF ./wt16.CDF
+  rowNames: 1 2 3 4
   varLabels: sample_name sample_group
   varMetadata: labelDescription
 Loaded from:
@@ -103,31 +104,31 @@ Loaded from:
 protocolData: none
 featureData
   featureNames: F1.S0001 F1.S0002 ... F4.S1278 (5112 total)
-  fvarLabels: fileIdx spIdx ... spectrum (27 total)
+  fvarLabels: fileIdx spIdx ... spectrum (31 total)
   fvarMetadata: labelDescription
 experimentData: use 'experimentData(object)'
 - - - xcms preprocessing - - -
 Chromatographic peak detection:
  method: centWave 
- 15230 peaks identified in 4 samples.
- On average 3808 chromatographic peaks per sample.
+ 15405 peaks identified in 4 samples.
+ On average 3851 chromatographic peaks per sample.
 Alignment/retention time adjustment:
  method: peak groups 
 Correspondence:
  method: chromatographic peak density 
- 6332 features identified.
+ 6349 features identified.
  Median mz range of features: 0
  Median rt range of features: 0
- 5979 filled peaks (on average 1494.75 per sample).
+ 6154 filled peaks (on average 1538.5 per sample).
 </pre></div>
 <h2>Informations about the xcmsSet object:</h2>
 <div><pre>
 An "xcmsSet" object with 4 samples
 
-Time range: 2499.4-4473.6 seconds (41.7-74.6 minutes)
+Time range: 2509.2-4481.8 seconds (41.8-74.7 minutes)
 Mass range: 200.1-600 m/z
-Peaks: 15230 (about 3808 per sample)
-Peak Groups: 6332 
+Peaks: 15405 (about 3851 per sample)
+Peak Groups: 6349 
 Sample classes: KO, WT 
 
 Feature detection:
@@ -136,7 +137,7 @@ Feature detection:
 Profile settings: method = bin
                   step = 0.1
 
-Memory usage: 3.11 MB
+Memory usage: 3.98 MB
 </pre></div>
 <h2>Citations:</h2>
 <div><ul>
