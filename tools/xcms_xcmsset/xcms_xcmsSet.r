@@ -40,6 +40,7 @@ register(BPPARAM)
 if (!is.null(args$filterAcquisitionNum)) filterAcquisitionNumParam <- args$filterAcquisitionNum
 if (!is.null(args$filterRt)) filterRtParam <- args$filterRt
 if (!is.null(args$filterMz)) filterMzParam <- args$filterMz
+if (!is.null(args$peaklist)) peaklistParam <- args$peaklist
 
 method <- args$method
 
@@ -99,6 +100,14 @@ sampleNamesList <- getSampleMetadata(xdata=xdata, sampleMetadataOutput="sampleMe
 #cat("\t\t\tCompute and Store TIC and BPI\n")
 #chromTIC = chromatogram(xdata, aggregationFun = "sum")
 #chromBPI = chromatogram(xdata, aggregationFun = "max")
+
+# Create a chromPeaks table if required
+if (exists("peaklistParam")) {
+    if(peaklistParam){
+      cat("\nCreating the chromatographic peaks' table...\n")
+      write.table(chromPeaks(xdata), file="chromPeak_table.tsv",sep="\t",quote=F,row.names=F)
+	}
+}
 
 cat("\n\n")
 

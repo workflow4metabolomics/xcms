@@ -98,7 +98,7 @@
                   <option value="maxo">maxo</option>
                   <option value="intb">intb</option>
               </param>
-              <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="Replace the remain NA by 0 in the dataMatrix" help="Rather mandatory for some downstream statistical steps"/>
+              <param name="naTOzero" type="boolean" checked="true" truevalue="TRUE" falsevalue="FALSE" label="If NA values remain, replace them by 0 in the dataMatrix" help="Mandatory for some of the downstream tools (data processing, statistics) that do not accept NA values"/>
     </xml>
 
     <xml name="input_peaklist_section">
@@ -193,7 +193,7 @@ xset.dataMatrix.tsv : tabular format
             <option value="wMean">intensity weighted mean of the peak's m/z values</option>
             <option value="mean">mean of the peak's m/z values</option>
             <option value="apex">use the m/z value at the peak apex</option>
-            <option value="wMeanApex3">ntensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
+            <option value="wMeanApex3">intensity weighted mean of the m/z value at the peak apex and the m/z values left and right of it</option>
             <option value="meanApex3">mean of the m/z value of the peak apex and the m/z values left and right of it</option>
         </param>
         <param argument="integrate" type="select" label="Integration method" >
