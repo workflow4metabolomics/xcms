@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms process history" version="@TOOL_VERSION@+galaxy0">
+<tool id="abims_xcms_summary" name="xcms process history" version="@TOOL_VERSION@+galaxy1">
 
     <description>Create a summary of XCMS analysis</description>
 
@@ -8,8 +8,9 @@
     </macros>
 
     <requirements>
-        <requirement type="package" version="1.38.1">bioconductor-camera</requirement>
-        <requirement type="package" version="1.1_4">r-batch</requirement>
+	<requirement type="package" version="@TOOL_VERSION@">bioconductor-xcms</requirement>    
+	<requirement type="package" version="1.40.0">bioconductor-camera</requirement>
+        <requirement type="package" version="1.1_5">r-batch</requirement>
     </requirements>
 
     <expand macro="stdio"/>
@@ -87,6 +88,12 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
+
+**Version 3.6.1+galaxy1 - 05/04/2020**
+
+- UPGRADE: upgrade the CAMERA version from 1.38.0 to 1.42.0
+
+- BUGFIX: "Error in chromPeaks(from)[, "is_filled"] : subscript out of bounds"
 
 @HELP_XCMS_NEWVERSION_3610@
 
