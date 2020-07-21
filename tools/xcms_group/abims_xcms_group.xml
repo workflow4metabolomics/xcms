@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@TOOL_VERSION@+galaxy1">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@TOOL_VERSION@+galaxy2">
 
     <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
