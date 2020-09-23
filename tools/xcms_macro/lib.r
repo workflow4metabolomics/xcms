@@ -256,7 +256,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
     }
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
-        plot(chrom, col = group_colors[as.factor(chrom$sample_group)], main=main, peakType = "none")
+        plot(chrom, col = group_colors[chrom$sample_group], main=main, peakType = "none")
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
 

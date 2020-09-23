@@ -1,4 +1,4 @@
-<tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@TOOL_VERSION@+galaxy1">
+<tool id="xcms_plot_chromatogram" name="xcms plot chromatogram" version="@TOOL_VERSION@+galaxy2">
     <description>Plots base peak intensity chromatogram (BPI) and total ion current chromatogram (TIC) from MSnbase or xcms experiment(s)</description>
 
     <macros>
@@ -101,6 +101,10 @@ Output files
 
 Changelog/News
 --------------
+
+**Galaxy Version 3.6.1+galaxy2 - 23/09/2020**
+
+- BUGFIX: sample group colours did not match group labels.
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
