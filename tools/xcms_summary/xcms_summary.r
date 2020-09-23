@@ -73,7 +73,10 @@ if (exists("xset")) {
     if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(sampnames(xobject)))
 }
 # if the RData come from CAMERA
-if (exists("xa")) xobject <- xa@xcmsSet
+if (exists("xa")) {
+    xobject <- xa@xcmsSet
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(xa@xcmsSet@phenoData$sample_name))
+}
 # if the RData come from XCMS 3.x
 if (exists("xdata")) {
     xobject <- xdata

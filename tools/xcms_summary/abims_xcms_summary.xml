@@ -1,4 +1,4 @@
-<tool id="abims_xcms_summary" name="xcms process history" version="@TOOL_VERSION@+galaxy1">
+<tool id="abims_xcms_summary" name="xcms process history" version="@TOOL_VERSION@+galaxy2">
 
     <description>Create a summary of XCMS analysis</description>
 
@@ -86,6 +86,10 @@ CAMERA.annotate           ``*``.annotate.*.RData      rdata.camera.``*``
 
 Changelog/News
 --------------
+
+**Version 3.6.1+galaxy2 - 23/09/2020**
+
+- BUGFIX: "Error: object 'sampleNamesList' not found" in case of .RData input from CAMERA
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
 
