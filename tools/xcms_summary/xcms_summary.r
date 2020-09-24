@@ -67,16 +67,23 @@ user_email <- NULL
 if (!is.null(args$user_email)) user_email = args$user_email;
 
 # if the RData come from XCMS 1.x
-if (exists("xset")) xobject <- xset
-# retrocompatability
-if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(sampnames(xobject)))
+if (exists("xset")) {
+    xobject <- xset
+    # retrocompatability
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(sampnames(xobject)))
+}
 # if the RData come from CAMERA
-if (exists("xa")) xobject <- xa@xcmsSet
+if (exists("xa")) {
+    xobject <- xa@xcmsSet
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(xa@xcmsSet@phenoData$sample_name))
+}
 # if the RData come from XCMS 3.x
-if (exists("xdata")) xobject <- xdata
+if (exists("xdata")) {
+    xobject <- xdata
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(xdata@phenoData@data$sample_name))
+}
 
 if (!exists("xobject")) stop("You need at least a xdata, a xset or a xa object.")
-
 
 
 # ----- MAIN PROCESSING INFO -----
