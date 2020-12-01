@@ -2,6 +2,8 @@
 Changelog/News
 --------------
 
+**Version 1.0.8 - 22/10/2020**
+
 **Version 1.0.2 - 22/10/2016**
 
 - NEW: this tool was previously named NMR Normalization. It had been generalize to deal with all kind of preprocessed data
