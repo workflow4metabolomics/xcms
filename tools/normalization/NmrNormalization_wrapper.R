@@ -4,7 +4,7 @@
 ## Marie Tremblay-Franco
 ## MetaboHUB: The French Infrastructure for Metabolomics and Fluxomics
 ## www.metabohub.fr/en
-## marie.tremblay-franco@toulouse.inra.fr
+## marie.tremblay-franco@toulouse.inrae.fr
 
 runExampleL <- FALSE
 
