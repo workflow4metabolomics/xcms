@@ -1,21 +1,20 @@
 #!/usr/local/public/bin/Rscript --vanilla --slave --no-site-file
-# correlation_analysis.r version="20141118"
-#For questions: Antoine Gravot antoine.gravot@univ-rennes1.fr (Protocole conception) and Misharl Monsoor  misharl.monsoor@sb-roscoff.fr (for galaxy wrapper and R script).
+#For questions: Antoine Gravot (Protocole conception) and Misharl Monsoor  (for galaxy wrapper and R script).
 
 #Load the different libraries
 library(batch) #necessary for parseCommandArgs function
 library(reshape) #necessary for using melt function
 library(MASS) # necessary for using the write.matrix()
 #interpretation of arguments given in command line as an R list of objects
-listArguments = parseCommandArgs(evaluate=FALSE) 
+listArguments = parseCommandArgs(evaluate=FALSE)
 print(listArguments)
 
 #The main function of this script that will execute all the other functions
 
 
 main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,corrdel,param_correlation,param_cytoscape,matrix_corr,user_matrix_corr,corr_method){
-  
-  
+
+
     if(sorting==1){
         ####Executing the sorting function####
         print("Executing the sorting function")
@@ -34,15 +33,15 @@ main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,co
     }
     if(corrdel==1){
         print("Executing the corr_matrix_del function")
-        corr_matrix_del(output_tsv,samples_name,param_correlation,param_cytoscape,corr_method) 
+        corr_matrix_del(output_tsv,samples_name,param_correlation,param_cytoscape,corr_method)
     }
-  
+
     if(matrix_corr==1){
         print("Executing the corr_matrix function")
         corr_matrix_user(user_matrix_corr,param_cytoscape,corr_method)
-       
+
     }
-  
+
 
 }
 
@@ -51,7 +50,7 @@ main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,co
 #It finally creates a table tsv format "sorted_table.tsv".
 
 sorting<- function (input_tsv,samples_name){
-  
+
     #Sort by rt column
     new_input<-input_tsv[order(input_tsv$rt),]
     #Compute the mean operation of all the signal values of the sample by row, and put the results in a new column "signal_moy"
@@ -95,7 +94,7 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
     #Take the pcgroup names
     pcgroups=unique(new_dataframe$pcgroup)
     #Remove NAs from the pcgroups vector
-    pcgroups=pcgroups[which(pcgroups!="NA")] 
+    pcgroups=pcgroups[which(pcgroups!="NA")]
     #Creates a pcgroups list
     list_data = vector(mode="list",length=length(pcgroups))
     #Will do the following steps by pcgroup
@@ -115,9 +114,9 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
         #print (pc_group_elements)
         for(metabolite in pc_group_elements){
             metabolite_dataframe=subset_data2[subset_data2[,first_column]==metabolite,]
-            #retrives metabolite index from the vector object "pc_group_elements" 
+            #retrives metabolite index from the vector object "pc_group_elements"
             index_metabolite=as.numeric(which(pc_group_elements==metabolite, arr.ind=TRUE))
-            for (f in 2:index_metabolite-1 ) {           
+            for (f in 2:index_metabolite-1 ) {
                 if (metabolite!=first_metabolite) {
                     value_intensity=t(data.matrix(metabolite_dataframe[,pc_group_elements[f]]))
                     value_intensity=value_intensity[1:1]
@@ -126,14 +125,14 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
                         new_dataframe$suppress[new_dataframe[,first_column] ==metabolite ] <- "DEL"
                     }
                 }
-            }        
-        }   
+            }
+        }
     }
     #The dataframe with the column "suppress" at the begginning
     #new_dataframe_suppression = cbind(new_dataframe["name"],new_dataframe["suppress"],new_dataframe["pcgroup"],output_tsv["rt"],new_dataframe["signal_moy"],new_dataframe[,!(colnames(new_dataframe) %in% c("name","suppress","pcgroup","signal_moy"))])
     new_dataframe_suppression = cbind(new_dataframe[first_column],new_dataframe["suppress"],output_tsv["rt"],new_dataframe["signal_moy"],new_dataframe[,!(colnames(new_dataframe) %in% c(first_column,"suppress","pcgroup","signal_moy"))])
-    
-    
+
+
     #remove all the rows which have the "suppress" data and keep only the selected metabolites
     selected_metabolite_dataframe=new_dataframe_suppression[new_dataframe_suppression$suppress!="DEL",]
     #Keep the metabolites selected in a list
@@ -154,21 +153,21 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
     siff_table=cbind(siff_table[first_column],siff_table["value"],siff_table["variable"])
 
 
-  
+
     #Join the two datasets to keep only the selected metabolite, with all the information about the intensity value for statistics analysis in the next step of the workflow.
     joined_dataframe=merge(statmatrix2,selected_metabolite_dataframe[first_column], by=first_column)
     #Order by the signal intensity
     joined_dataframe=joined_dataframe[order(-joined_dataframe$signal_moy),]
     #Transposition of the dataframe
     joined_dataframe=joined_dataframe[,!(colnames(joined_dataframe) %in% c("signal_moy"))]
-  
-  
+
+
     #Write the different tables into files
     write.table(new_dataframe_suppression, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE,file="correlation_matrix.tsv")
     write.table(selected_metabolite_dataframe, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE,file="correlation_matrix_selected.tsv")
     write.table(joined_dataframe, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE, file="selected_metabolites_transpo.tsv")
     write.table(siff_table, sep="\t", quote=FALSE,col.names=FALSE,row.names=FALSE, file="siff_table.tsv")
-  
+
 
 
 
@@ -197,6 +196,6 @@ corr_matrix_user<- function (user_matrix_corr,param_cytoscape,corr_method) {
     siff_table=cbind(Node1=siff_table["X1"],interaction=siff_table["value"],Node2=siff_table["X2"])
     #Write the siff table
     write.table(siff_table, sep="\t", quote=FALSE,col.names=FALSE,row.names=FALSE, file="siff_table.tsv")
-  
+
 }
 do.call(main_function, listArguments)
