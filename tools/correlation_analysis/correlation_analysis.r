@@ -30,6 +30,12 @@ main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,co
         #Extract the samples name from the sample.info file generated from the xcmsSet step in ABIMS Workflow4Metabo.
         samples_name=as.vector(t(sampleMetadata_info_tsv[1]))
         output_tsv<-sorting(input_tsv,samples_name)
+        # output now if corrdel==0
+        if(corrdel==0){
+          output_tsv_VM=output_tsv[,which(!(colnames(output_tsv)%in%samples_name))]
+          write.table(output_tsv_VM[,c(3:ncol(output_tsv_VM),2,1)], sep="\t", quote=FALSE, col.names=TRUE,row.names=FALSE, file="sorted_table.tsv")
+        }
+        
     }
     if(corrdel==1){
         print("Executing the corr_matrix_del function")
@@ -62,7 +68,7 @@ sorting<- function (input_tsv,samples_name){
     #Write the data frame to a file named "sorted_table.tsv"
     #Erase the rownames of the table
     rownames(new_input)=NULL
-    write.table(new_input, sep="\t", quote=FALSE, col.names=TRUE,row.names=FALSE, file="sorted_table.tsv")
+    #write.table(new_input, sep="\t", quote=FALSE, col.names=TRUE,row.names=FALSE, file="sorted_table.tsv")
     #Suppress rows which contains Nas
     new_input=new_input[complete.cases(new_input$pcgroup), ]
     return(new_input)
@@ -163,13 +169,15 @@ corr_matrix_del<- function (output_tsv,samples_name,param_correlation,param_cyto
 
 
     #Write the different tables into files
-    write.table(new_dataframe_suppression, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE,file="correlation_matrix.tsv")
+    #write.table(new_dataframe_suppression, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE,file="correlation_matrix.tsv")
     write.table(selected_metabolite_dataframe, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE,file="correlation_matrix_selected.tsv")
-    write.table(joined_dataframe, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE, file="selected_metabolites_transpo.tsv")
+    #write.table(joined_dataframe, sep="\t", quote=FALSE,col.names=TRUE,row.names=FALSE, file="selected_metabolites_transpo.tsv")
     write.table(siff_table, sep="\t", quote=FALSE,col.names=FALSE,row.names=FALSE, file="siff_table.tsv")
-
-
-
+    output_tsv_VM=output_tsv[,which(!(colnames(output_tsv)%in%samples_name))]
+    output_tsv_VM=data.frame(output_tsv_VM[,c(3:ncol(output_tsv_VM),2,1)],ori.or=1:nrow(output_tsv_VM))
+    output_tsv_VM=merge(x=output_tsv_VM,y=new_dataframe[,c(3,which(colnames(new_dataframe)=="suppress"))],by.x=1,by.y=1,sort=FALSE)
+    output_tsv_VM = output_tsv_VM[order(output_tsv_VM$ori.or),][,-c(which(colnames(output_tsv_VM)=="ori.or"))]
+    write.table(output_tsv_VM, sep="\t", quote=FALSE, col.names=TRUE,row.names=FALSE, file="sorted_table.tsv")
 
 }
 
