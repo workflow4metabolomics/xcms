@@ -101,12 +101,6 @@
         <data name="sorted_table" format="tabular" from_work_dir="sorted_table.tsv" label="sorted_variableMetadata.tsv">
              <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m')</filter>
         </data>
-        <data name="correlation_matrix" format="tabular" from_work_dir="correlation_matrix.tsv" label="correlation_matrix.tsv">
-            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
-        </data>
-        <data name="selected_metabolites_transpo" format="tabular" from_work_dir="selected_metabolites_transpo.tsv" label="selected_metabolites_dataMatrix.tsv">
-            <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
-        </data>
         <data name="correlation_matrix_selected" format="tabular" from_work_dir="correlation_matrix_selected.tsv" label="correlation_matrix_selected.tsv">
             <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
         </data>
