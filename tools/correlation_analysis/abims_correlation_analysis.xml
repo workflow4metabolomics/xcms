@@ -108,10 +108,10 @@
             <filter>(cond_input_type['select_input_type'] == 'select_input_from_w4m' and cond_input_type['cond_function']['select_funtion']== 'sort_and_corr' and cond_input_type['cond_function']['corrdel']== '1' )</filter>
         </data>
         <data name="correlation_matrix_user" format="tabular" from_work_dir="correlation_matrix.tsv" label="correlation_matrix.tsv">
-            <filter>(cond_input_type['select_input_type'] == 'other_choice')</filter>
+            <filter>(cond_input_type['select_input_type'] == 'select_input_other')</filter>
         </data>
         <data name="siff_table_user_user" format="tabular" from_work_dir="siff_table.tsv" label="sif_table.tsv">
-            <filter>(cond_input_type['select_input_type'] == 'other_choice')</filter>
+            <filter>(cond_input_type['select_input_type'] == 'select_input_other')</filter>
         </data>
     </outputs>
 
