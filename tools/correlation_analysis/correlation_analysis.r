@@ -7,7 +7,12 @@ library(reshape) #necessary for using melt function
 library(MASS) # necessary for using the write.matrix()
 #interpretation of arguments given in command line as an R list of objects
 listArguments = parseCommandArgs(evaluate=FALSE)
+
+cat('\nJob starting time:\n',format(Sys.time(), "%a %d %b %Y %X"),
+    '\n\n--------------------------------------------------------------------', 
+    '\nParameters used in "Metabolites Correlation Analysis":\n\n')
 print(listArguments)
+cat('--------------------------------------------------------------------\n\n')
 
 #The main function of this script that will execute all the other functions
 
@@ -17,7 +22,7 @@ main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,co
 
     if(sorting==1){
         ####Executing the sorting function####
-        print("Executing the sorting function")
+        cat("\nExecuting the sorting function\n")
         #Read the tsv annotateDiffreport file and don't modify the columns name (check.names=FALSE)
         variableMetadata_input=read.csv(variableMetadata, header= T,sep = "\t",dec = ".",check.names = FALSE)
         dataMatrix_input=read.csv(dataMatrix, header= T,sep = "\t",dec = ".",check.names = FALSE)
@@ -38,16 +43,15 @@ main_function <- function (sorting,variableMetadata,dataMatrix,sampleMetadata,co
         
     }
     if(corrdel==1){
-        print("Executing the corr_matrix_del function")
+        cat("\nExecuting the corr_matrix_del function\n")
         corr_matrix_del(output_tsv,samples_name,param_correlation,param_cytoscape,corr_method)
     }
 
     if(matrix_corr==1){
-        print("Executing the corr_matrix function")
+        cat("\nExecuting the corr_matrix function\n")
         corr_matrix_user(user_matrix_corr,param_cytoscape,corr_method)
 
     }
-
 
 }
 
@@ -207,3 +211,10 @@ corr_matrix_user<- function (user_matrix_corr,param_cytoscape,corr_method) {
 
 }
 do.call(main_function, listArguments)
+
+
+cat('\n--------------------------------------------------------------------',
+    '\nInformation about R (version, Operating System, attached or loaded packages):\n\n')
+sessionInfo()
+cat('--------------------------------------------------------------------\n',
+    '\nJob ending time:\n',format(Sys.time(), "%a %d %b %Y %X"))
