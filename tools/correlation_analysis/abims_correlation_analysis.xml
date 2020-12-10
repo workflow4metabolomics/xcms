@@ -1,6 +1,6 @@
 <tool id="correlation_analysis" name="Metabolites Correlation Analysis" version="1.0.1+galaxy0" >
 
-    <description></description>
+    <description>to highlight ion correlations considering PC-groups</description>
 
     <requirements>
         <requirement type="package" version="1.1_5">r-batch</requirement>
