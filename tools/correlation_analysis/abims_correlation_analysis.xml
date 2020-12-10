@@ -8,11 +8,7 @@
         <requirement type="package" version="7.3_53">r-mass</requirement>
     </requirements>
 
-    <stdio>
-        <exit_code range="1:" level="fatal" />
-    </stdio>
-
-    <command>
+    <command detect_errors='exit_code'>
         Rscript '$__tool_directory__/correlation_analysis.r'
 
         #if $cond_input_type.select_input_type == "select_input_from_w4m" and $cond_input_type.cond_function.select_funtion == "sort_only" :
@@ -116,12 +112,16 @@
     </outputs>
 
     <tests>
-        <test>
-            <param name="cond_input_type|select_input_type" value="select_input_from_w4m" />
-            <param name="cond_input_type|dataMatrix" value="in_DM1.tabular" ftype="tabular" />
-            <param name="cond_input_type|sampleMetadata" value="in_SM1.tabular" ftype="tabular" />
-            <param name="cond_input_type|variableMetadata" value="in_VM1.tabular" ftype="tabular" />
-            <param name="cond_input_type|cond_function|select_funtion" value="sort_and_corr" />
+        <test expect_num_outputs="3">
+            <conditional name="cond_input_type" >
+                <param name="select_input_type" value="select_input_from_w4m" />
+                <param name="dataMatrix" value="in_DM1.tabular" ftype="tabular" />
+                <param name="sampleMetadata" value="in_SM1.tabular" ftype="tabular" />
+                <param name="variableMetadata" value="in_VM1.tabular" ftype="tabular" />
+                <conditional name="cond_function" >
+                    <param name="select_funtion" value="sort_and_corr" />
+                </conditional>
+            </conditional>
             <output name="sorted_table" file="out_VM1.tabular"/>
             <output name="correlation_matrix_selected" file="out_corr1.tabular"/>
             <output name="siff_table" file="out_sif1.tabular"/>
@@ -303,7 +303,7 @@ Changelog/News
 
 - Update of some of the outputs' formats to match standard W4M table format
 - Standard output (stdout) log improvement
-- Change of testing data for faster job running for tests 
+- Change of testing data for faster job running for tests
 - Fix: generation of the outputs for "Your table file" option
 
 **Version 1.0.1 - 20/09/2016**
