@@ -1,0 +1,8 @@
+# See documentation here:
+# https://blog.github.com/2017-07-06-introducing-code-owners/
+
+tools/camera*/*                  @lecorguille
+tools/correlation_analysis/*     @melpetera
+tools/nmr*/*                     @mtremblayfr @lecorguille
+tools/normalization/*            @mtremblayfr @lecorguille
+tools/xcms*/*                    @lecorguille
