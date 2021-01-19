@@ -31,7 +31,7 @@ main_function <- function(sorting, variable_metadata, data_matrix, sample_metada
         #@TODO merge
         input_tsv <- cbind(variable_metadata_input, data_matrix_input[, !(colnames(data_matrix_input) %in% c(first_column_datamatrix))])
         #Load the sample.info from the xcmsSet
-        sample_metadata_info_tsv <- read.table(sample_metadata, header = T, sep = "\t", dec = ", ", check.names = FALSE)
+        sample_metadata_info_tsv <- read.table(sample_metadata, header = T, sep = "\t", dec = ",", check.names = FALSE)
         #Extract the samples name from the sample.info file generated from the xcmsSet step in ABIMS Workflow4Metabo.
         samples_name <- as.vector(t(sample_metadata_info_tsv[1]))
         output_tsv <- sorting(input_tsv, samples_name)

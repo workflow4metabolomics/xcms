@@ -12,9 +12,9 @@
         Rscript '$__tool_directory__/correlation_analysis.r'
 
         #if $cond_input_type.select_input_type == "select_input_from_w4m" and $cond_input_type.cond_function.select_funtion == "sort_only" :
-            sorting 1 variableMetadata '$cond_input_type.variableMetadata'
-            dataMatrix '$cond_input_type.dataMatrix'
-            sampleMetadata '$cond_input_type.sampleMetadata'
+            sorting 1 variable_metadata '$cond_input_type.variableMetadata'
+            data_matrix '$cond_input_type.dataMatrix'
+            sample_metadata '$cond_input_type.sampleMetadata'
             corrdel 0
             param_correlation ""
             param_cytoscape ""
@@ -24,9 +24,9 @@
         #end if
         #if $cond_input_type.select_input_type == "select_input_from_w4m" and $cond_input_type.cond_function.select_funtion == "sort_and_corr" :
             sorting 1
-            variableMetadata '$cond_input_type.variableMetadata'
-            dataMatrix '$cond_input_type.dataMatrix'
-            sampleMetadata '$cond_input_type.sampleMetadata'
+            variable_metadata '$cond_input_type.variableMetadata'
+            data_matrix '$cond_input_type.dataMatrix'
+            sample_metadata '$cond_input_type.sampleMetadata'
             corrdel 1
             param_correlation $cond_input_type.cond_function.param_correlation
             param_cytoscape $cond_input_type.cond_function.param_cytoscape
@@ -37,9 +37,9 @@
         ##Create correlation matrix from a user table file.##
         #if $cond_input_type.select_input_type == "select_input_other" :
             sorting 0
-            variableMetadata ""
-            dataMatrix ""
-            sampleMetadata ""
+            variable_metadata ""
+            data_matrix ""
+            sample_metadata ""
             corrdel 0
             param_correlation ""
             param_cytoscape $cond_input_type.param_cytoscape
