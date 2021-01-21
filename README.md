@@ -1,6 +1,6 @@
 # Galaxy tools for metabolomics
 
-[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/bioconductor-xcms/README.html) [![Build Status](https://travis-ci.org/workflow4metabolomics/tools-metabolomics.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/tools-metabolomics)
+[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat)](http://bioconda.github.io/recipes/bioconductor-xcms/README.html) ![Galaxy Tool Linting and Tests for push and PR](https://github.com/workflow4metabolomics/tools-metabolomics/workflows/Galaxy%20Tool%20Linting%20and%20Tests%20for%20push%20and%20PR/badge.svg)
 
 ## Purpose
 This repository aims to gather tools and contributors from the metabolomics world.
@@ -8,7 +8,6 @@ This repository aims to gather tools and contributors from the metabolomics worl
 It is maintained by the Workflow4Metabolomics project but open to any contributors.
 
 Tools themselves should stick with the [IUC](https://github.com/galaxyproject/tools-iuc) (Galaxy Intergalactic Utilities Commission) [standards and best practices](https://galaxy-iuc-standards.readthedocs.io/en/latest/)
-
 
 ### Workflow4Metabolomics
 The [Workflow4Metabolomics](http://workflow4metabolomics.org), W4M in short, is a French infrastructure offering software tool processing, analyzing and annotating metabolomics data.
@@ -41,3 +40,4 @@ Some tools implement a [Job Dynamic Destination Mapping](https://docs.galaxyproj
 - Marion Landi [PFEM](https://www6.ara.inra.fr/plateforme_exploration_metabolisme) / [MetaboHUB](https://www.metabohub.fr/home.html) - [INRA](http://www.inra.fr/) - France
 - Misharl Monsoor [@mmonsoor](https://github.com/mmonsoor) - [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[Sorbonne Université](http://www.sorbonne-universite.fr/) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
 - Pierre Pericard [@ppericard](https://github.com/ppericard)- [ABiMS](http://abims.sb-roscoff.fr/) / [IFB](http://www.france-bioinformatique.fr/) - [CNRS](www.cnrs.fr)/[Sorbonne Université](http://www.sorbonne-universite.fr/) - [Station Biologique de Roscoff](http://www.sb-roscoff.fr/) - France
+

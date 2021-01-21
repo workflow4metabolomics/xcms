@@ -1,0 +1,11 @@
+categories: [Metabolomics]
+description: '[Metabolomics][W4M] Metabolites Correlation Analysis'
+homepage_url: http://workflow4metabolomics.org
+long_description: 'Part of the W4M project: http://workflow4metabolomics.org
+  Metabolites Correlation Analysis:
+  This tool takes as inputs, tabular table files from the metabolomic workflow.
+  (variableMetadata,dataMatrix and SampleMetadata) and executes two possible functions ("sorting" and "corrdel").
+  The second option takes as input a table of your own and execute the "corr_matrix" function.'
+name: correlation_analysis
+owner: workflow4metabolomics
+remote_repository_url: https://github.com/workflow4metabolomics/tools-metabolomics/blob/master/tools/correlation_analysis/
