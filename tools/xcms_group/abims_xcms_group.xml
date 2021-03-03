@@ -1,4 +1,4 @@
-<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@TOOL_VERSION@+galaxy2">
+<tool id="abims_xcms_group" name="xcms groupChromPeaks (group)" version="@TOOL_VERSION@+galaxy0">
 
     <description>Perform the correspondence, the grouping of chromatographic peaks within and between samples.</description>
 
@@ -355,7 +355,7 @@ xset.groupChromPeaks.plotChromPeakDensity.pdf
 Changelog/News
 --------------
 
-.. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
+@HELP_XCMS_NEWVERSION_31200@
 
 **Version 3.6.1+galaxy1 - 22/04/2020**
 
