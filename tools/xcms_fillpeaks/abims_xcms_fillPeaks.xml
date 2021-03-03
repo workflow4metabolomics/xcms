@@ -230,7 +230,7 @@ xset.fillPeaks.RData : rdata.xcms.fillpeaks format
 Changelog/News
 --------------
 
-.. _News: https://bioconductor.org/packages/release/bioc/news/xcms/NEWS
+@HELP_XCMS_NEWVERSION_31200@
 
 @HELP_XCMS_NEWVERSION_3610@
 
