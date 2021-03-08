@@ -7,7 +7,7 @@ parseCommandArgs <- function(...) {
     args <- batch::parseCommandArgs(...)
     for (key in names(args)) {
         if (args[key] %in% c("TRUE", "FALSE"))
-            args[key] = as.logical(args[key])
+            args[key] <- as.logical(args[key])
     }
     return(args)
 }
@@ -19,7 +19,7 @@ parseCommandArgs <- function(...) {
 loadAndDisplayPackages <- function(pkgs) {
     for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
 
-    sessioninfo = sessionInfo()
+    sessioninfo <- sessionInfo()
     cat(sessioninfo$R.version$version.string, "\n")
     cat("Main packages:\n")
     for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg, packageVersion(pkg)), "\t") }; cat("\n")
@@ -92,7 +92,7 @@ mergeXData <- function(args) {
         cat("\tXSET PHENODATA SETTING...\n")
         sampleMetadataFile <- args$sampleMetadata
         sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header=F)
-        xdata@phenoData@data$sample_group=sampleMetadata$V2[match(xdata@phenoData@data$sample_name, sampleMetadata$V1)]
+        xdata@phenoData@data$sample_group <- sampleMetadata$V2[match(xdata@phenoData@data$sample_name, sampleMetadata$V1)]
 
         if (any(is.na(pData(xdata)$sample_group))) {
             sample_missing <- pData(xdata)$sample_name[is.na(pData(xdata)$sample_group)]
@@ -127,7 +127,7 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
 # This function format ions identifiers
 formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
     splitDeco <- strsplit(as.character(variableMetadata$name), "_")
-    idsDeco <- sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco)) })
+    idsDeco <- sapply(splitDeco, function(x) { deco <- unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco)) })
     namecustom <- make.unique(paste0("M", round(variableMetadata[, "mz"], numDigitsMZ), "T", round(variableMetadata[, "rt"], numDigitsRT), idsDeco))
     variableMetadata <- cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[, !(colnames(variableMetadata) %in% c("name"))])
     return(variableMetadata)
@@ -160,8 +160,8 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
-        mzmin = featureDefinitions(xdata)[i, ]$mzmin
-        mzmax = featureDefinitions(xdata)[i, ]$mzmax
+        mzmin <- featureDefinitions(xdata)[i, ]$mzmin
+        mzmax <- featureDefinitions(xdata)[i, ]$mzmax
         plotChromPeakDensity(xdata, param = param, mz=c(mzmin, mzmax), col=col_per_samp, pch=16, xlim=xlim, main=paste(round(mzmin, mzdigit), round(mzmax, mzdigit)))
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
@@ -199,10 +199,10 @@ getPlotAdjustedRtime <- function(xdata) {
 getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput, sampleNamesList) {
     dataMatrix <- featureValues(xdata, method="medret", value=intval)
     colnames(dataMatrix) <- make.names(tools::file_path_sans_ext(colnames(dataMatrix)))
-    dataMatrix = cbind(name=groupnames(xdata), dataMatrix)
+    dataMatrix <- cbind(name=groupnames(xdata), dataMatrix)
     variableMetadata <- featureDefinitions(xdata)
-    colnames(variableMetadata)[1] = "mz"; colnames(variableMetadata)[4] = "rt"
-    variableMetadata = data.frame(name=groupnames(xdata), variableMetadata)
+    colnames(variableMetadata)[1] <- "mz"; colnames(variableMetadata)[4] <- "rt"
+    variableMetadata <- data.frame(name=groupnames(xdata), variableMetadata)
 
     variableMetadata <- RTSecondToMinute(variableMetadata, convertRTMinute)
     variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
@@ -223,7 +223,7 @@ getDataFrameFromFile <- function(filename, header=T) {
     if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep="\t", stringsAsFactors=F)
     if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep=",", stringsAsFactors=F)
     if (ncol(myDataFrame) < 2) {
-        error_message="Your tabular file seems not well formatted. The column separators accepted are ; , and tabulation"
+        error_message <- "Your tabular file seems not well formatted. The column separators accepted are ; , and tabulation"
         print(error_message)
         stop(error_message)
     }
@@ -236,13 +236,13 @@ getDataFrameFromFile <- function(filename, header=T) {
 getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
 
     if (aggregationFun == "sum")
-        type="Total Ion Chromatograms"
+        type <- "Total Ion Chromatograms"
     else
-        type="Base Peak Intensity Chromatograms"
+        type <- "Base Peak Intensity Chromatograms"
 
-    adjusted="Raw"
+    adjusted <- "Raw"
     if (hasAdjustedRtime(xdata))
-        adjusted="Adjusted"
+        adjusted <- "Adjusted"
 
     main <- paste(type, ":", adjusted, "data")
 
