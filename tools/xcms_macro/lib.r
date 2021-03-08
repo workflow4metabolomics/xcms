@@ -55,7 +55,7 @@ mergeXData <- function(args) {
         # Handle infiles
         if (!exists("singlefile")) singlefile <- NULL
         if (!exists("zipfile")) zipfile <- NULL
-        rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
+        rawFilePath <- retrieveRawfileInTheWorkingDir(singlefile, zipfile, args)
         zipfile <- rawFilePath$zipfile
         singlefile <- rawFilePath$singlefile
 
@@ -363,7 +363,7 @@ getMd5sum <- function(files) {
 #   - if zipfile: unzip the file with its directory tree
 #   - if singlefiles: set symlink with the good filename
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
-retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, prefix = "") {
+retrieveRawfileInTheWorkingDir <- function(singlefile, zipfile, args, prefix = "") {
 
     if (!(prefix %in% c("", "Positive", "Negative", "MS1", "MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
 

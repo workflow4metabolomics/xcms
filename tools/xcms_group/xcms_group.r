@@ -50,7 +50,7 @@ if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object call
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDir(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
 
