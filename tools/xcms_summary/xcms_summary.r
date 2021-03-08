@@ -164,7 +164,7 @@ writehtml("<BODY>")
         }
         # CAMERA and retrocompatability XCMS 1.x
         if (exists("listOFlistArguments")) {
-            for(tool in names(listOFlistArguments)) {
+            for (tool in names(listOFlistArguments)) {
                 listOFlistArgumentsDisplay <- listOFlistArguments[[tool]][!(names(listOFlistArguments[[tool]]) %in% argBlacklist)]
 
                 timestamp <- strsplit(tool, "_")[[1]][1]

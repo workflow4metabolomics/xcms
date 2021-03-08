@@ -12,7 +12,7 @@ args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in
 
 
 sampleMetadata <- NULL
-for(image in args$images) {
+for (image in args$images) {
     load(image)
     if (exists("raw_data")) xdata <- raw_data
     if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
