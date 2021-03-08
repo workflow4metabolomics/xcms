@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # ----- LOG FILE -----
-log_file=file("log.txt", open = "wt")
+log_file = file("log.txt", open = "wt")
 sink(log_file)
 sink(log_file, type = "output")
 
@@ -10,7 +10,7 @@ sink(log_file, type = "output")
 cat("\tSESSION INFO\n")
 
 #Import the different functions
-source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep = "/")) }
 source_local("lib.r")
 
 pkgs <- c("xcms", "batch", "RColorBrewer")
@@ -20,8 +20,8 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-args <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
+args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names = F, quote = F, sep = '\t')
 
 cat("\n\n")
 
@@ -68,7 +68,7 @@ cat("\t\t\tPerform the correspondence\n")
 args$sampleGroups = xdata$sample_group
 
 # clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
-args <- args[names(args) %in% slotNames(do.call(paste0(method, "Param"), list(sampleGroups=c(1, 2))))]
+args <- args[names(args) %in% slotNames(do.call(paste0(method, "Param"), list(sampleGroups = c(1, 2))))]
 
 groupChromPeaksParam <- do.call(paste0(method, "Param"), args)
 print(groupChromPeaksParam)
@@ -98,7 +98,7 @@ cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
 objects2save = c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
-save(list=objects2save[objects2save %in% ls()], file="group.RData")
+save(list = objects2save[objects2save %in% ls()], file = "group.RData")
 
 cat("\n\n")
 
