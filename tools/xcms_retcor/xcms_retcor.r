@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # ----- LOG FILE -----
-log_file = file("log.txt", open = "wt")
+log_file <- file("log.txt", open = "wt")
 sink(log_file)
 sink(log_file, type = "output")
 
@@ -22,7 +22,7 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-args = parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
+args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
 write.table(as.matrix(args), col.names = F, quote = F, sep = '\t')
 
 cat("\n\n")
@@ -40,7 +40,7 @@ cat("\n\n")
 cat("\tINFILE PROCESSING INFO\n")
 
 #image is an .RData file necessary to use xset variable given by previous tools
-load(args$image); args$image = NULL
+load(args$image); args$image <- NULL
 if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
 
 # Handle infiles
@@ -99,7 +99,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list = objects2save[objects2save %in% ls()], file = "retcor.RData")
 
 cat("\n\n")

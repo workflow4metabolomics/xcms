@@ -63,10 +63,10 @@ args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in
 load(args$image);
 
 htmlOutput <- "summary.html"
-if (!is.null(args$htmlOutput)) htmlOutput = args$htmlOutput;
+if (!is.null(args$htmlOutput)) htmlOutput <- args$htmlOutput;
 
 user_email <- NULL
-if (!is.null(args$user_email)) user_email = args$user_email;
+if (!is.null(args$user_email)) user_email <- args$user_email;
 
 # if the RData come from XCMS 1.x
 if (exists("xset")) {

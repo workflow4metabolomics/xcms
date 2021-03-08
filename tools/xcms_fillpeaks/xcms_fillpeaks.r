@@ -1,7 +1,7 @@
 #!/usr/bin/env Rscript
 
 # ----- LOG FILE -----
-log_file = file("log.txt", open = "wt")
+log_file <- file("log.txt", open = "wt")
 sink(log_file)
 sink(log_file, type = "output")
 
@@ -22,7 +22,7 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-args = parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
+args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
 write.table(as.matrix(args), col.names = F, quote = F, sep = '\t')
 
 cat("\n\n")
@@ -99,7 +99,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list = objects2save[objects2save %in% ls()], file = "fillpeaks.RData")
 
 cat("\n\n")
