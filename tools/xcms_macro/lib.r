@@ -17,7 +17,7 @@ parseCommandArgs <- function(...) {
 # - load the packages
 # - display the sessionInfo
 loadAndDisplayPackages <- function(pkgs) {
-    for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+    for (pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
 
     sessioninfo <- sessionInfo()
     cat(sessioninfo$R.version$version.string, "\n")
@@ -43,7 +43,7 @@ mergeXData <- function(args) {
     chromTIC_adjusted <- NULL
     chromBPI_adjusted <- NULL
     md5sumList <- NULL
-    for(image in args$images) {
+    for (image in args$images) {
 
         load(image)
         # Handle infiles
@@ -149,14 +149,14 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
 
-    if(length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group))<10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
     }
     names(group_colors) <- unique(xdata$sample_group)
     col_per_samp <- as.character(xdata$sample_group)
-    for(i in 1:length(group_colors)){col_per_samp[col_per_samp==(names(group_colors)[i])]<-group_colors[i]}
+    for (i in 1:length(group_colors)){col_per_samp[col_per_samp==(names(group_colors)[i])]<-group_colors[i]}
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
@@ -176,7 +176,7 @@ getPlotAdjustedRtime <- function(xdata) {
     pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
 
     # Color by group
-    if(length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group))<10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
@@ -249,7 +249,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
     pdf(pdfname, width=16, height=10)
 
     # Color by group
-    if(length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group))<10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
@@ -366,11 +366,11 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
       zipfile <- args[[paste0("zipfile", prefix)]]
 
     # single
-    if(!is.null(singlefile) && (length("singlefile")>0)) {
+    if (!is.null(singlefile) && (length("singlefile")>0)) {
         files <- vector()
         for (singlefile_sampleName in names(singlefile)) {
             singlefile_galaxyPath <- singlefile[[singlefile_sampleName]]
-            if(!file.exists(singlefile_galaxyPath)){
+            if (!file.exists(singlefile_galaxyPath)){
                 error_message <- paste("Cannot access the sample:", singlefile_sampleName, "located:", singlefile_galaxyPath, ". Please, contact your administrator ... if you have one!")
                 print(error_message); stop(error_message)
             }
@@ -381,8 +381,8 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
         }
     }
     # zipfile
-    if(!is.null(zipfile) && (zipfile != "")) {
-        if(!file.exists(zipfile)){
+    if (!is.null(zipfile) && (zipfile != "")) {
+        if (!file.exists(zipfile)){
             error_message <- paste("Cannot access the Zip file:", zipfile, ". Please, contact your administrator ... if you have one!")
             print(error_message)
             stop(error_message)
