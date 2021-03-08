@@ -154,7 +154,7 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT = 0, numDigitsMZ 
 #@author G. Le Corguille
 # This function convert the remain NA to 0 in the dataMatrix
 naTOzeroDataMatrix <- function(dataMatrix, naTOzero) {
-    if (naTOzero){
+    if (naTOzero) {
         dataMatrix[is.na(dataMatrix)] <- 0
     }
     return(dataMatrix)
@@ -167,14 +167,14 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit = 4) {
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
 
-    if (length(unique(xdata$sample_group)) < 10){
+    if (length(unique(xdata$sample_group)) < 10) {
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
     }
     names(group_colors) <- unique(xdata$sample_group)
     col_per_samp <- as.character(xdata$sample_group)
-    for (i in 1:length(group_colors)){
+    for (i in 1:length(group_colors)) {
       col_per_samp[col_per_samp == (names(group_colors)[i])] <- group_colors[i]
     }
 
@@ -196,7 +196,7 @@ getPlotAdjustedRtime <- function(xdata) {
     pdf(file = "raw_vs_adjusted_rt.pdf", width = 16, height = 12)
 
     # Color by group
-    if (length(unique(xdata$sample_group)) < 10){
+    if (length(unique(xdata$sample_group)) < 10) {
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     } else {
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
@@ -269,7 +269,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname = "Chromatogram.pdf", aggr
     pdf(pdfname, width = 16, height = 10)
 
     # Color by group
-    if (length(unique(xdata$sample_group)) < 10){
+    if (length(unique(xdata$sample_group)) < 10) {
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
@@ -332,7 +332,7 @@ getSampleMetadata <- function(xdata = NULL, sampleMetadataOutput = "sampleMetada
             polarity <- fData(xdata)[fData(xdata)$fileIdx == fileIdx, "polarity"]
             #Verify if all the scans have the same polarity
             uniq_list <- unique(polarity)
-            if (length(uniq_list) > 1){
+            if (length(uniq_list) > 1) {
                 polarity <- "mixed"
             } else {
                 polarity <- as.character(uniq_list)
@@ -390,7 +390,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
         files <- vector()
         for (singlefile_sampleName in names(singlefile)) {
             singlefile_galaxyPath <- singlefile[[singlefile_sampleName]]
-            if (!file.exists(singlefile_galaxyPath)){
+            if (!file.exists(singlefile_galaxyPath)) {
                 error_message <- paste("Cannot access the sample:", singlefile_sampleName, "located:", singlefile_galaxyPath, ". Please, contact your administrator ... if you have one!")
                 print(error_message); stop(error_message)
             }
@@ -402,7 +402,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
     }
     # zipfile
     if (!is.null(zipfile) && (zipfile != "")) {
-        if (!file.exists(zipfile)){
+        if (!file.exists(zipfile)) {
             error_message <- paste("Cannot access the Zip file:", zipfile, ". Please, contact your administrator ... if you have one!")
             print(error_message)
             stop(error_message)
