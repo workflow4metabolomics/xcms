@@ -13,7 +13,7 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("xcms","batch","RColorBrewer")
+pkgs <- c("xcms", "batch", "RColorBrewer")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -59,9 +59,9 @@ cat("\t\tCOMPUTE\n")
 
 cat("\t\t\tAlignment/Retention Time correction\n")
 # clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
-args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
+args <- args[names(args) %in% slotNames(do.call(paste0(method, "Param"), list()))]
 
-adjustRtimeParam <- do.call(paste0(method,"Param"), args)
+adjustRtimeParam <- do.call(paste0(method, "Param"), args)
 print(adjustRtimeParam)
 
 if (hasAdjustedRtime(xdata)) {
@@ -97,7 +97,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
+objects2save = c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list=objects2save[objects2save %in% ls()], file="retcor.RData")
 
 cat("\n\n")

@@ -16,13 +16,13 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("CAMERA","batch")
+pkgs <- c("CAMERA", "batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
 
 # ----- FUNCTION -----
-writehtml <- function(...) { cat(...,"\n", file=htmlOutput,append = TRUE,sep="") }
+writehtml <- function(...) { cat(..., "\n", file=htmlOutput, append = TRUE, sep="") }
 writeraw <- function(htmlOutput, object, open="at") {
     log_file <- file(htmlOutput, open = open)
     sink(log_file)
@@ -97,7 +97,7 @@ writehtml("<HEAD>")
 
     writehtml("<style>")
         writehtml("table, tr, td, th { border: 1px solid #000000; border-collapse:collapse; }")
-        writehtml("td,th { padding: 5px; padding-right: 12px; }")
+        writehtml("td, th { padding: 5px; padding-right: 12px; }")
         writehtml("th { background: #898989; text-align:left;color: white;}")
         writehtml("h2 { color: #FFA212; }")
         writehtml("ul li { margin-bottom:10px; }")
@@ -108,7 +108,7 @@ writehtml("<BODY>")
     writehtml("<div><h1>___ XCMS analysis summary using Workflow4Metabolomics ___</h1>")
     # to pass the planemo shed_test
     if (user_email != "test@bx.psu.edu") {
-        if (!is.null(user_email)) writehtml("By: ", user_email," - ")
+        if (!is.null(user_email)) writehtml("By: ", user_email, " - ")
         writehtml("Date: ", format(Sys.time(), "%y%m%d-%H:%M:%S"))
     }
     writehtml("</div>")
@@ -117,10 +117,10 @@ writehtml("<BODY>")
     writehtml("<div><table>")
         if (all(getSampleNames(xobject) == sampleNamesList$sampleNamesMakeNames)) {
             sampleNameHeaderHtml <- paste0("<th>sample</th>")
-            sampleNameHtml <- paste0("<td>",getSampleNames(xobject),"</td>")
+            sampleNameHtml <- paste0("<td>", getSampleNames(xobject), "</td>")
         } else {
             sampleNameHeaderHtml <- paste0("<th>sample</th><th>sample renamed</th>")
-            sampleNameHtml <- paste0("<td>",getSampleNames(xobject),"</td><td>",sampleNamesList$sampleNamesMakeNames,"</td>")
+            sampleNameHtml <- paste0("<td>", getSampleNames(xobject), "</td><td>", sampleNamesList$sampleNamesMakeNames, "</td>")
         }
 
         if (!exists("md5sumList")) {
@@ -129,16 +129,16 @@ writehtml("<BODY>")
             md5sumLegend <- ""
         } else if (is.null(md5sumList$removalBadCharacters)) {
             md5sumHeaderHtml <- paste0("<th>md5sum<sup>*</sup></th>")
-            md5sumHtml <- paste0("<td>",md5sumList$origin,"</td>")
+            md5sumHtml <- paste0("<td>", md5sumList$origin, "</td>")
             md5sumLegend <- "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process."
         } else {
             md5sumHeaderHtml <- paste0("<th>md5sum<sup>*</sup></th><th>md5sum<sup>**</sup> after bad characters removal</th>")
-            md5sumHtml <- paste0("<td>",md5sumList$origin,"</td><td>",md5sumList$removalBadCharacters,"</td>")
+            md5sumHtml <- paste0("<td>", md5sumList$origin, "</td><td>", md5sumList$removalBadCharacters, "</td>")
             md5sumLegend <- "<br/><sup>*</sup>The program md5sum is designed to verify data integrity. So you can check if the data were uploaded correctly or if the data were changed during the process.<br/><sup>**</sup>Because some bad characters (eg: accent) were removed from your original file, the checksum have changed too.<br/>"
         }
 
-        writehtml("<tr>",sampleNameHeaderHtml,"<th>filename</th>",md5sumHeaderHtml,"</tr>")
-        writehtml(paste0("<tr>",sampleNameHtml,"<td>",getFilePaths(xobject),"</td>",md5sumHtml,"</tr>"))
+        writehtml("<tr>", sampleNameHeaderHtml, "<th>filename</th>", md5sumHeaderHtml, "</tr>")
+        writehtml(paste0("<tr>", sampleNameHtml, "<td>", getFilePaths(xobject), "</td>", md5sumHtml, "</tr>"))
 
     writehtml("</table>")
     writehtml(md5sumLegend)
@@ -157,7 +157,7 @@ writehtml("<BODY>")
                 timestamp <- processDate(processHistoryItem)
                 xcmsFunction <- processType(processHistoryItem)
                 params <- processParam(processHistoryItem)
-                writehtml("<tr><td>",timestamp,"</td><td>",xcmsFunction,"</td><td colspan='2'><pre>")
+                writehtml("<tr><td>", timestamp, "</td><td>", xcmsFunction, "</td><td colspan='2'><pre>")
                 writeraw(htmlOutput, params)
                 writehtml("</pre></td></tr>")
             }
@@ -167,12 +167,12 @@ writehtml("<BODY>")
             for(tool in names(listOFlistArguments)) {
                 listOFlistArgumentsDisplay <- listOFlistArguments[[tool]][!(names(listOFlistArguments[[tool]]) %in% argBlacklist)]
 
-                timestamp <- strsplit(tool,"_")[[1]][1]
-                xcmsFunction <- strsplit(tool,"_")[[1]][2]
-                writehtml("<tr><td rowspan='",length(listOFlistArgumentsDisplay),"'>",timestamp,"</td><td rowspan='",length(listOFlistArgumentsDisplay),"'>",xcmsFunction,"</td>")
+                timestamp <- strsplit(tool, "_")[[1]][1]
+                xcmsFunction <- strsplit(tool, "_")[[1]][2]
+                writehtml("<tr><td rowspan='", length(listOFlistArgumentsDisplay), "'>", timestamp, "</td><td rowspan='", length(listOFlistArgumentsDisplay), "'>", xcmsFunction, "</td>")
                 line_begin <- ""
                 for (arg in names(listOFlistArgumentsDisplay)) {
-                    writehtml(line_begin,"<td>",arg,"</td><td>",unlist(listOFlistArgumentsDisplay[arg][1]),"</td></tr>")
+                    writehtml(line_begin, "<td>", arg, "</td><td>", unlist(listOFlistArgumentsDisplay[arg][1]), "</td></tr>")
                     line_begin <- "<tr>"
                 }
             }
@@ -202,7 +202,7 @@ writehtml("<BODY>")
         writehtml("<h2>Informations about the CAMERA object:</h2>")
 
         writehtml("<div>")
-            writehtml("Number of pcgroup: ",length(xa@pspectra))
+            writehtml("Number of pcgroup: ", length(xa@pspectra))
         writehtml("</div>")
     }
 
@@ -210,21 +210,21 @@ writehtml("<BODY>")
     writehtml("<div><ul>")
         writehtml("<li>To cite the <b>XCMS</b> package in publications use:")
             writehtml("<ul>")
-            writehtml("<li>","Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)","</li>")
-            writehtml("<li>","Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)","</li>")
-            writehtml("<li>","H. Paul Benton, Elizabeth J. Want and Timothy M. D. Ebbels Correction of mass calibration gaps in liquid chromatography-mass spectrometry metabolomics data Bioinformatics, 26:2488 (2010)","</li>")
+            writehtml("<li>", "Smith, C.A. and Want, E.J. and O'Maille, G. and Abagyan,R. and Siuzdak, G.XCMS: Processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching and identification, Analytical Chemistry, 78:779-787 (2006)", "</li>")
+            writehtml("<li>", "Ralf Tautenhahn, Christoph Boettcher, Steffen Neumann: Highly sensitive feature detection for high resolution LC/MS BMC Bioinformatics, 9:504 (2008)", "</li>")
+            writehtml("<li>", "H. Paul Benton, Elizabeth J. Want and Timothy M. D. Ebbels Correction of mass calibration gaps in liquid chromatography-mass spectrometry metabolomics data Bioinformatics, 26:2488 (2010)", "</li>")
             writehtml("</ul>")
         writehtml("</li>")
 
         writehtml("<li>To cite the <b>CAMERA</b> package in publications use:")
             writehtml("<ul>")
-            writehtml("<li>","Kuhl, C., Tautenhahn, R., Boettcher, C., Larson, T. R. and Neumann,S. CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets. Analytical Chemistry, 84:283-289 (2012)","</li>")
+            writehtml("<li>", "Kuhl, C., Tautenhahn, R., Boettcher, C., Larson, T. R. and Neumann,S. CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets. Analytical Chemistry, 84:283-289 (2012)", "</li>")
             writehtml("</ul>")
         writehtml("</li>")
 
         writehtml("<li>To cite the <b>Workflow4Metabolimics (W4M)</b> project in publications use:")
             writehtml("<ul>")
-            writehtml("<li>","Franck Giacomoni, Gildas Le Corguillé, Misharl Monsoor, Marion Landi, Pierre Pericard, Mélanie Pétéra, Christophe Duperier, Marie Tremblay-Franco, Jean-François Martin, Daniel Jacob, Sophie Goulitquer, Etienne A. Thévenot and Christophe Caron (2014). Workflow4Metabolomics: A collaborative research infrastructure for computational metabolomics. Bioinformatics  doi:10.1093/bioinformatics/btu813","</li>")
+            writehtml("<li>", "Franck Giacomoni, Gildas Le Corguillé, Misharl Monsoor, Marion Landi, Pierre Pericard, Mélanie Pétéra, Christophe Duperier, Marie Tremblay-Franco, Jean-François Martin, Daniel Jacob, Sophie Goulitquer, Etienne A. Thévenot and Christophe Caron (2014). Workflow4Metabolomics: A collaborative research infrastructure for computational metabolomics. Bioinformatics  doi:10.1093/bioinformatics/btu813", "</li>")
             writehtml("</ul>")
         writehtml("</li>")
     writehtml("</ul></div>")

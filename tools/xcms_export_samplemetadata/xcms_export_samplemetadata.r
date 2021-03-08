@@ -4,7 +4,7 @@
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("xcms","batch")
+pkgs <- c("xcms", "batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -19,10 +19,10 @@ for(image in args$images) {
     if (is.null(sampleMetadata))
         sampleMetadata <- xdata@phenoData@data
     else
-        sampleMetadata <- rbind(sampleMetadata,xdata@phenoData@data)
+        sampleMetadata <- rbind(sampleMetadata, xdata@phenoData@data)
 }
-colnames(sampleMetadata) <- c("sample_name","class")
+colnames(sampleMetadata) <- c("sample_name", "class")
 sampleMetadata$sample_name <- make.names(sampleMetadata$sample_name)
 
 # Create a sampleMetada file
-write.table(sampleMetadata,file="sampleMetadata.tsv", sep="\t", row.names=FALSE, quote=FALSE)
+write.table(sampleMetadata, file="sampleMetadata.tsv", sep="\t", row.names=FALSE, quote=FALSE)
