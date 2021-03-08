@@ -10,7 +10,9 @@ sink(log_file, type = "output")
 cat("\tSESSION INFO\n")
 
 #Import the different functions
-source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep = "/")) }
+source_local <- function(fname) {
+  argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep = "/"))
+}
 source_local("lib.r")
 
 pkgs <- c("xcms", "batch")
@@ -31,7 +33,7 @@ cat("\tARGUMENTS PROCESSING INFO\n")
 
 #saving the commun parameters
 BPPARAM <- MulticoreParam(1)
-if (!is.null(args$BPPARAM)){
+if (!is.null(args$BPPARAM)) {
     BPPARAM <- MulticoreParam(args$BPPARAM)
 }
 register(BPPARAM)
@@ -44,7 +46,7 @@ if (!is.null(args$peaklist)) peaklistParam <- args$peaklist
 
 method <- args$method
 
-if (!is.null(args$roiList)){
+if (!is.null(args$roiList)) {
     cat("\t\troiList provided\n")
     args$roiList <- list(getDataFrameFromFile(args$roiList))
     print(args$roiList)
@@ -79,8 +81,8 @@ if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_d
 if (exists("filterRtParam")) raw_data <- filterRt(raw_data, filterRtParam)
 if (exists("filterMzParam")) raw_data <- filterMz(raw_data, filterMzParam)
 #Apply this filter only if file contain MS and MSn
-if (length(unique(msLevel(raw_data))) != 1){
-	raw_data <- filterMsLevel(raw_data, msLevel = 1)
+if (length(unique(msLevel(raw_data))) != 1) {
+  raw_data <- filterMsLevel(raw_data, msLevel = 1)
 }
 
 cat("\t\t\tChromatographic peak detection\n")
@@ -103,10 +105,10 @@ sampleNamesList <- getSampleMetadata(xdata = xdata, sampleMetadataOutput = "samp
 
 # Create a chromPeaks table if required
 if (exists("peaklistParam")) {
-    if (peaklistParam){
-      cat("\nCreating the chromatographic peaks' table...\n")
-      write.table(chromPeaks(xdata), file = "chromPeak_table.tsv", sep = "\t", quote = F, row.names = F)
-	}
+  if (peaklistParam) {
+    cat("\nCreating the chromatographic peaks' table...\n")
+    write.table(chromPeaks(xdata), file = "chromPeak_table.tsv", sep = "\t", quote = F, row.names = F)
+  }
 }
 
 cat("\n\n")
