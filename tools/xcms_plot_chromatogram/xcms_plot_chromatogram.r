@@ -51,8 +51,12 @@ cat("\tMAIN PROCESSING INFO\n")
 cat("\t\tDRAW GRAPHICS\n")
 
 register(SerialParam())
-if (!exists("chromTIC") || is.null(chromTIC)) { cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum") }
-if (!exists("chromBPI") || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max") }
+if (!exists("chromTIC") || is.null(chromTIC)) {
+  cat("\t\t\tCompute TIC\n"); chromTIC <- chromatogram(xdata, aggregationFun = "sum")
+}
+if (!exists("chromBPI") || is.null(chromBPI)) {
+  cat("\t\t\tCompute BPI\n"); chromBPI <- chromatogram(xdata, aggregationFun = "max")
+}
 
 if (!is.null(chromTIC_adjusted)) chromTIC <- chromTIC_adjusted
 if (!is.null(chromBPI_adjusted)) chromBPI <- chromBPI_adjusted

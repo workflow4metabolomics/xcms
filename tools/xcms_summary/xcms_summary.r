@@ -24,7 +24,9 @@ cat("\n\n");
 
 
 # ----- FUNCTION -----
-writehtml <- function(...) { cat(..., "\n", file = htmlOutput, append = TRUE, sep = "") }
+writehtml <- function(...) {
+  cat(..., "\n", file = htmlOutput, append = TRUE, sep = "")
+}
 writeraw <- function(htmlOutput, object, open = "at") {
     log_file <- file(htmlOutput, open = open)
     sink(log_file)
