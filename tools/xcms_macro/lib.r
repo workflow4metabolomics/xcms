@@ -6,7 +6,7 @@
 parseCommandArgs <- function(...) {
     args <- batch::parseCommandArgs(...)
     for (key in names(args)) {
-        if (args[key] %in% c("TRUE","FALSE"))
+        if (args[key] %in% c("TRUE", "FALSE"))
             args[key] = as.logical(args[key])
     }
     return(args)
@@ -20,11 +20,11 @@ loadAndDisplayPackages <- function(pkgs) {
     for(pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
 
     sessioninfo = sessionInfo()
-    cat(sessioninfo$R.version$version.string,"\n")
+    cat(sessioninfo$R.version$version.string, "\n")
     cat("Main packages:\n")
-    for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+    for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg, packageVersion(pkg)), "\t") }; cat("\n")
     cat("Other loaded packages:\n")
-    for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg,packageVersion(pkg)),"\t") }; cat("\n")
+    for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg, packageVersion(pkg)), "\t") }; cat("\n")
 }
 
 #@author G. Le Corguille
@@ -56,7 +56,7 @@ mergeXData <- function(args) {
         if (exists("raw_data")) xdata <- raw_data
         if (!exists("xdata")) stop("\n\nERROR: The RData doesn't contain any object called 'xdata'. This RData should have been created by an old version of XMCS 2.*")
 
-        cat(sampleNamesList$sampleNamesOrigin,"\n")
+        cat(sampleNamesList$sampleNamesOrigin, "\n")
 
         if (!exists("xdata_merged")) {
             xdata_merged <- xdata
@@ -68,14 +68,14 @@ mergeXData <- function(args) {
             chromTIC_adjusted_merged <- chromTIC_adjusted
             chromBPI_adjusted_merged <- chromBPI_adjusted
         } else {
-            if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged,xdata)
-            else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- xcms:::.concatenate_OnDiskMSnExp(xdata_merged,xdata)
+            if (is(xdata, "XCMSnExp")) xdata_merged <- c(xdata_merged, xdata)
+            else if (is(xdata, "OnDiskMSnExp")) xdata_merged <- xcms:::.concatenate_OnDiskMSnExp(xdata_merged, xdata)
             else stop("\n\nERROR: The RData either a OnDiskMSnExp object called raw_data or a XCMSnExp object called xdata")
 
-            singlefile_merged <- c(singlefile_merged,singlefile)
-            md5sumList_merged$origin <- rbind(md5sumList_merged$origin,md5sumList$origin)
-            sampleNamesList_merged$sampleNamesOrigin <- c(sampleNamesList_merged$sampleNamesOrigin,sampleNamesList$sampleNamesOrigin)
-            sampleNamesList_merged$sampleNamesMakeNames <- c(sampleNamesList_merged$sampleNamesMakeNames,sampleNamesList$sampleNamesMakeNames)
+            singlefile_merged <- c(singlefile_merged, singlefile)
+            md5sumList_merged$origin <- rbind(md5sumList_merged$origin, md5sumList$origin)
+            sampleNamesList_merged$sampleNamesOrigin <- c(sampleNamesList_merged$sampleNamesOrigin, sampleNamesList$sampleNamesOrigin)
+            sampleNamesList_merged$sampleNamesMakeNames <- c(sampleNamesList_merged$sampleNamesMakeNames, sampleNamesList$sampleNamesMakeNames)
             chromTIC_merged <- mergeChrom(chromTIC_merged, chromTIC)
             chromBPI_merged <- mergeChrom(chromBPI_merged, chromBPI)
             chromTIC_adjusted_merged <- mergeChrom(chromTIC_adjusted_merged, chromTIC_adjusted)
@@ -92,7 +92,7 @@ mergeXData <- function(args) {
         cat("\tXSET PHENODATA SETTING...\n")
         sampleMetadataFile <- args$sampleMetadata
         sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header=F)
-        xdata@phenoData@data$sample_group=sampleMetadata$V2[match(xdata@phenoData@data$sample_name,sampleMetadata$V1)]
+        xdata@phenoData@data$sample_group=sampleMetadata$V2[match(xdata@phenoData@data$sample_name, sampleMetadata$V1)]
 
         if (any(is.na(pData(xdata)$sample_group))) {
             sample_missing <- pData(xdata)$sample_name[is.na(pData(xdata)$sample_group)]
@@ -107,7 +107,7 @@ mergeXData <- function(args) {
     if (!is.null(chromTIC_adjusted_merged)) { chromTIC_adjusted <- chromTIC_adjusted_merged; chromTIC_adjusted@phenoData <- xdata@phenoData }
     if (!is.null(chromBPI_adjusted_merged)) { chromBPI_adjusted <- chromBPI_adjusted_merged; chromBPI_adjusted@phenoData <- xdata@phenoData }
 
-    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList,"sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI, "chromTIC_adjusted"=chromTIC_adjusted, "chromBPI_adjusted"=chromBPI_adjusted))
+    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList, "sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI, "chromTIC_adjusted"=chromTIC_adjusted, "chromBPI_adjusted"=chromBPI_adjusted))
 }
 
 #@author G. Le Corguille
@@ -116,9 +116,9 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
     if (convertRTMinute){
         #converting the retention times (seconds) into minutes
         print("converting the retention times into minutes in the variableMetadata")
-        variableMetadata[,"rt"] <- variableMetadata[,"rt"]/60
-        variableMetadata[,"rtmin"] <- variableMetadata[,"rtmin"]/60
-        variableMetadata[,"rtmax"] <- variableMetadata[,"rtmax"]/60
+        variableMetadata[, "rt"] <- variableMetadata[, "rt"]/60
+        variableMetadata[, "rtmin"] <- variableMetadata[, "rtmin"]/60
+        variableMetadata[, "rtmax"] <- variableMetadata[, "rtmax"]/60
     }
     return (variableMetadata)
 }
@@ -126,10 +126,10 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
 #@author G. Le Corguille
 # This function format ions identifiers
 formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
-    splitDeco <- strsplit(as.character(variableMetadata$name),"_")
-    idsDeco <- sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_",deco)) })
-    namecustom <- make.unique(paste0("M",round(variableMetadata[,"mz"],numDigitsMZ),"T",round(variableMetadata[,"rt"],numDigitsRT),idsDeco))
-    variableMetadata <- cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[,!(colnames(variableMetadata) %in% c("name"))])
+    splitDeco <- strsplit(as.character(variableMetadata$name), "_")
+    idsDeco <- sapply(splitDeco, function(x) { deco=unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco)) })
+    namecustom <- make.unique(paste0("M", round(variableMetadata[, "mz"], numDigitsMZ), "T", round(variableMetadata[, "rt"], numDigitsRT), idsDeco))
+    variableMetadata <- cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[, !(colnames(variableMetadata) %in% c("name"))])
     return(variableMetadata)
 }
 
@@ -160,9 +160,9 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
-        mzmin = featureDefinitions(xdata)[i,]$mzmin
-        mzmax = featureDefinitions(xdata)[i,]$mzmax
-        plotChromPeakDensity(xdata, param = param, mz=c(mzmin,mzmax), col=col_per_samp, pch=16, xlim=xlim, main=paste(round(mzmin,mzdigit),round(mzmax,mzdigit)))
+        mzmin = featureDefinitions(xdata)[i, ]$mzmin
+        mzmax = featureDefinitions(xdata)[i, ]$mzmax
+        plotChromPeakDensity(xdata, param = param, mz=c(mzmin, mzmax), col=col_per_samp, pch=16, xlim=xlim, main=paste(round(mzmin, mzdigit), round(mzmax, mzdigit)))
         legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
     }
 
@@ -209,10 +209,10 @@ getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=
     dataMatrix <- naTOzeroDataMatrix(dataMatrix, naTOzero)
 
     # FIX: issue when the vector at peakidx is too long and is written in a new line during the export
-    variableMetadata[,"peakidx"] <- vapply(variableMetadata[,"peakidx"], FUN = paste, FUN.VALUE = character(1), collapse = ",")
+    variableMetadata[, "peakidx"] <- vapply(variableMetadata[, "peakidx"], FUN = paste, FUN.VALUE = character(1), collapse = ",")
 
-    write.table(variableMetadata, file=variableMetadataOutput,sep="\t",quote=F,row.names=F)
-    write.table(dataMatrix, file=dataMatrixOutput,sep="\t",quote=F,row.names=F)
+    write.table(variableMetadata, file=variableMetadataOutput, sep="\t", quote=F, row.names=F)
+    write.table(dataMatrix, file=dataMatrixOutput, sep="\t", quote=F, row.names=F)
 
 }
 
@@ -244,7 +244,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
     if (hasAdjustedRtime(xdata))
         adjusted="Adjusted"
 
-    main <- paste(type,":",adjusted,"data")
+    main <- paste(type, ":", adjusted, "data")
 
     pdf(pdfname, width=16, height=10)
 
@@ -285,7 +285,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
     if (any(duplicated(sampleNamesMakeNames))) {
         write("\n\nERROR: Usually, R has trouble to deal with special characters in its column names, so it rename them using make.names().\nIn your case, at least two columns after the renaming obtain the same name, thus XCMS will collapse those columns per name.", stderr())
         for (sampleName in sampleNamesOrigin) {
-            write(paste(sampleName,"\t->\t",make.names(sampleName)),stderr())
+            write(paste(sampleName, "\t->\t", make.names(sampleName)), stderr())
         }
         stop("\n\nERROR: One or more of your files will not be import by xcmsSet. It may due to bad characters in their filenames.")
     }
@@ -293,7 +293,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
     if (!all(sampleNamesOrigin == sampleNamesMakeNames)) {
         cat("\n\nWARNING: Usually, R has trouble to deal with special characters in its column names, so it rename them using make.names()\nIn your case, one or more sample names will be renamed in the sampleMetadata and dataMatrix files:\n")
         for (sampleName in sampleNamesOrigin) {
-            cat(paste(sampleName,"\t->\t",make.names(sampleName),"\n"))
+            cat(paste(sampleName, "\t->\t", make.names(sampleName), "\n"))
         }
     }
 
@@ -309,7 +309,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
             if (is.null(sampleMetadata$polarity)) sampleMetadata$polarity <- NA
 
             #Extract the polarity (a list of polarities)
-            polarity <- fData(xdata)[fData(xdata)$fileIdx == fileIdx,"polarity"]
+            polarity <- fData(xdata)[fData(xdata)$fileIdx == fileIdx, "polarity"]
             #Verify if all the scans have the same polarity
             uniq_list <- unique(polarity)
             if (length(uniq_list)>1){
@@ -345,25 +345,25 @@ getMd5sum <- function (files) {
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
 retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, prefix="") {
 
-    if (!(prefix %in% c("","Positive","Negative","MS1","MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
+    if (!(prefix %in% c("", "Positive", "Negative", "MS1", "MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
 
     # single - if the file are passed in the command arguments -> refresh singlefile
-    if (!is.null(args[[paste0("singlefile_galaxyPath",prefix)]])) {
-      singlefile_galaxyPaths <- unlist(strsplit(args[[paste0("singlefile_galaxyPath",prefix)]],"\\|"))
-      singlefile_sampleNames <- unlist(strsplit(args[[paste0("singlefile_sampleName",prefix)]],"\\|"))
+    if (!is.null(args[[paste0("singlefile_galaxyPath", prefix)]])) {
+      singlefile_galaxyPaths <- unlist(strsplit(args[[paste0("singlefile_galaxyPath", prefix)]], "\\|"))
+      singlefile_sampleNames <- unlist(strsplit(args[[paste0("singlefile_sampleName", prefix)]], "\\|"))
 
       singlefile <- NULL
       for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
         singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
         singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
         # In case, an url is used to import data within Galaxy
-        singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName,"/")), n=1)
+        singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName, "/")), n=1)
         singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
       }
     }
     # zipfile - if the file are passed in the command arguments -> refresh zipfile
-    if (!is.null(args[[paste0("zipfile",prefix)]]))
-      zipfile <- args[[paste0("zipfile",prefix)]]
+    if (!is.null(args[[paste0("zipfile", prefix)]]))
+      zipfile <- args[[paste0("zipfile", prefix)]]
 
     # single
     if(!is.null(singlefile) && (length("singlefile")>0)) {
@@ -371,7 +371,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
         for (singlefile_sampleName in names(singlefile)) {
             singlefile_galaxyPath <- singlefile[[singlefile_sampleName]]
             if(!file.exists(singlefile_galaxyPath)){
-                error_message <- paste("Cannot access the sample:",singlefile_sampleName,"located:",singlefile_galaxyPath,". Please, contact your administrator ... if you have one!")
+                error_message <- paste("Cannot access the sample:", singlefile_sampleName, "located:", singlefile_galaxyPath, ". Please, contact your administrator ... if you have one!")
                 print(error_message); stop(error_message)
             }
 
@@ -383,7 +383,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
     # zipfile
     if(!is.null(zipfile) && (zipfile != "")) {
         if(!file.exists(zipfile)){
-            error_message <- paste("Cannot access the Zip file:",zipfile,". Please, contact your administrator ... if you have one!")
+            error_message <- paste("Cannot access the Zip file:", zipfile, ". Please, contact your administrator ... if you have one!")
             print(error_message)
             stop(error_message)
         }
@@ -391,17 +391,17 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
 
         #get the directory name
         suppressWarnings(filesInZip <- unzip(zipfile, list=T))
-        directories <- unique(unlist(lapply(strsplit(filesInZip$Name,"/"), function(x) x[1])))
+        directories <- unique(unlist(lapply(strsplit(filesInZip$Name, "/"), function(x) x[1])))
         directories <- directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
         directory <- "."
         if (length(directories) == 1) directory <- directories
 
-        cat("files_root_directory\t",directory,"\n")
+        cat("files_root_directory\t", directory, "\n")
 
-        filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]","[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
-        filepattern <- paste(paste("\\.", filepattern, "$", sep=""),collapse="|")
+        filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]", "[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
+        filepattern <- paste(paste("\\.", filepattern, "$", sep=""), collapse="|")
         info <- file.info(directory)
-        listed <- list.files(directory[info$isdir], pattern=filepattern,recursive=TRUE, full.names=TRUE)
+        listed <- list.files(directory[info$isdir], pattern=filepattern, recursive=TRUE, full.names=TRUE)
         files <- c(directory[!info$isdir], listed)
         exists <- file.exists(files)
         files <- files[exists]
