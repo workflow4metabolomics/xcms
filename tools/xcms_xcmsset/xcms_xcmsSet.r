@@ -99,10 +99,6 @@ if (nrow(chromPeaks(xdata)) == 0) stop("No peaks were detected. You should revie
 # Create a sampleMetada file
 sampleNamesList <- getSampleMetadata(xdata = xdata, sampleMetadataOutput = "sampleMetadata.tsv")
 
-#cat("\t\t\tCompute and Store TIC and BPI\n")
-#chromTIC = chromatogram(xdata, aggregationFun = "sum")
-#chromBPI = chromatogram(xdata, aggregationFun = "max")
-
 # Create a chromPeaks table if required
 if (exists("peaklistParam")) {
   if (peaklistParam) {
@@ -126,7 +122,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI")
+objects2save <- c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList")
 save(list = objects2save[objects2save %in% ls()], file = "xcmsSet.RData")
 
 

@@ -68,12 +68,5 @@ cat("\tXCMSnExp OBJECT INFO\n")
 print(xdata)
 cat("\n\n")
 
-# 2020-01-17 - disable because xcms 3.4.4 raises an error with xdata build with xcms 3.6.1
-#cat("\txcmsSet OBJECT INFO\n")
-# Get the legacy xcmsSet object
-#xset <- getxcmsSetObject(xdata)
-#print(xset)
-#cat("\n\n")
-
 
 cat("\tDONE\n")
