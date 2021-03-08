@@ -4,7 +4,7 @@ library(faahKO)
 cdfs <- dir(system.file("cdf", package = "faahKO"), full.names = TRUE,
         recursive = TRUE)
 
-cdfs <- cdfs[c(1,2,7,8)]
+cdfs <- cdfs[c(1, 2, 7, 8)]
 
 pd <- data.frame(
         sample_name = sub(basename(cdfs), pattern = ".CDF",
