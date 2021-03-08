@@ -4,7 +4,7 @@
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("xcms","batch")
+pkgs <- c("xcms", "batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 

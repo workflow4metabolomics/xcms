@@ -13,7 +13,7 @@ cat("\tSESSION INFO\n")
 source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
 source_local("lib.r")
 
-pkgs <- c("xcms","batch")
+pkgs <- c("xcms", "batch")
 loadAndDisplayPackages(pkgs)
 cat("\n\n");
 
@@ -68,9 +68,9 @@ cat("\t\tCOMPUTE\n")
 
 cat("\t\t\tFilling missing peaks using default settings\n")
 # clear the arguement list to remove unexpected key/value as singlefile_galaxyPath or method ...
-args <- args[names(args) %in% slotNames(do.call(paste0(method,"Param"), list()))]
+args <- args[names(args) %in% slotNames(do.call(paste0(method, "Param"), list()))]
 
-fillChromPeaksParam <- do.call(paste0(method,"Param"), args)
+fillChromPeaksParam <- do.call(paste0(method, "Param"), args)
 print(fillChromPeaksParam)
 
 # back compatibility between xcms-3.0.0 and xcms-3.5.2
@@ -97,7 +97,7 @@ print(xset)
 cat("\n\n")
 
 #saving R data in .Rdata file to save the variables used in the present tool
-objects2save = c("xdata","zipfile","singlefile","md5sumList","sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
+objects2save = c("xdata", "zipfile", "singlefile", "md5sumList", "sampleNamesList") #, "chromTIC", "chromBPI", "chromTIC_adjusted", "chromBPI_adjusted")
 save(list=objects2save[objects2save %in% ls()], file="fillpeaks.RData")
 
 cat("\n\n")
