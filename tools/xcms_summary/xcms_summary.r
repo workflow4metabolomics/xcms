@@ -33,15 +33,15 @@ writeraw <- function(htmlOutput, object, open = "at") {
 }
 getSampleNames <- function(xobject) {
     if (class(xobject) == "xcmsSet")
-        return (sampnames(xobject))
+        return(sampnames(xobject))
     if (class(xobject) == "XCMSnExp")
-        return (xobject@phenoData@data$sample_name)
+        return(xobject@phenoData@data$sample_name)
 }
 getFilePaths <- function(xobject) {
     if (class(xobject) == "xcmsSet")
-        return (xobject@filepaths)
+        return(xobject@filepaths)
     if (class(xobject) == "XCMSnExp")
-        return (fileNames(xobject))
+        return(fileNames(xobject))
 }
 equalParams <- function(param1, param2) {
     writeraw("param1.txt", param1, open = "wt")
