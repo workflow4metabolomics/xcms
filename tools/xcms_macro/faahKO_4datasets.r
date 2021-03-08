@@ -72,15 +72,15 @@ xa <- annotate(
         intval = "into")
 
 diffrep <- diffreport(
-        object=xset,
-        class1="KO",
-        class2="WT",
-        filebase="KO-vs-WT",
-        eicmax=200,
-        eicwidth=200,
-        sortpval=TRUE,
-        value="into",
-        h=480,
-        w=640,
-        mzdec=2,
-        missing=0)
+        object = xset,
+        class1 = "KO",
+        class2 = "WT",
+        filebase = "KO-vs-WT",
+        eicmax = 200,
+        eicwidth = 200,
+        sortpval = TRUE,
+        value = "into",
+        h = 480,
+        w = 640,
+        mzdec = 2,
+        missing = 0)
