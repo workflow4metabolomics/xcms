@@ -79,7 +79,7 @@ if (exists("filterAcquisitionNumParam"))  raw_data <- filterAcquisitionNum(raw_d
 if (exists("filterRtParam")) raw_data <- filterRt(raw_data, filterRtParam)
 if (exists("filterMzParam")) raw_data <- filterMz(raw_data, filterMzParam)
 #Apply this filter only if file contain MS and MSn
-if(length(unique(msLevel(raw_data))) != 1){
+if (length(unique(msLevel(raw_data))) != 1){
 	raw_data <- filterMsLevel(raw_data, msLevel = 1)
 }
 
@@ -103,7 +103,7 @@ sampleNamesList <- getSampleMetadata(xdata = xdata, sampleMetadataOutput = "samp
 
 # Create a chromPeaks table if required
 if (exists("peaklistParam")) {
-    if(peaklistParam){
+    if (peaklistParam){
       cat("\nCreating the chromatographic peaks' table...\n")
       write.table(chromPeaks(xdata), file = "chromPeak_table.tsv", sep = "\t", quote = F, row.names = F)
 	}
