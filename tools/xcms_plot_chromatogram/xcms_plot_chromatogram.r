@@ -5,7 +5,7 @@
 cat("\tSESSION INFO\n")
 
 #Import the different functions
-source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep = "/")) }
 source_local("lib.r")
 
 pkgs <- c("xcms", "batch", "RColorBrewer")
@@ -15,8 +15,8 @@ cat("\n\n");
 
 # ----- ARGUMENTS -----
 cat("\tARGUMENTS INFO\n")
-args = parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
-write.table(as.matrix(args), col.names=F, quote=F, sep='\t')
+args = parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
+write.table(as.matrix(args), col.names = F, quote = F, sep = '\t')
 
 cat("\n\n")
 
@@ -55,8 +55,8 @@ if (!exists("chromBPI") || is.null(chromBPI)) { cat("\t\t\tCompute BPI\n"); chro
 if (!is.null(chromTIC_adjusted)) chromTIC <- chromTIC_adjusted
 if (!is.null(chromBPI_adjusted)) chromBPI <- chromBPI_adjusted
 
-getPlotChromatogram(chromTIC, xdata, pdfname="TICs.pdf", aggregationFun = "sum")
-getPlotChromatogram(chromBPI, xdata, pdfname="BPIs.pdf", aggregationFun = "max")
+getPlotChromatogram(chromTIC, xdata, pdfname = "TICs.pdf", aggregationFun = "sum")
+getPlotChromatogram(chromBPI, xdata, pdfname = "BPIs.pdf", aggregationFun = "max")
 
 cat("\n\n")
 

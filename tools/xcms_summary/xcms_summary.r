@@ -13,7 +13,7 @@ argBlacklist <- c(argBlacklist, "dataMatrixOutput", "variableMetadataOutput", "n
 cat("\tSESSION INFO\n")
 
 #Import the different functions
-source_local <- function(fname){ argv <- commandArgs(trailingOnly=FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep="/")) }
+source_local <- function(fname){ argv <- commandArgs(trailingOnly = FALSE); base_dir <- dirname(substring(argv[grep("--file=", argv)], 8)); source(paste(base_dir, fname, sep = "/")) }
 source_local("lib.r")
 
 pkgs <- c("CAMERA", "batch")
@@ -22,8 +22,8 @@ cat("\n\n");
 
 
 # ----- FUNCTION -----
-writehtml <- function(...) { cat(..., "\n", file=htmlOutput, append = TRUE, sep="") }
-writeraw <- function(htmlOutput, object, open="at") {
+writehtml <- function(...) { cat(..., "\n", file = htmlOutput, append = TRUE, sep = "") }
+writeraw <- function(htmlOutput, object, open = "at") {
     log_file <- file(htmlOutput, open = open)
     sink(log_file)
     sink(log_file, type = "output")
@@ -44,15 +44,15 @@ getFilePaths <- function(xobject) {
         return (fileNames(xobject))
 }
 equalParams <- function(param1, param2) {
-    writeraw("param1.txt", param1, open="wt")
-    writeraw("param2.txt", param2, open="wt")
+    writeraw("param1.txt", param1, open = "wt")
+    writeraw("param2.txt", param2, open = "wt")
     return(tools::md5sum("param1.txt") == tools::md5sum("param2.txt"))
 }
 
 
 # ----- ARGUMENTS -----
 
-args <- parseCommandArgs(evaluate=FALSE) #interpretation of arguments given in command line as an R list of objects
+args <- parseCommandArgs(evaluate = FALSE) #interpretation of arguments given in command line as an R list of objects
 
 
 # ----- ARGUMENTS PROCESSING -----
@@ -70,17 +70,17 @@ if (!is.null(args$user_email)) user_email = args$user_email;
 if (exists("xset")) {
     xobject <- xset
     # retrocompatability
-    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(sampnames(xobject)))
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames" = make.names(sampnames(xobject)))
 }
 # if the RData come from CAMERA
 if (exists("xa")) {
     xobject <- xa@xcmsSet
-    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(xa@xcmsSet@phenoData$sample_name))
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames" = make.names(xa@xcmsSet@phenoData$sample_name))
 }
 # if the RData come from XCMS 3.x
 if (exists("xdata")) {
     xobject <- xdata
-    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames"=make.names(xdata@phenoData@data$sample_name))
+    if (!exists("sampleNamesList")) sampleNamesList <- list("sampleNamesMakeNames" = make.names(xdata@phenoData@data$sample_name))
 }
 
 if (!exists("xobject")) stop("You need at least a xdata, a xset or a xa object.")
