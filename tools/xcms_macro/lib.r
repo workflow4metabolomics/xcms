@@ -22,9 +22,15 @@ loadAndDisplayPackages <- function(pkgs) {
     sessioninfo <- sessionInfo()
     cat(sessioninfo$R.version$version.string, "\n")
     cat("Main packages:\n")
-    for (pkg in names(sessioninfo$otherPkgs)) { cat(paste(pkg, packageVersion(pkg)), "\t") }; cat("\n")
+    for (pkg in names(sessioninfo$otherPkgs)) {
+      cat(paste(pkg, packageVersion(pkg)), "\t")
+    }
+    cat("\n")
     cat("Other loaded packages:\n")
-    for (pkg in names(sessioninfo$loadedOnly)) { cat(paste(pkg, packageVersion(pkg)), "\t") }; cat("\n")
+    for (pkg in names(sessioninfo$loadedOnly)) {
+      cat(paste(pkg, packageVersion(pkg)), "\t")
+    }
+    cat("\n")
 }
 
 #@author G. Le Corguille
@@ -102,10 +108,18 @@ mergeXData <- function(args) {
         }
     }
 
-    if (!is.null(chromTIC_merged)) { chromTIC <- chromTIC_merged; chromTIC@phenoData <- xdata@phenoData }
-    if (!is.null(chromBPI_merged)) { chromBPI <- chromBPI_merged; chromBPI@phenoData <- xdata@phenoData }
-    if (!is.null(chromTIC_adjusted_merged)) { chromTIC_adjusted <- chromTIC_adjusted_merged; chromTIC_adjusted@phenoData <- xdata@phenoData }
-    if (!is.null(chromBPI_adjusted_merged)) { chromBPI_adjusted <- chromBPI_adjusted_merged; chromBPI_adjusted@phenoData <- xdata@phenoData }
+    if (!is.null(chromTIC_merged)) {
+      chromTIC <- chromTIC_merged; chromTIC@phenoData <- xdata@phenoData
+    }
+    if (!is.null(chromBPI_merged)) {
+      chromBPI <- chromBPI_merged; chromBPI@phenoData <- xdata@phenoData
+    }
+    if (!is.null(chromTIC_adjusted_merged)) {
+      chromTIC_adjusted <- chromTIC_adjusted_merged; chromTIC_adjusted@phenoData <- xdata@phenoData
+    }
+    if (!is.null(chromBPI_adjusted_merged)) {
+      chromBPI_adjusted <- chromBPI_adjusted_merged; chromBPI_adjusted@phenoData <- xdata@phenoData
+    }
 
     return(list("xdata" = xdata, "singlefile" = singlefile, "md5sumList" = md5sumList, "sampleNamesList" = sampleNamesList, "chromTIC" = chromTIC, "chromBPI" = chromBPI, "chromTIC_adjusted" = chromTIC_adjusted, "chromBPI_adjusted" = chromBPI_adjusted))
 }
@@ -113,7 +127,7 @@ mergeXData <- function(args) {
 #@author G. Le Corguille
 # This function convert if it is required the Retention Time in minutes
 RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
-    if (convertRTMinute){
+    if (convertRTMinute) {
         #converting the retention times (seconds) into minutes
         print("converting the retention times into minutes in the variableMetadata")
         variableMetadata[, "rt"] <- variableMetadata[, "rt"] / 60
@@ -127,7 +141,11 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
 # This function format ions identifiers
 formatIonIdentifiers <- function(variableMetadata, numDigitsRT = 0, numDigitsMZ = 0) {
     splitDeco <- strsplit(as.character(variableMetadata$name), "_")
-    idsDeco <- sapply(splitDeco, function(x) { deco <- unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco)) })
+    idsDeco <- sapply(splitDeco,
+      function(x) {
+        deco <- unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco))
+      }
+    )
     namecustom <- make.unique(paste0("M", round(variableMetadata[, "mz"], numDigitsMZ), "T", round(variableMetadata[, "rt"], numDigitsRT), idsDeco))
     variableMetadata <- cbind(name = variableMetadata$name, namecustom = namecustom, variableMetadata[, !(colnames(variableMetadata) %in% c("name"))])
     return(variableMetadata)
@@ -180,7 +198,7 @@ getPlotAdjustedRtime <- function(xdata) {
     # Color by group
     if (length(unique(xdata$sample_group)) < 10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
-    }else{
+    } else {
         group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
     }
     if (length(group_colors) > 1) {
