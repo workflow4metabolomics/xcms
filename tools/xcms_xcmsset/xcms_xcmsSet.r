@@ -60,7 +60,7 @@ load(args$image)
 if (!exists("raw_data")) stop("\n\nERROR: The RData doesn't contain any object called 'raw_data' which is provided by the tool: MSnbase readMSData")
 
 # Handle infiles
-rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDir(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
 
