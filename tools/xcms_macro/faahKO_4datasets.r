@@ -7,7 +7,7 @@ cdfs <- dir(system.file("cdf", package = "faahKO"), full.names = TRUE,
 cdfs <- cdfs[c(1, 2, 7, 8)]
 
 pd <- data.frame(
-        sample_name = sub(basename(cdfs), pattern = ".CDF",
+        sample_name <- sub(basename(cdfs), pattern = ".CDF",
         replacement = "", fixed = TRUE),
         sample_group = c(rep("KO", 2), rep("WT", 2)),
         stringsAsFactors = FALSE)
@@ -47,7 +47,7 @@ getxcmsSetObject <- function(xobject) {
         # Get the legacy xcmsSet object
         suppressWarnings(xset <- as(xobject, 'xcmsSet'))
         if (is.null(xset@phenoData$sample_group))
-            sampclass(xset) = "."
+            sampclass(xset) <- "."
         else
             sampclass(xset) <- xset@phenoData$sample_group
         return (xset)
