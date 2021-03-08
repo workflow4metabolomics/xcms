@@ -41,7 +41,7 @@ xdata <- fillChromPeaks(xdata)
 getxcmsSetObject <- function(xobject) {
     # XCMS 1.x
     if (class(xobject) == "xcmsSet")
-        return (xobject)
+        return(xobject)
     # XCMS 3.x
     if (class(xobject) == "XCMSnExp") {
         # Get the legacy xcmsSet object
@@ -50,7 +50,7 @@ getxcmsSetObject <- function(xobject) {
             sampclass(xset) <- "."
         else
             sampclass(xset) <- xset@phenoData$sample_group
-        return (xset)
+        return(xset)
     }
 }
 

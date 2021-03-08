@@ -134,7 +134,7 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
         variableMetadata[, "rtmin"] <- variableMetadata[, "rtmin"] / 60
         variableMetadata[, "rtmax"] <- variableMetadata[, "rtmax"] / 60
     }
-    return (variableMetadata)
+    return(variableMetadata)
 }
 
 #@author G. Le Corguille
@@ -143,7 +143,7 @@ formatIonIdentifiers <- function(variableMetadata, numDigitsRT = 0, numDigitsMZ 
     splitDeco <- strsplit(as.character(variableMetadata$name), "_")
     idsDeco <- sapply(splitDeco,
       function(x) {
-        deco <- unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco))
+        deco <- unlist(x)[2]; if (is.na(deco)) return("") else return(paste0("_", deco))
       }
     )
     namecustom <- make.unique(paste0("M", round(variableMetadata[, "mz"], numDigitsMZ), "T", round(variableMetadata[, "rt"], numDigitsRT), idsDeco))
@@ -157,7 +157,7 @@ naTOzeroDataMatrix <- function(dataMatrix, naTOzero) {
     if (naTOzero){
         dataMatrix[is.na(dataMatrix)] <- 0
     }
-    return (dataMatrix)
+    return(dataMatrix)
 }
 
 #@author G. Le Corguille
@@ -353,7 +353,7 @@ getSampleMetadata <- function(xdata = NULL, sampleMetadataOutput = "sampleMetada
 
 # This function will compute MD5 checksum to check the data integrity
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
-getMd5sum <- function (files) {
+getMd5sum <- function(files) {
     cat("Compute md5 checksum...\n")
     library(tools)
     return(as.matrix(md5sum(files)))
@@ -395,7 +395,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
                 print(error_message); stop(error_message)
             }
 
-            if (!suppressWarnings( try (file.link(singlefile_galaxyPath, singlefile_sampleName), silent = T)))
+            if (!suppressWarnings( try(file.link(singlefile_galaxyPath, singlefile_sampleName), silent = T)))
                 file.copy(singlefile_galaxyPath, singlefile_sampleName)
             files <- c(files, singlefile_sampleName)
         }
@@ -437,7 +437,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
 getxcmsSetObject <- function(xobject) {
     # XCMS 1.x
     if (class(xobject) == "xcmsSet")
-        return (xobject)
+        return(xobject)
     # XCMS 3.x
     if (class(xobject) == "XCMSnExp") {
         # Get the legacy xcmsSet object
@@ -446,6 +446,6 @@ getxcmsSetObject <- function(xobject) {
             sampclass(xset) <- xset@phenoData$sample_group
         else
             sampclass(xset) <- "."
-        return (xset)
+        return(xset)
     }
 }
