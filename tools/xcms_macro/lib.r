@@ -174,12 +174,12 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit = 4) {
     }
     names(group_colors) <- unique(xdata$sample_group)
     col_per_samp <- as.character(xdata$sample_group)
-    for (i in 1:length(group_colors)) {
+    for (i in seq_len(length(group_colors))) {
       col_per_samp[col_per_samp == (names(group_colors)[i])] <- group_colors[i]
     }
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
-    for (i in 1:nrow(featureDefinitions(xdata))) {
+    for (i in seq_len(nrow(featureDefinitions(xdata)))) {
         mzmin <- featureDefinitions(xdata)[i, ]$mzmin
         mzmax <- featureDefinitions(xdata)[i, ]$mzmax
         plotChromPeakDensity(xdata, param = param, mz = c(mzmin, mzmax), col = col_per_samp, pch = 16, xlim = xlim, main = paste(round(mzmin, mzdigit), round(mzmax, mzdigit)))
@@ -321,7 +321,7 @@ getSampleMetadata <- function(xdata = NULL, sampleMetadataOutput = "sampleMetada
 
 
     #For each sample file, the following actions are done
-    for (fileIdx in 1:length(fileNames(xdata))) {
+    for (fileIdx in seq_len(length(fileNames(xdata)))) {
         #Check if the file is in the CDF format
         if (!mzR:::netCDFIsFile(fileNames(xdata))) {
 
@@ -373,7 +373,7 @@ retrieveRawfileInTheWorkingDir <- function(singlefile, zipfile, args, prefix = "
       singlefile_sampleNames <- unlist(strsplit(args[[paste0("singlefile_sampleName", prefix)]], "\\|"))
 
       singlefile <- NULL
-      for (singlefile_galaxyPath_i in seq(1:length(singlefile_galaxyPaths))) {
+      for (singlefile_galaxyPath_i in seq_len(length(singlefile_galaxyPaths))) {
         singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
         singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
         # In case, an url is used to import data within Galaxy
