@@ -17,7 +17,7 @@ parseCommandArgs <- function(...) {
 # - load the packages
 # - display the sessionInfo
 loadAndDisplayPackages <- function(pkgs) {
-    for (pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly = TRUE, logical.return = TRUE, character.only = TRUE)))
+    for (pkg in pkgs) suppressPackageStartupMessages(stopifnot(library(pkg, quietly = TRUE, logical.return = TRUE, character.only = TRUE)))
 
     sessioninfo <- sessionInfo()
     cat(sessioninfo$R.version$version.string, "\n")
@@ -395,7 +395,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
                 print(error_message); stop(error_message)
             }
 
-            if (!suppressWarnings( try(file.link(singlefile_galaxyPath, singlefile_sampleName), silent = T)))
+            if (!suppressWarnings(try(file.link(singlefile_galaxyPath, singlefile_sampleName), silent = T)))
                 file.copy(singlefile_galaxyPath, singlefile_sampleName)
             files <- c(files, singlefile_sampleName)
         }
