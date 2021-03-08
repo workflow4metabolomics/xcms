@@ -17,7 +17,7 @@ parseCommandArgs <- function(...) {
 # - load the packages
 # - display the sessionInfo
 loadAndDisplayPackages <- function(pkgs) {
-    for (pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
+    for (pkg in pkgs) suppressPackageStartupMessages( stopifnot( library(pkg, quietly = TRUE, logical.return = TRUE, character.only = TRUE)))
 
     sessioninfo <- sessionInfo()
     cat(sessioninfo$R.version$version.string, "\n")
@@ -91,12 +91,12 @@ mergeXData <- function(args) {
     if (!is.null(args$sampleMetadata)) {
         cat("\tXSET PHENODATA SETTING...\n")
         sampleMetadataFile <- args$sampleMetadata
-        sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header=F)
+        sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header = F)
         xdata@phenoData@data$sample_group <- sampleMetadata$V2[match(xdata@phenoData@data$sample_name, sampleMetadata$V1)]
 
         if (any(is.na(pData(xdata)$sample_group))) {
             sample_missing <- pData(xdata)$sample_name[is.na(pData(xdata)$sample_group)]
-            error_message <- paste("Those samples are missing in your sampleMetadata:", paste(sample_missing, collapse=" "))
+            error_message <- paste("Those samples are missing in your sampleMetadata:", paste(sample_missing, collapse = " "))
             print(error_message)
             stop(error_message)
         }
@@ -107,7 +107,7 @@ mergeXData <- function(args) {
     if (!is.null(chromTIC_adjusted_merged)) { chromTIC_adjusted <- chromTIC_adjusted_merged; chromTIC_adjusted@phenoData <- xdata@phenoData }
     if (!is.null(chromBPI_adjusted_merged)) { chromBPI_adjusted <- chromBPI_adjusted_merged; chromBPI_adjusted@phenoData <- xdata@phenoData }
 
-    return(list("xdata"=xdata, "singlefile"=singlefile, "md5sumList"=md5sumList, "sampleNamesList"=sampleNamesList, "chromTIC"=chromTIC, "chromBPI"=chromBPI, "chromTIC_adjusted"=chromTIC_adjusted, "chromBPI_adjusted"=chromBPI_adjusted))
+    return(list("xdata" = xdata, "singlefile" = singlefile, "md5sumList" = md5sumList, "sampleNamesList" = sampleNamesList, "chromTIC" = chromTIC, "chromBPI" = chromBPI, "chromTIC_adjusted" = chromTIC_adjusted, "chromBPI_adjusted" = chromBPI_adjusted))
 }
 
 #@author G. Le Corguille
@@ -116,20 +116,20 @@ RTSecondToMinute <- function(variableMetadata, convertRTMinute) {
     if (convertRTMinute){
         #converting the retention times (seconds) into minutes
         print("converting the retention times into minutes in the variableMetadata")
-        variableMetadata[, "rt"] <- variableMetadata[, "rt"]/60
-        variableMetadata[, "rtmin"] <- variableMetadata[, "rtmin"]/60
-        variableMetadata[, "rtmax"] <- variableMetadata[, "rtmax"]/60
+        variableMetadata[, "rt"] <- variableMetadata[, "rt"] / 60
+        variableMetadata[, "rtmin"] <- variableMetadata[, "rtmin"] / 60
+        variableMetadata[, "rtmax"] <- variableMetadata[, "rtmax"] / 60
     }
     return (variableMetadata)
 }
 
 #@author G. Le Corguille
 # This function format ions identifiers
-formatIonIdentifiers <- function(variableMetadata, numDigitsRT=0, numDigitsMZ=0) {
+formatIonIdentifiers <- function(variableMetadata, numDigitsRT = 0, numDigitsMZ = 0) {
     splitDeco <- strsplit(as.character(variableMetadata$name), "_")
     idsDeco <- sapply(splitDeco, function(x) { deco <- unlist(x)[2]; if (is.na(deco)) return ("") else return(paste0("_", deco)) })
     namecustom <- make.unique(paste0("M", round(variableMetadata[, "mz"], numDigitsMZ), "T", round(variableMetadata[, "rt"], numDigitsRT), idsDeco))
-    variableMetadata <- cbind(name=variableMetadata$name, namecustom=namecustom, variableMetadata[, !(colnames(variableMetadata) %in% c("name"))])
+    variableMetadata <- cbind(name = variableMetadata$name, namecustom = namecustom, variableMetadata[, !(colnames(variableMetadata) %in% c("name"))])
     return(variableMetadata)
 }
 
@@ -144,26 +144,28 @@ naTOzeroDataMatrix <- function(dataMatrix, naTOzero) {
 
 #@author G. Le Corguille
 # Draw the plotChromPeakDensity 3 per page in a pdf file
-getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
-    pdf(file="plotChromPeakDensity.pdf", width=16, height=12)
+getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit = 4) {
+    pdf(file = "plotChromPeakDensity.pdf", width = 16, height = 12)
 
     par(mfrow = c(3, 1), mar = c(4, 4, 1, 0.5))
 
-    if (length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group)) < 10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
-        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
+        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
     }
     names(group_colors) <- unique(xdata$sample_group)
     col_per_samp <- as.character(xdata$sample_group)
-    for (i in 1:length(group_colors)){col_per_samp[col_per_samp==(names(group_colors)[i])]<-group_colors[i]}
+    for (i in 1:length(group_colors)){
+      col_per_samp[col_per_samp == (names(group_colors)[i])] <- group_colors[i]
+    }
 
     xlim <- c(min(featureDefinitions(xdata)$rtmin), max(featureDefinitions(xdata)$rtmax))
     for (i in 1:nrow(featureDefinitions(xdata))) {
         mzmin <- featureDefinitions(xdata)[i, ]$mzmin
         mzmax <- featureDefinitions(xdata)[i, ]$mzmax
-        plotChromPeakDensity(xdata, param = param, mz=c(mzmin, mzmax), col=col_per_samp, pch=16, xlim=xlim, main=paste(round(mzmin, mzdigit), round(mzmax, mzdigit)))
-        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+        plotChromPeakDensity(xdata, param = param, mz = c(mzmin, mzmax), col = col_per_samp, pch = 16, xlim = xlim, main = paste(round(mzmin, mzdigit), round(mzmax, mzdigit)))
+        legend("topright", legend = names(group_colors), col = group_colors, cex = 0.8, lty = 1)
     }
 
     dev.off()
@@ -173,55 +175,55 @@ getPlotChromPeakDensity <- function(xdata, param = NULL, mzdigit=4) {
 # Draw the plotChromPeakDensity 3 per page in a pdf file
 getPlotAdjustedRtime <- function(xdata) {
 
-    pdf(file="raw_vs_adjusted_rt.pdf", width=16, height=12)
+    pdf(file = "raw_vs_adjusted_rt.pdf", width = 16, height = 12)
 
     # Color by group
-    if (length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group)) < 10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
-        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
+        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
     }
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
         plotAdjustedRtime(xdata, col = group_colors[xdata$sample_group])
-        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+        legend("topright", legend = names(group_colors), col = group_colors, cex = 0.8, lty = 1)
     }
 
     # Color by sample
     plotAdjustedRtime(xdata, col = rainbow(length(xdata@phenoData@data$sample_name)))
-    legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+    legend("topright", legend = xdata@phenoData@data$sample_name, col = rainbow(length(xdata@phenoData@data$sample_name)), cex = 0.8, lty = 1)
 
     dev.off()
 }
 
 #@author G. Le Corguille
 # value: intensity values to be used into, maxo or intb
-getPeaklistW4M <- function(xdata, intval="into", convertRTMinute=F, numDigitsMZ=4, numDigitsRT=0, naTOzero=T, variableMetadataOutput, dataMatrixOutput, sampleNamesList) {
-    dataMatrix <- featureValues(xdata, method="medret", value=intval)
+getPeaklistW4M <- function(xdata, intval = "into", convertRTMinute = F, numDigitsMZ = 4, numDigitsRT = 0, naTOzero = T, variableMetadataOutput, dataMatrixOutput, sampleNamesList) {
+    dataMatrix <- featureValues(xdata, method = "medret", value = intval)
     colnames(dataMatrix) <- make.names(tools::file_path_sans_ext(colnames(dataMatrix)))
-    dataMatrix <- cbind(name=groupnames(xdata), dataMatrix)
+    dataMatrix <- cbind(name = groupnames(xdata), dataMatrix)
     variableMetadata <- featureDefinitions(xdata)
     colnames(variableMetadata)[1] <- "mz"; colnames(variableMetadata)[4] <- "rt"
-    variableMetadata <- data.frame(name=groupnames(xdata), variableMetadata)
+    variableMetadata <- data.frame(name = groupnames(xdata), variableMetadata)
 
     variableMetadata <- RTSecondToMinute(variableMetadata, convertRTMinute)
-    variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT=numDigitsRT, numDigitsMZ=numDigitsMZ)
+    variableMetadata <- formatIonIdentifiers(variableMetadata, numDigitsRT = numDigitsRT, numDigitsMZ = numDigitsMZ)
     dataMatrix <- naTOzeroDataMatrix(dataMatrix, naTOzero)
 
     # FIX: issue when the vector at peakidx is too long and is written in a new line during the export
     variableMetadata[, "peakidx"] <- vapply(variableMetadata[, "peakidx"], FUN = paste, FUN.VALUE = character(1), collapse = ",")
 
-    write.table(variableMetadata, file=variableMetadataOutput, sep="\t", quote=F, row.names=F)
-    write.table(dataMatrix, file=dataMatrixOutput, sep="\t", quote=F, row.names=F)
+    write.table(variableMetadata, file = variableMetadataOutput, sep = "\t", quote = F, row.names = F)
+    write.table(dataMatrix, file = dataMatrixOutput, sep = "\t", quote = F, row.names = F)
 
 }
 
 #@author G. Le Corguille
 # It allow different of field separators
-getDataFrameFromFile <- function(filename, header=T) {
-    myDataFrame <- read.table(filename, header=header, sep=";", stringsAsFactors=F)
-    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep="\t", stringsAsFactors=F)
-    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header=header, sep=",", stringsAsFactors=F)
+getDataFrameFromFile <- function(filename, header = T) {
+    myDataFrame <- read.table(filename, header = header, sep = ";", stringsAsFactors = F)
+    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header = header, sep = "\t", stringsAsFactors = F)
+    if (ncol(myDataFrame) < 2) myDataFrame <- read.table(filename, header = header, sep = ",", stringsAsFactors = F)
     if (ncol(myDataFrame) < 2) {
         error_message <- "Your tabular file seems not well formatted. The column separators accepted are ; , and tabulation"
         print(error_message)
@@ -233,7 +235,7 @@ getDataFrameFromFile <- function(filename, header=T) {
 #@author G. Le Corguille
 # Draw the BPI and TIC graphics
 # colored by sample names or class names
-getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggregationFun = "max") {
+getPlotChromatogram <- function(chrom, xdata, pdfname = "Chromatogram.pdf", aggregationFun = "max") {
 
     if (aggregationFun == "sum")
         type <- "Total Ion Chromatograms"
@@ -246,23 +248,23 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
 
     main <- paste(type, ":", adjusted, "data")
 
-    pdf(pdfname, width=16, height=10)
+    pdf(pdfname, width = 16, height = 10)
 
     # Color by group
-    if (length(unique(xdata$sample_group))<10){
+    if (length(unique(xdata$sample_group)) < 10){
         group_colors <- brewer.pal(length(unique(xdata$sample_group)), "Set1")
     }else{
-        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette="Dark 3")
+        group_colors <- hcl.colors(length(unique(xdata$sample_group)), palette = "Dark 3")
     }
     if (length(group_colors) > 1) {
         names(group_colors) <- unique(xdata$sample_group)
-        plot(chrom, col = group_colors[chrom$sample_group], main=main, peakType = "none")
-        legend("topright", legend=names(group_colors), col=group_colors, cex=0.8, lty=1)
+        plot(chrom, col = group_colors[chrom$sample_group], main = main, peakType = "none")
+        legend("topright", legend = names(group_colors), col = group_colors, cex = 0.8, lty = 1)
     }
 
     # Color by sample
-    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main=main, peakType = "none")
-    legend("topright", legend=xdata@phenoData@data$sample_name, col=rainbow(length(xdata@phenoData@data$sample_name)), cex=0.8, lty=1)
+    plot(chrom, col = rainbow(length(xdata@phenoData@data$sample_name)), main = main, peakType = "none")
+    legend("topright", legend = xdata@phenoData@data$sample_name, col = rainbow(length(xdata@phenoData@data$sample_name)), cex = 0.8, lty = 1)
 
     dev.off()
 }
@@ -271,7 +273,7 @@ getPlotChromatogram <- function(chrom, xdata, pdfname="Chromatogram.pdf", aggreg
 # Get the polarities from all the samples of a condition
 #@author Misharl Monsoor misharl.monsoor@sb-roscoff.fr ABiMS TEAM
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr ABiMS TEAM
-getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.tsv") {
+getSampleMetadata <- function(xdata = NULL, sampleMetadataOutput = "sampleMetadata.tsv") {
     cat("Creating the sampleMetadata file...\n")
 
     #Create the sampleMetada dataframe
@@ -312,7 +314,7 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
             polarity <- fData(xdata)[fData(xdata)$fileIdx == fileIdx, "polarity"]
             #Verify if all the scans have the same polarity
             uniq_list <- unique(polarity)
-            if (length(uniq_list)>1){
+            if (length(uniq_list) > 1){
                 polarity <- "mixed"
             } else {
                 polarity <- as.character(uniq_list)
@@ -324,9 +326,9 @@ getSampleMetadata <- function(xdata=NULL, sampleMetadataOutput="sampleMetadata.t
 
     }
 
-    write.table(sampleMetadata, sep="\t", quote=FALSE, row.names=FALSE, file=sampleMetadataOutput)
+    write.table(sampleMetadata, sep = "\t", quote = FALSE, row.names = FALSE, file = sampleMetadataOutput)
 
-    return(list("sampleNamesOrigin"=sampleNamesOrigin, "sampleNamesMakeNames"=sampleNamesMakeNames))
+    return(list("sampleNamesOrigin" = sampleNamesOrigin, "sampleNamesMakeNames" = sampleNamesMakeNames))
 
 }
 
@@ -343,7 +345,7 @@ getMd5sum <- function (files) {
 #   - if zipfile: unzip the file with its directory tree
 #   - if singlefiles: set symlink with the good filename
 #@author Gildas Le Corguille lecorguille@sb-roscoff.fr
-retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, prefix="") {
+retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, prefix = "") {
 
     if (!(prefix %in% c("", "Positive", "Negative", "MS1", "MS2"))) stop("prefix must be either '', 'Positive', 'Negative', 'MS1' or 'MS2'")
 
@@ -357,7 +359,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
         singlefile_galaxyPath <- singlefile_galaxyPaths[singlefile_galaxyPath_i]
         singlefile_sampleName <- singlefile_sampleNames[singlefile_galaxyPath_i]
         # In case, an url is used to import data within Galaxy
-        singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName, "/")), n=1)
+        singlefile_sampleName <- tail(unlist(strsplit(singlefile_sampleName, "/")), n = 1)
         singlefile[[singlefile_sampleName]] <- singlefile_galaxyPath
       }
     }
@@ -366,7 +368,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
       zipfile <- args[[paste0("zipfile", prefix)]]
 
     # single
-    if (!is.null(singlefile) && (length("singlefile")>0)) {
+    if (!is.null(singlefile) && (length("singlefile") > 0)) {
         files <- vector()
         for (singlefile_sampleName in names(singlefile)) {
             singlefile_galaxyPath <- singlefile[[singlefile_sampleName]]
@@ -375,7 +377,7 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
                 print(error_message); stop(error_message)
             }
 
-            if (!suppressWarnings( try (file.link(singlefile_galaxyPath, singlefile_sampleName), silent=T)))
+            if (!suppressWarnings( try (file.link(singlefile_galaxyPath, singlefile_sampleName), silent = T)))
                 file.copy(singlefile_galaxyPath, singlefile_sampleName)
             files <- c(files, singlefile_sampleName)
         }
@@ -387,10 +389,10 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
             print(error_message)
             stop(error_message)
         }
-        suppressWarnings(unzip(zipfile, unzip="unzip"))
+        suppressWarnings(unzip(zipfile, unzip = "unzip"))
 
         #get the directory name
-        suppressWarnings(filesInZip <- unzip(zipfile, list=T))
+        suppressWarnings(filesInZip <- unzip(zipfile, list = T))
         directories <- unique(unlist(lapply(strsplit(filesInZip$Name, "/"), function(x) x[1])))
         directories <- directories[!(directories %in% c("__MACOSX")) & file.info(directories)$isdir]
         directory <- "."
@@ -399,15 +401,15 @@ retrieveRawfileInTheWorkingDirectory <- function(singlefile, zipfile, args, pref
         cat("files_root_directory\t", directory, "\n")
 
         filepattern <- c("[Cc][Dd][Ff]", "[Nn][Cc]", "([Mm][Zz])?[Xx][Mm][Ll]", "[Mm][Zz][Dd][Aa][Tt][Aa]", "[Mm][Zz][Mm][Ll]")
-        filepattern <- paste(paste("\\.", filepattern, "$", sep=""), collapse="|")
+        filepattern <- paste(paste("\\.", filepattern, "$", sep = ""), collapse = "|")
         info <- file.info(directory)
-        listed <- list.files(directory[info$isdir], pattern=filepattern, recursive=TRUE, full.names=TRUE)
+        listed <- list.files(directory[info$isdir], pattern = filepattern, recursive = TRUE, full.names = TRUE)
         files <- c(directory[!info$isdir], listed)
         exists <- file.exists(files)
         files <- files[exists]
 
     }
-    return(list(zipfile=zipfile, singlefile=singlefile, files=files))
+    return(list(zipfile = zipfile, singlefile = singlefile, files = files))
 
 }
 
