@@ -34,7 +34,7 @@
 
     <tests>
         <test>
-            <param name="images" value="faahKO-single.xset.merged.group.retcor.RData" ftype="rdata"/>
+            <param name="images" value="faahKO-single-class.xset.merged.group.retcor.RData" ftype="rdata"/>
             <expand macro="test_file_load_single"/>
             <param name="sampleMetadata" value="sampleMetadata.tab" ftype="tabular"/>
             <output name="ticsPdf" value="TICs.pdf" ftype="pdf" compare="sim_size" delta="5000" />

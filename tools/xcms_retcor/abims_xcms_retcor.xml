@@ -133,7 +133,7 @@
 
     <tests>
         <test>
-            <param name="image" value="faahKO-single-class.xset.group.RData" ftype="rdata"/>
+            <param name="image" value="faahKO-single-class.xset.merged.group.RData" ftype="rdata"/>
             <conditional name="methods">
                 <param name="method" value="PeakGroups"/>
                 <param name="extraPeaks" value="1"/>
