@@ -1,6 +1,10 @@
 library(xcms)
 library(faahKO)
 
+#BiocManager::install("faahKO")
+
+parallel <- TRUE
+
 cdfs <- dir(system.file("cdf", package = "faahKO"), full.names = TRUE,
         recursive = TRUE)
 
@@ -12,11 +16,36 @@ pd <- data.frame(
         sample_group = c(rep("KO", 2), rep("WT", 2)),
         stringsAsFactors = FALSE)
 
-raw_data <- readMSData(files = cdfs, pdata = new("NAnnotatedDataFrame", pd),
-        mode = "onDisk")
-
 cwp <- CentWaveParam()
-xdata <- findChromPeaks(raw_data, param = cwp)
+
+if (parallel) {
+    for (cdf in cdfs) {
+        raw_data <- readMSData(files = cdf, pdata = new("NAnnotatedDataFrame", pd),
+                    mode = "onDisk")
+        xdata <- findChromPeaks(raw_data, param = cwp)
+        if (!exists("xdata_merged"))
+            xdata_merged <- xdata
+        else
+            xdata_merged <- c(xdata_merged, xdata)
+    }
+    xdata <- xdata_merged
+    if (!is.null(args$sampleMetadata)) {
+        sampleMetadataFile <- args$sampleMetadata
+        sampleMetadata <- getDataFrameFromFile(sampleMetadataFile, header = F)
+        xdata@phenoData@data$sample_group <- sampleMetadata$V2[match(xdata@phenoData@data$sample_name, sampleMetadata$V1)]
+
+        if (any(is.na(pData(xdata)$sample_group))) {
+            sample_missing <- pData(xdata)$sample_name[is.na(pData(xdata)$sample_group)]
+            error_message <- paste("Those samples are missing in your sampleMetadata:", paste(sample_missing, collapse = " "))
+            print(error_message)
+            stop(error_message)
+        }
+    }
+} else {
+    raw_data <- readMSData(files = cdfs, pdata = new("NAnnotatedDataFrame", pd),
+                mode = "onDisk")
+    xdata <- findChromPeaks(raw_data, param = cwp)
+}
 
 pdp <- PeakDensityParam(sampleGroups = xdata$sample_group,
         bw = 5,
