@@ -1,4 +1,4 @@
-<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@.2">
+<tool id="msnbase_readmsdata" name="MSnbase readMSData" version="@WRAPPER_VERSION@+galaxy0">
     <description>Imports mass-spectrometry data files</description>
 
     <macros>
@@ -235,6 +235,10 @@ Changelog/News
 --------------
 
 .. _News: https://bioconductor.org/packages/release/bioc/news/MSnbase/NEWS
+
+**Version 2.16.1+galaxy0 - 08/04/2019**
+
+- UPGRADE: upgrade the MSnbase version from 2.8.2 to 2.16.1 (see MSnbase News_). Almost all the new features may not concern our usage of MSnbase.
 
 **Version 2.8.2.1 - 30/04/2019**
 
