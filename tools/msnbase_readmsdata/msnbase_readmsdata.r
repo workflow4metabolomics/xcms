@@ -38,7 +38,7 @@ cat("\tINFILE PROCESSING INFO\n")
 # Handle infiles
 if (!exists("singlefile")) singlefile <- NULL
 if (!exists("zipfile")) zipfile <- NULL
-rawFilePath <- retrieveRawfileInTheWorkingDirectory(singlefile, zipfile, args)
+rawFilePath <- retrieveRawfileInTheWorkingDir(singlefile, zipfile, args)
 zipfile <- rawFilePath$zipfile
 singlefile <- rawFilePath$singlefile
 files <- rawFilePath$files
