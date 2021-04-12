@@ -2,6 +2,8 @@
 Changelog/News
 --------------
 
+.. _News: https://lgatto.github.io/MSnbase/news/index.html
+
 **Version 2.16.1+galaxy0 - 08/04/2019**
 
 - UPGRADE: upgrade the MSnbase version from 2.8.2 to 2.16.1 (see MSnbase News_). Almost all the new features may not concern our usage of MSnbase.
