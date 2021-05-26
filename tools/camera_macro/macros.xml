@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <macros>
 
-    <token name="@TOOL_VERSION@">1.42.0</token>
+    <token name="@TOOL_VERSION@">1.46.0</token>
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="0.4_3">r-snow</requirement>
             <requirement type="package" version="@TOOL_VERSION@">bioconductor-camera</requirement>
-            <requirement type="package" version="2.42.0">bioconductor-multtest</requirement>
+            <requirement type="package" version="2.46.0">bioconductor-multtest</requirement>
             <requirement type="package" version="1.1_5">r-batch</requirement>
-            <requirement type="package" version="1.3.31">graphicsmagick</requirement>
+            <requirement type="package" version="1.3.35">graphicsmagick</requirement>
         </requirements>
     </xml>
     <xml name="stdio">
@@ -158,6 +158,12 @@
 
 ---------------------------------------------------
 
+    </token>
+
+    <token name="@HELP_CAMERA_NEWVERSION_1460@">
+**Version 2.2.6+camera1.46.0 - 12/04/2021**
+
+- UPGRADE: upgrade the CAMERA version from 1.42.0 to 1.46.0 (see CAMERA News_)
     </token>
 
     <token name="@HELP_CAMERA_NEWVERSION_1420@">
