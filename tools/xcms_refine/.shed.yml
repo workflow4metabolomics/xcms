@@ -4,5 +4,5 @@ homepage_url: http://workflow4metabolomics.org
 long_description: 'Part of the W4M project: http://workflow4metabolomics.org XCMS:
   http://www.bioconductor.org/packages/release/bioc/html/xcms.html Remove or merge chromatographic peaks based on specific criteria.'
 name: xcms_refine
-owner: lecorguille
+owner: workflow4metabolomics
 remote_repository_url: https://github.com/workflow4metabolomics/xcms
