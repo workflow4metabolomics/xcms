@@ -1,4 +1,4 @@
-<tool id="abims_xcms_refine" name="xcms refineChromPeaks (refine)" version="3.12.0+galaxy1">
+<tool id="abims_xcms_refine" name="xcms refineChromPeaks (refine)" version="3.12.0+galaxy0">
 
     <description>Remove or merge chromatographic peaks based on specific criteria.</description>
 
@@ -45,13 +45,12 @@
                 <option value="MergeNeighboringPeaks">MergeNeighboringPeaks - combine peaks that are too close together</option>
             </param>
             <when value="CleanPeaks">
-                <param argument="maxPeakwidth" type="float" value="10" label="MaxPeakWidth" help="maximum peak width in seconds" />
+                <param argument="maxPeakwidth" type="float" value="10" label="MaxPeakWidth" help="maximum peak width in seconds.  See CleanPeaks manual (linked in help below)." />
             </when>
             <when value="FilterIntensity">
                 <param argument="threshold" type="float" value="0" label="minimal required intensity" help="minimal required intensity for a peak to be retained.  Defaults to 0.0." />
                 <param argument="nValues" type="integer" value="1" label="minimum number of data points per peak" help="number of data points (per chromatographic peak) that have to be >= threshold. Defaults to 1." />
-                <param argument="value" type="text" value="maxo" label="chromatographic intensity type ('intb', 'into', or 'maxo')" help="intensity type (which must be set in the chromatographic peaks input data) that should be used for the filtering. Defaults 'maxo'." />
-                <param name="value" type="select" label="Definition of peak intensity" help="See the manual. 'intb' requires centWave processed data">
+                <param name="value" type="select" label="Definition of peak intensity" help="See the FilterIntensity manual (linked in help below). 'intb' requires centWave processed data">
                     <option value="maxo" selected="true">maxo - use maximum peak intensities</option>
                     <option value="into">into - use integrated peak intensities</option>
                     <option value="intb">intb - use baseline-corrected integrated peak intensities</option>
@@ -61,7 +60,7 @@
                 <param argument="expandRt" type="float" value="2" label="rt expansion (seconds)" help="seconds of expansion of retention time window (on both sides) to check for overlapping peaks. Defaults to 2." />
                 <param argument="expandMz" type="float" value="0" label="m/z expansion (m/z units)" help="'m/z units' of expansion of m/z window (on both sides) to check for overlapping peaks. Defaults to 0." />
                 <param argument="ppm" type="float" value="10" label="ppm expansion (ppm units)" help="'relative 'm/z units' (in parts per million) of expansion of m/z window (on both sides) to check for overlapping peaks. Defaults to 10." />
-                <param argument="minProp" type="float" value="0.75" label="minimum proportion at midpoint" help="See MergeNeighboringPeaks manual.  Minimum proportion midway between peaks relative to the smaller peak's 'maxo' (maximal intensity at peak apex).  Defaults to 0.75." />
+                <param argument="minProp" type="float" value="0.75" label="minimum proportion at midpoint" help="See MergeNeighboringPeaks manual (linked in help below).  Minimum proportion midway between peaks relative to the smaller peak's 'maxo' (maximal intensity at peak apex).  Defaults to 0.75." />
             </when>
         </conditional>
         <param argument="msLevel" type="integer" value="1" label="msLevel for refinement" help="the MS level on which refinement should be performed. Defaults to 1." />
