@@ -39,20 +39,12 @@ args_msLevel <- args$msLevel
 param_args <- list()
 
 if (args_method == "CleanPeaks") {
-  param_args$maxPeakwidth <- as.numeric(args$maxPeakwidth)
-  if (is.na(as.numeric(param_args$maxPeakwidth))) stop("\n\nERROR: The maxPeakwidth argument cannot be coerced to a numeric value.")
+  param_args$maxPeakwidth <- args$maxPeakwidth
 } else if (args_method == "FilterIntensity") {
-  param_args$threshold <- as.numeric(args$threshold)
-  if (is.na(as.numeric(param_args$threshold))) stop("\n\nERROR: The threshold argument cannot be coerced to a numeric value.")
-  param_args$nValues <- as.numeric(args$nValues)
-  if (is.na(as.numeric(param_args$nValues))) stop("\n\nERROR: The nValues argument cannot be coerced to a numeric value.")
-  if (as.integer(param_args$nValues) != param_args$nValues) stop("\n\nERROR: The nValues argument is not an integer value.")
+  param_args$threshold <- args$threshold
   param_args$value <- args$value
+  param_args$nValues <- args$nValues
 } else if (args_method == "MergeNeighboringPeaks") {
-  if (is.na(as.numeric(args$expandRt))) stop("\n\nERROR: The expandRt argument cannot be coerced to a numeric value.")
-  if (is.na(as.numeric(args$expandMz))) stop("\n\nERROR: The expandMz argument cannot be coerced to a numeric value.")
-  if (is.na(as.numeric(args$ppm))) stop("\n\nERROR: The ppm argument cannot be coerced to a numeric value.")
-  if (is.na(as.numeric(args$minProp))) stop("\n\nERROR: The minProp argument cannot be coerced to a numeric value.")
   param_args$expandRt <- args$expandRt
   param_args$expandMz <- args$expandMz
   param_args$ppm      <- args$ppm
