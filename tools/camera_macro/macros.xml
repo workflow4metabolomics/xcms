@@ -5,6 +5,7 @@
     <xml name="requirements">
         <requirements>
             <requirement type="package" version="0.4_3">r-snow</requirement>
+			<requirement type="package" version="1.2.6">bioconductor-genomeinfodbdata</requirement>
             <requirement type="package" version="@TOOL_VERSION@">bioconductor-camera</requirement>
             <requirement type="package" version="2.48.0">bioconductor-multtest</requirement>
             <requirement type="package" version="1.1_5">r-batch</requirement>
@@ -122,6 +123,8 @@
             <param name="w" value="640"/>
             <param name="mzdec" value="2"/>
             <param name="sortpval" value="False"/>
+			<param name="tabular2" value="zip"/>
+			<param name="png2" value="zip"/>
         </conditional>
         </section>
         <expand macro="test_peaklist"/>
